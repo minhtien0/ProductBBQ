@@ -20,8 +20,6 @@
                 <span class="font-bold text-lg">Minh Tiến</span>
                 <span class="font-bold text-lg">Minh Tiến</span>
                 <span class="font-bold text-lg">Minh Tiến</span>
-                <span class="font-bold text-lg">Minh Tiến</span>
-                <span class="font-bold text-lg">Minh Tiến</span>
             </div>
 
             <!-- Tìm Kiếm - Ở giữa -->
