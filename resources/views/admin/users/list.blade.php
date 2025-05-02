@@ -1,7 +1,26 @@
 @extends('admin.index')
 @section('content')
+
     <!-- Content -->
     <div class="w-full bg-white mt-4">
+        <!--Nút chọn loại nhân viên-->
+        <div class="flex px-5 py-3">
+            <span>
+                <button class="w-24 h-10 rounded shadow-xl text-sm mr-4 bg-white hover:bg-gray-400">
+                <i class="fa-solid fa-user-group"></i> Nhân viên
+                </button>
+            </span>
+            <span>
+            <button class="w-40 h-10 rounded shadow-xl text-sm mr-4  bg-white hover:bg-gray-400">
+            <i class="fa-solid fa-users-viewfinder"></i> Nhân viên NGhỉ Phép
+                </button>
+            </span>
+            <span>
+            <button class="w-24 h-10 rounded shadow-xl text-sm  bg-white hover:bg-gray-400">
+            <i class="fa-solid fa-user-nurse"></i> Cấp quản lí
+                </button>
+            </span>
+        </div>
         <div class="px-5 py-3">
             <!-- Action buttons -->
             <div class="flex justify-between mb-4">
@@ -33,7 +52,8 @@
                         x-transition:leave-end="opacity-0 transform scale-95" @click.away="isOpen = false">
                         <div class="flex justify-between items-center p-3 border-b">
                             <h3 class="text-base font-medium">Tìm kiếm</h3>
-                            <button @click="isOpen = false" class="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out">
+                            <button @click="isOpen = false"
+                                class="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
                                     fill="currentColor">
                                     <path fill-rule="evenodd"
@@ -230,7 +250,8 @@
 
                                 </div>
                             </td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a href="{{ route('user.detail') }}">MT0123</a></td>
+                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
+                                    href="{{ route('user.detail') }}">MT0123</a></td>
                             <td class="py-1 px-2 border-t border-gray-200">
                                 <span class="text-gray-600">Nguyễn Minh Tiến</span>
                             </td>
