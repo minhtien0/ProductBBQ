@@ -12,10 +12,11 @@ Route::get('change-language/{language}', [LanguageController::class, 'changeLang
 Route::get('/login', function () {
     return view('login');
 });
+Route::post('/login', [HomeController::class, 'login']);
 //Group Admin
 Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group(function () {
     Route::get('/', function () {
-        return view('welcome');
+        return view('admin.dashboard');
     });
     Route::get('/index', [HomeController::class, 'index']);
     

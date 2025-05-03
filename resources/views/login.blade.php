@@ -47,7 +47,7 @@
         <!-- Right Section (Login Form) -->
         <div id="login-form" class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold">Đăng nhập</h2>
+                <h2 class="text-xl font-semibold">{{ trans('messages.login') }} </h2>
                 <div class="flex items-center space-x-2">
                     <button class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded text-sm">Đăng nhập với mã QR</button>
                     <svg class="h-6 w-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -58,29 +58,46 @@
             </div>
 
             <!-- Form Inputs -->
-            <div class="space-y-4">
-                <input type="text" placeholder="Email/Số điện thoại/Tên đăng nhập"
-                    class="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-[#EE4D2D]">
+            <form method="POST" action="/login">
+                @csrf
+                <div class="space-y-4">
+                    <div>
+                        <input type="text" placeholder="Email/Số điện thoại/Tên đăng nhập"
+                            class="w-full border {{ $errors->has('user') ? 'border-red-500' : 'border-gray-300' }} rounded p-3 "
+                            name="user" value="{{ old('user') }}">
+                        @if($errors->has('user'))
+                            <p class="text-red-500 text-xs mt-1">{{ $errors->first('user') }}</p>
+                        @endif
+                    </div>
 
-                <div class="relative">
-                    <input type="password" placeholder="Mật khẩu"
-                        class="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-[#EE4D2D]">
-                    <svg class="h-5 w-5 text-gray-500 absolute right-3 top-1/2 transform -translate-y-1/2"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
+                    <div class="relative">
+                        <input type="password" placeholder="Mật khẩu"
+                            class="w-full border {{ $errors->has('password') ? 'border-red-500' : 'border-gray-300' }} rounded p-3 "
+                            name="password">
+                        <svg class="h-5 w-5 text-gray-500 absolute right-3 top-1/2 transform -translate-y-1/2"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        @if($errors->has('password'))
+                            <p class="text-red-500 text-xs mt-1">{{ $errors->first('password') }}</p>
+                        @endif
+                    </div>
+
+                    @if($errors->has('failed'))
+                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('failed') }}</p>
+                    @endif
+
+                    <button type="submit"
+                        class="w-full bg-[#FF6347] text-white rounded p-3 hover:bg-[#FF7F50] transition duration-150">
+                        {{ trans('messages.login') }} 
+                    </button>
+
+                    <a href="#" class="text-blue-500 text-sm text-center block">{{ __('messages.forgetpassword') }}</a>
                 </div>
-
-                <button class="w-full bg-[#FF6347] text-white rounded p-3 hover:bg-[#FF7F50] transition duration-150">
-                    ĐĂNG NHẬP
-                </button>
-
-                <a href="#" class="text-blue-500 text-sm text-center block">Quên mật khẩu</a>
-            </div>
-
+            </form>
             <!-- Divider -->
             <div class="flex items-center my-4">
                 <div class="flex-grow border-t border-gray-300"></div>
@@ -112,8 +129,8 @@
 
             <!-- Register Link -->
             <p class="text-center mt-4 text-sm">
-                Bạn mới biết đến Shopee? <a href="#" id="toggleToRegister" class="text-[#EE4D2D] hover:underline">Đăng
-                    ký</a>
+                Bạn mới biết đến Shopee? <a href="#" id="toggleToRegister" class="text-[#EE4D2D] hover:underline">{{ 
+                __('messages.register') }}</a>
             </p>
         </div>
 

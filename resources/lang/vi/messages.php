@@ -4,4 +4,6 @@ return [
     'greeting' => 'Xin chào, :name!',
     'login'=>'Đăng Nhập',
     'homepage'=>'Trang Chủ',
+    'forgetpassword'=>'Quên mật khẩu',
+    'register'=>'Đăng kí'
 ];
