@@ -20,7 +20,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-question-circle w-4 h-4 text-gray-500"></i>
-                        <span class="text-sm">Câu hỏi</span>
+                        <span class="text-sm">{{ __('messages.customer') }}</span>
                     </div>
                     <i class="fa-solid fa-chevron-down w-4 h-4 text-gray-500 transition-transform duration-300"></i>
                 </div>
@@ -31,14 +31,14 @@
                     style="animation-delay: 0.1s;">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-plus w-4 h-4"></i>
-                        <span class="text-sm">Thêm Câu hỏi</span>
+                        <span class="text-sm">{{ __('messages.table') }}</span>
                     </div>
                 </div>
                 <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
                     style="animation-delay: 0.2s;">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-list w-4 h-4"></i>
-                        <span class="text-sm">DS Câu hỏi</span>
+                        <span class="text-sm">{{ __('messages.help') }}</span>
                     </div>
                 </div>
             </div>
@@ -48,61 +48,80 @@
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-bell w-4 h-4 text-gray-500"></i>
-                    <span class="text-sm">Thống Báo</span>
+                    <span class="text-sm">{{ __('messages.announcement') }}</span>
                 </div>
             </div>
 
             <!-- Đơn hàng -->
             <div
-                class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+            class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-shopping-cart w-4 h-4 text-gray-500"></i>
-                    <span class="text-sm">Đơn hàng</span>
+                    <span class="text-sm">{{ __('messages.order') }}</span>
                 </div>
             </div>
 
             <!-- Sản phẩm -->
             <div
-                class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+            class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-box w-4 h-4 text-gray-500"></i>
-                    <span class="text-sm">Sản phẩm</span>
+                    <span class="text-sm">{{ __('messages.product') }}</span>
                 </div>
             </div>
             <span>Group 2</span>
             <!-- NVgT truyển -->
             <div
-                class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+            class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
+                    <a href="{{ route('admin.rate') }}">
                     <i class="fa-solid fa-user-tie w-4 h-4 text-gray-500"></i>
-                    <span class="text-sm">NVgT truyển</span>
+                    <span class="text-sm">{{ __('messages.rate') }}</span>
+                    </a>
+                    
                 </div>
             </div>
 
             <!-- QL Khách hàng -->
             <div
-                class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+            class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-users w-4 h-4 text-gray-500"></i>
-                    <span class="text-sm">QL Khách hàng</span>
+                    <span class="text-sm">{{ __('messages.blog') }}</span>
+                </div>
+            </div>
+
+            <div
+            class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-users w-4 h-4 text-gray-500"></i>
+                    <span class="text-sm">{{ __('messages.table') }}</span>
+                </div>
+            </div>
+
+            <div
+            class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-users w-4 h-4 text-gray-500"></i>
+                    <span class="text-sm">{{ __('messages.help') }}</span>
                 </div>
             </div>
 
             <!-- QL Quản trị -->
             <div
-                class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+            class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-user-shield w-4 h-4 text-gray-500"></i>
-                    <span class="text-sm">QL Quản trị</span>
+                    <span class="text-sm">{{ __('messages.booking') }}</span>
                 </div>
             </div>
 
             <!-- Sliders -->
             <div
-                class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+            class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-sliders-h w-4 h-4 text-gray-500"></i>
-                    <span class="text-sm">Sliders</span>
+                    <span class="text-sm">{{ __('messages.blog') }}</span>
                 </div>
             </div>
         </div>
