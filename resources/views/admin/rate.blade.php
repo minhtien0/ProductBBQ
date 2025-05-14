@@ -66,10 +66,12 @@
                             <div class="relative">
                                 <select
                                     class="w-full border border-gray-300 rounded p-1.5 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">Chọn đơn vị</option>
-                                    <option value="unit1">Hệ thống Giáo dục</option>
-                                    <option value="unit2">Trung tâm Đào tạo 1</option>
-                                    <option value="unit3">Trung tâm Đào tạo 2</option>
+                                    <option value="">Chọn số sao</option>
+                                    <option value="unit1">1 sao</option>
+                                    <option value="unit2">2 sao</option>
+                                    <option value="unit2">3 sao</option>
+                                    <option value="unit2">4 sao</option>
+                                    <option value="unit2">5 sao</option>
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                     <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -84,10 +86,10 @@
                             <div class="relative">
                                 <select
                                     class="w-full border border-gray-300 rounded p-1.5 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">--Khu vực--</option>
-                                    <option value="area1">Khu vực miền Bắc</option>
-                                    <option value="area2">Khu vực miền Trung</option>
-                                    <option value="area3">Khu vực miền Nam</option>
+                                    <option value="">--Sản Phẩm--</option>
+                                    <option value="area1">Sản Phẩm 1</option>
+                                    <option value="area2">Sản Phẩm 2</option>
+                                    <option value="area3">Sản Phẩm 3</option>
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                     <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -97,46 +99,6 @@
                                     </svg>
                                 </div>
                             </div>
-
-                            <!-- Position Selection -->
-                            <div class="relative">
-                                <select
-                                    class="w-full border border-gray-300 rounded p-1.5 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">-- Chức danh --</option>
-                                    <option value="position1">Quản lý hệ thống</option>
-                                    <option value="position2">CEO</option>
-                                    <option value="position3">Nhân viên</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Status Selection -->
-                            <div class="relative">
-                                <select
-                                    class="w-full border border-gray-300 rounded p-1.5 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">-- Trạng thái --</option>
-                                    <option value="status1">Đang làm việc</option>
-                                    <option value="status2">Tạm nghỉ</option>
-                                    <option value="status3">Đã nghỉ việc</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Note Input -->
-                            <input type="text" placeholder="Nhập góp ý"
-                                class="w-full border border-gray-300 rounded p-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
 
                             <!-- Start Date -->
                             <input type="text" placeholder="Ngày bắt đầu"
@@ -147,10 +109,6 @@
                             <input type="text" placeholder="Ngày kết thúc"
                                 class="w-full border border-gray-300 rounded p-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                 onfocus="(this.type='date')" onblur="if(this.value==''){this.type='text'}">
-
-                            <!-- Employee ID/Name -->
-                            <input type="text" placeholder="Nhập mã / tên nhân viên"
-                                class="w-full border border-gray-300 rounded p-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
 
                             <!-- Search Button -->
                             <button

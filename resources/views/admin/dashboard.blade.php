@@ -7,17 +7,17 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div class="bg-white p-4 rounded-lg shadow text-center">
                 <div class="text-blue-600"><i class="fas fa-chalkboard-teacher"></i></div>
-                <p class="text-gray-600">Lớp học Elearning</p>
+                <p class="text-gray-600">Doanh thu</p>
                 <p class="text-2xl font-bold text-blue-600">{{ $elearningClasses ?? 237 }}</p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow text-center">
                 <div class="text-blue-600"><i class="fas fa-users"></i></div>
-                <p class="text-gray-600">Lớp học trực trung</p>
+                <p class="text-gray-600">Khách hàng</p>
                 <p class="text-2xl font-bold text-blue-600">{{ $onlineClasses ?? 161 }}</p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow text-center">
                 <div class="text-blue-600"><i class="fas fa-check"></i></div>
-                <p class="text-gray-600">Kỳ thi đã tổ chức</p>
+                <p class="text-gray-600">Đánh giá</p>
                 <p class="text-2xl font-bold text-blue-600">{{ $examsHeld ?? 68 }}</p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow text-center">
