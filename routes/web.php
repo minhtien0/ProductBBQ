@@ -19,7 +19,7 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group
     Route::get('/', function () {
         return view('admin.dashboard');
     });
-    Route::get('/index', [HomeController::class, 'index']);
+    Route::get('/index', [HomeController::class, 'index'])->name('admin.dashboard');
     Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');
 
     Route::prefix('/user')->group(function () {
