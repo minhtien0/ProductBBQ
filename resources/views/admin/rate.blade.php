@@ -1,23 +1,21 @@
 @extends('admin.index')
 @section('content')
-
-    <!-- Content -->
     <div class="w-full bg-white mt-4">
         <!--Nút chọn loại nhân viên-->
         <div class="flex px-5 py-3">
             <span>
                 <button class="w-24 h-10 rounded shadow-xl text-sm mr-4 bg-white hover:bg-gray-400">
-                <i class="fa-solid fa-user-group"></i> Nhân viên
+                    <i class="fa-solid fa-user-group"></i> {{ trans('messages.all') }}
                 </button>
             </span>
             <span>
-            <button class="w-40 h-10 rounded shadow-xl text-sm mr-4  bg-white hover:bg-gray-400">
-            <i class="fa-solid fa-users-viewfinder"></i> Nhân viên NGhỉ Phép
+                <button class="w-40 h-10 rounded shadow-xl text-sm mr-4  bg-white hover:bg-gray-400">
+                    <i class="fa-solid fa-users-viewfinder"></i> {{ trans('messages.eatrestaurant') }}
                 </button>
             </span>
             <span>
-            <button class="w-24 h-10 rounded shadow-xl text-sm  bg-white hover:bg-gray-400">
-            <i class="fa-solid fa-user-nurse"></i> Cấp quản lí
+                <button class="w-24 h-10 rounded shadow-xl text-sm  bg-white hover:bg-gray-400">
+                    <i class="fa-solid fa-user-nurse"></i> {{ trans('messages.bringhome') }}
                 </button>
             </span>
         </div>
@@ -33,7 +31,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                         </svg>
-                        Bộ lọc
+                        {{__('messages.filter')}}
                     </button>
 
                     <!-- Overlay -->
@@ -51,7 +49,7 @@
                         x-transition:leave-start="opacity-100 transform scale-100"
                         x-transition:leave-end="opacity-0 transform scale-95" @click.away="isOpen = false">
                         <div class="flex justify-between items-center p-3 border-b">
-                            <h3 class="text-base font-medium">Tìm kiếm</h3>
+                            <h3 class="text-base font-medium">{{ __('messages.search') }}</h3>
                             <button @click="isOpen = false"
                                 class="text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
@@ -68,10 +66,12 @@
                             <div class="relative">
                                 <select
                                     class="w-full border border-gray-300 rounded p-1.5 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">Chọn đơn vị</option>
-                                    <option value="unit1">Hệ thống Giáo dục</option>
-                                    <option value="unit2">Trung tâm Đào tạo 1</option>
-                                    <option value="unit3">Trung tâm Đào tạo 2</option>
+                                    <option value="">Chọn số sao</option>
+                                    <option value="unit1">1 sao</option>
+                                    <option value="unit2">2 sao</option>
+                                    <option value="unit2">3 sao</option>
+                                    <option value="unit2">4 sao</option>
+                                    <option value="unit2">5 sao</option>
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                     <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -86,10 +86,10 @@
                             <div class="relative">
                                 <select
                                     class="w-full border border-gray-300 rounded p-1.5 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">--Khu vực--</option>
-                                    <option value="area1">Khu vực miền Bắc</option>
-                                    <option value="area2">Khu vực miền Trung</option>
-                                    <option value="area3">Khu vực miền Nam</option>
+                                    <option value="">--Sản Phẩm--</option>
+                                    <option value="area1">Sản Phẩm 1</option>
+                                    <option value="area2">Sản Phẩm 2</option>
+                                    <option value="area3">Sản Phẩm 3</option>
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                     <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -99,46 +99,6 @@
                                     </svg>
                                 </div>
                             </div>
-
-                            <!-- Position Selection -->
-                            <div class="relative">
-                                <select
-                                    class="w-full border border-gray-300 rounded p-1.5 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">-- Chức danh --</option>
-                                    <option value="position1">Quản lý hệ thống</option>
-                                    <option value="position2">CEO</option>
-                                    <option value="position3">Nhân viên</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Status Selection -->
-                            <div class="relative">
-                                <select
-                                    class="w-full border border-gray-300 rounded p-1.5 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">-- Trạng thái --</option>
-                                    <option value="status1">Đang làm việc</option>
-                                    <option value="status2">Tạm nghỉ</option>
-                                    <option value="status3">Đã nghỉ việc</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Note Input -->
-                            <input type="text" placeholder="Nhập góp ý"
-                                class="w-full border border-gray-300 rounded p-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
 
                             <!-- Start Date -->
                             <input type="text" placeholder="Ngày bắt đầu"
@@ -150,10 +110,6 @@
                                 class="w-full border border-gray-300 rounded p-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                 onfocus="(this.type='date')" onblur="if(this.value==''){this.type='text'}">
 
-                            <!-- Employee ID/Name -->
-                            <input type="text" placeholder="Nhập mã / tên nhân viên"
-                                class="w-full border border-gray-300 rounded p-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-
                             <!-- Search Button -->
                             <button
                                 class="bg-blue-600 text-white rounded px-4 py-1.5 flex items-center justify-center w-full hover:bg-blue-700 transition duration-150 ease-in-out text-sm">
@@ -162,44 +118,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
-                                Tìm kiếm
+                                {{__('messages.filter')}}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex space-x-2">
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Mẫu import
-                    </button>
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Import
-                    </button>
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                        </svg>
-                        Xuất file
-                    </button>
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Thêm mới
-                    </button>
                     <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -219,14 +144,13 @@
                             <th class="w-12 py-1 px-2 text-left">
                                 <input type="checkbox" class="form-checkbox h-4 w-4">
                             </th>
-                            <th class="py-1 px-2 text-left text-sm">Ảnh đại diện</th>
-                            <th class="py-1 px-2 text-left text-sm">Mã nhân viên</th>
-                            <th class="py-1 px-2 text-left text-sm">Tên nhân viên</th>
-                            <th class="py-1 px-2 text-left text-sm">Email nhân viên</th>
-                            <th class="py-1 px-2 text-left text-sm">Chức danh</th>
-                            <th class="py-1 px-2 text-left text-sm">Thấp đào tạo (%)</th>
-                            <th class="py-1 px-2 text-left text-sm">Đơn vị công tác</th>
-                            <th class="py-1 px-2 text-left text-sm">Đơn vị quản lý</th>
+                            <th class="py-1 px-2 text-left text-sm">{{ __('messages.avatar') }}</th>
+                            <th class="py-1 px-2 text-left text-sm">{{ __('messages.nameuser') }}</th>
+                            <th class="py-1 px-2 text-left text-sm">{{ __('messages.content') }}</th>
+                            <th class="py-1 px-2 text-left text-sm">{{ __('messages.numberofStars') }}</th>
+                            <th class="py-1 px-2 text-left text-sm">{{ __('messages.time') }}</th>
+                            <th class="py-1 px-2 text-left text-sm">{{ __('messages.picture') }}</th>
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -258,14 +182,7 @@
                             <td class="py-1 px-2 border-t border-gray-200 text-gray-700">tiennguyen14700@gmail.com</td>
                             <td class="py-1 px-2 border-t border-gray-200 text-gray-700">Quản Lí</td>
                             <td class="py-1 px-2 border-t border-gray-200 text-gray-700">99</td>
-                            <td class="py-1 px-2 border-t border-gray-200">
-                                <div class="flex items-center">
-                                    <span class="text-gray-600">Cao Đẳng Cao Thắng</span>
-                                    <span
-                                        class="ml-1 text-gray-600 bg-gray-100 rounded-full h-5 w-5 flex items-center justify-center text-xs">i</span>
-                                </div>
-                            </td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">Puka</td>
+                            
                         </tr>
                     </tbody>
                 </table>
