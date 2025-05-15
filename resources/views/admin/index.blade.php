@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+
 </head>
 
 <body class="bg-gray-100">
@@ -17,7 +19,9 @@
         <div class="flex items-center justify-between w-full px-4 py-2 bg-white shadow">
             <!-- Logo - Bên trái -->
             <div class="flex-shrink-0">
-                <a> <img class="h-10 w-20" src="{{ asset('img/logo.jpg') }}"> </a>
+            <img class="h-[3.5rem] w-[8rem]" src="logo.jpg">
+
+
             </div>
 
             <!-- Tìm Kiếm - Ở giữa -->
