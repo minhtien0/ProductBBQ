@@ -33,7 +33,7 @@
                 <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
                     style="animation-delay: 0.2s;">
                     <div class="flex items-center space-x-2">
-                        <a href="">
+                        <a href="{{ route('admin.staff.job') }}">
                             <i class="fa-solid fa-rectangle-list w-4 h-4 mr-2"></i>
                             <span class="text-sm">Ca Làm</span>
                         </a>
@@ -42,7 +42,7 @@
                 <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
                     style="animation-delay: 0.1s;">
                     <div class="flex items-center space-x-2">
-                        <a href="">
+                        <a href="{{ route('admin.staff.registerjob') }}">
                             <i class="fa-solid fa-clipboard-list w-4 h-4 mr-2"></i>
                             <span class="text-sm">Đăng kí ca làm</span>
                         </a>
@@ -51,7 +51,7 @@
                 <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
                     style="animation-delay: 0.2s;">
                     <div class="flex items-center space-x-2">
-                        <a href="">
+                        <a href="{{ route('admin.staff.timekeeping') }}">
                             <i class="fa-solid fa-calendar w-4 h-4 mr-2"></i>
                             <span class="text-sm">Chấm công</span>
                         </a>
@@ -60,7 +60,7 @@
                 <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
                     style="animation-delay: 0.2s;">
                     <div class="flex items-center space-x-2">
-                        <a href="">
+                        <a href="{{ route('admin.staff.tip') }}">
                             <i class="fa-solid fa-money-bill-1-wave w-4 h-4 mr-2"></i>
                             <span class="text-sm">Tiền tip</span>
                         </a>
@@ -69,7 +69,7 @@
                 <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
                     style="animation-delay: 0.2s;">
                     <div class="flex items-center space-x-2">
-                        <a href="">
+                        <a href="{{ route('admin.staff.ot') }}">    
                             <i class="fa-solid fa-business-time w-4 h-4 mr-2"></i>
                             <span class="text-sm">Tăng Ca</span>
                         </a>
@@ -78,7 +78,7 @@
                 <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
                     style="animation-delay: 0.2s;">
                     <div class="flex items-center space-x-2">
-                        <a href="">
+                        <a href="{{ route('admin.staff.off') }}">
                             <i class="fa-solid fa-person-through-window w-4 h-4 mr-2"></i>
                             <span class="text-sm">Nghỉ Phép</span>
                         </a>
@@ -87,7 +87,7 @@
                 <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
                     style="animation-delay: 0.2s;">
                     <div class="flex items-center space-x-2">
-                        <a href="">
+                        <a href="{{ route('admin.staff.salary') }}">
                             <i class="fa-solid fa-sack-dollar w-4 h-4 mr-2"></i>
                             <span class="text-sm">Lương</span>
                         </a>
