@@ -2,7 +2,7 @@
     <div class="flex items-center justify-between w-full px-4 py-2 bg-white shadow">
         <!-- Logo - Bên trái -->
         <div class="flex-shrink-0">
-            <a> <img class="h-10 w-20" src="{{ asset('img/logo.jpg') }}"> </a>
+            <a> <img class="h-10 w-20" src="{{ asset('img/logo1.jpg') }}"> </a>
         </div>
 
         <!-- Tìm Kiếm - Ở giữa -->
