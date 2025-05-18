@@ -5,10 +5,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController\User;
 use App\Http\Controllers\AdminController\Rate;
-use App\Http\Controllers\AdminController\Staff;
 use App\Http\Controllers\StaffController\Dashboard;
-use App\Http\Controllers\AdminController\Product\Category;
-use App\Http\Controllers\AdminController\Product\Combo;
 
 //Đa ngôn ngữ
 Route::get('change-language/{language}', [LanguageController::class, 'changeLanguage'])->name('user.change-language');
@@ -31,34 +28,9 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group
         
     });
 
-    Route::prefix('/staff')->group(function () {
-        //Staff
-        Route::get('/', [Staff::class, 'viewStaff'])->name('admin.staff');
-        Route::get('/detail', [Staff::class, 'viewDetailStaff'])->name('admin.staff.detail');
-        //Job
-        Route::get('/job', [Staff::class, 'viewJob'])->name('admin.staff.job');
-        //Đăng Kí Ca Làm
-        Route::get('/registerjob', [Staff::class, 'viewRegisterJob'])->name('admin.staff.registerjob');
-        //Chấm Công
-        Route::get('/timekeeping', [Staff::class, 'viewTimeKeeping'])->name('admin.staff.timekeeping');
-        //Tiền Tip
-        Route::get('/tip', [Staff::class, 'viewTip'])->name('admin.staff.tip');
-        //Tăng CA
-        Route::get('/ot', [Staff::class, 'viewOT'])->name('admin.staff.ot');
-        //Nghỉ Phép
-        Route::get('/off', [Staff::class, 'viewOff'])->name('admin.staff.off');
-        //Lương
-        Route::get('/salary', [Staff::class, 'viewSalary'])->name('admin.staff.salary');
-    });
-
-    Route::prefix('/product')->group(function () {
-        Route::get('/', [User::class, 'index'])->name('user.list');
-        Route::get('/category', [Category::class, 'index'])->name('admin.product.category.index');
-        Route::get('/combo', [Combo::class, 'index'])->name('admin.product.combo.index');
-        
-    });
-
 });
+
+
 
 //Group Nhân Viên Staff
 Route::prefix('staff')->middleware([\App\Http\Middleware\Locale::class])->group(function () {
