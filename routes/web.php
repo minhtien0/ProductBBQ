@@ -21,6 +21,9 @@ Route::get('/login', function () {
     return view('login');
 });
 Route::post('/login', [HomeController::class, 'login']);
+Route::get('/', function () {
+    return view('index');
+});
 //Group Admin
 Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group(function () {
     Route::get('/', function () {
