@@ -8,6 +8,438 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+header {
+    background-color: #1a1a1a;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.logo span {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+}
+
+.nav-links a:hover {
+    color: #ccc;
+}
+
+.nav-links span {
+    color: #fff;
+}
+
+.book-table-btn {
+    background-color: #e60012;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+.book-table-btn:hover {
+    background-color: #cc0010;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Section 1: Promotion */
+.promotion-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.carousel-container {
+    width: 100%;
+    padding: 20px;
+/*     background: url('img/combo/1.jpg') no-repeat center center; /* Thay bằng đường dẫn hình ảnh thực tế */ */
+    background-size: cover;
+    border-radius: 10px;
+    flex: 2;
+    margin-right: 20px;
+    position: relative;
+}
+   
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: left;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.swiper-slide h1 {
+    font-size: 48px;
+    color: #e60012;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.swiper-slide h1 span {
+    color: #fff;
+}
+
+.swiper-slide p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #fff;
+}
+
+.price-box {
+    display: flex;
+    justify-content: flex-start;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.price-box div {
+    background-color: #e60012;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.price-box div p {
+    font-size: 14px;
+    color: #fff;
+}
+
+.price-box div h3 {
+    font-size: 24px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.swiper-button-prev, .swiper-button-next {
+    display: none;
+}
+
+.swiper-pagination {
+    bottom: 10px;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.swiper-pagination-bullet {
+    background-color: #fff;
+    opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #e60012;
+    opacity: 1;
+}
+
+/* Section 2: Delivery */
+.delivery-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.delivery-promo {
+    background-color: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 10px;
+    flex: 1;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.delivery-promo img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.delivery-promo h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.delivery-info {
+    flex: 2;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.delivery-info h3 {
+    color: #e60012;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.delivery-info ul {
+    list-style: none;
+    margin: 10px 0;
+}
+
+.delivery-info ul li {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.delivery-info button {
+    background-color: #e60012;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* Section 3: Menu */
+.menu-section {
+    margin-bottom: 20px;
+}
+
+.menu-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.category-column, .product-column, .cart-column {
+    flex: 1;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 10px;
+    margin: 0 10px;
+}
+
+.category-column h2, .product-column h2, .cart-column h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #e60012;
+}
+
+.category-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #444;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+}
+
+.category-btn:hover {
+    background-color: #555;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.product-item {
+    background-color: #444;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 45%;
+}
+
+.product-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.product-item h3 {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.product-item p {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.product-item button {
+    background-color: #e60012;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.product-item button:hover {
+    background-color: #cc0010;
+}
+
+.cart-items {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    background-color: #444;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.cart-item span {
+    font-size: 14px;
+}
+
+.cart-column p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #fff;
+}
+
+.cart-column button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #e60012;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.cart-column button:hover {
+    background-color: #cc0010;
+}
+
+/* Section 4: Food Images */
+.food-images {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.food-images img {
+    width: 32%;
+    border-radius: 10px;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    padding: 20px;
+    font-size: 14px;
+}
+
+footer .container {
+    padding: 0;
+}
+
+footer .footer-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+footer h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+footer p {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 5px;
+}
+
+footer a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #fff;
+}
+
+footer .footer-content div {
+    flex: 1;
+}
+
+footer .footer-content div:not(:last-child) {
+    margin-right: 20px;
+}
+
+footer .footer-content p {
+    margin-bottom: 5px;
+}
+
+footer > div > p {
+    text-align: center;
+    margin-top: 20px;
+    color: #ccc;
+}</style>
 <body>
     <header>
         <div class="logo">
@@ -96,19 +528,12 @@
 
         <!-- Section 3: Menu (Nhúng 3 cột) -->
 
-        <!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Nhà Hàng</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+
 <body class="bg-gray-800">
-    <section class="py-8 px-6 max-w-7xl mx-auto">
+    <section class="py-10 px-0 w-full">
         <div class="flex gap-8">
             <!-- Cột 1: Danh mục -->
-            <div class="w-1/3 p-6 bg-gray-900 rounded-xl shadow-lg">
+            <div class="w-1/4 p-6 bg-gray-900 rounded-xl shadow-lg">
                 <h2 class="text-2xl font-bold mb-6 text-red-500">Danh Mục</h2>
                 <button class="category-btn block w-full py-3 mb-3 bg-gray-700 text-gray-100 rounded-lg hover:bg-red-600 hover:text-white transition duration-300" data-category="special">Món ăn đặc biệt</button>
                 <button class="category-btn block w-full py-3 mb-3 bg-gray-700 text-gray-100 rounded-lg hover:bg-red-600 hover:text-white transition duration-300" data-category="vegetable">Món rau</button>
@@ -116,107 +541,109 @@
             </div>
 
             <!-- Cột 2: Sản phẩm chi tiết -->
-            <div class="w-1/3 p-6 bg-gray-900 rounded-xl shadow-lg">
-                <h2 class="text-2xl font-bold mb-6 text-red-500">Sản Phẩm</h2>
-                <div class="max-h-[270px] overflow-y-auto space-y-3">
-                    <!-- Món ăn đặc biệt -->
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
-                        <img src="img/combo/1.jpg" alt="Thịt Sâu Cổ" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Thịt Sâu Cổ</h3>
-                            <p class="text-gray-400 text-sm">180,000 VNĐ</p>
+            <div class="w-2/4 p-8 bg-gray-900 rounded-xl shadow-xl">
+                <h2 class="text-3xl font-bold mb-8 text-red-500">Sản Phẩm</h2>
+                <div class="max-h-[450px] overflow-y-auto pr-2">
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Món ăn đặc biệt -->
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Sâu Cổ" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Thịt Sâu Cổ</h3>
+                                <p class="text-gray-400 text-sm">180,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Thịt Sâu Cổ', 180000, 'img/combo/1.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Thịt Sâu Cổ', 180000, 'img/combo/1.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
-                        <img src="img/combo/1.jpg" alt="Thịt Bò Cáp" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Thịt Bò Cáp</h3>
-                            <p class="text-gray-400 text-sm">180,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Bò Cáp" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Thịt Bò Cáp</h3>
+                                <p class="text-gray-400 text-sm">180,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Thịt Bò Cáp', 180000, 'img/combo/1.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Thịt Bò Cáp', 180000, 'img/combo/1.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
-                        <img src="img/combo/2.jpg" alt="Thịt Bò Nhất" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Thịt Bò Nhất</h3>
-                            <p class="text-gray-400 text-sm">220,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Bò Nhất" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Thịt Bò Nhất</h3>
+                                <p class="text-gray-400 text-sm">220,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Thịt Bò Nhất', 220000, 'img/combo/4.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Thịt Bò Nhất', 220000, 'img/combo/2.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
-                        <img src="img/bo_bo.jpg" alt="Thịt Bò Bò" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Thịt Bò Bò</h3>
-                            <p class="text-gray-400 text-sm">160,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
+                            <img src="img/combo/4.jpg" alt="Thịt Bò Bò" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Thịt Bò Bò</h3>
+                                <p class="text-gray-400 text-sm">160,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Thịt Bò Bò', 160000, 'img/combo/3.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Thịt Bò Bò', 160000, 'img/bo_bo.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
-                        <img src="img/bo_nam.jpg" alt="Thịt Bò Nạm Tuyệt Uc" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Thịt Bò Nạm Tuyệt Uc</h3>
-                            <p class="text-gray-400 text-sm">220,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
+                            <img src="img/combo/4.jpg" alt="Thịt Bò Nạm Tuyệt Uc" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Thịt Bò Nạm Tuyệt Uc</h3>
+                                <p class="text-gray-400 text-sm">220,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Thịt Bò Nạm Tuyệt Uc', 220000, 'img/combo/4.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Thịt Bò Nạm Tuyệt Uc', 220000, 'img/bo_nam.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
-                        <img src="img/luoi_bo.jpg" alt="Lưỡi Bò" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Lưỡi Bò</h3>
-                            <p class="text-gray-400 text-sm">140,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="special">
+                            <img src="img/combo/3.jpg" alt="Lưỡi Bò" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Lưỡi Bò</h3>
+                                <p class="text-gray-400 text-sm">140,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Lưỡi Bò', 140000, 'img/combo/4.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Lưỡi Bò', 140000, 'img/luoi_bo.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <!-- Món rau -->
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="vegetable">
-                        <img src="img/rau_muong_xao.jpg" alt="Rau Muống Xào Tỏi" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Rau Muống Xào Tỏi</h3>
-                            <p class="text-gray-400 text-sm">50,000 VNĐ</p>
+                        <!-- Món rau -->
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="vegetable">
+                            <img src="img/rau_muong_xao.jpg" alt="Rau Muống Xào Tỏi" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Rau Muống Xào Tỏi</h3>
+                                <p class="text-gray-400 text-sm">50,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Rau Muống Xào Tỏi', 50000, 'img/rau_muong_xao.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Rau Muống Xào Tỏi', 50000, 'img/rau_muong_xao.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="vegetable">
-                        <img src="img/salad_tron.jpg" alt="Salad Trộn" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Salad Trộn</h3>
-                            <p class="text-gray-400 text-sm">60,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="vegetable">
+                            <img src="img/salad_tron.jpg" alt="Salad Trộn" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Salad Trộn</h3>
+                                <p class="text-gray-400 text-sm">60,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Salad Trộn', 60000, 'img/salad_tron.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Salad Trộn', 60000, 'img/salad_tron.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="vegetable">
-                        <img src="img/cai_ngot_luoc.jpg" alt="Cải Ngọt Luộc" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Cải Ngọt Luộc</h3>
-                            <p class="text-gray-400 text-sm">45,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="vegetable">
+                            <img src="img/cai_ngot_luoc.jpg" alt="Cải Ngọt Luộc" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Cải Ngọt Luộc</h3>
+                                <p class="text-gray-400 text-sm">45,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Cải Ngọt Luộc', 45000, 'img/cai_ngot_luoc.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Cải Ngọt Luộc', 45000, 'img/cai_ngot_luoc.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <!-- Đồ uống -->
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="drink">
-                        <img src="img/tra_da.jpg" alt="Trà Đá" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Trà Đá</h3>
-                            <p class="text-gray-400 text-sm">10,000 VNĐ</p>
+                        <!-- Đồ uống -->
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="drink">
+                            <img src="img/tra_da.jpg" alt="Trà Đá" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Trà Đá</h3>
+                                <p class="text-gray-400 text-sm">10,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Trà Đá', 10000, 'img/tra_da.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Trà Đá', 10000, 'img/tra_da.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="drink">
-                        <img src="img/nuoc_cam.jpg" alt="Nước Cam" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Nước Cam</h3>
-                            <p class="text-gray-400 text-sm">30,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="drink">
+                            <img src="img/nuoc_cam.jpg" alt="Nước Cam" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Nước Cam</h3>
+                                <p class="text-gray-400 text-sm">30,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Nước Cam', 30000, 'img/nuoc_cam.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Nước Cam', 30000, 'img/nuoc_cam.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
-                    </div>
-                    <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="drink">
-                        <img src="img/sinh_to_xoai.jpg" alt="Sinh Tố Xoài" class="w-14 h-14 object-cover rounded-md mr-4">
-                        <div class="flex-1">
-                            <h3 class="text-base font-semibold text-gray-100">Sinh Tố Xoài</h3>
-                            <p class="text-gray-400 text-sm">35,000 VNĐ</p>
+                        <div class="product-item flex items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300" data-category="drink">
+                            <img src="img/sinh_to_xoai.jpg" alt="Sinh Tố Xoài" class="w-14 h-14 object-cover rounded-lg mr-4">
+                            <div class="flex-1 flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-100">Sinh Tố Xoài</h3>
+                                <p class="text-gray-400 text-sm">35,000 VNĐ</p>
+                            </div>
+                            <button onclick="addToCart('Sinh Tố Xoài', 35000, 'img/sinh_to_xoai.jpg')" class="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                         </div>
-                        <button onclick="addToCart('Sinh Tố Xoài', 35000, 'img/sinh_to_xoai.jpg')" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 text-sm">Thêm</button>
                     </div>
                 </div>
             </div>
