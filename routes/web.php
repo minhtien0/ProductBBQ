@@ -21,6 +21,8 @@ Route::get('/login', function () {
     return view('login');
 });
 Route::post('/login', [HomeController::class, 'login']);
+
+Route::get('order', [HomeController::class, 'order'])->name('views.qrorder');
 //Group Admin
 Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group(function () {
     Route::get('/', function () {

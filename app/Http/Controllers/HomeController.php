@@ -10,6 +10,9 @@ class HomeController extends Controller
     public function index(){
         return view('admin.dashboard');
     }
+    public function order(){
+        return view('qrorder');
+    }
 
     public function login(Request $request) {
         // Kiểm tra xem form đã được submit chưa
