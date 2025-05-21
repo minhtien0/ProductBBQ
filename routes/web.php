@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminController\Blog;
 use App\Http\Controllers\AdminController\Voucher;
 use App\Http\Controllers\AdminController\Help;
 use App\Http\Controllers\AdminController\BookTable;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\StaffController\Dashboard;
 use App\Http\Controllers\AdminController\Product\Category;
 use App\Http\Controllers\AdminController\Product\Combo;
@@ -22,6 +23,10 @@ Route::get('/login', function () {
 });
 Route::post('/login', [HomeController::class, 'login']);
 
+Route::get('/', function () {
+    return view('index');
+});
+
 Route::get('order', [HomeController::class, 'order'])->name('views.qrorder');
 //Group Admin
 Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group(function () {
@@ -33,6 +38,7 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group
     Route::get('/voucher', [Voucher::class, 'index'])->name('admin.voucher');
     Route::get('/help', [Help::class, 'index'])->name('admin.help');
     Route::get('/booktable', [BookTable::class, 'index'])->name('admin.booktable');
+     Route::get('/info', [CompanyController::class, 'index'])->name('admin.info');
 
     Route::prefix('/user')->group(function () {
         Route::get('/list', [User::class, 'index'])->name('user.list');
