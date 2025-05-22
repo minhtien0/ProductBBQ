@@ -143,54 +143,54 @@
         <section class="menu-section mb-4">
             <div class="menu-container flex gap-4 md:flex-col md:gap-2">
                 <!-- Category Column -->
-                <div class="category-column w-1/4 md:w-full p-4 md:p-2 bg-gray-dark rounded-lg">
+                <div class="category-column w-1/3 md:w-full p-4 md:p-2 bg-gray-dark rounded-lg">
                     <h2 class="text-2xl md:text-lg mb-2 text-red-primary">Danh Mục</h2>
-                    <button class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-left text-sm md:text-xs text-white hover:bg-red-primary transition-colors" data-category="special">Món ăn đặc biệt</button>
-                    <button class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-left text-sm md:text-xs text-white hover:bg-red-primary transition-colors" data-category="vegetable">Món rau</button>
-                    <button class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-left text-sm md:text-xs text-white hover:bg-red-primary transition-colors" data-category="drink">Đồ uống</button>
+                    <button class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-center text-sm md:text-xs text-white hover:bg-red-primary transition-colors " data-category="special"><i class="fa-solid fa-utensils"></i> <br>Món ăn đặc biệt</button>
+                    <button class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-center text-sm md:text-xs text-white hover:bg-red-primary transition-colors" data-category="vegetable"><i class="fa-solid fa-carrot"></i><br>Món rau</button>
+                    <button class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-center text-sm md:text-xs text-white hover:bg-red-primary transition-colors" data-category="drink"><i class="fa-solid fa-mug-saucer "style="left-4"></i> <br>Đồ uống</button>
                 </div>
                 <!-- Product Column -->
                 <div class="product-column w-3/4 md:w-full p-4 md:p-2 bg-gray-dark rounded-lg">
     <h2 class="text-2xl md:text-lg mb-2 text-red-primary">Sản Phẩm</h2>
-    <div class="product-list flex flex-wrap gap-2 md:flex-col md:gap-2">
+    <div class="product-list flex flex-wrap gap-1 md:flex-col md:gap-2">
         <!-- Món ăn đặc biệt -->
         <div class="product-item w-[48%] md:w-full p-2 md:p-1.5 bg-gray-darker rounded shadow text-center" data-category="special">
             <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
             <h3 class="text-sm md:text-xs my-1 mx-2 text-white">Thịt Cá Sấu</h3>
             <p class="text-xs md:text-[10px] text-gray-light">180,000 VNĐ</p>
-            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
+            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-50% text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
         </div>
         <div class="product-item w-[48%] md:w-full p-2 md:p-1.5 bg-gray-darker rounded shadow text-center" data-category="special">
             <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
             <h3 class="text-sm md:text-xs my-1 mx-2 text-white">Thịt Cá Sấu</h3>
             <p class="text-xs md:text-[10px] text-gray-light">180,000 VNĐ</p>
-            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
+            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-50% text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
         </div>
         <div class="product-item w-[48%] md:w-full p-2 md:p-1.5 bg-gray-darker rounded shadow text-center" data-category="special">
             <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
             <h3 class="text-sm md:text-xs my-1 mx-2 text-white">Thịt Cá Sấu</h3>
             <p class="text-xs md:text-[10px] text-gray-light">180,000 VNĐ</p>
-            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
+            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-50% text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
         </div>
         <div class="product-item w-[48%] md:w-full p-2 md:p-1.5 bg-gray-darker rounded shadow text-center" data-category="special">
             <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
             <h3 class="text-sm md:text-xs my-1 mx-2 text-white">Thịt Cá Sấu</h3>
             <p class="text-xs md:text-[10px] text-gray-light">180,000 VNĐ</p>
-            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
+            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-50% text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
         </div>
         <div class="product-item w-[48%] md:w-full p-2 md:p-1.5 bg-gray-darker rounded shadow text-center" data-category="special">
             <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
             <h3 class="text-sm md:text-xs my-1 mx-2 text-white">Thịt Cá Sấu</h3>
             <p class="text-xs md:text-[10px] text-gray-light">180,000 VNĐ</p>
-            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
+            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-50% text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
         </div>
-        
+
         <!-- Đồ uống -->
         <div class="product-item w-[48%] md:w-full p-2 md:p-1.5 bg-gray-darker rounded shadow text-center" data-category="drink">
             <img src="img/nuoc_cam.jpg" alt="Nước Cam" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
             <h3 class="text-sm md:text-xs my-1 mx-2 text-white">Nước Cam</h3>
             <p class="text-xs md:text-[10px] text-gray-light">30,000 VNĐ</p>
-            <button onclick="addToCart('Nước Cam', 30000, 'img/nuoc_cam.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
+            <button onclick="addToCart('Nước Cam', 30000, 'img/nuoc_cam.jpg')" class="bg-red-primary text-white p-2 rounded w-50% text-xs md:text-[10px] hover:bg-red-hover transition-colors">Thêm</button>
         </div>
     </div>
     <button class="cart-toggle bg-red-primary text-white p-2 rounded w-full text-sm md:text-xs mt-2 hover:bg-red-hover transition-colors z-10" onclick="toggleCart()">Xem Giỏ Hàng</button>
@@ -199,7 +199,7 @@
             <!-- Cart Popup -->
             <div class="cart-popup hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50" id="cart-popup">
                 <div class="cart-popup-content bg-gray-dark max-w-[95%] w-[350px] max-h-[80vh] overflow-y-auto p-3 md:p-2 rounded-lg relative">
-                    <button class="close-btn absolute top-2 right-2 bg-red-primary text-white rounded-full w-6 h-6 text-xs flex items-center justify-center hover:bg-red-hover transition-colors" onclick="toggleCart()">×</button>
+                    <button class="close-btn absolute top-2 right-4  text-white rounded-full  text-xs flex items-center justify-center hover:bg-red-hover transition-colors" onclick="toggleCart()">X</button>
                     <h2 class="text-xl md:text-base mb-2 text-red-primary">Giỏ Hàng</h2>
                     <div class="cart-items max-h-[300px] overflow-y-auto mb-2" id="cart-items"></div>
                     <p class="text-sm md:text-xs mb-2 text-white" id="cart-total">Tổng: 0 VNĐ</p>
@@ -217,30 +217,7 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-gray-dark p-4 md:p-2">
-            <div class="container max-w-5xl mx-auto">
-                <div class="footer-content flex gap-4 md:flex-col md:gap-2">
-                    <div class="w-1/3 md:w-full">
-                        <h4 class="text-lg md:text-base text-white mb-2">Về chúng tôi</h4>
-                        <p class="text-sm md:text-xs text-gray-light mb-1">Gyu-Kaku, chuỗi nhà hàng BBQ Nhật Bản nổi tiếng với các món nướng chuẩn vị.</p>
-                        <p class="text-sm md:text-xs text-gray-light">Đặt bàn ngay hôm nay!</p>
-                    </div>
-                    <div class="w-1/3 md:w-full">
-                        <h4 class="text-lg md:text-base text-white mb-2">Liên hệ</h4>
-                        <p class="text-sm md:text-xs text-gray-light mb-1">Hotline: 1900 1234</p>
-                        <p class="text-sm md:text-xs text-gray-light mb-1">Email: contact@gyukaku.vn</p>
-                        <p class="text-sm md:text-xs text-gray-light">Địa chỉ: 123 Đường Láng, Hà Nội</p>
-                    </div>
-                    <div class="w-1/3 md:w-full">
-                        <h4 class="text-lg md:text-base text-white mb-2">Liên kết nhanh</h4>
-                        <p class="text-sm md:text-xs mb-1"><a href="#" class="text-gray-light hover:text-white">Thực đơn</a></p>
-                        <p class="text-sm md:text-xs mb-1"><a href="#" class="text-gray-light hover:text-white">Khuyến mãi</a></p>
-                        <p class="text-sm md:text-xs"><a href="#" class="text-gray-light hover:text-white">Đặt bàn</a></p>
-                    </div>
-                </div>
-                <p class="text-sm md:text-xs text-gray-light text-center mt-4">© 2023 Gyu-Kaku. All rights reserved.</p>
-            </div>
-        </footer>
+       
     </div>
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
