@@ -8,7 +8,7 @@ class CreateBranchTable extends Migration
 {
     public function up()
     {
-        Schema::create('Branchs', function (Blueprint $table) {
+        Schema::create('branchs', function (Blueprint $table) {
             $table->id(); // Id (auto-incrementing primary key)
             $table->string('name'); // Tên (branch name)
             $table->string('address')->nullable(); // Địa chỉ (address, nullable)
@@ -18,6 +18,6 @@ class CreateBranchTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('Branchs');
+        Schema::dropIfExists('branchs');
     }
 }

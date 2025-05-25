@@ -12,10 +12,10 @@
 </head>
 <body class="bg-gray-100">
     <!-- Header -->
-    @include('layouts.header')
+    @include('layouts.admin.header')
     <div class="flex">
         <!-- Sidebar -->
-       @include('layouts.sidebar')
+       @include('layouts.admin.sidebar')
         <!-- Content -->
         <div class=" flex-1 p-3 inline-block">
             <!-- Breadcrumb -->
