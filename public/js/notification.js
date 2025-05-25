@@ -1,0 +1,29 @@
+ function showPopup(message) {
+     const popup = document.getElementById('notificationPopup');
+     const messageBox = document.getElementById('notificationMessage');
+
+     if (popup && messageBox) {
+         messageBox.innerText = message;
+         popup.classList.remove('hidden');
+
+         // Tự động đóng sau 2 giây
+         setTimeout(() => {
+             closePopup();
+         }, 2000);
+     }
+ }
+
+ function closePopup() {
+     const popup = document.getElementById('notificationPopup');
+     if (popup) {
+         popup.classList.add('hidden');
+     }
+ }
+
+ window.addEventListener('DOMContentLoaded', () => {
+     const success = document.body.dataset.success;
+     const error = document.body.dataset.error;
+
+     if (success) showPopup(success);
+     else if (error) showPopup(error);
+ });

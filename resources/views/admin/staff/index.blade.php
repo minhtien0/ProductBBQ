@@ -2,6 +2,24 @@
 @section('content')
 <!-- Content -->
 <div class="w-full bg-white mt-4">
+    <!--Nút chọn loại nhân viên-->
+        <div class="flex px-5 py-3">
+            <span>
+                <button class="w-24 h-10 rounded shadow-xl text-sm mr-4 bg-white hover:bg-gray-400">
+                <i class="fa-solid fa-user-group"></i> Nhân viên
+                </button>
+            </span>
+            <span>
+            <button class="w-40 h-10 rounded shadow-xl text-sm mr-4  bg-white hover:bg-gray-400">
+            <i class="fa-solid fa-users-viewfinder"></i> Nhân viên Nghỉ Phép
+                </button>
+            </span>
+            <span>
+            <button class="w-24 h-10 rounded shadow-xl text-sm  bg-white hover:bg-gray-400">
+            <i class="fa-solid fa-user-nurse"></i> Cấp quản lí
+                </button>
+            </span>
+        </div>
     <div class="px-5 py-3">
         <!-- Action buttons -->
         <div class="flex justify-between mb-4">
@@ -151,10 +169,7 @@
 
             <div class="flex space-x-2">
                 <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
+                    <i class="fa-solid fa-download mr-2"></i>
                     Xuất File
                 </button>
                 <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
@@ -183,7 +198,6 @@
                         <th class="w-12 py-1 px-2 text-left">
                             <input type="checkbox" class="form-checkbox h-4 w-4">
                         </th>
-                        <th class="py-1 px-2 text-left text-sm">STT</th>
                         <th class="py-1 px-2 text-left text-sm">Mã Nhân Viên</th>
                         <th class="py-1 px-2 text-left text-sm">Tên Nhân Viên</th>
                         <th class="py-1 px-2 text-left text-sm">Email</th>
@@ -195,21 +209,20 @@
                 <tbody>
 
                     <tr class="bg-gray-50">
+                        @foreach ($lists as $list)
                         <td class="py-3 px-2 border-t border-gray-200">
                             <input type="checkbox" class="form-checkbox h-4 w-4">
                         </td>
-                        <td class="py-3 px-4 border-t border-gray-200">
-                            1
-                        </td>
-                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
-                                href="{{ route('admin.staff.detail') }}">NV001</a></td>
+                        <td class="py-1 px-2 border-t border-gray-200 text-red-700"><a
+                                href="{{ route('admin.staff.detail', ['id' => $list->id]) }}">{{ $list->code_nv }}</a></td>
                         <td class="py-1 px-2 border-t border-gray-200">
-                            <span class="text-gray-600">Minh Tiến</span>
+                            <span class="text-gray-600">{{ $list->fullname }}</span>
                         </td>
-                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700">abc@gmail.com</td>
-                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700">Aeon Tân Bình</td>
-                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700">Đang Làm</td>
-                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700">15/5/2025</td>
+                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->email }}</td>
+                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700"> {{ $list->branch ? $list->branch->name : 'Chưa có' }}</td>
+                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->status }}</td>
+                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->time_work }}</td>
+                         @endforeach
                     </tr>
                 </tbody>
             </table>

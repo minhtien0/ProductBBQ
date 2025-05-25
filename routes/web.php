@@ -5,7 +5,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController\User;
 use App\Http\Controllers\AdminController\Rate;
-use App\Http\Controllers\AdminController\Staff;
+use App\Http\Controllers\AdminController\Staff\StaffController;
 use App\Http\Controllers\AdminController\Blog;
 use App\Http\Controllers\AdminController\Voucher;
 use App\Http\Controllers\AdminController\Help;
@@ -48,8 +48,9 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group
 
     Route::prefix('/staff')->group(function () {
         //Staff
-        Route::get('/', [Staff::class, 'viewStaff'])->name('admin.staff');
-        Route::get('/detail', [Staff::class, 'viewDetailStaff'])->name('admin.staff.detail');
+        Route::get('/', [StaffController::class, 'index'])->name('admin.staff');
+        Route::get('/detail/{id}', [StaffController::class, 'detail'])->name('admin.staff.detail');
+        Route::post('/update/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
         //Job
         Route::get('/job', [Staff::class, 'viewJob'])->name('admin.staff.job');
         //Đăng Kí Ca Làm
