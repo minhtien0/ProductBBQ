@@ -13,7 +13,7 @@
 
 <body class="bg-gray-100">
     <!-- Header -->
-    @include('layouts.header')
+    @include('layouts.admin.header')
     <div class="flex">
         <!-- Sidebar -->
         <div class="w-72 bg-white rounded-md border border-gray-200 shadow-sm">
@@ -180,7 +180,7 @@
             @yield('contentstaff')
         </div>
     </div>
-    @include('layouts.footer')
+    @include('layouts.admin.footer')
 </body>
 
 </html>
