@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Exports;
 
 use App\Models\Staff;
@@ -7,15 +6,14 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class StaffsExport implements FromCollection, WithHeadings, WithEvents, WithStyles
+class StaffsExport implements FromCollection, WithEvents, WithStyles
 {
     public function collection()
     {
-        // Lấy danh sách staff với join branch
         return Staff::with('branch')->get()->map(function ($staff) {
             return [
                 $staff->code_nv,
@@ -39,79 +37,111 @@ class StaffsExport implements FromCollection, WithHeadings, WithEvents, WithStyl
         });
     }
 
-    // Heading đúng dòng 2
-    public function headings(): array
-    {
-        return [
-            'Mã NV',
-            'Họ tên',
-            'Ngày sinh',
-            'Giới tính',
-            'SĐT',
-            'CCCD',
-            'Trạng thái',
-            'Địa chỉ',
-            'Email',
-            'Ngày vào làm',
-            'Đơn vị',
-            'Loại NV',
-            'Chức vụ',
-            'Lương giờ',
-            'Lương cơ bản',
-            'Số tài khoản',
-            'Ngân hàng'
-        ];
-    }
-
     public function registerEvents(): array
     {
         return [
-            // Chèn 1 dòng trước headings để dành cho title
             BeforeSheet::class => function (BeforeSheet $event) {
-                $event->sheet->getDelegate()->insertNewRowBefore(1, 1);
-            },
-            // Style sau khi đã có dữ liệu
-            AfterSheet::class => function (AfterSheet $event) {
-                // Merge và set title ở dòng 1
-                $event->sheet->mergeCells('A1:Q1');
+                // Chèn một hàng mới ở trên đầu
+                $event->sheet->insertNewRowBefore(1, 1);
+                // Đặt nội dung "Danh Sách Nhân Viên" vào ô A1
                 $event->sheet->setCellValue('A1', 'Danh Sách Nhân Viên');
-                $event->sheet->getDelegate()->getStyle('A1')->applyFromArray([
+                // Merge các ô từ A1 đến Q1
+                $event->sheet->mergeCells('A1:Q1');
+            },
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+
+                // Gán tiêu đề thủ công vào A2:Q2
+                $headings = [
+                    'Mã NV',
+                    'Họ tên',
+                    'Ngày sinh',
+                    'Giới tính',
+                    'SĐT',
+                    'CCCD',
+                    'Trạng thái',
+                    'Địa chỉ',
+                    'Email',
+                    'Ngày vào làm',
+                    'Đơn vị (ID)',
+                    'Loại NV',
+                    'Chức vụ',
+                    'Lương giờ',
+                    'Lương cơ bản',
+                    'Số tài khoản',
+                    'Ngân hàng'
+                ];
+                $col = 'A';
+                foreach ($headings as $heading) {
+                    $sheet->setCellValue("{$col}2", $heading);
+                    $col++;
+                }
+
+                // Style cho hàng tiêu đề chính (A1)
+                $sheet->getStyle('A1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'size' => 16,
                     ],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                        'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                        'startColor' => ['argb' => 'FFD3D3D3'],
                     ],
                 ]);
 
-                // Style heading ở dòng 2 (A2:Q2)
-                $event->sheet->getDelegate()->getStyle('A2:Q2')->applyFromArray([
+                // Style cho hàng headings (A2:Q2)
+                $sheet->getStyle('A2:Q2')->applyFromArray([
                     'font' => [
                         'bold' => true,
+                        'size' => 12,
                     ],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                        'startColor' => ['argb' => 'FFEFEFEF'],
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
                     ],
                 ]);
 
-                // Căn giữa toàn bộ dữ liệu bên dưới
-                $highestRow = $event->sheet->getDelegate()->getHighestRow();
-                $event->sheet->getDelegate()->getStyle("A2:Q$highestRow")->applyFromArray([
-                    'alignment' => [
-                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    ],
-                ]);
+                // Style cho dữ liệu (từ hàng 3 trở đi)
+                $highestRow = $sheet->getHighestRow();
+                if ($highestRow > 2) {
+                    $sheet->getStyle("A3:Q{$highestRow}")->applyFromArray([
+                        'alignment' => [
+                            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                        ],
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            ],
+                        ],
+                    ]);
+                }
+
+                // Tự động điều chỉnh kích thước cột
+                foreach (range('A', 'Q') as $columnID) {
+                    $sheet->getColumnDimension($columnID)->setAutoSize(true);
+                }
             },
         ];
     }
 
+
     public function styles(Worksheet $sheet)
     {
-        return [
-            1 => ['font' => ['bold' => true, 'size' => 16]],
-            2 => ['font' => ['bold' => true]],
-        ];
+        // Định dạng cơ bản (nếu cần bổ sung thêm)
     }
 }
+?>
