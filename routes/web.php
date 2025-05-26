@@ -59,7 +59,7 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group
         Route::post('/update/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
         Route::get('/create', [StaffController::class, 'create'])->name('admin.staff.create');
         Route::post('/add', [StaffController::class, 'add'])->name('admin.staff.add');
-        Route::get('export-excel', [StaffController::class, 'exportExcel'])->name('admin.staff.exportExcel');
+        Route::get('/export-excel', [StaffController::class, 'exportExcel'])->name('admin.staff.exportExcel');
 
         //Job
         Route::get('/job', [Staff::class, 'viewJob'])->name('admin.staff.job');
