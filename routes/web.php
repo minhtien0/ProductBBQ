@@ -23,11 +23,17 @@ Route::get('/login', function () {
 });
 Route::post('/login', [HomeController::class, 'login']);
 
+//Layout User
 Route::get('/', function () {
     return view('index');
 });
-
+//Order
 Route::get('order', [HomeController::class, 'order'])->name('views.qrorder');
+//Home
+Route::get('index', [HomeController::class, 'index'])->name('views.index');
+//About
+Route::get('about', [HomeController::class, 'about'])->name('views.about');
+
 //Group Admin
 Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group(function () {
     Route::get('/', function () {
