@@ -10,7 +10,7 @@
         }
 
         .footer-wrap {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
             padding: 0 24px;
             display: flex;
@@ -201,7 +201,7 @@
                 <!-- Logo & Social -->
                 <div class="footer-col">
                     <div class="footer-logo">
-                        <i class="fa-solid fa-utensils"></i> RegFood
+                        <i class="fa-solid fa-utensils"></i> LUA BE HOY
                     </div>
                     <div class="footer-desc">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta facere delectus qui placeat

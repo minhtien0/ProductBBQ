@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -89,7 +88,7 @@
         }
 
         .offer-wrapper {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 16px;
 
@@ -100,7 +99,8 @@
             border-radius: 12px;
             padding: 14px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
-            min-width: 0;
+            width: 300px;
+            height: 270px;
         }
 
         .product-img-badge {
@@ -163,6 +163,7 @@
 
             .swiper-slide {
                 padding: 8px;
+                
             }
 
             .product-img-badge {
@@ -559,7 +560,7 @@
         .testi-title {
             font-size: 2.1rem;
             font-weight: 800;
-            color: var(--deep);
+            color: #fff;
             margin-bottom: 5px;
         }
 
@@ -796,13 +797,12 @@
 
 </head>
 @include('layouts.user.header')
-
 <body class="bg-dark-bg text-white">
-    <div class="container max-w-screen-xl mx-auto px-4 py-8">
+    <div class="container  mx-auto px-4 py-8">
         <!-- Promotion Section -->
         <section class="promotion-section mb-4">
-            <div class="carousel-container w-full p-4 bg-gray-dark rounded-lg">
-                <div class="swiper h-64 lg:h-80">
+            <div class="carousel-container w-1024px p-2  bg-gray-dark rounded-lg">
+                <div class="swiper h-64 lg:h-90 pt-0 pb-10">
                     <div class="swiper-wrapper">
                         <div
                             class="swiper-slide flex flex-col justify-center p-4 bg-[url('img/banner1.jpg')] bg-cover bg-center rounded-lg">
@@ -1455,7 +1455,7 @@
                 },
             });
             //chefs
-            /*      var swiper = new Swiper('.testiSwiper', {
+                 var swiper = new Swiper('.testiSwiper', {
                      slidesPerView: 2,
                      spaceBetween: 32,
                      navigation: {
@@ -1468,7 +1468,7 @@
                      },
                      loop: true,
                      autoplay: { delay: 7000 },
-                 }); */
+                 });
 
 
         </script>

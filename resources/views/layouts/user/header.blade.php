@@ -1,174 +1,117 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BE BE LUA HOY</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        header {
-            background-color: #1a1a1a;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 50px;
-            margin-right: 10px;
-        }
-
-        .logo span {
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            transition: all 0.3s;
-        }
-
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 16px;
-        }
-
-        .nav-links span {
-            color: #ccc;
-        }
-
-        .nav-links a:hover {
-            color: #ccc;
-        }
-
-        .book-table-btn {
-            background-color: #e60012;
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-left: 15px;
-        }
-
-        .book-table-btn:hover {
-            background-color: #cc0010;
-        }
-
-        .menu-btn {
-            display: none;
-            background-color: #e60012;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .menu-btn:hover {
-            background-color: #cc0010;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .menu-btn {
-                display: block;
-            }
-
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 70px;
-                left: 0;
-                right: 0;
-                background-color: #1a1a1a;
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 10px;
-                z-index: 10;
-            }
-
-            .nav-links.show {
-                display: flex;
-            }
-
-            .nav-links a {
-                margin: 5px 0;
-                font-size: 14px;
-            }
-
-            .book-table-btn {
-                margin-top: 10px;
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="logo">
-            <img src="img/logo2.jpg" alt="Gyu-Kaku Logo">
-            <span>BE BE<br>LUA HOI</span>
-        </div>
-        <button class="menu-btn" onclick="toggleMenu()">Menu</button>
-        <nav class="nav-links" id="nav-links">
-            <?php
-                $menu_items = [
-                    "Home" => "#home",
-                    "About" => "#about",
-                    "Menu" => "#menu",
-                    "Chefs" => "#chefs",
-                    "Pages" => "#page",
-                    "Blog" => "#blog",
-                    "Contact" => "#contact"
-                ];
-                foreach ($menu_items as $label => $link) {
-                    echo "<a href='$link'>$label</a>";
-                    if ($label !== "Menu" && $label !== "Nhà hàng" && $label !== "Khuyến mãi") {
-                        echo "<span> - </span>";
-                    }
-                }
-            ?>
-            <a href="#book-table" class="book-table-btn">Đặt Bàn</a>
-        </nav>
-    </header>
-    <script>
-        function toggleMenu() {
-            var nav = document.getElementById('nav-links');
-            nav.classList.toggle('show');
-        }
-        // Đóng menu khi bấm link trên mobile (trải nghiệm tốt hơn)
-        document.addEventListener('DOMContentLoaded', function() {
-            var links = document.querySelectorAll('#nav-links a');
-            links.forEach(function(link){
-                link.addEventListener('click', function(){
-                    if(window.innerWidth <= 768){
-                        document.getElementById('nav-links').classList.remove('show');
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+<div class="w-full sticky top-0 z-50">
+  <!-- Top Bar -->
+  <div class="bg-[#e60012] flex items-center justify-between h-[52px] md:h-[58px]">
+    <!-- Email & Phone -->
+    <div class="hidden md:flex flex-1 items-center justify-start">
+      <div class="flex bg-[#262465] px-10 py-2 rounded-br-3xl rounded-bl-[60px] items-center gap-7">
+        <span class="flex items-center text-white text-base gap-2">
+          <i class="fa-solid fa-envelope text-lg"></i>
+          examplemail@gmail.com
+        </span>
+        <span class="flex items-center text-white text-base gap-2">
+          <i class="fa-solid fa-phone text-lg"></i>
+          +96487452145214
+        </span>
+      </div>
+    </div>
+    <!-- Mobile Email & Phone -->
+    <div class="flex md:hidden items-center px-3 gap-4">
+      <span class="flex items-center text-white text-sm gap-1">
+        <i class="fa-solid fa-envelope text-base"></i>
+      </span>
+      <span class="flex items-center text-white text-sm gap-1">
+        <i class="fa-solid fa-phone text-base"></i>
+      </span>
+    </div>
+    <!-- Social Icons -->
+    <div class="flex items-center gap-2 md:gap-3 px-3 md:px-8">
+      <a href="#" class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-behance"></i></a>
+    </div>
+  </div>
+  <!-- Main Header -->
+  <div class="bg-white flex items-center justify-between px-3 md:px-10 py-0 ">
+    <!-- Logo -->
+    <div class="flex items-center gap-2">
+    <a>
+  <img class="w-50 h-20 object-contain" src="img/test1.png" alt="Logo">
+</a>
+      <!-- <span class="text-[#e60012] text-3xl md:text-4xl"><i class="fa-solid fa-utensils"></i></span> -->
+      <span class="text-1xl md:text-2xl text-[#262248] font-family:Quicksand,sans-serif">LUA <br> BE HOY</span>
+    </div>
+    <!-- Hamburger Mobile -->
+    <button id="openMenu" class="md:hidden p-2 text-[#e60012] text-2xl" aria-label="Open Menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <!-- Navigation -->
+    <nav class="hidden md:flex flex-1 justify-center">
+      <ul class="flex items-center gap-3 md:gap-8 font-semibold text-base md:text-lg">
+        <li><a href="{{ route('views.index') }}" class="text-[#262248] hover:text-[#e60012] transition">Home</a></li>
+        <li><a href="{{ route('views.about') }}"class="text-[#262248] hover:text-[#e60012] transition">About</a></li>
+        <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Menu</a></li>
+        <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Blog</a></li>
+        <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Contact</a></li>
+      </ul>
+    </nav>
+    <!-- Right Icons -->
+    <div class="flex items-center gap-2 md:gap-5">
+      <div class="relative">
+        <span class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248]">
+          <a href="{{ route('views.qrorder') }}"><i  class="fa-solid fa-basket-shopping"></i></a>
+        </span>
+        <span class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
+      </div>
+      <div>
+        <span class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248]">
+          <i class="fa-solid fa-user"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile Popup Menu -->
+  <div id="mobileMenu" class="fixed inset-0 bg-black/60 z-50 hidden">
+    <div class="absolute top-0 right-0 w-4/5 max-w-xs bg-white h-full shadow-lg flex flex-col">
+      <button id="closeMenu" class="self-end p-4 text-2xl text-[#262248]" aria-label="Đóng Menu">
+        <i class="fa-solid fa-times"></i>
+      </button>
+      <ul class="flex flex-col gap-2 mt-2 px-6 font-bold text-lg text-[#262248]">
+        <li><a href="#" class="py-2 block">Home</a></li>
+        <li><a href="#" class="py-2 block">About</a></li>
+        <li><a href="#" class="py-2 block">Menu</a></li>
+        <li><a href="#" class="py-2 block">Blog</a></li>
+        <li><a href="#" class="py-2 block">Contact</a></li>
+      </ul>
+      <div class="flex gap-3 px-6 mt-6">
+        <a href="#" class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-behance"></i></a>
+      </div>
+      <div class="mt-auto px-6 pb-8 pt-8 text-sm text-[#262248]">
+        <span class="flex items-center gap-2 mb-2">
+          <i class="fa-solid fa-envelope"></i>
+          examplemail@gmail.com
+        </span>
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-phone"></i>
+          +96487452145214
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // Mobile menu open/close
+  document.getElementById('openMenu').onclick = function() {
+    document.getElementById('mobileMenu').classList.remove('hidden');
+  }
+  document.getElementById('closeMenu').onclick = function() {
+    document.getElementById('mobileMenu').classList.add('hidden');
+  }
+  // Đóng menu khi click ra ngoài
+  document.getElementById('mobileMenu').addEventListener('click', function(e){
+    if(e.target === this) this.classList.add('hidden');
+  });
+</script>

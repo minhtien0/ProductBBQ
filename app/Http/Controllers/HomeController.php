@@ -8,11 +8,15 @@ class HomeController extends Controller
 {
     //
     public function index(){
-        return view('admin.dashboard');
+        return view('index');
     }
     public function order(){
         return view('qrorder');
     }
+    public function about(){
+        return view('about');
+    }
+    
 
     public function login(Request $request) {
         // Kiểm tra xem form đã được submit chưa
