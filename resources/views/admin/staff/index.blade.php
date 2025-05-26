@@ -168,10 +168,13 @@
             </div>
 
             <div class="flex space-x-2">
+                <a href="{{ route('admin.staff.exportExcel') }}">
                 <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                     <i class="fa-solid fa-download mr-2"></i>
                     Xuất File
                 </button>
+                </a>
+                <a href="{{ route('admin.staff.create') }}">
                 <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -179,6 +182,7 @@
                     </svg>
                     Thêm Mới
                 </button>
+                </a>
                 <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -207,9 +211,9 @@
                     </tr>
                 </thead>
                 <tbody>
-
+                    @foreach ($lists as $list)
                     <tr class="bg-gray-50">
-                        @foreach ($lists as $list)
+                        
                         <td class="py-3 px-2 border-t border-gray-200">
                             <input type="checkbox" class="form-checkbox h-4 w-4">
                         </td>
@@ -222,8 +226,9 @@
                         <td class="py-1 px-2 border-t border-gray-200 text-gray-700"> {{ $list->branch ? $list->branch->name : 'Chưa có' }}</td>
                         <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->status }}</td>
                         <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->time_work }}</td>
-                         @endforeach
+                        
                     </tr>
+                     @endforeach
                 </tbody>
             </table>
         </div>

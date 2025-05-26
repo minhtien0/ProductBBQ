@@ -3,13 +3,13 @@
      const messageBox = document.getElementById('notificationMessage');
 
      if (popup && messageBox) {
-         messageBox.innerText = message;
+         messageBox.innerHTML = message;
          popup.classList.remove('hidden');
 
          // Tự động đóng sau 2 giây
          setTimeout(() => {
              closePopup();
-         }, 2000);
+         }, 3000);
      }
  }
 
