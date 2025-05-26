@@ -72,11 +72,13 @@
                 <div>
                     <label for="branch" class="block text-xs font-medium text-gray-700 mb-1">Đơn Vị</label>
                     <select id="branch" name="branch"
-                        class="w-full px-3 py-2 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Chọn Đơn Vị</option>
-                        <option value="kho1" {{ $staff->branch == 'kho1' ? 'selected' : '' }}>Hà Nội</option>
-                        <option value="kho2" {{ $staff->branch == 'kho2' ? 'selected' : '' }}>Hồ Chí Minh</option>
-                        <option value="kho3" {{ $staff->branch == 'kho3' ? 'selected' : '' }}>Đà Nẵng</option>
+                        @foreach($branches as $branch)
+                            <option value="{{ $branch->id }}" {{ $staff->branch_id == $branch->id ? 'selected' : '' }}>
+                                {{ $branch->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -85,7 +87,7 @@
                 <div>
                     <label for="type" class="block text-xs font-medium text-gray-700 mb-1">Loại Nhân Viên</label>
                     <select id="type" name="type"
-                        class="w-full px-3 py-2 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Chọn Loại Nhân Viên</option>
                         <option value="Full Time" {{ $staff->type == 'Full Time' ? 'selected' : '' }}>Full Time</option>
                         <option value="Part Time" {{ $staff->type == 'Part Time' ? 'selected' : '' }}>Part Time</option>
@@ -94,13 +96,26 @@
                 <div>
                     <label for="status" class="block text-xs font-medium text-gray-700 mb-1">Trạng Thái</label>
                     <select id="status" name="status"
-                        class="w-full text-xs px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Chọn trạng thái</option>
                         <option value="Đang Làm" {{ $staff->status == 'Đang Làm' ? 'selected' : '' }}>Đang Làm</option>
                         <option value="Thử Việc" {{ $staff->status == 'Thử Việc' ? 'selected' : '' }}>Thử Việc</option>
                         <option value="Tạm Vắng" {{ $staff->status == 'Tạm Vắng' ? 'selected' : '' }}>Tạm Vắng</option>
                         <option value="Ngưng Làm" {{ $staff->status == 'Ngưng Làm' ? 'selected' : '' }}>Ngưng Làm</option>
                     </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div id="basic-salary-div" class="transition">
+                    <label for="Basic_Salary" class="block text-xs font-medium text-gray-700 mb-1">Lương Cơ Bản</label>
+                    <input type="number" id="Basic_Salary" name="Basic_Salary" value="{{ $staff->Basic_salary }}"
+                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div id="hourly-wage-div" class="transition">
+                    <label for="hourly_wage" class="block text-xs font-medium text-gray-700 mb-1">Lương Theo Giờ</label>
+                    <input type="number" id="hourly_wage" name="hourly_wage" value="{{ $staff->hourly_wage }}"
+                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
         </div>
@@ -152,11 +167,27 @@
                     <input type="text" id="STK" name="STK" value="{{ $staff->STK }}"
                         class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <div>
+                <div class="mb-3">
                     <label for="bank" class="block text-xs font-medium text-gray-700 mb-1">Ngân Hàng</label>
                     <input type="text" id="bank" name="bank" value="{{ $staff->bank }}"
                         class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
+
+                <div class="mb-3">
+                    <label for="STK" class="block text-xs font-medium text-gray-700 mb-1">Chức Vụ</label>
+                    <div>
+                        <select id="role" name="role"
+                            class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Chọn chức vụ</option>
+                            <option value="Đang Làm" {{ $staff->role == 'Quản Lí' ? 'selected' : '' }}>Quản Lí</option>
+                            <option value="Thử Việc" {{ $staff->role == 'Nhân Viên' ? 'selected' : '' }}>Nhân Viên</option>
+                            <option value="Tạm Vắng" {{ $staff->role == 'Đầu Bếp' ? 'selected' : '' }}>Đầu Bếp</option>
+                            <option value="Ngưng Làm" {{ $staff->role == 'Tạp Vụ' ? 'selected' : '' }}>Tạp Vụ</option>
+                            <option value="Ngưng Làm" {{ $staff->role == 'Thử Việc' ? 'selected' : '' }}>Thử Việc</option>
+                        </select>
+                    </div>
+                </div>
+
             </div>
         </div>
     </form>
