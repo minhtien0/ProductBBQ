@@ -12,9 +12,55 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class StaffsExport implements FromCollection, WithEvents, WithStyles
 {
+    protected $filters;
+
+    /**
+     * Nhận mảng filters từ controller
+     */
+    public function __construct(array $filters = [])
+    {
+        $this->filters = $filters;
+    }
+
+     protected function applyFilters($query)
+    {
+        $f = $this->filters;
+
+        if (!empty($f['branch_id'])) {
+            $query->where('branch_id', $f['branch_id']);
+        }
+        if (!empty($f['staff_type'])) {
+            $query->where('type', $f['staff_type']);
+        }
+        if (!empty($f['status'])) {
+            $query->where('status', $f['status']);
+        }
+        if (!empty($f['position'])) {
+            $query->where('role', $f['position']);
+        }
+        if (!empty($f['min_basic_salary'])) {
+            $query->where('Basic_Salary', '>=', $f['min_basic_salary']);
+        }
+        if (!empty($f['min_hourly_salary'])) {
+            $query->where('hourly_wage', '>=', $f['min_hourly_salary']);
+        }
+        if (!empty($f['q'])) {
+            $q = $f['q'];
+            $query->where(function($q2) use($q) {
+                $q2->where('code_nv',   'like', "%{$q}%")
+                   ->orWhere('fullname', 'like', "%{$q}%");
+            });
+        }
+    }
     public function collection()
     {
-        return Staff::with('branch')->get()->map(function ($staff) {
+        $query = Staff::with('branch');
+
+        // Áp filter
+        $this->applyFilters($query);
+
+        // Lấy data rồi map ra mảng thuần
+        return $query->get()->map(function ($staff) {
             return [
                 $staff->code_nv,
                 $staff->fullname,
@@ -32,7 +78,7 @@ class StaffsExport implements FromCollection, WithEvents, WithStyles
                 $staff->hourly_wage,
                 $staff->Basic_Salary,
                 $staff->STK,
-                $staff->bank
+                $staff->bank,
             ];
         });
     }
