@@ -9,7 +9,7 @@ use App\Http\Controllers\AdminController\Rate;
 use App\Http\Controllers\AdminController\Staff\StaffController;
 use App\Http\Controllers\AdminController\Blog;
 use App\Http\Controllers\AdminController\Voucher;
-use App\Http\Controllers\AdminController\Help;
+use App\Http\Controllers\AdminController\HelpController;
 use App\Http\Controllers\AdminController\BookTable;
 use App\Http\Controllers\AdminController\CompanyController;
 use App\Http\Controllers\StaffController\Dashboard;
@@ -19,10 +19,9 @@ use App\Http\Controllers\AdminController\Product\Combo;
 //Đa ngôn ngữ
 Route::get('change-language/{language}', [LanguageController::class, 'changeLanguage'])->name('user.change-language');
 //Đăng nhập
-Route::get('/login', function () {
-    return view('login');
-});
-Route::post('/login', [HomeController::class, 'login']);
+Route::match(['get', 'post'], '/login', [HomeController::class, 'login'])->name('login');
+//Đăng xuất
+Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
 
 //Layout User
 Route::get('/', function () {
@@ -36,18 +35,21 @@ Route::get('index', [HomeController::class, 'index'])->name('views.index');
 Route::get('about', [HomeController::class, 'about'])->name('views.about');
 
 //Group Admin
-Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group(function () {
+Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Http\Middleware\CheckAdminRole::class])->group(function () {
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');
     Route::get('/voucher', [Voucher::class, 'index'])->name('admin.voucher');
-    Route::get('/help', [Help::class, 'index'])->name('admin.help');
+    Route::get('/help', [HelpController::class, 'index'])->name('admin.help');
+    Route::get('/help/reply/{id}', [HelpController::class, 'showReplyForm'])->name('help.replyForm');
+    Route::post('/help/reply/{id}', [HelpController::class, 'sendReply'])->name('help.sendReply');
+
     Route::get('/booktable', [BookTable::class, 'index'])->name('admin.booktable');
     Route::get('/info', [CompanyController::class, 'index'])->name('admin.info');
 
     Route::prefix('/user')->group(function () {
         Route::get('/list', [User::class, 'index'])->name('user.list');
         Route::get('/detail', [User::class, 'detail'])->name('user.detail');
-        
+
     });
 
     Route::prefix('/staff')->group(function () {
@@ -83,13 +85,13 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group
         Route::get('/', [User::class, 'index'])->name('user.list');
         Route::get('/category', [Category::class, 'index'])->name('admin.product.category.index');
         Route::get('/combo', [Combo::class, 'index'])->name('admin.product.combo.index');
-        
+
     });
 
     Route::prefix('/blog')->group(function () {
         Route::get('/', [Blog::class, 'index'])->name('admin.blog');
         Route::get('/detail', [User::class, 'detail'])->name('user.detail');
-        
+
     });
 
 });

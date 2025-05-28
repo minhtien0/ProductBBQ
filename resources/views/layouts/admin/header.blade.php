@@ -151,31 +151,38 @@
                             <p class="text-xs text-gray-500">superadmin@gmail.com</p>
                         </div>
                         <div class="space-y-2">
+                            {{-- Dành cho Quản lí --}}
                             <a href="#"
                                 class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                 <i class="fa-solid fa-user text-red-500 w-4"></i>
-                                <span>Thông tin học viên</span>
+                                <span>Thông tin cá nhân</span>
                             </a>
-                            <a href="#"
-                                class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-                                <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>
-                                <span>Dashboard tổng quan</span>
-                            </a>
-                            <a href="{{ route('staff.dashboard') }}"
-                                class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-                                <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
-                                <span>Quyền Nhân Viên</span>
-                            </a>
-                            <a href=""
+                            @if (session('role') === 'Quản lí')
+                                <a href="{{ route('admin.dashboard') }}"
+                                    class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                    <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>
+                                    <span>Dashboard tổng quan</span>
+                                </a>
+                                <a href="{{ route('staff.dashboard') }}"
+                                    class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                    <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
+                                    <span>Quyền Nhân Viên</span>
+                                </a>
+                            @elseif (session('role') === 'Nhân viên')
+                                {{-- Chỉ hiển thị với Nhân viên --}}
+                                <a href="{{ route('staff.dashboard') }}"
+                                    class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                    <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
+                                    <span>Quyền Nhân Viên</span>
+                                </a>
+                            @endif
+
+                            {{-- Đăng xuất (ai cũng có thể thấy) --}}
+                            <a href="{{ route('logout') }}"
                                 class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                 <i class="fa-solid fa-sign-out-alt text-red-500 w-4"></i>
                                 <span>Đăng xuất</span>
                             </a>
-                            <div
-                                class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-                                <i class="fa-solid fa-moon text-yellow-500 w-4"></i>
-                                <span>Night mode</span>
-                            </div>
                         </div>
                     </div>
                 </div>

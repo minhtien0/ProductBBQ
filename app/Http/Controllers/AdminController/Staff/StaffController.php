@@ -231,10 +231,10 @@ class StaffController extends Controller
             // Đổi từ array sang Collection
             $messages = collect($failures)->map(function ($failure) {
                 return 'Dòng ' . $failure->row() . ': ' . implode(', ', $failure->errors());
-            })->implode("\n");
+            })->implode("<br>");
 
             return redirect()->back()
-                ->with('error', "Import thất bại:\n" . $messages);
+                ->with('error', "Import thất bại <br>" . $messages);
         }
     }
 
