@@ -11,12 +11,14 @@ class Help extends Model
 
     // Các cột có thể được gán giá trị (mass assignment)
     protected $fillable = [
+        'title',
         'purpose',
         'question',
         'sdt',
         'email',
         'time',
         'content',
+        'status',
     ];
 
     // Định dạng kiểu dữ liệu

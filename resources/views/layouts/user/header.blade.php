@@ -25,19 +25,27 @@
     </div>
     <!-- Social Icons -->
     <div class="flex items-center gap-2 md:gap-3 px-3 md:px-8">
-      <a href="#" class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-facebook-f"></i></a>
-      <a href="#" class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-twitter"></i></a>
-      <a href="#" class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-linkedin-in"></i></a>
-      <a href="#" class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-behance"></i></a>
+      <a href="#"
+        class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i
+          class="fab fa-facebook-f"></i></a>
+      <a href="#"
+        class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i
+          class="fab fa-twitter"></i></a>
+      <a href="#"
+        class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i
+          class="fab fa-linkedin-in"></i></a>
+      <a href="#"
+        class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i
+          class="fab fa-behance"></i></a>
     </div>
   </div>
   <!-- Main Header -->
   <div class="bg-white flex items-center justify-between px-3 md:px-10 py-0 ">
     <!-- Logo -->
     <div class="flex items-center gap-2">
-    <a>
-  <img class="w-50 h-20 object-contain" src="img/test1.png" alt="Logo">
-</a>
+      <a>
+        <img class="w-50 h-20 object-contain" src="img/test1.png" alt="Logo">
+      </a>
       <!-- <span class="text-[#e60012] text-3xl md:text-4xl"><i class="fa-solid fa-utensils"></i></span> -->
       <span class="text-1xl md:text-2xl text-[#262248] font-family:Quicksand,sans-serif">LUA <br> BE HOY</span>
     </div>
@@ -49,7 +57,7 @@
     <nav class="hidden md:flex flex-1 justify-center">
       <ul class="flex items-center gap-3 md:gap-8 font-semibold text-base md:text-lg">
         <li><a href="{{ route('views.index') }}" class="text-[#262248] hover:text-[#e60012] transition">Home</a></li>
-        <li><a href="{{ route('views.about') }}"class="text-[#262248] hover:text-[#e60012] transition">About</a></li>
+        <li><a href="{{ route('views.about') }}" class="text-[#262248] hover:text-[#e60012] transition">About</a></li>
         <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Menu</a></li>
         <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Blog</a></li>
         <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Contact</a></li>
@@ -57,18 +65,69 @@
     </nav>
     <!-- Right Icons -->
     <div class="flex items-center gap-2 md:gap-5">
-      <div class="relative">
-        <span class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248]">
-          <a href="{{ route('views.qrorder') }}"><i  class="fa-solid fa-basket-shopping"></i></a>
-        </span>
-        <span class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
-      </div>
-      <div>
-        <span class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248]">
-          <i class="fa-solid fa-user"></i>
-        </span>
+  <!-- Biểu tượng Giỏ hàng -->
+  <div class="relative">
+    <span
+      class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+      <a href="{{ route('views.qrorder') }}"><i class="fa-solid fa-basket-shopping"></i></a>
+    </span>
+    <span
+      class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
+  </div>
+
+  <!-- Biểu tượng Người dùng -->
+  <div class="relative">
+    <span id="userIconToggle"
+      class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+      <i class="fa-solid fa-user"></i>
+    </span>
+
+    <!-- Dropdown -->
+    <div id="userDropdown"
+      class="absolute right-0 mt-2 w-64 bg-[#fff2e1] rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-50 hidden">
+      <div class="p-3">
+        <div class="mb-3">
+          <p class="text-sm font-semibold text-black">Admin Super</p>
+          <p class="text-xs text-gray-500">superadmin@gmail.com</p>
+        </div>
+        <div class="space-y-2">
+          <!-- Dành cho Quản lí -->
+          <a href="#"
+            class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+            <i class="fa-solid fa-user text-red-500 w-4"></i>
+            <span>Thông tin cá nhân</span>
+          </a>
+          @if (session('role') === 'Quản lí')
+            <a href="{{ route('admin.dashboard') }}"
+              class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+              <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>
+              <span>Dashboard tổng quan</span>
+            </a>
+            <a href="{{ route('staff.dashboard') }}"
+              class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+              <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
+              <span>Quyền Nhân Viên</span>
+            </a>
+          @elseif (session('role') === 'Nhân viên')
+            <!-- Chỉ hiển thị với Nhân viên -->
+            <a href="{{ route('staff.dashboard') }}"
+              class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+              <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
+              <span>Quyền Nhân Viên</span>
+            </a>
+          @endif
+
+          <!-- Đăng xuất (ai cũng có thể thấy) -->
+          <a href="{{ route('logout') }}"
+            class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+            <i class="fa-solid fa-sign-out-alt text-red-500 w-4"></i>
+            <span>Đăng xuất</span>
+          </a>
+        </div>
       </div>
     </div>
+  </div>
+</div>
   </div>
   <!-- Mobile Popup Menu -->
   <div id="mobileMenu" class="fixed inset-0 bg-black/60 z-50 hidden">
@@ -84,10 +143,18 @@
         <li><a href="#" class="py-2 block">Contact</a></li>
       </ul>
       <div class="flex gap-3 px-6 mt-6">
-        <a href="#" class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#" class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i class="fab fa-behance"></i></a>
+        <a href="#"
+          class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i
+            class="fab fa-facebook-f"></i></a>
+        <a href="#"
+          class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i
+            class="fab fa-twitter"></i></a>
+        <a href="#"
+          class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i
+            class="fab fa-linkedin-in"></i></a>
+        <a href="#"
+          class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i
+            class="fab fa-behance"></i></a>
       </div>
       <div class="mt-auto px-6 pb-8 pt-8 text-sm text-[#262248]">
         <span class="flex items-center gap-2 mb-2">
@@ -104,14 +171,43 @@
 </div>
 <script>
   // Mobile menu open/close
-  document.getElementById('openMenu').onclick = function() {
+  document.getElementById('openMenu').onclick = function () {
     document.getElementById('mobileMenu').classList.remove('hidden');
   }
-  document.getElementById('closeMenu').onclick = function() {
+  document.getElementById('closeMenu').onclick = function () {
     document.getElementById('mobileMenu').classList.add('hidden');
   }
   // Đóng menu khi click ra ngoài
-  document.getElementById('mobileMenu').addEventListener('click', function(e){
-    if(e.target === this) this.classList.add('hidden');
+  document.getElementById('mobileMenu').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.add('hidden');
+  });
+</script>
+<script>
+  const userIconToggle = document.getElementById('userIconToggle');
+  const userDropdown = document.getElementById('userDropdown');
+
+  // Hàm toggle dropdown
+  const toggleDropdown = () => {
+    if (userDropdown.classList.contains('hidden')) {
+      userDropdown.classList.remove('hidden', 'scale-y-0', 'opacity-0');
+      userDropdown.classList.add('scale-y-100', 'opacity-100');
+    } else {
+      userDropdown.classList.remove('scale-y-100', 'opacity-100');
+      userDropdown.classList.add('hidden', 'scale-y-0', 'opacity-0');
+    }
+  };
+
+  // Thêm sự kiện click cho biểu tượng người dùng
+  userIconToggle.addEventListener('click', (e) => {
+    e.preventDefault(); // Ngăn chặn hành vi mặc định nếu có
+    toggleDropdown();
+  });
+
+  // Đóng dropdown khi click bên ngoài
+  document.addEventListener('click', (e) => {
+    if (!userIconToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+      userDropdown.classList.remove('scale-y-100', 'opacity-100');
+      userDropdown.classList.add('hidden', 'scale-y-0', 'opacity-0');
+    }
   });
 </script>
