@@ -7,6 +7,7 @@
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
@@ -21,7 +22,7 @@
         <!-- Sidebar -->
        @include('layouts.admin.sidebar')
         <!-- Content -->
-        <div class=" flex-1 p-3 inline-block">
+        <div class=" flex-1 h-full p-3 inline-block">
             <!-- Breadcrumb -->
             <nav class="flex px-5 py-3 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">

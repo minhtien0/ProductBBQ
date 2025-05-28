@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminController\HomeAdminController;
 use App\Http\Controllers\AdminController\User;
 use App\Http\Controllers\AdminController\Rate;
 use App\Http\Controllers\AdminController\Staff\StaffController;
@@ -36,10 +37,7 @@ Route::get('about', [HomeController::class, 'about'])->name('views.about');
 
 //Group Admin
 Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group(function () {
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    });
-    Route::get('/index', [HomeController::class, 'index'])->name('admin.dashboard');
+    Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');
     Route::get('/voucher', [Voucher::class, 'index'])->name('admin.voucher');
     Route::get('/help', [Help::class, 'index'])->name('admin.help');
@@ -59,7 +57,11 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\Locale::class])->group
         Route::post('/update/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
         Route::get('/create', [StaffController::class, 'create'])->name('admin.staff.create');
         Route::post('/add', [StaffController::class, 'add'])->name('admin.staff.add');
+        Route::delete('/delete', [StaffController::class, 'delete'])->name('admin.staff.delete');
         Route::get('/export-excel', [StaffController::class, 'exportExcel'])->name('admin.staff.exportExcel');
+        Route::get('/exportTemplate', [StaffController::class, 'exportTemplateExcel'])->name('admin.staff.exportTemplateExcel');
+        Route::post('/import-excel', [StaffController::class, 'importExcel'])->name('admin.staff.importExcel');
+
 
         //Job
         Route::get('/job', [Staff::class, 'viewJob'])->name('admin.staff.job');
