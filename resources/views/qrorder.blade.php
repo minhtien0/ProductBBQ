@@ -139,6 +139,66 @@
                             <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
                             <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
                         </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <button onclick="addToCart('Thịt Cá Sấu', 180000, 'img/combo/1.jpg')" class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
                         <!-- Thêm các sản phẩm khác tương tự, ví dụ 5 món đặc biệt và 1 đồ uống -->
                         <!-- ... Copy và chỉnh lại data-category, tên, ảnh, giá theo ý bạn ... -->
                         <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="drink">

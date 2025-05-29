@@ -1454,7 +1454,7 @@
                     1024: { slidesPerView: 3, spaceBetween: 24 },
                 },
             });
-            //chefs
+           /*  //chefs
                  var swiper = new Swiper('.testiSwiper', {
                      slidesPerView: 2,
                      spaceBetween: 32,
@@ -1469,7 +1469,7 @@
                      loop: true,
                      autoplay: { delay: 7000 },
                  });
-
+ */
 
         </script>
 </body>
