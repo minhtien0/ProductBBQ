@@ -9,7 +9,7 @@
          // Tự động đóng sau 2 giây
          setTimeout(() => {
              closePopup();
-         }, 3000);
+         }, 10000);
      }
  }
 

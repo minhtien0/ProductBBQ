@@ -21,4 +21,9 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
+
+    protected $routeMiddleware = [
+        'locale' => \App\Http\Middleware\Locale::class,
+        'check.admin' => \App\Http\Middleware\CheckAdminRole::class,
+    ];
 }

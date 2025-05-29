@@ -10,15 +10,51 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Exports\StaffsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\StaffsTemplateExport;
+use App\Imports\StaffsImport;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class StaffController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $lists = Staff::with('branch')->get();
-        return view('admin.staff.index', compact('lists'));
+        $branches = Branch::all();  // hoặc từ model của bạn
+        $positions = ['Quản Lí', 'Nhân Viên', 'Đầu Bếp', 'Tạp Vụ'];
+
+        $query = Staff::query();
+
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->branch_id);
+        }
+        if ($request->filled('staff_type')) {
+            $query->where('type', $request->staff_type);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('position')) {
+            $query->where('role', $request->position);
+        }
+        if ($request->filled('min_basic_salary')) {
+            $query->where('Basic_Salary', '>=', $request->min_basic_salary);
+        }
+        if ($request->filled('min_hourly_salary')) {
+            $query->where('hourly_wage', '>=', $request->min_hourly_salary);
+        }
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $query->where(function ($q2) use ($q) {
+                $q2->where('code_nv', 'like', "%{$q}%")
+                    ->orWhere('fullname', 'like', "%{$q}%");
+            });
+        }
+
+        $lists = $query->paginate(15)->withQueryString();
+
+        return view('admin.staff.index', compact('lists', 'branches', 'positions'));
     }
+
 
     public function detail($id)
     {
@@ -44,6 +80,7 @@ class StaffController extends Controller
             'time_work' => 'nullable|date',
             'type' => 'nullable|string',
             'status' => 'nullable|string',
+            'role' => 'nullable|string',
             'STK' => 'nullable|string|max:50',
             'bank' => 'nullable|string|max:100',
             'avata' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
@@ -65,7 +102,7 @@ class StaffController extends Controller
 
         $staff->save();
 
-        return redirect()->route('admin.staff.detail', $staff->id)->with('success', 'Cập nhật thành công!');
+        return redirect()->route('admin.staff', )->with('success', 'Cập nhật thành công!');
     }
 
     public function create()
@@ -89,12 +126,36 @@ class StaffController extends Controller
             'branch' => 'required|exists:branchs,id',
             'type' => 'required|in:Full Time,Part Time',
             'status' => 'required',
+        ], [
+            'fullname.required' => 'Vui lòng nhập họ và tên.',
+            'fullname.max' => 'Họ và tên không được vượt quá 255 ký tự.',
+            'role.required' => 'Vui lòng chọn chức vụ.',
+            'role.in' => 'Chức vụ không hợp lệ.',
+            'date_of_birth.required' => 'Vui lòng chọn ngày sinh.',
+            'date_of_birth.date' => 'Ngày sinh không đúng định dạng.',
+            'gender.required' => 'Vui lòng chọn giới tính.',
+            'gender.in' => 'Giới tính không hợp lệ.',
+            'SDT.required' => 'Vui lòng nhập số điện thoại.',
+            'SDT.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+            'CCCD.required' => 'Vui lòng nhập CCCD.',
+            'CCCD.max' => 'CCCD không được vượt quá 20 ký tự.',
+            'CCCD.unique' => 'CCCD đã tồn tại.',
+            'address.required' => 'Vui lòng nhập địa chỉ.',
+            'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.max' => 'Email không được vượt quá 255 ký tự.',
+            'time_work.required' => 'Vui lòng chọn ngày vào làm.',
+            'time_work.date' => 'Ngày vào làm không đúng định dạng.',
+            'branch.required' => 'Vui lòng chọn đơn vị.',
+            'branch.exists' => 'Đơn vị không tồn tại.',
+            'type.required' => 'Vui lòng chọn loại nhân viên.',
+            'type.in' => 'Loại nhân viên không hợp lệ.',
+            'status.required' => 'Vui lòng chọn trạng thái.',
         ]);
 
         if ($validator->fails()) {
-            // Ghép tất cả lỗi thành 1 chuỗi
             $errorMsg = implode('<br>', $validator->errors()->all());
-            // Đưa lỗi vào session flash 'error'
             return redirect()->back()
                 ->withInput()
                 ->with('error', $errorMsg);
@@ -136,9 +197,70 @@ class StaffController extends Controller
         }
     }
 
-    public function exportExcel()
+    public function delete(Request $request)
     {
-        return Excel::download(new StaffsExport, 'danh-sach-nhan-vien.xlsx');
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một nhân viên để xóa.');
+        }
+
+        $count = Staff::whereIn('id', $ids)->delete();
+
+        return redirect()->back()
+            ->with('success', "Đã xóa thành công {$count} nhân viên.");
     }
+
+    public function exportExcel(Request $request)
+    {
+        $filters = $request->only([
+            'branch_id',
+            'staff_type',
+            'status',
+            'position',
+            'min_basic_salary',
+            'min_hourly_salary',
+            'q',
+        ]);
+
+        // Đặt tên file theo timestamp
+        $fileName = 'nhan_vien_' . now()->format('Ymd_His') . '.xlsx';
+
+        // Trả về download
+        return Excel::download(
+            new StaffsExport($filters),
+            $fileName
+        );
+    }
+
+    public function exportTemplateExcel()
+    {
+        return Excel::download(new StaffsTemplateExport, 'nhan-vien-mau.xlsx');
+    }
+
+    public function importExcel(Request $request)
+    {
+        // Validate file
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        try {
+            Excel::import(new StaffsImport, $request->file('file'));
+
+            return redirect()->back()
+                ->with('success', 'Import nhân viên thành công!');
+        } catch (ValidationException $e) {
+            $failures = $e->failures();
+
+            // Đổi từ array sang Collection
+            $messages = collect($failures)->map(function ($failure) {
+                return 'Dòng ' . $failure->row() . ': ' . implode(', ', $failure->errors());
+            })->implode("<br>");
+
+            return redirect()->back()
+                ->with('error', "Import thất bại <br>" . $messages);
+        }
+    }
+
 
 }

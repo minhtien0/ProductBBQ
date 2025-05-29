@@ -1,6 +1,6 @@
 @extends('admin.index')
 @section('content')
-    <div class="w-full bg-white mt-4">
+    <div class="w-full bg-white">
         <div class="px-5 py-3">
             <!-- Action buttons -->
             <div class="flex justify-between mb-4">

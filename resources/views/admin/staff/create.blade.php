@@ -134,7 +134,7 @@
                 <div class="flex flex-col space-y-2">
                     <button type="submit"
                         class="w-full px-2 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-200 flex items-center justify-center">
-                        <i class="fa-solid fa-floppy-disk mr-2"></i> Lưu
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Thêm
                     </button>
                     <a href="{{ route('admin.staff') }}">
                         <button type="button"

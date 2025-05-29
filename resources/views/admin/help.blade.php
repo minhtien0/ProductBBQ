@@ -132,27 +132,33 @@
                             <th class="py-1 px-2 text-left text-sm">SDT</th>
                             <th class="py-1 px-2 text-left text-sm">Email</th>
                             <th class="py-1 px-2 text-left text-sm">Thời Gian</th>
-                            <th class="py-1 px-2 text-left text-sm">Trạng Thái</th>
-                           
+                            <th class="py-1 px-2 text-left text-sm">Thực Hiện</th>
                         </tr>
                     </thead>
                     <tbody>
-
-                        <tr class="bg-gray-50">
-                            <td class="py-3 px-2 border-t border-gray-200">
-                                <input type="checkbox" class="form-checkbox h-4 w-4">
-                            </td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
-                                    href="{{ route('user.detail') }}">Hỏi Để Biết</a></td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">abc</td>
-                            <td class="py-1 px-2 border-t border-gray-200">
-                                <span class="text-gray-600">Nguyễn Minh Tiến</span>
-                            </td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">123456565</td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">tiennguyen14700@gmail.com</td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">12:00 12/4/2025</td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a href="">Chưa Phản Hồi</a></td>
-                        </tr>
+                        @foreach ($helps as $help)
+                            <tr class="bg-gray-50">
+                                <td class="py-3 px-2 border-t border-gray-200">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4">
+                                </td>
+                                <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
+                                        href="{{ route('user.detail') }}">{{ $help->purpose }}</a></td>
+                                <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $help->question }}</td>
+                                <td class="py-1 px-2 border-t border-gray-200">
+                                    <span class="text-gray-600">Nguyễn Minh Tiến</span>
+                                </td>
+                                <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $help->sdt }}</td>
+                                <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $help->email }}</td>
+                                <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $help->time }}</td>
+                                <td class="py-1 px-2 border-t border-gray-200 text-center">
+                                    <a href="{{ route('help.replyForm', $help->id) }}"
+                                        class="inline-flex items-center px-2 py-2 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition">
+                                        <i class="fa-solid fa-paper-plane mr-2"></i>
+                                        Send
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

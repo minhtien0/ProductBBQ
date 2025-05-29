@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese BBQ Gyu-Kaku</title>
+    <title>LUA BE HOY</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -163,7 +164,7 @@
 
             .swiper-slide {
                 padding: 8px;
-                
+
             }
 
             .product-img-badge {
@@ -200,6 +201,19 @@
             background: #fff;
             box-shadow: 0 2px 18px rgba(0, 0, 0, .09);
         }
+
+        .booking-form-row>div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .booking-form-row label {
+            margin-bottom: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #fff;
+        }
+
 
         .booking-img {
             flex: 1.1;
@@ -571,10 +585,18 @@
         }
 
         .testi-slider-wrap {
-            max-width: 1000px;
-            margin: 0 auto;
-            margin-top: 20px;
-            position: relative;
+                {
+                max-width: 440px;
+                margin-left: auto;
+                margin-right: auto;
+
+            }
+
+            @media (min-width: 640px) {
+                .testi-slider-wrap {
+                    max-width: 800px;
+                }
+            }
         }
 
         .swiper {
@@ -708,7 +730,7 @@
         }
 
         .counter-section {
-          /*   background: linear-gradient(rgba(30, 20, 10, 0.73), rgba(30, 20, 10, 0.73)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=facearea&w=1200&q=80') center/cover no-repeat; */
+            /*   background: linear-gradient(rgba(30, 20, 10, 0.73), rgba(30, 20, 10, 0.73)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=facearea&w=1200&q=80') center/cover no-repeat; */
             padding: 56px 20px 44px 0;
         }
 
@@ -791,12 +813,11 @@
                 gap: 30px;
             }
         }
-
-     
     </style>
 
 </head>
 @include('layouts.user.header')
+
 <body class="bg-dark-bg text-white">
     <div class="container  mx-auto px-4 py-8">
         <!-- Promotion Section -->
@@ -1325,65 +1346,64 @@
         </section>
         <!--chefs -->
         <section>
-            <div class="section text-center">
-                <div class="testi-subtitle">Testimonial <i class="fa-solid fa-seedling"></i></div>
-                <div class="testi-title">Our Customar Feedbacks</div>
-                <div class="testi-slider-wrap">
-                    <div class="testi-nav">
-                        <button class="testi-nav-btn swiper-button-prev"><i class="fa-solid fa-arrow-left"></i></button>
-                        <button class="testi-nav-btn swiper-button-next"><i
-                                class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                    <div class="swiper testiSwiper">
-                        <div class="swiper-wrapper">
-                            <!-- Slide 1 -->
-                            <div class="swiper-slide">
-                                <div class="testi-card">
-                                    <div class="testi-avatar-wrap">
-                                        <img src="img/mtien2.jpg" class="testi-avatar" alt="">
-                                    </div>
-                                    <div style="display:flex;justify-content:center;align-items:center;">
-                                        <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
-                                        <span class="testi-name">NGUYỄN MINH TIẾN</span>
-                                    </div>
-                                    <div class="testi-pos">NYC MLB</div>
-                                    <div class="testi-content">
-                                        Khó tính, dễ dỗi, phân biệt vùng miền, chiều cao 1m75, cần nặng 67kg.
-                                    </div>
-                                    <div class="testi-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-regular fa-star"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 2 -->
-                            <div class="swiper-slide">
-                                <div class="testi-card">
-                                    <div class="testi-avatar-wrap">
-                                        <img src="img/hdong2.jpg" class="testi-avatar" alt="">
-                                    </div>
-                                    <div style="display:flex;justify-content:center;align-items:center;">
-                                        <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
-                                        <span class="testi-name">Nguyễn Huy Đông</span>
-                                    </div>
-                                    <div class="testi-pos">NYC USA</div>
-                                    <div class="testi-content">
-                                        Đẹp trai, vui tính, ăn nói lưu loát, chiều cao 1m69.5, cân nặng 66kg.
-                                    </div>
-                                    <div class="testi-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-regular fa-star"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 3 (sample) -->
+        <div class="section text-center">
+    <div class="testi-subtitle text-base md:text-lg">Testimonial <i class="fa-solid fa-seedling"></i></div>
+    <div class="testi-title text-xl md:text-2xl font-bold mb-2">Our Customer Feedbacks</div>
+    <div class="testi-slider-wrap mx-auto max-w-xs sm:max-w-xl md:max-w-2xl">
+        <!-- Không cần navigation nữa -->
 
-                        </div>
-                    </div>
+        <!-- Card list, responsive grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <!-- Card 1 -->
+            <div class="testi-card bg-white rounded-xl shadow p-4 sm:p-6 max-w-xs mx-auto">
+                <div class="testi-avatar-wrap flex justify-center mb-2">
+                    <img src="img/mtien2.jpg"
+                        class="testi-avatar w-16 h-16 rounded-full object-cover border-2 border-red-200"
+                        alt="">
+                </div>
+                <div class="flex justify-center items-center mb-1">
+                    <span class="testi-quote text-red-400 text-lg mr-1"><i
+                            class="fa-solid fa-quote-left"></i></span>
+                    <span class="testi-name font-bold text-base">NGUYỄN MINH TIẾN</span>
+                </div>
+                <div class="testi-pos text-xs text-gray-500 mb-1">NYC MLB</div>
+                <div class="testi-content text-sm mb-2 text-gray-700">
+                    Khó tính, dễ dỗi, phân biệt vùng miền, chiều cao 1m75, cân nặng 67kg.
+                </div>
+                <div class="testi-stars text-yellow-400">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
                 </div>
             </div>
+            <!-- Card 2 -->
+            <div class="testi-card bg-white rounded-xl shadow p-4 sm:p-6 max-w-xs mx-auto">
+                <div class="testi-avatar-wrap flex justify-center mb-2">
+                    <img src="img/hdong2.jpg"
+                        class="testi-avatar w-16 h-16 rounded-full object-cover border-2 border-red-200"
+                        alt="">
+                </div>
+                <div class="flex justify-center items-center mb-1">
+                    <span class="testi-quote text-red-400 text-lg mr-1"><i
+                            class="fa-solid fa-quote-left"></i></span>
+                    <span class="testi-name font-bold text-base">Nguyễn Huy Đông</span>
+                </div>
+                <div class="testi-pos text-xs text-gray-500 mb-1">NYC USA</div>
+                <div class="testi-content text-sm mb-2 text-gray-700">
+                    Đẹp trai, vui tính, ăn nói lưu loát, chiều cao 1m69.5, cân nặng 66kg.
+                </div>
+                <div class="testi-stars text-yellow-400">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                </div>
+            </div>
+            <!-- Thêm card khác copy theo mẫu -->
+        </div>
+    </div>
+</div>
+
+
 
             <!-- Counter Section -->
             <div class="counter-section">
@@ -1443,33 +1463,40 @@
             //sale
             var swiper = new Swiper('.mySwiper', {
                 slidesPerView: 2,
+                slidesPerGroup: 2,      // Mỗi lần chuyển 2 slide (bấm nút hoặc tự động)
                 spaceBetween: 18,
+                loop: true,             // Lặp lại 2 slide vô hạn
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                autoplay: {
+                    delay: 2500,        // 2.5 giây tự động chuyển
+                    disableOnInteraction: false // Không dừng lại khi người dùng thao tác
+                },
+                breakpoints: {
+                    0: { slidesPerView: 1.1, slidesPerGroup: 1, spaceBetween: 10 },
+                    640: { slidesPerView: 2, slidesPerGroup: 2, spaceBetween: 18 },
+                    1024: { slidesPerView: 3, slidesPerGroup: 3, spaceBetween: 24 },
+                },
+            });
+            //chefs
+/*             var swiper = new Swiper('.testiSwiper', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                autoplay: false, // KHÔNG tự chạy
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
                 breakpoints: {
-                    0: { slidesPerView: 1.1, spaceBetween: 10 },
-                    640: { slidesPerView: 2, spaceBetween: 18 },
-                    1024: { slidesPerView: 3, spaceBetween: 24 },
+                    640: { slidesPerView: 2, spaceBetween: 28 }
                 },
-            });
-           /*  //chefs
-                 var swiper = new Swiper('.testiSwiper', {
-                     slidesPerView: 2,
-                     spaceBetween: 32,
-                     navigation: {
-                         nextEl: '.swiper-button-next',
-                         prevEl: '.swiper-button-prev',
-                     },
-                     breakpoints: {
-                         0: { slidesPerView: 1 },
-                         900: { slidesPerView: 2 }
-                     },
-                     loop: true,
-                     autoplay: { delay: 7000 },
-                 });
- */
+            }); */
+
+
+
 
         </script>
 </body>
