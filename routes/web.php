@@ -8,7 +8,7 @@ use App\Http\Controllers\AdminController\User;
 use App\Http\Controllers\AdminController\Rate;
 use App\Http\Controllers\AdminController\Staff\StaffController;
 use App\Http\Controllers\AdminController\Blog;
-use App\Http\Controllers\AdminController\Voucher;
+use App\Http\Controllers\AdminController\VoucherController;
 use App\Http\Controllers\AdminController\HelpController;
 use App\Http\Controllers\AdminController\BookTable;
 use App\Http\Controllers\AdminController\CompanyController;
@@ -38,7 +38,14 @@ Route::get('about', [HomeController::class, 'about'])->name('views.about');
 Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Http\Middleware\CheckAdminRole::class])->group(function () {
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');
-    Route::get('/voucher', [Voucher::class, 'index'])->name('admin.voucher');
+    Route::prefix('voucher')->group(function () {
+        Route::get('/', [VoucherController::class, 'index'])->name('admin.voucher');
+        Route::get('/create', [VoucherController::class, 'create'])->name('admin.voucher.create');
+        Route::post('/add', [VoucherController::class, 'add'])->name('admin.voucher.add');
+        Route::delete('/delete', [VoucherController::class, 'delete'])->name('admin.voucher.delete');
+        Route::get('/edit/{id}', [VoucherController::class, 'edit'])->name('admin.voucher.edit');
+        Route::post('/update/{id}', [VoucherController::class, 'update'])->name('admin.voucher.update');
+    });
     Route::get('/help', [HelpController::class, 'index'])->name('admin.help');
     Route::get('/help/reply/{id}', [HelpController::class, 'showReplyForm'])->name('help.replyForm');
     Route::post('/help/reply/{id}', [HelpController::class, 'sendReply'])->name('help.sendReply');

@@ -102,7 +102,7 @@ class StaffController extends Controller
 
         $staff->save();
 
-        return redirect()->route('admin.staff.detail', $staff->id)->with('success', 'Cập nhật thành công!');
+        return redirect()->route('admin.staff', )->with('success', 'Cập nhật thành công!');
     }
 
     public function create()
@@ -126,12 +126,36 @@ class StaffController extends Controller
             'branch' => 'required|exists:branchs,id',
             'type' => 'required|in:Full Time,Part Time',
             'status' => 'required',
+        ], [
+            'fullname.required' => 'Vui lòng nhập họ và tên.',
+            'fullname.max' => 'Họ và tên không được vượt quá 255 ký tự.',
+            'role.required' => 'Vui lòng chọn chức vụ.',
+            'role.in' => 'Chức vụ không hợp lệ.',
+            'date_of_birth.required' => 'Vui lòng chọn ngày sinh.',
+            'date_of_birth.date' => 'Ngày sinh không đúng định dạng.',
+            'gender.required' => 'Vui lòng chọn giới tính.',
+            'gender.in' => 'Giới tính không hợp lệ.',
+            'SDT.required' => 'Vui lòng nhập số điện thoại.',
+            'SDT.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+            'CCCD.required' => 'Vui lòng nhập CCCD.',
+            'CCCD.max' => 'CCCD không được vượt quá 20 ký tự.',
+            'CCCD.unique' => 'CCCD đã tồn tại.',
+            'address.required' => 'Vui lòng nhập địa chỉ.',
+            'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.max' => 'Email không được vượt quá 255 ký tự.',
+            'time_work.required' => 'Vui lòng chọn ngày vào làm.',
+            'time_work.date' => 'Ngày vào làm không đúng định dạng.',
+            'branch.required' => 'Vui lòng chọn đơn vị.',
+            'branch.exists' => 'Đơn vị không tồn tại.',
+            'type.required' => 'Vui lòng chọn loại nhân viên.',
+            'type.in' => 'Loại nhân viên không hợp lệ.',
+            'status.required' => 'Vui lòng chọn trạng thái.',
         ]);
 
         if ($validator->fails()) {
-            // Ghép tất cả lỗi thành 1 chuỗi
             $errorMsg = implode('<br>', $validator->errors()->all());
-            // Đưa lỗi vào session flash 'error'
             return redirect()->back()
                 ->withInput()
                 ->with('error', $errorMsg);
@@ -188,24 +212,24 @@ class StaffController extends Controller
 
     public function exportExcel(Request $request)
     {
-         $filters = $request->only([
-        'branch_id',
-        'staff_type',
-        'status',
-        'position',
-        'min_basic_salary',
-        'min_hourly_salary',
-        'q',
-    ]);
+        $filters = $request->only([
+            'branch_id',
+            'staff_type',
+            'status',
+            'position',
+            'min_basic_salary',
+            'min_hourly_salary',
+            'q',
+        ]);
 
-    // Đặt tên file theo timestamp
-    $fileName = 'nhan_vien_' . now()->format('Ymd_His') . '.xlsx';
+        // Đặt tên file theo timestamp
+        $fileName = 'nhan_vien_' . now()->format('Ymd_His') . '.xlsx';
 
-    // Trả về download
-    return Excel::download(
-        new StaffsExport($filters),
-        $fileName
-    );
+        // Trả về download
+        return Excel::download(
+            new StaffsExport($filters),
+            $fileName
+        );
     }
 
     public function exportTemplateExcel()

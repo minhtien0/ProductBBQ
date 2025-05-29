@@ -206,19 +206,22 @@
 
 
                     <a href="{{ route('admin.staff.exportTemplateExcel') }}">
-                       <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm  hover:bg-red-400 hover:text-white transition-colors">
-    <i class="fa-solid fa-file-export mr-2"></i>
-    Xuất File Mẫu
-</button>
+                        <button
+                            class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm  hover:bg-red-400 hover:text-white transition-colors">
+                            <i class="fa-solid fa-file-export mr-2"></i>
+                            Xuất File Mẫu
+                        </button>
                     </a>
                     <a href="{{ route('admin.staff.exportExcel', request()->query()) }}">
-                        <button class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
+                        <button
+                            class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                             <i class="fa-solid fa-download mr-2"></i>
                             Xuất File
                         </button>
                     </a>
                     <a href="{{ route('admin.staff.create') }}">
-                        <button class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
+                        <button
+                            class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

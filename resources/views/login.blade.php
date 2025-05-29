@@ -33,7 +33,7 @@
 
         <!-- Right Side (Login Form) -->
         <div class="w-1/2 flex items-center justify-center p-6">
-            <div class="w-full max-w-md">
+            <div id="loginForm" class=" w-full max-w-md">
                 <h2 class="text-xl font-semibold text-center mb-4 text-[#FF3D3D]">Login</h2>
                 <form method="POST" action="{{ route('login') }}" class="space-y-4">
                     @csrf
@@ -87,11 +87,47 @@
                         Đăng nhập
                     </button>
                 </form>
-                <p class="text-center mt-4 text-sm text-[#4A4A4A]">Chưa có tài khoản? <a href="#"
-                        class="text-[#C71585] hover:underline">Đăng ký</a></p>
+                <p class="text-center mt-4 text-sm text-[#4A4A4A]">Chưa có tài khoản? <a href="javascript:void(0)"
+                        onclick="toggleForms()" class="text-[#C71585] hover:underline">Đăng ký</a></p>
             </div>
+
+             <div id="registerForm" class="w-full max-w-md hidden">
+            <h2 class="text-xl font-semibold text-center mb-4 text-[#FF3D3D]">Đăng ký</h2>
+            <form method="POST" action="" class="space-y-4">
+                @csrf
+                <input type="text" name="fullname" placeholder="Họ và tên"
+                    class="w-full border p-2 bg-black text-white placeholder-gray-400 rounded">
+                <input type="text" name="code_nv" placeholder="Mã nhân viên"
+                    class="w-full border p-2 bg-black text-white placeholder-gray-400 rounded">
+                <input type="text" name="CCCD" placeholder="CCCD (sử dụng làm mật khẩu)"
+                    class="w-full border p-2 bg-black text-white placeholder-gray-400 rounded">
+                <input type="text" name="role" placeholder="Vai trò (Quản lí, Nhân viên, Người dùng)"
+                    class="w-full border p-2 bg-black text-white placeholder-gray-400 rounded">
+
+                <button type="submit"
+                    class="w-full bg-[#FF3D3D] text-white rounded p-2 hover:bg-[#FF6F61] transition duration-150">
+                    Đăng ký
+                </button>
+                <p class="text-center mt-4 text-sm text-[#4A4A4A]">
+                    Đã có tài khoản?
+                    <a href="javascript:void(0)" onclick="toggleForms()" class="text-[#C71585] hover:underline">Đăng
+                        nhập</a>
+                </p>
+            </form>
         </div>
+        </div>
+
+       
     </div>
 </body>
+<script>
+    function toggleForms() {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        loginForm.classList.toggle('hidden');
+        registerForm.classList.toggle('hidden');
+    }
+</script>
 
 </html>
