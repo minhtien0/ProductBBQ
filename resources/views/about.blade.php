@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese BBQ Gyu-Kaku</title>
+    <title>LUA BE HOY</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -64,7 +64,7 @@
     <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">About Us</h1>
     <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
       <i class="fa fa-home text-white"></i>
-      <span class="text-white">Home</span>
+      <a href="{{ route('views.index') }}"><span class="text-white">Home</span></a>
       <span class="text-white">–</span>
       <span class="text-[#ff8000]">About Us</span>
     </div>

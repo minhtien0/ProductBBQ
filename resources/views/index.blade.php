@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese BBQ Gyu-Kaku</title>
+    <title>LUA BE HOY</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -163,7 +164,7 @@
 
             .swiper-slide {
                 padding: 8px;
-                
+
             }
 
             .product-img-badge {
@@ -200,6 +201,19 @@
             background: #fff;
             box-shadow: 0 2px 18px rgba(0, 0, 0, .09);
         }
+
+        .booking-form-row>div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .booking-form-row label {
+            margin-bottom: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #fff;
+        }
+
 
         .booking-img {
             flex: 1.1;
@@ -708,7 +722,7 @@
         }
 
         .counter-section {
-          /*   background: linear-gradient(rgba(30, 20, 10, 0.73), rgba(30, 20, 10, 0.73)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=facearea&w=1200&q=80') center/cover no-repeat; */
+            /*   background: linear-gradient(rgba(30, 20, 10, 0.73), rgba(30, 20, 10, 0.73)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=facearea&w=1200&q=80') center/cover no-repeat; */
             padding: 56px 20px 44px 0;
         }
 
@@ -791,12 +805,11 @@
                 gap: 30px;
             }
         }
-
-     
     </style>
 
 </head>
 @include('layouts.user.header')
+
 <body class="bg-dark-bg text-white">
     <div class="container  mx-auto px-4 py-8">
         <!-- Promotion Section -->
@@ -1454,22 +1467,21 @@
                     1024: { slidesPerView: 3, spaceBetween: 24 },
                 },
             });
-           /*  //chefs
-                 var swiper = new Swiper('.testiSwiper', {
-                     slidesPerView: 2,
-                     spaceBetween: 32,
-                     navigation: {
-                         nextEl: '.swiper-button-next',
-                         prevEl: '.swiper-button-prev',
-                     },
-                     breakpoints: {
-                         0: { slidesPerView: 1 },
-                         900: { slidesPerView: 2 }
-                     },
-                     loop: true,
-                     autoplay: { delay: 7000 },
-                 });
- */
+            /*  //chefs
+                  var swiper = new Swiper('.testiSwiper', {
+                      slidesPerView: 2,
+                      spaceBetween: 32,
+                      navigation: {
+                          nextEl: '.swiper-button-next',
+                          prevEl: '.swiper-button-prev',
+                      },
+                      breakpoints: {
+                          0: { slidesPerView: 1 },
+                          900: { slidesPerView: 2 }
+                      },
+                      loop: true,
+                      autoplay: { delay: 7000 },
+                  });
 
         </script>
 </body>

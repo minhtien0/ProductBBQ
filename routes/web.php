@@ -33,9 +33,20 @@ Route::get('order', [HomeController::class, 'order'])->name('views.qrorder');
 Route::get('index', [HomeController::class, 'index'])->name('views.index');
 //About
 Route::get('about', [HomeController::class, 'about'])->name('views.about');
+//Menu
+Route::get('menu', [HomeController::class, 'menu'])->name('views.menu');
+//Blog
+Route::get('blog', [HomeController::class, 'blog'])->name('views.blog');
+//Contact
+Route::get('contact', [HomeController::class, 'contact'])->name('views.contact');
+
+//huydong test layout quản lí bàn
+Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.deskmanage');
+
 
 //Group Admin
 Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Http\Middleware\CheckAdminRole::class])->group(function () {
+    Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');
     Route::prefix('voucher')->group(function () {

@@ -20,6 +20,21 @@ class HomeController extends Controller
     {
         return view('about');
     }
+    public function menu()
+    {
+        return view('menu');
+    }
+    public function blog()
+    {
+        return view('blog');
+    }
+    public function contact()
+    {
+        return view('contact');
+    }
+    public function deskmanage(){
+        return view('deskmanage');
+    }
 
 
     public function login(Request $request)

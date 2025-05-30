@@ -58,9 +58,9 @@
       <ul class="flex items-center gap-3 md:gap-8 font-semibold text-base md:text-lg">
         <li><a href="{{ route('views.index') }}" class="text-[#262248] hover:text-[#e60012] transition">Home</a></li>
         <li><a href="{{ route('views.about') }}" class="text-[#262248] hover:text-[#e60012] transition">About</a></li>
-        <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Menu</a></li>
-        <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Blog</a></li>
-        <li><a href="#" class="text-[#262248] hover:text-[#e60012] transition">Contact</a></li>
+        <li><a href="{{ route('views.menu') }}" class="text-[#262248] hover:text-[#e60012] transition">Menu</a></li>
+        <li><a href="{{ route('views.blog') }}" class="text-[#262248] hover:text-[#e60012] transition">Blog</a></li>
+        <li><a href="{{ route('views.contact') }}"class="text-[#262248] hover:text-[#e60012] transition">Contact</a></li>
       </ul>
     </nav>
     <!-- Right Icons -->
@@ -136,11 +136,11 @@
         <i class="fa-solid fa-times"></i>
       </button>
       <ul class="flex flex-col gap-2 mt-2 px-6 font-bold text-lg text-[#262248]">
-        <li><a href="#" class="py-2 block">Home</a></li>
-        <li><a href="#" class="py-2 block">About</a></li>
-        <li><a href="#" class="py-2 block">Menu</a></li>
-        <li><a href="#" class="py-2 block">Blog</a></li>
-        <li><a href="#" class="py-2 block">Contact</a></li>
+        <li><a href="{{ route('views.index') }}"  class="py-2 block">Home</a></li>
+        <li><a href="{{ route('views.about') }}"  class="py-2 block">About</a></li>
+        <li><a href="{{ route('views.menu') }}"  class="py-2 block">Menu</a></li>
+        <li><a href="{{ route('views.blog') }}"  class="py-2 block">Blog</a></li>
+        <li><a href="{{ route('views.contact') }}"class="py-2 block">Contact</a></li>
       </ul>
       <div class="flex gap-3 px-6 mt-6">
         <a href="#"
