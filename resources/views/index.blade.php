@@ -1482,7 +1482,6 @@
                       loop: true,
                       autoplay: { delay: 7000 },
                   });
-  */
 
         </script>
 </body>

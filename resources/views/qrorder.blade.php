@@ -314,6 +314,7 @@
                             <!-- Nút Thêm nằm dưới -->
                             <button onclick="addToCartWithQty(this, 'Thịt Cá Sấu', 180000, 'img/combo/1.jpg')"
                                 class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+
                         </div>
                     </div>
                     <button
