@@ -62,7 +62,10 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Htt
     Route::post('/help/reply/{id}', [HelpController::class, 'sendReply'])->name('help.sendReply');
 
     Route::get('/booktable', [BookTable::class, 'index'])->name('admin.booktable');
+    //thông tin công ty
     Route::get('/info', [CompanyController::class, 'index'])->name('admin.info');
+    Route::post('/info/update/{id}', [CompanyController::class, 'update'])->name('admin.info.update');
+
 
     Route::prefix('/user')->group(function () {
         Route::get('/list', [User::class, 'index'])->name('user.list');
