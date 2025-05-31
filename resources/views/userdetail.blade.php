@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUA BE HOY</title>
+    <title>Trang Cá Nhân</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
@@ -96,19 +96,28 @@
             <div class="flex flex-col gap-3">
               <div class="flex flex-col md:flex-row md:items-center md:gap-3">
                 <span class="w-28 font-semibold text-gray-700">Name:</span>
-                <span class="text-gray-800">MR.Tiến</span>
+                <span class="text-gray-800">{{ session('fullname') }}</span>
               </div>
+              <hr>
               <div class="flex flex-col md:flex-row md:items-center md:gap-3">
                 <span class="w-28 font-semibold text-gray-700">Email:</span>
-                <span class="text-gray-800">NMTien@gmail.com</span>
+                <span class="text-gray-800">{{ session('email') }}</span>
               </div>
+              <hr>
               <div class="flex flex-col md:flex-row md:items-center md:gap-3">
                 <span class="w-28 font-semibold text-gray-700">Phone:</span>
-                <span class="text-gray-800">023 434 54354</span>
+                <span class="text-gray-800">{{ session('sdt') }}</span>
               </div>
+              <hr>
               <div class="flex flex-col md:flex-row md:items-center md:gap-3">
                 <span class="w-28 font-semibold text-gray-700">Address:</span>
-                <span class="text-gray-800">334/7LLT/TT/TP/HCM</span>
+                <span class="text-gray-800">
+                  @if($address)
+                {{ $address->house_number }}, {{ $address->ward }}, {{ $address->district }}, {{ $address->city }}
+                @else
+                Chưa có địa chỉ mặc định
+                @endif
+              </span>
               </div>
             </div>
           </div>
@@ -120,48 +129,21 @@
             <button class="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm font-semibold">Add New</button>
           </div>
           <div class="grid md:grid-cols-2 gap-4">
+            @foreach ($addressAll as $addressAlls)
             <!-- Address Card -->
             <div class="bg-white p-4 rounded shadow flex flex-col gap-1">
               <div class="flex justify-between items-center mb-1">
-                <span class="font-bold text-orange-500"><i class="fa fa-home mr-1"></i> Home</span>
+                <span class="font-bold text-orange-500"><i class="fa fa-home mr-1"></i> {{ $addressAlls->name }}</span>
                 <span>
                   <button class="text-orange-400 hover:text-orange-600"><i class="fa fa-edit"></i></button>
                   <button class="ml-2 text-orange-400 hover:text-orange-600"><i class="fa fa-trash"></i></button>
                 </span>
               </div>
-              <p class="text-sm text-gray-600">Blackwell Street, Dry Creek, Alaska Blackwell Street, Dry Creek, Alaska.</p>
+              <p class="text-sm text-gray-600">
+              {{ $addressAlls->house_number }}, {{ $addressAlls->ward }}, {{ $addressAlls->district }}, {{ $addressAlls->city }}
+            </p>
             </div>
-            <!-- Repeat Address Cards (example) -->
-            <div class="bg-white p-4 rounded shadow flex flex-col gap-1">
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-bold text-orange-500"><i class="fa fa-briefcase mr-1"></i> Office</span>
-                <span>
-                  <button class="text-orange-400 hover:text-orange-600"><i class="fa fa-edit"></i></button>
-                  <button class="ml-2 text-orange-400 hover:text-orange-600"><i class="fa fa-trash"></i></button>
-                </span>
-              </div>
-              <p class="text-sm text-gray-600">Blackwell Street, Dry Creek, Alaska Blackwell Street, Dry Creek, Alaska.</p>
-            </div>
-            <div class="bg-white p-4 rounded shadow flex flex-col gap-1">
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-bold text-orange-500"><i class="fa fa-home mr-1"></i> Home 2</span>
-                <span>
-                  <button class="text-orange-400 hover:text-orange-600"><i class="fa fa-edit"></i></button>
-                  <button class="ml-2 text-orange-400 hover:text-orange-600"><i class="fa fa-trash"></i></button>
-                </span>
-              </div>
-              <p class="text-sm text-gray-600">Blackwell Street, Dry Creek, Alaska Blackwell Street, Dry Creek, Alaska.</p>
-            </div>
-            <div class="bg-white p-4 rounded shadow flex flex-col gap-1">
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-bold text-orange-500"><i class="fa fa-briefcase mr-1"></i> Office 2</span>
-                <span>
-                  <button class="text-orange-400 hover:text-orange-600"><i class="fa fa-edit"></i></button>
-                  <button class="ml-2 text-orange-400 hover:text-orange-600"><i class="fa fa-trash"></i></button>
-                </span>
-              </div>
-              <p class="text-sm text-gray-600">Blackwell Street, Dry Creek, Alaska Blackwell Street, Dry Creek, Alaska.</p>
-            </div>
+            @endforeach
           </div>
         </div>
         <!-- Order -->

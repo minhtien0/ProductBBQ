@@ -23,6 +23,11 @@ Route::match(['get', 'post'], '/login', [HomeController::class, 'login'])->name(
 //Đăng xuất
 Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
 
+// Xử lý đăng ký
+Route::post('/register', [HomeController::class, 'register'])->name('register');
+
+// Xử lý xác nhận email
+Route::get('/verify-email/{token}', [HomeController::class, 'verifyEmail'])->name('verify.email');
 //Layout User
 Route::get('/', function () {
     return view('index');

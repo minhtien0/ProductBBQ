@@ -42,4 +42,9 @@ class Food extends Model
     {
         return $this->hasMany(OrderDetail::class, 'product_id');
     }
+
+     public function favorites()
+    {
+        return $this->hasMany(Favorite::class, 'food_id');
+    }
 }
