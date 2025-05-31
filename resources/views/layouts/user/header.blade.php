@@ -60,74 +60,82 @@
         <li><a href="{{ route('views.about') }}" class="text-[#262248] hover:text-[#e60012] transition">About</a></li>
         <li><a href="{{ route('views.menu') }}" class="text-[#262248] hover:text-[#e60012] transition">Menu</a></li>
         <li><a href="{{ route('views.blog') }}" class="text-[#262248] hover:text-[#e60012] transition">Blog</a></li>
-        <li><a href="{{ route('views.contact') }}"class="text-[#262248] hover:text-[#e60012] transition">Contact</a></li>
+        <li><a href="{{ route('views.contact') }}" class="text-[#262248] hover:text-[#e60012] transition">Contact</a>
+        </li>
       </ul>
     </nav>
     <!-- Right Icons -->
     <div class="flex items-center gap-2 md:gap-5">
-  <!-- Biểu tượng Giỏ hàng -->
-  <div class="relative">
-    <span
-      class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
-      <a href="{{ route('views.qrorder') }}"><i class="fa-solid fa-basket-shopping"></i></a>
-    </span>
-    <span
-      class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
-  </div>
+      <!-- Biểu tượng Giỏ hàng -->
+      <div class="relative">
+        <span
+          class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+          <a href="{{ route('views.qrorder') }}"><i class="fa-solid fa-basket-shopping"></i></a>
+        </span>
+        <span
+          class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
+      </div>
 
-  <!-- Biểu tượng Người dùng -->
-  <div class="relative">
-    <span id="userIconToggle"
-      class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
-      <i class="fa-solid fa-user"></i>
-    </span>
-
-    <!-- Dropdown -->
-    <div id="userDropdown"
-      class="absolute right-0 mt-2 w-64 bg-[#fff2e1] rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-50 hidden">
-      <div class="p-3">
-        <div class="mb-3">
-          <p class="text-sm font-semibold text-black">Admin Super</p>
-          <p class="text-xs text-gray-500">superadmin@gmail.com</p>
-        </div>
-        <div class="space-y-2">
-          <!-- Dành cho Quản lí -->
-          <a href="#"
-            class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-            <i class="fa-solid fa-user text-red-500 w-4"></i>
-            <span>Thông tin cá nhân</span>
+      <!-- Biểu tượng Người dùng -->
+      <div class="relative">
+        @if (!session()->has('staff_logged_in'))
+          <a href="{{ route('login') }}">
+            <span id=""
+            class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+            <i class="fa-solid fa-user"></i>
+            </span>
           </a>
-          @if (session('role') === 'Quản lí')
-            <a href="{{ route('admin.dashboard') }}"
-              class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-              <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>
-              <span>Dashboard tổng quan</span>
-            </a>
-            <a href="{{ route('staff.dashboard') }}"
-              class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-              <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
-              <span>Quyền Nhân Viên</span>
-            </a>
-          @elseif (session('role') === 'Nhân viên')
-            <!-- Chỉ hiển thị với Nhân viên -->
-            <a href="{{ route('staff.dashboard') }}"
-              class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-              <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
-              <span>Quyền Nhân Viên</span>
-            </a>
-          @endif
-
-          <!-- Đăng xuất (ai cũng có thể thấy) -->
-          <a href="{{ route('logout') }}"
-            class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-            <i class="fa-solid fa-sign-out-alt text-red-500 w-4"></i>
-            <span>Đăng xuất</span>
+        @else
+          <span id="userIconToggle"
+            class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+            <i class="fa-solid fa-user"></i>
+          </span>
+        @endif
+        <!-- Dropdown -->
+        <div id="userDropdown"
+          class="absolute right-0 mt-2 w-64 bg-[#fff2e1] rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-50 hidden">
+          <div class="p-3">
+            <div class="mb-3">
+              <p class="text-sm font-semibold text-black">{{ session('fullname') }}</p>
+              <p class="text-xs text-gray-500">{{ session('email') }}</p>
+            </div>
+            <div class="space-y-2">
+              <!-- Dành cho Quản lí -->
+              <a href="{{ route('views.userdetail')}}" class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                <i class="fa-solid fa-user text-red-500 w-4"></i>
+                <span>Thông tin cá nhân</span>
+              </a>
+              @if (session('role') === '1')
+          <a href="{{ route('admin.dashboard') }}"
+          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+          <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>
+          <span>Dashboard tổng quan</span>
           </a>
+          <a href="{{ route('staff.dashboard') }}"
+          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+          <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
+          <span>Quyền Nhân Viên</span>
+          </a>
+        @elseif (session('role') === 'Nhân viên')
+          <!-- Chỉ hiển thị với Nhân viên -->
+          <a href="{{ route('staff.dashboard') }}"
+          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+          <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
+          <span>Quyền Nhân Viên</span>
+          </a>
+        @endif
+
+              <!-- Đăng xuất (ai cũng có thể thấy) -->
+              <a href="{{ route('logout') }}"
+                class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                <i class="fa-solid fa-sign-out-alt text-red-500 w-4"></i>
+                <span>Đăng xuất</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
   </div>
   <!-- Mobile Popup Menu -->
   <div id="mobileMenu" class="fixed inset-0 bg-black/60 z-50 hidden">
@@ -136,11 +144,11 @@
         <i class="fa-solid fa-times"></i>
       </button>
       <ul class="flex flex-col gap-2 mt-2 px-6 font-bold text-lg text-[#262248]">
-        <li><a href="{{ route('views.index') }}"  class="py-2 block">Home</a></li>
-        <li><a href="{{ route('views.about') }}"  class="py-2 block">About</a></li>
-        <li><a href="{{ route('views.menu') }}"  class="py-2 block">Menu</a></li>
-        <li><a href="{{ route('views.blog') }}"  class="py-2 block">Blog</a></li>
-        <li><a href="{{ route('views.contact') }}"class="py-2 block">Contact</a></li>
+        <li><a href="{{ route('views.index') }}" class="py-2 block">Home</a></li>
+        <li><a href="{{ route('views.about') }}" class="py-2 block">About</a></li>
+        <li><a href="{{ route('views.menu') }}" class="py-2 block">Menu</a></li>
+        <li><a href="{{ route('views.blog') }}" class="py-2 block">Blog</a></li>
+        <li><a href="{{ route('views.contact') }}" class="py-2 block">Contact</a></li>
       </ul>
       <div class="flex gap-3 px-6 mt-6">
         <a href="#"
