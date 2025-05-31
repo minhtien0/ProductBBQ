@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUA BE HOY</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,66 +27,11 @@
         };
     </script>
     <style>
-        .cart-popup:not(.hidden) {
-            display: flex;
-        }
-
-        img {
-            transition: transform 0.2s;
-        }
-
-        img:hover {
-            transform: scale(1.05);
-        }
-
-        button {
-            min-height: 44px;
-        }
-
-        .swiper-pagination-bullet {
-            background-color: #fff;
-            opacity: 0.5;
-        }
-
-        .swiper-pagination-bullet-active {
-            background-color: #e60012;
-            opacity: 1;
-        }
-
-        @media (max-width: 768px) {
-            .swiper-slide {
-                height: 200px !important;
-            }
-
-            .product-item {
-                width: 100% !important;
-            }
-
-            button {
-                min-height: 40px !important;
-            }
-
-            .cart-popup-content {
-                width: 95% !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            button {
-                min-height: 36px !important;
-                padding: 8px !important;
-            }
-
-            .swiper-slide {
-                height: 160px !important;
-            }
-        }
-
         /* Sale */
         .offer-section {
             background: #f4faef;
             padding: 24px 0;
-            border-radius: 15px
+
         }
 
         .offer-wrapper {
@@ -588,6 +534,7 @@
             max-width: 1000px;
             margin: 0 auto;
             margin-top: 20px;
+            margin-bottom: 50px;
             position: relative;
         }
 
@@ -600,10 +547,11 @@
             border-radius: 18px;
             padding: 38px 34px 20px 34px;
             color: #fff;
-            margin-top: 48px;
+            margin-top: 1px;
             position: relative;
             box-shadow: 0 6px 32px rgba(37, 34, 70, .10);
             border: 5px solid var(--primary);
+            
         }
 
         .testi-avatar-wrap {
@@ -805,685 +753,664 @@
                 gap: 30px;
             }
         }
+
+        /*  banner */
+        .bg-main-hero {
+            background: url('img/banner1.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .overlay-bg {
+            background: rgba(32, 39, 53, 0.67);
+            backdrop-filter: blur(2px);
+        }
+
+        /* Hide scrollbar for slider */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 
 </head>
 @include('layouts.user.header')
 
 <body class="bg-dark-bg text-white">
-    <div class="container  mx-auto px-4 py-8">
-        <!-- Promotion Section -->
-        <section class="promotion-section mb-4">
-            <div class="carousel-container w-1024px p-2  bg-gray-dark rounded-lg">
-                <div class="swiper h-64 lg:h-90 pt-0 pb-10">
-                    <div class="swiper-wrapper">
-                        <div
-                            class="swiper-slide flex flex-col justify-center p-4 bg-[url('img/banner1.jpg')] bg-cover bg-center rounded-lg">
-                            <h1 class="text-4xl md:text-2xl font-bold text-red-primary mb-2">ƯU ĐÃI CÓ HẠN<br><span
-                                    class="text-white">Buffet RỒNG LÂU -15%</span></h1>
-                            <p class="text-sm md:text-xs mb-2">Đặc biệt áp dụng từ 1/6 cho đến hết ngày 30/6</p>
-                            <div class="price-box flex gap-2 mb-4">
-                                <div class="bg-red-primary p-2 rounded text-center">
-                                    <p class="text-xs text-white">Ưu đãi nổi bật</p>
-                                    <h3 class="text-lg md:text-base font-bold text-white">489.000</h3>
-                                </div>
-                                <div class="bg-red-primary p-2 rounded text-center">
-                                    <p class="text-xs text-white">Buffet chỉ từ</p>
-                                    <h3 class="text-lg md:text-base font-bold text-white">299.000</h3>
-                                </div>
-                                <div class="bg-red-primary p-2 rounded text-center">
-                                    <p class="text-xs text-white">Ưu đãi lớn</p>
-                                    <h3 class="text-lg md:text-base font-bold text-white">TẶNG BỘT</h3>
-                                </div>
-                            </div>
-                            <p class="text-xs md:text-[10px] mb-2">*áp dụng tại tất cả cửa hàng</p>
-                            <button
-                                class="bg-red-primary text-white p-2 rounded text-sm md:text-xs hover:bg-red-hover transition-colors w-32 md:w-28">XEM
-                                NGAY</button>
-                        </div>
-                        <div
-                            class="swiper-slide flex flex-col justify-center p-4 bg-[url('img/banner1.jpg')] bg-cover bg-center rounded-lg">
-                            <h1 class="text-4xl md:text-2xl font-bold text-red-primary mb-2">ƯU ĐÃI ĐẶC BIỆT<br><span
-                                    class="text-white">Buffet HÈ NÀY -10%</span></h1>
-                            <p class="text-sm md:text-xs mb-2">Áp dụng từ 15/5 đến 15/7</p>
-                            <div class="price-box flex gap-2 mb-4">
-                                <div class="bg-red-primary p-2 rounded text-center">
-                                    <p class="text-xs text-white">Giá mới</p>
-                                    <h3 class="text-lg md:text-base font-bold text-white">349.000</h3>
-                                </div>
-                                <div class="bg-red-primary p-2 rounded text-center">
-                                    <p class="text-xs text-white">Ưu đãi thêm</p>
-                                    <h3 class="text-lg md:text-base font-bold text-white">TẶNG NƯỚC</h3>
-                                </div>
-                            </div>
-                            <p class="text-xs md:text-[10px] mb-2">*Chỉ áp dụng tại một số chi nhánh</p>
-                            <button
-                                class="bg-red-primary text-white p-2 rounded text-sm md:text-xs hover:bg-red-hover transition-colors w-32 md:w-28">XEM
-                                NGAY</button>
-                        </div>
-                    </div>
-                    <div class="swiper-pagination text-right pr-4 md:pr-2"></div>
-                </div>
+    <!-- Delivery Section -->
+    <div class="relative min-h-[430px] md:min-h-[510px] bg-main-hero flex items-center justify-center">
+        <!-- Overlay -->
+        <div class="absolute inset-0 overlay-bg z-0"></div>
+        <!-- Content -->
+        <div
+            class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between w-full max-w-5xl px-6 py-8">
+            <!-- Left Text -->
+            <div class="md:max-w-[60%] text-white">
+                <div class="text-white-700 font-semibold text-base mb-1">Khơi Dậy Đam Mê BBQ</div>
+                <h1 class="text-2xl md:text-4xl font-bold leading-tight mb-2">Thưởng Thức BBQ Tuyệt Hảo<br>Cùng Bạn Bè &
+                    Gia Đình</h1>
+                <p class="text-sm md:text-base mb-6 text-gray-100">Khám phá thực đơn BBQ thơm ngon với các món nướng đậm
+                    vị, không gian ấm cúng, phục vụ tận tâm và ưu đãi hấp dẫn mỗi ngày.</p>
+                <!-- Search box -->
+                <form class="flex items-center gap-2 bg-white/80 rounded-full px-2 py-1 max-w-lg w-full shadow-lg">
+                    <input type="text" placeholder="Search…"
+                        class="flex-1 bg-transparent text-gray-900 px-3 py-2 rounded-l-full outline-none border-none placeholder-gray-400 text-sm">
+                    <button
+                        class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-full font-medium text-sm">Search</button>
+                </form>
             </div>
-        </section>
+            <!-- Right image circle + sale -->
+            <div class="relative mt-10 md:mt-0 md:ml-8 flex-shrink-0 flex items-center justify-center">
+                <!-- Circle image -->
+                <div
+                    class="relative w-36 h-36 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                    <img src="img/logo2.jpg" alt="Pasta" class="w-full h-full object-cover">
+                </div>
+                <!-- Sale badge -->
+                <span
+                    class="absolute -top-4 -left-4 bg-red-600 text-white font-bold text-xs px-4 py-2 rounded-full z-10 shadow-md">
+                    35%<br>off
+                </span>
+            </div>
+        </div>
+    </div>
 
-        <!-- Delivery Section -->
-        <section class="flex flex-col lg:flex-row gap-4 mb-8">
-            <div class="w-full lg:w-1/3 bg-white text-black p-4 rounded-lg">
-                <img src="img/combo/3.jpg" class="w-full rounded mb-2">
-                <h2 class="text-xl lg:text-2xl font-bold">COMBO NGON SHIP TẬN TAY</h2>
-            </div>
-            <div class="w-full lg:w-2/3 bg-gray-dark p-4 rounded-lg">
-                <h3 class="text-xl lg:text-2xl text-red-primary">Gói Gyu Ngay - Ship Tận Tay</h3>
-                <ul class="list-none text-sm lg:text-base text-gray-light">
-                    <li>Giao 30-45 phút</li>
-                    <li>Miễn ship từ 300k</li>
-                </ul>
-                <button
-                    class="bg-red-primary text-white py-2 px-4 rounded w-full lg:w-auto hover:bg-red-hover transition mt-4">ĐẶT
-                    NGAY</button>
-            </div>
-        </section>
-
-        <!-- Menu Sale -->
-        <section>
-            <div class="offer-section bg-gray-dark">
-                <div class="offer-wrapper">
-                    <div
-                        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-                        <div>
-                            <span style="color:rgb(230 0 18); font-weight:bold; font-size:18px;">Daily Offer</span>
-                            <h2 style="font-size:1.4rem; color:#fff; font-weight:900; margin:10px 0 0 0;">Up To 75%
-                                Off For This Day</h2>
-                        </div>
-                        <div class="swiper-buttons">
-                            <button class="swiper-button-prev">&#8592;</button>
-                            <button class="swiper-button-next">&#8594;</button>
-                        </div>
-                    </div>
-                    <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
-                            <!-- Card 1 -->
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/danhmuc1/combogiadinh.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">40%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Beef
-                                    Masala</h3>
-                                <p style="color:#888;font-size:0.93rem;">Combo Dành cho gia đình</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                            <!-- Card 2 -->
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/danhmuc1/suon.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">55%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                                    Makhani</h3>
-                                <p style="color:#888;font-size:0.93rem;">Sườn.</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/danhmuc1/suon6mon.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">55%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                                    Makhani</h3>
-                                <p style="color:#888;font-size:0.93rem;">Sườn 6 món</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/danhmuc1/suontang.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">55%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                                    Makhani</h3>
-                                <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                                    aspernatur aut odit aut.</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/danhmuc1/suonxe.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">55%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                                    Makhani</h3>
-                                <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                                    aspernatur aut odit aut.</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/combo/1.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">55%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                                    Makhani</h3>
-                                <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                                    aspernatur aut odit aut.</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/combo/3.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">55%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                                    Makhani</h3>
-                                <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                                    aspernatur aut odit aut.</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/combo/4.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">55%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                                    Makhani</h3>
-                                <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                                    aspernatur aut odit aut.</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div style="position:relative;">
-                                    <img src="img/combo/3.jpg"
-                                        style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                                    <span class="product-img-badge">55%<br>Off</span>
-                                </div>
-                                <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                                    Makhani</h3>
-                                <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                                    aspernatur aut odit aut.</p>
-                                <div style="display:flex;gap:8px;margin-top:10px;">
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-shopping-basket"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-heart"></i></span>
-                                    <span
-                                        style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                            class="fa fa-eye"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Menu Sale -->
+    <div class="offer-section bg-gray-dark">
+        <div class="offer-wrapper">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <div>
+                    <span style="color:rgb(230 0 18); font-weight:bold; font-size:18px;">Daily Offer</span>
+                    <h2 style="font-size:1.4rem; color:#fff; font-weight:900; margin:10px 0 0 0;">Up To 75%
+                        Off For This Day</h2>
+                </div>
+                <div class="swiper-buttons">
+                    <button class="swiper-button-prev">&#8592;</button>
+                    <button class="swiper-button-next">&#8594;</button>
                 </div>
             </div>
-        </section>
-        <!--     Booking -->
-        <section>
-            <div class="booking-section">
-                <img class="booking-img" src="img/logo2.jpg" alt="Restaurant" />
-                <div class="booking-form-bg">
-                    <form class="booking-form">
-                        <h2>Book A Table</h2>
-                        <div class="booking-form-row">
-                            <div style="flex:1">
-                                <label>Name</label>
-                                <input type="text" placeholder="Name" required>
-                            </div>
-                            <div style="flex:1">
-                                <label>Email</label>
-                                <input type="email" placeholder="Email" required>
-                            </div>
-                        </div>
-                        <div class="booking-form-row">
-                            <div style="flex:1">
-                                <label>Phone</label>
-                                <input type="text" placeholder="Phone" required>
-                            </div>
-                            <div style="flex:1">
-                                <label>Select Date</label>
-                                <input type="date" placeholder="DD/MM/YYYY" required>
-                            </div>
-                        </div>
-                        <div class="booking-form-row">
-                            <div style="flex:1">
-                                <label>Select Time</label>
-                                <select required>
-                                    <option value="">Select</option>
-                                    <option>11:00 AM</option>
-                                    <option>12:00 PM</option>
-                                    <option>1:00 PM</option>
-                                    <option>2:00 PM</option>
-                                    <option>5:00 PM</option>
-                                    <option>6:00 PM</option>
-                                    <option>7:00 PM</option>
-                                    <option>8:00 PM</option>
-                                </select>
-                            </div>
-                            <div style="flex:1">
-                                <label>Select Person</label>
-                                <select required>
-                                    <option value="">Select</option>
-                                    <option>1 Person</option>
-                                    <option>2 People</option>
-                                    <option>3 People</option>
-                                    <option>4 People</option>
-                                    <option>5+ People</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit">Confirm</button>
-                    </form>
-                </div>
-            </div>
-        </section>
-        <!-- Directory -->
-        <section>
-            <div class="menu-section">
-                <div class="menu-header">
-                    <div>
-                        <span style="color:#e60012;font-weight:700;font-size:1.13em;">Food Menu <i
-                                class="fa-solid fa-seedling"></i></span>
-                        <div class="menu-title">Popular Delicious Foods</div>
-                    </div>
-                    <div class="menu-filters">
-                        <button class="active">All Menu</button>
-                        <button>Sườn</button>
-                        <button>Ba chỉ</button>
-                        <button>Món ăn kèm</button>
-                        <button>Nước uống</button>
-                    </div>
-                </div>
-                <div class="menu-grid">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
                     <!-- Card 1 -->
-                    <div class="menu-card">
-                        <img src="img/danhmuc1/suon.jpg" alt="">
-                        <span class="menu-badge">Biryani</span>
-                        <div class="menu-card-content">
-                            <div class="menu-card-title">Hyderabadi Biryani</div>
-                            <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
-                            </div>
-                            <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                            <div class="menu-card-footer">
-                                <button>Add To Cart</button>
-                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                            </div>
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/danhmuc1/combogiadinh.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">40%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Beef
+                            Masala</h3>
+                        <p style="color:#888;font-size:0.93rem;">Combo Dành cho gia đình</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
-                    <div class="menu-card">
-                        <img src="img/danhmuc1/suon.jpg" alt="">
-                        <span class="menu-badge">Biryani</span>
-                        <div class="menu-card-content">
-                            <div class="menu-card-title">Hyderabadi Biryani</div>
-                            <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
-                            </div>
-                            <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                            <div class="menu-card-footer">
-                                <button>Add To Cart</button>
-                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                            </div>
+                    <!-- Card 2 -->
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/danhmuc1/suon.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">55%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                            Makhani</h3>
+                        <p style="color:#888;font-size:0.93rem;">Sườn.</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
-                    <div class="menu-card">
-                        <img src="img/danhmuc1/suon.jpg" alt="">
-                        <span class="menu-badge">Biryani</span>
-                        <div class="menu-card-content">
-                            <div class="menu-card-title">Hyderabadi Biryani</div>
-                            <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
-                            </div>
-                            <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                            <div class="menu-card-footer">
-                                <button>Add To Cart</button>
-                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                            </div>
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/danhmuc1/suon6mon.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">55%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                            Makhani</h3>
+                        <p style="color:#888;font-size:0.93rem;">Sườn 6 món</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
-                    <div class="menu-card">
-                        <img src="img/danhmuc1/suon.jpg" alt="">
-                        <span class="menu-badge">Biryani</span>
-                        <div class="menu-card-content">
-                            <div class="menu-card-title">Hyderabadi Biryani</div>
-                            <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
-                            </div>
-                            <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                            <div class="menu-card-footer">
-                                <button>Add To Cart</button>
-                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                            </div>
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/danhmuc1/suontang.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">55%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                            Makhani</h3>
+                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
+                            aspernatur aut odit aut.</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
-                    <div class="menu-card">
-                        <img src="img/danhmuc1/suon.jpg" alt="">
-                        <span class="menu-badge">Biryani</span>
-                        <div class="menu-card-content">
-                            <div class="menu-card-title">Hyderabadi Biryani</div>
-                            <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
-                            </div>
-                            <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                            <div class="menu-card-footer">
-                                <button>Add To Cart</button>
-                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                            </div>
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/danhmuc1/suonxe.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">55%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                            Makhani</h3>
+                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
+                            aspernatur aut odit aut.</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
-                    <div class="menu-card">
-                        <img src="img/danhmuc1/suon.jpg" alt="">
-                        <span class="menu-badge">Biryani</span>
-                        <div class="menu-card-content">
-                            <div class="menu-card-title">Hyderabadi Biryani</div>
-                            <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
-                            </div>
-                            <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                            <div class="menu-card-footer">
-                                <button>Add To Cart</button>
-                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                            </div>
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/combo/1.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">55%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                            Makhani</h3>
+                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
+                            aspernatur aut odit aut.</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
-                    <div class="menu-card">
-                        <img src="img/danhmuc1/suon.jpg" alt="">
-                        <span class="menu-badge">Biryani</span>
-                        <div class="menu-card-content">
-                            <div class="menu-card-title">Hyderabadi Biryani</div>
-                            <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
-                            </div>
-                            <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                            <div class="menu-card-footer">
-                                <button>Add To Cart</button>
-                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                            </div>
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/combo/3.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">55%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                            Makhani</h3>
+                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
+                            aspernatur aut odit aut.</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
-                    <div class="menu-card">
-                        <img src="img/danhmuc1/suon.jpg" alt="">
-                        <span class="menu-badge">Biryani</span>
-                        <div class="menu-card-content">
-                            <div class="menu-card-title">Hyderabadi Biryani</div>
-                            <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
-                            </div>
-                            <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                            <div class="menu-card-footer">
-                                <button>Add To Cart</button>
-                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                            </div>
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/combo/4.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">55%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                            Makhani</h3>
+                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
+                            aspernatur aut odit aut.</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
-        </section>
-        <!--chefs -->
-        <section>
-            <div class="section text-center">
-                <div class="testi-subtitle">Testimonial <i class="fa-solid fa-seedling"></i></div>
-                <div class="testi-title">Our Customar Feedbacks</div>
-                <div class="testi-slider-wrap">
-                    <div class="testi-nav">
-                        <button class="testi-nav-btn swiper-button-prev"><i class="fa-solid fa-arrow-left"></i></button>
-                        <button class="testi-nav-btn swiper-button-next"><i
-                                class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                    <div class="swiper testiSwiper">
-                        <div class="swiper-wrapper">
-                            <!-- Slide 1 -->
-                            <div class="swiper-slide">
-                                <div class="testi-card">
-                                    <div class="testi-avatar-wrap">
-                                        <img src="img/mtien2.jpg" class="testi-avatar" alt="">
-                                    </div>
-                                    <div style="display:flex;justify-content:center;align-items:center;">
-                                        <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
-                                        <span class="testi-name">NGUYỄN MINH TIẾN</span>
-                                    </div>
-                                    <div class="testi-pos">NYC MLB</div>
-                                    <div class="testi-content">
-                                        Khó tính, dễ dỗi, phân biệt vùng miền, chiều cao 1m75, cần nặng 67kg.
-                                    </div>
-                                    <div class="testi-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-regular fa-star"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 2 -->
-                            <div class="swiper-slide">
-                                <div class="testi-card">
-                                    <div class="testi-avatar-wrap">
-                                        <img src="img/hdong2.jpg" class="testi-avatar" alt="">
-                                    </div>
-                                    <div style="display:flex;justify-content:center;align-items:center;">
-                                        <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
-                                        <span class="testi-name">Nguyễn Huy Đông</span>
-                                    </div>
-                                    <div class="testi-pos">NYC USA</div>
-                                    <div class="testi-content">
-                                        Đẹp trai, vui tính, ăn nói lưu loát, chiều cao 1m69.5, cân nặng 66kg.
-                                    </div>
-                                    <div class="testi-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-regular fa-star"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 3 (sample) -->
-
+                    <div class="swiper-slide">
+                        <div style="position:relative;">
+                            <img src="img/combo/3.jpg"
+                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+                            <span class="product-img-badge">55%<br>Off</span>
+                        </div>
+                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                            Makhani</h3>
+                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
+                            aspernatur aut odit aut.</p>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-shopping-basket"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-heart"></i></span>
+                            <span
+                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
+                                    class="fa fa-eye"></i></span>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Counter Section -->
-            <div class="counter-section">
-                <div class="counter-wrap">
-                    <div class="counter-item">
-                        <div class="counter-circle">
-                            <div class="counter-num">85,000 +</div>
-                            <div class="counter-icon"><i class="fa fa-users"></i></div>
+    <!--     Booking -->
+    <section>
+        <div class="booking-section">
+            <img class="booking-img" src="img/logo2.jpg" alt="Restaurant" />
+            <div class="booking-form-bg">
+                <form class="booking-form">
+                    <h2>Book A Table</h2>
+                    <div class="booking-form-row">
+                        <div style="flex:1">
+                            <label>Name</label>
+                            <input type="text" placeholder="Name" required>
                         </div>
-                        <div class="counter-label">Customer Serve</div>
+                        <div style="flex:1">
+                            <label>Email</label>
+                            <input type="email" placeholder="Email" required>
+                        </div>
                     </div>
-                    <div class="counter-item">
-                        <div class="counter-circle">
-                            <div class="counter-num">120 +</div>
-                            <div class="counter-icon"><i class="fa fa-hat-chef"></i></div>
+                    <div class="booking-form-row">
+                        <div style="flex:1">
+                            <label>Phone</label>
+                            <input type="text" placeholder="Phone" required>
                         </div>
-                        <div class="counter-label">Experience Chef</div>
+                        <div style="flex:1">
+                            <label>Select Date</label>
+                            <input type="date" placeholder="DD/MM/YYYY" required>
+                        </div>
                     </div>
-                    <div class="counter-item">
-                        <div class="counter-circle">
-                            <div class="counter-num">72,000 +</div>
-                            <div class="counter-icon"><i class="fa fa-face-smile"></i></div>
+                    <div class="booking-form-row">
+                        <div style="flex:1">
+                            <label>Select Time</label>
+                            <select required>
+                                <option value="">Select</option>
+                                <option>11:00 AM</option>
+                                <option>12:00 PM</option>
+                                <option>1:00 PM</option>
+                                <option>2:00 PM</option>
+                                <option>5:00 PM</option>
+                                <option>6:00 PM</option>
+                                <option>7:00 PM</option>
+                                <option>8:00 PM</option>
+                            </select>
                         </div>
-                        <div class="counter-label">Happy Customer</div>
+                        <div style="flex:1">
+                            <label>Select Person</label>
+                            <select required>
+                                <option value="">Select</option>
+                                <option>1 Person</option>
+                                <option>2 People</option>
+                                <option>3 People</option>
+                                <option>4 People</option>
+                                <option>5+ People</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="counter-item">
-                        <div class="counter-circle">
-                            <div class="counter-num">30 +</div>
-                            <div class="counter-icon"><i class="fa fa-trophy"></i></div>
+                    <button type="submit">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Directory -->
+    <section>
+        <div class="menu-section">
+            <div class="menu-header">
+                <div>
+                    <span style="color:#e60012;font-weight:700;font-size:1.13em;">Food Menu <i
+                            class="fa-solid fa-seedling"></i></span>
+                    <div class="menu-title">Popular Delicious Foods</div>
+                </div>
+                <div class="menu-filters">
+                    <button class="active">All Menu</button>
+                    <button>Sườn</button>
+                    <button>Ba chỉ</button>
+                    <button>Món ăn kèm</button>
+                    <button>Nước uống</button>
+                </div>
+            </div>
+            <div class="menu-grid">
+                <!-- Card 1 -->
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
                         </div>
-                        <div class="counter-label">Winning Award</div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+    </section>
+    <!--chefs -->
+    <section>
+        <div class="section text-center">
+            <div class="testi-subtitle">Testimonial <i class="fa-solid fa-seedling"></i></div>
+            <div class="testi-title">Our Customar Feedbacks</div>
+            <div class="testi-slider-wrap">
+                <div class="testi-nav">
+                    <button class="testi-nav-btn swiper-button-prev"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button class="testi-nav-btn swiper-button-next"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <div class="swiper testiSwiper">
+                    <div class="swiper-wrapper">
+                        <!-- Slide 1 -->
+                        <div class="swiper-slide">
+                            <div class="testi-card">
+                                <div class="testi-avatar-wrap">
+                                    <img src="img/mtien2.jpg" class="testi-avatar" alt="">
+                                </div>
+                                <div style="display:flex;justify-content:center;align-items:center;">
+                                    <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
+                                    <span class="testi-name">NGUYỄN MINH TIẾN</span>
+                                </div>
+                                <div class="testi-pos">NYC MLB</div>
+                                <div class="testi-content">
+                                    Khó tính, dễ dỗi, phân biệt vùng miền, chiều cao 1m75, cần nặng 67kg.
+                                </div>
+                                <div class="testi-stars">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                        class="fa-regular fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="swiper-slide">
+                            <div class="testi-card">
+                                <div class="testi-avatar-wrap">
+                                    <img src="img/hdong2.jpg" class="testi-avatar" alt="">
+                                </div>
+                                <div style="display:flex;justify-content:center;align-items:center;">
+                                    <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
+                                    <span class="testi-name">Nguyễn Huy Đông</span>
+                                </div>
+                                <div class="testi-pos">NYC USA</div>
+                                <div class="testi-content">
+                                    Đẹp trai, vui tính, ăn nói lưu loát, chiều cao 1m69.5, cân nặng 66kg.
+                                </div>
+                                <div class="testi-stars">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                        class="fa-regular fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Slide 3 (sample) -->
+
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <!-- Counter Section -->
+        <div class="counter-section">
+            <div class="counter-wrap">
+                <div class="counter-item">
+                    <div class="counter-circle">
+                        <div class="counter-num">85,000 +</div>
+                        <div class="counter-icon"><i class="fa fa-users"></i></div>
+                    </div>
+                    <div class="counter-label">Customer Serve</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-circle">
+                        <div class="counter-num">120 +</div>
+                        <div class="counter-icon"><i class="fa fa-hat-chef"></i></div>
+                    </div>
+                    <div class="counter-label">Experience Chef</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-circle">
+                        <div class="counter-num">72,000 +</div>
+                        <div class="counter-icon"><i class="fa fa-face-smile"></i></div>
+                    </div>
+                    <div class="counter-label">Happy Customer</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-circle">
+                        <div class="counter-num">30 +</div>
+                        <div class="counter-icon"><i class="fa fa-trophy"></i></div>
+                    </div>
+                    <div class="counter-label">Winning Award</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
-        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-        <script>
-            new Swiper('.swiper', {
-                loop: true,
-                pagination: { el: '.swiper-pagination', clickable: true },
-                autoplay: { delay: 5000 }
-            });
-            //banner
-            var swiper = new Swiper('.swiper', {
-                loop: true,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script>
+        // Sale slider
+        var swiperSale = new Swiper('.mySwiper', {
+            slidesPerView: 2,
+            spaceBetween: 18,
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                0: {
+                    slidesPerView: 1.1,
+                    spaceBetween: 10,
                 },
-                autoplay: {
-                    delay: 5000,
-                    disableOnInteraction: false,
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 18,
                 },
-            });
-            //sale
-            var swiper = new Swiper('.mySwiper', {
-                slidesPerView: 2,
-                spaceBetween: 18,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 24,
                 },
-                breakpoints: {
-                    0: { slidesPerView: 1.1, spaceBetween: 10 },
-                    640: { slidesPerView: 2, spaceBetween: 18 },
-                    1024: { slidesPerView: 3, spaceBetween: 24 },
-                },
-            });
-            /*  //chefs
-                  var swiper = new Swiper('.testiSwiper', {
-                      slidesPerView: 2,
-                      spaceBetween: 32,
-                      navigation: {
-                          nextEl: '.swiper-button-next',
-                          prevEl: '.swiper-button-prev',
-                      },
-                      breakpoints: {
-                          0: { slidesPerView: 1 },
-                          900: { slidesPerView: 2 }
-                      },
-                      loop: true,
-                      autoplay: { delay: 7000 },
-                  });
-
-        </script>
+            },
+        });
+        //chefs
+        var swiperTesti = new Swiper('.testiSwiper', {
+            slidesPerView: 2,
+            spaceBetween: 32,
+            loop: true,
+            autoplay: {
+                delay: 7000,
+                disableOnInteraction: false
+            },
+            navigation: {
+                nextEl: '.testi-nav-btn.swiper-button-next',
+                prevEl: '.testi-nav-btn.swiper-button-prev',
+            },
+            breakpoints: {
+                0: { slidesPerView: 1 },
+                900: { slidesPerView: 2 }
+            }
+        });
+    </script>
 </body>
 @include('layouts.user.footer')
 

@@ -39,6 +39,12 @@ Route::get('menu', [HomeController::class, 'menu'])->name('views.menu');
 Route::get('blog', [HomeController::class, 'blog'])->name('views.blog');
 //Contact
 Route::get('contact', [HomeController::class, 'contact'])->name('views.contact');
+//MenuDetail
+Route::get('menudetail', [HomeController::class, 'menudetail'])->name('views.menudetail');
+//BlogDetail
+Route::get('blogdetail', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
+//UserDetail
+Route::get('userdetail', [HomeController::class, 'userdetail'])->name('views.userdetail');
 
 //huydong test layout quản lí bàn
 Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.deskmanage');

@@ -32,6 +32,19 @@ class HomeController extends Controller
     {
         return view('contact');
     }
+    public function menudetail()
+    {
+        return view('menudetail');
+    }
+    public function  blogdetail()
+    {
+        return view('blogdetail');
+    }
+    public function  userdetail()
+    {
+        return view('userdetail');
+    }
+    
     public function deskmanage(){
         return view('deskmanage');
     }
