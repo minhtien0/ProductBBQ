@@ -1,171 +1,177 @@
 @extends('admin.index')
 @section('content')
-    <div class="flex">
+    <form action="{{ route('admin.user.update', $user->id) }}" method="POST" enctype="multipart/form-data"
+        class="flex w-full">
+        @csrf
         <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm p-6 mt-3">
-            <h1 class="text-lg font-bold text-gray-800 mb-6">Thêm sản phẩm mới</h1>
+            <h1 class="text-lg font-bold text-gray-800 mb-6">Sửa Thông Tin Khách Hàng</h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <!-- Product Name -->
                 <div>
-                    <label for="productName" class="block text-xs font-medium text-gray-700 mb-1">TÊN SẢN PHẨM</label>
-                    <input type="text" id="productName" name="productName"
+                    <label for="user" class="block text-xs font-medium text-gray-700 mb-1">Tên Đăng Nhập</label>
+                    <input type="text" id="user" name="user" value="{{ old('user', $user->user) }}"
+                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        readonly>
+                </div>
+                <div>
+                    <label for="email" class="block text-xs font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}"
                         class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
+            </div>
 
-                <!-- SKU -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                    <label for="sku" class="block text-xs font-medium text-gray-700 mb-1">MÃ SKU</label>
-                    <input type="text" id="sku" name="sku"
+                    <label for="fullname" class="block text-xs font-medium text-gray-700 mb-1">Họ và tên</label>
+                    <input type="text" id="fullname" name="fullname" value="{{ old('fullname', $user->fullname) }}"
+                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="sdt" class="block text-xs font-medium text-gray-700 mb-1">Số điện thoại</label>
+                    <input type="text" id="sdt" name="sdt" value="{{ old('sdt', $user->sdt) }}"
                         class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
 
-            <!-- Product Description -->
-            <div class="mb-6">
-                <label for="description" class="block text-xs font-medium text-gray-700 mb-1">MÔ TẢ SẢN PHẨM</label>
-                <div class="border border-gray-300 rounded-md">
-                    <!-- Toolbar -->
-                    <div class="flex flex-wrap items-center gap-1 p-2 border-b border-gray-200 bg-gray-50">
-                        <button class="p-1 hover:bg-gray-200 rounded"><i class="fa-solid fa-bold"></i></button>
-                        <button class="p-1 hover:bg-gray-200 rounded"><i class="fa-solid fa-italic"></i></button>
-                        <button class="p-1 hover:bg-gray-200 rounded"><i class="fa-solid fa-underline"></i></button>
-                        <span class="border-r border-gray-300 h-6 mx-1"></span>
-                        <button class="p-1 hover:bg-gray-200 rounded"><i class="fa-solid fa-list"></i></button>
-                        <button class="p-1 hover:bg-gray-200 rounded"><i class="fa-solid fa-list-ol"></i></button>
-                        <span class="border-r border-gray-300 h-6 mx-1"></span>
-                        <button class="p-1 hover:bg-gray-200 rounded"><i class="fa-solid fa-image"></i></button>
-                        <button class="p-1 hover:bg-gray-200 rounded"><i class="fa-solid fa-link"></i></button>
-                    </div>
-
-                    <!-- Editor Area -->
-                    <div class="p-3 min-h-32">
-                        <textarea id="description" name="description"
-                            class="w-full min-h-24 border-0 focus:ring-0 focus:outline-none"
-                            placeholder="Nhập mô tả sản phẩm..."></textarea>
-                    </div>
-                </div>
-            </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <!-- Warehouse -->
                 <div>
-                    <label for="warehouse" class="block text-xs font-medium text-gray-700 mb-1">KHO HÀNG</label>
-                    <select id="warehouse" name="warehouse"
-                        class="w-full px-3 py-2 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Chọn kho hàng</option>
-                        <option value="kho1">Kho Hà Nội</option>
-                        <option value="kho2">Kho Hồ Chí Minh</option>
-                        <option value="kho3">Kho Đà Nẵng</option>
-                    </select>
+                    <label for="birthday" class="block text-xs font-medium text-gray-700 mb-1">Ngày sinh</label>
+                    <input type="date" id="birthday" name="birthday"
+                        value="{{ old('birthday', $user->birthday ? \Carbon\Carbon::parse($user->birthday)->format('Y-m-d') : '') }}"
+                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-
-                <!-- Product Status -->
                 <div>
-                    <label for="status" class="block text-xs font-medium text-gray-700 mb-1">TRẠNG THÁI SẢN PHẨM</label>
-                    <select id="status" name="status"
+                    <label for="gender" class="block text-xs font-medium text-gray-700 mb-1">Giới tính</label>
+                    <select id="gender" name="gender"
                         class="w-full text-xs px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Chọn trạng thái</option>
-                        <option value="active">Đang bán</option>
-                        <option value="outofstock">Hết hàng</option>
-                        <option value="discontinued">Ngừng kinh doanh</option>
+                        <option value="">Chọn giới tính</option>
+                        <option value="Nam" {{ old('gender', $user->gender) == 'Nam' ? 'selected' : '' }}>Nam</option>
+                        <option value="Nữ" {{ old('gender', $user->gender) == 'Nữ' ? 'selected' : '' }}>Nữ</option>
+                        <option value="Khác" {{ old('gender', $user->gender) == 'Khác' ? 'selected' : '' }}>Khác</option>
                     </select>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <!-- Category -->
-                <div>
-                    <label for="category" class="block text-xs font-medium text-gray-700 mb-1">DANH MỤC SẢN PHẨM</label>
-                    <select id="category" name="category"
-                        class="w-full text-xs px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">--- Chọn ---</option>
-                        <option value="cat1">Điện thoại</option>
-                        <option value="cat2">Máy tính</option>
-                        <option value="cat3">Thiết bị điện tử</option>
-                    </select>
+            <h3 class="text-base font-bold mb-2 mt-6">Địa Chỉ Mặc Định</h3>
+            <div class="bg-gray-50 rounded p-3 mb-3">
+                <input type="hidden" name="addresses[0][id]" value="{{ $addresses ? $addresses->id : '' }}">
+                <div class="mb-2">
+                    <label class="text-xs">Tên người nhận</label>
+                    <input type="text" name="addresses[0][name]"
+                        value="{{ old('addresses.0.name', $addresses ? $addresses->name : '') }}"
+                        class="w-full border rounded p-2">
                 </div>
-
-                <!-- Product Type -->
+                <div class="mb-2">
+                    <label class="text-xs">SĐT</label>
+                    <input type="text" name="addresses[0][sdt]"
+                        value="{{ old('addresses.0.sdt', $addresses ? $addresses->sdt : '') }}"
+                        class="w-full border rounded p-2">
+                </div>
+                <div class="mb-2">
+                    <label class="text-xs">Số nhà</label>
+                    <input type="text" name="addresses[0][house_number]"
+                        value="{{ old('addresses.0.house_number', $addresses ? $addresses->house_number : '') }}"
+                        class="w-full border rounded p-2">
+                </div>
+                <div class="mb-2">
+                    <label class="text-xs">Phường</label>
+                    <input type="text" name="addresses[0][ward]"
+                        value="{{ old('addresses.0.ward', $addresses ? $addresses->ward : '') }}"
+                        class="w-full border rounded p-2">
+                </div>
+                <div class="mb-2">
+                    <label class="text-xs">Quận/Huyện</label>
+                    <input type="text" name="addresses[0][district]"
+                        value="{{ old('addresses.0.district', $addresses ? $addresses->district : '') }}"
+                        class="w-full border rounded p-2">
+                </div>
+                <div class="mb-2">
+                    <label class="text-xs">Tỉnh/Thành</label>
+                    <input type="text" name="addresses[0][city]"
+                        value="{{ old('addresses.0.city', $addresses ? $addresses->city : '') }}"
+                        class="w-full border rounded p-2">
+                </div>
+                <div class="mb-2">
+                    <label class="text-xs">Ghi chú</label>
+                    <input type="text" name="addresses[0][note]"
+                        value="{{ old('addresses.0.note', $addresses ? $addresses->note : '') }}"
+                        class="w-full border rounded p-2">
+                </div>
                 <div>
-                    <label for="productType" class="block text-xs font-medium text-gray-700 mb-1">THẺ SẢN PHẨM</label>
-                    <select id="productType" name="productType"
-                        class="w-full text-xs px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">--- Chọn ---</option>
-                        <option value="type1">Sản phẩm mới</option>
-                        <option value="type2">Khuyến mãi</option>
-                        <option value="type3">Bán chạy</option>
-                    </select>
+                    <label><input type="checkbox" name="addresses[0][default]" value="1" {{ old('addresses.0.default', $addresses ? $addresses->default : 1) ? 'checked' : '' }}>
+                        Địa chỉ mặc định
+                    </label>
                 </div>
             </div>
         </div>
-        <!--Phần nút chức năng-->
+
+        <!-- Sidebar -->
         <div class="w-64 ml-3 space-y-3">
-        <!-- Action buttons -->
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 mt-3">
-            <div class="flex flex-col space-y-2">
-                <button type="submit" class="w-full px-2 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-200 flex items-center justify-center">
-                    <i class="fa-solid fa-plus mr-1"></i> Thêm sản phẩm
-                </button>
-                <button type="button" class="w-full px-2 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-all duration-200">
-                    Hủy
-                </button>
-            </div>
-        </div>
-        
-        <!-- Product Image -->
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-            <label class="block text-xs font-medium text-gray-700 mb-2">HÌNH ẢNH SẢN PHẨM</label>
-            <div class="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4">
-                <div class="text-center">
-                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 mb-2"></i>
-                    <p class="text-xs text-gray-500">Kéo thả hoặc nhấp vào đây</p>
-                    <p class="text-xs text-gray-400">PNG, JPG, GIF tối đa 10MB</p>
-                    <input type="file" class="hidden" id="productImage" name="productImage">
-                    <button type="button" class="mt-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-all duration-200" onclick="document.getElementById('productImage').click()">
-                        Chọn tệp
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 mt-3">
+                <div class="flex flex-col space-y-2">
+                    <button type="submit"
+                        class="w-full px-2 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-200 flex items-center justify-center">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Lưu
                     </button>
+                    <a href="{{ route('admin.user.list') }}">
+                        <button type="button"
+                            class="w-full px-2 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-all duration-200">
+                            <i class="fa-regular fa-rectangle-xmark mr-2"></i>Hủy
+                        </button>
+                    </a>
                 </div>
+            </div>
+            <!-- Avatar -->
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+                <label class="block text-xs font-medium text-gray-700 mb-2">Ảnh đại diện</label>
+                <div class="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4">
+                    <div class="text-center">
+                        @if ($user->avatar)
+                            <div class="mb-2 flex justify-center">
+                                <img src="{{ asset('img/' . $user->avatar) }}" alt="Avatar"
+                                    class="w-24 h-24 rounded-full object-cover">
+                            </div>
+                        @endif
+                        <input type="file" class="hidden" id="avatar" name="avatar" accept="image/*"
+                            onchange="previewImage(event)">
+                        <button type="button"
+                            class="mt-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-all duration-200"
+                            onclick="document.getElementById('avatar').click()">
+                            Chọn tệp
+                        </button>
+                        
+                        <img id="preview-img" src="#" alt="Ảnh xem trước"
+                            class="w-24 h-24 rounded-full object-cover mx-auto mb-2 hidden">
+                    </div>
+                </div>
+            </div>
+            <!-- Role -->
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+                <label for="role" class="block text-xs font-medium text-gray-700 mb-1">Vai trò</label>
+                <select id="role" name="role"
+                    class="w-full text-xs px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Chọn vai trò</option>
+                    <option selected value="Khách Hàng" {{ old('role', $user->role) == 'Khách Hàng' ? 'selected' : '' }}>Khách
+                        Hàng</option>
+                    <option value="Admin" {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin</option>
+                </select>
             </div>
         </div>
+    </form>
 
-        <!-- Pricing -->
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-            <h3 class="text-xs font-medium text-gray-700 mb-3">THÔNG TIN GIÁ</h3>
-            
-            <!-- Product Price -->
-            <div class="mb-3">
-                <label for="price" class="block text-xs font-medium text-gray-700 mb-1">GIÁ SẢN PHẨM</label>
-                <div class="relative">
-                    <input type="number" id="price" name="price" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-6" placeholder="0">
-                    <span class="absolute left-2 top-2.5 text-gray-500">₫</span>
-                </div>
-            </div>
-
-            <!-- Promo Price -->
-            <div>
-                <label for="promoPrice" class="block text-xs font-medium text-gray-700 mb-1">GIÁ KHUYẾN MÃI</label>
-                <div class="relative">
-                    <input type="number" id="promoPrice" name="promoPrice" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-6" placeholder="0">
-                    <span class="absolute left-2 top-2.5 text-gray-500">₫</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Product Visibility -->
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-            <h3 class="text-xs font-medium text-gray-700 mb-3">HIỂN THỊ</h3>
-            <div class="space-y-2">
-                <div class="flex items-center">
-                    <input type="checkbox" id="featured" name="featured" class="h-4 w-4 text-blue-600 focus:ring-blue-500">
-                    <label for="featured" class="ml-2 text-sm text-gray-700">Sản phẩm nổi bật</label>
-                </div>
-                <div class="flex items-center">
-                    <input type="checkbox" id="homepage" name="homepage" class="h-4 w-4 text-blue-600 focus:ring-blue-500">
-                    <label for="homepage" class="ml-2 text-sm text-gray-700">Hiển thị trang chủ</label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </div>
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('preview-img');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+    <x-notification-popup />
+    <script src="{{ asset('js/notification.js') }}"></script>
 @endsection

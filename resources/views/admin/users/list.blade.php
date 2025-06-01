@@ -2,25 +2,7 @@
 @section('content')
 
     <!-- Content -->
-    <div class="w-full bg-white mt-4">
-        <!--Nút chọn loại nhân viên-->
-        <div class="flex px-5 py-3">
-            <span>
-                <button class="w-24 h-10 rounded shadow-xl text-sm mr-4 bg-white hover:bg-gray-400">
-                <i class="fa-solid fa-user-group"></i> Nhân viên
-                </button>
-            </span>
-            <span>
-            <button class="w-40 h-10 rounded shadow-xl text-sm mr-4  bg-white hover:bg-gray-400">
-            <i class="fa-solid fa-users-viewfinder"></i> Nhân viên NGhỉ Phép
-                </button>
-            </span>
-            <span>
-            <button class="w-24 h-10 rounded shadow-xl text-sm  bg-white hover:bg-gray-400">
-            <i class="fa-solid fa-user-nurse"></i> Cấp quản lí
-                </button>
-            </span>
-        </div>
+    <div class="w-full bg-white ">
         <div class="px-5 py-3">
             <!-- Action buttons -->
             <div class="flex justify-between mb-4">
@@ -173,34 +155,21 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Mẫu import
-                    </button>
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Import
-                    </button>
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
                         Xuất file
                     </button>
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Thêm mới
-                    </button>
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
+                    <a href="{{ route('admin.user.create') }}">
+                        <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Thêm mới
+                        </button>
+                    </a>
+                    <button onclick="openPopupDelete('Bạn muốn muốn xóa người dùng này?')"
+                        class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -208,68 +177,134 @@
                         </svg>
                         Xóa
                     </button>
+                    
+                    <div id="PopupDelete"
+                        class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
+                        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+                            <!-- Header -->
+                            <div class="bg-gradient-to-r from-yellow-500 to-teal-600 px-6 py-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <h2 class="text-lg font-semibold text-white">Thông báo</h2>
+                                    </div>
+                                    <button onclick="closePopupDelete()"
+                                        class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="px-6 py-8 text-center">
+                                <div
+                                    class="w-16 h-16 bg-gradient-to-br from-yellow-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+
+                                <p id="Message" class="text-gray-700 text-base leading-relaxed mb-8"></p>
+
+                                <div class="flex justify-between space-x-4">
+                                    <button  type="submit" form="deleteForm"
+                                        class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-teal-600 text-white font-semibold rounded-lg hover:from-yellow-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                        Xác nhận
+                                    </button>
+                                    <button onclick="closePopupDelete()"
+                                        class="flex-1 px-6 py-3 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 font-semibold rounded-lg hover:from-gray-400 hover:to-gray-500 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                        Đóng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Table -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border-collapse">
-                    <thead class="bg-gray-500 text-white">
-                        <tr>
-                            <th class="w-12 py-1 px-2 text-left">
-                                <input type="checkbox" class="form-checkbox h-4 w-4">
-                            </th>
-                            <th class="py-1 px-2 text-left text-sm">Ảnh đại diện</th>
-                            <th class="py-1 px-2 text-left text-sm">Mã nhân viên</th>
-                            <th class="py-1 px-2 text-left text-sm">Tên nhân viên</th>
-                            <th class="py-1 px-2 text-left text-sm">Email nhân viên</th>
-                            <th class="py-1 px-2 text-left text-sm">Chức danh</th>
-                            <th class="py-1 px-2 text-left text-sm">Thấp đào tạo (%)</th>
-                            <th class="py-1 px-2 text-left text-sm">Đơn vị công tác</th>
-                            <th class="py-1 px-2 text-left text-sm">Đơn vị quản lý</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <form id="deleteForm" action="{{ route('admin.user.delete') }}" method="POST" class="mb-4">
+                @csrf
+                @method('DELETE')
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border-collapse">
+                        <thead class="bg-gray-500 text-white">
+                            <tr>
+                                <th class="w-12 py-1 px-2 text-left">
+                                    <input id="selectAll" type="checkbox" class="form-checkbox h-4 w-4">
+                                </th>
+                                <th class="py-1 px-2 text-left text-sm">Ảnh đại diện</th>
+                                <th class="py-1 px-2 text-left text-sm">Họ Và Tên</th>
+                                <th class="py-1 px-2 text-left text-sm">Email</th>
+                                <th class="py-1 px-2 text-left text-sm">Số Điện Thoại</th>
+                                <th class="py-1 px-2 text-left text-sm">Ngày Sinh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
+                                <tr class="bg-gray-50">
+                                    <td class="py-3 px-2 border-t border-gray-200">
+                                        <input name="ids[]" value="{{ $user->id }}" type="checkbox"
+                                            class="rowCheckbox form-checkbox h-4 w-4">
+                                    </td>
+                                    <td class="py-3 px-4 border-t border-gray-200">
+                                        <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-300">
 
-                        <tr class="bg-gray-50">
-                            <td class="py-3 px-2 border-t border-gray-200">
-                                <input type="checkbox" class="form-checkbox h-4 w-4">
-                            </td>
-                            <td class="py-3 px-4 border-t border-gray-200">
-                                <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-300">
+                                            @if($user->avatar)
+                                                <img src="{{ asset('img/' . $user->avatar) }}" alt=""
+                                                    class="w-full h-full object-cover">
+                                            @else
+                                                <img src="{{ asset('img/user.jpg') }}" alt="" class="w-full h-full object-cover">
+                                            @endif
 
-                                    <img src="{{ asset('img/user.jpg') }}" alt="" class="w-full h-full object-cover">
+                                            <div
+                                                class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                            </div>
 
-                                    <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                    </div>
-
-                                </div>
-                            </td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
-                                    href="{{ route('user.detail') }}">MT0123</a></td>
-                            <td class="py-1 px-2 border-t border-gray-200">
-                                <span class="text-gray-600">Nguyễn Minh Tiến</span>
-                            </td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">tiennguyen14700@gmail.com</td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">Quản Lí</td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">99</td>
-                            <td class="py-1 px-2 border-t border-gray-200">
-                                <div class="flex items-center">
-                                    <span class="text-gray-600">Cao Đẳng Cao Thắng</span>
-                                    <span
-                                        class="ml-1 text-gray-600 bg-gray-100 rounded-full h-5 w-5 flex items-center justify-center text-xs">i</span>
-                                </div>
-                            </td>
-                            <td class="py-1 px-2 border-t border-gray-200 text-gray-700">Puka</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
+                                            href="{{ route('admin.user.detail', $user->id) }}">{{ $user->fullname }}</a></td>
+                                    <td class="py-1 px-2 border-t border-gray-200">
+                                        <span class="text-gray-600">{{ $user->email }}</span>
+                                    </td>
+                                    <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $user->sdt }}</td>
+                                    <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $user->birthday }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </form>
         </div>
     </div>
+    <x-notification-popup />
+    <script src="{{ asset('js/notification.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+
+            selectAll.addEventListener('change', function () {
+                checkboxes.forEach(cb => cb.checked = this.checked);
+            });
+        });
+    </script>
 @endsection

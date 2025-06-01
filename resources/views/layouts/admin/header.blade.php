@@ -147,12 +147,12 @@
                     class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-70 hidden">
                     <div class="p-3">
                         <div class="mb-3">
-                            <p class="text-sm font-semibold">Admin Super</p>
-                            <p class="text-xs text-gray-500">superadmin@gmail.com</p>
+                            <p class="text-sm font-semibold">{{ session('fullname') }}</p>
+                            <p class="text-xs text-gray-500">{{ session('email') }}</p>
                         </div>
                         <div class="space-y-2">
                             {{-- Dành cho Quản lí --}}
-                            <a href="#"
+                            <a href="{{ route('views.userdetail') }}"
                                 class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                 <i class="fa-solid fa-user text-red-500 w-4"></i>
                                 <span>Thông tin cá nhân</span>
