@@ -50,6 +50,9 @@ Route::get('menudetail', [HomeController::class, 'menudetail'])->name('views.men
 Route::get('blogdetail', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
 //UserDetail
 Route::get('userdetail', [HomeController::class, 'userdetail'])->name('views.userdetail');
+Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update-profile');
+Route::post('/user/add-address', [UserController::class, 'addAaddress'])->name('user.add-address');
+
 
 //huydong test layout quản lí bàn
 Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.deskmanage');
