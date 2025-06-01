@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController\HomeAdminController;
-use App\Http\Controllers\AdminController\User;
+use App\Http\Controllers\AdminController\UserController;
 use App\Http\Controllers\AdminController\Rate;
 use App\Http\Controllers\AdminController\Staff\StaffController;
 use App\Http\Controllers\AdminController\Blog;
@@ -79,8 +79,12 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Htt
 
 
     Route::prefix('/user')->group(function () {
-        Route::get('/list', [User::class, 'index'])->name('user.list');
-        Route::get('/detail', [User::class, 'detail'])->name('user.detail');
+        Route::get('/', [UserController::class, 'index'])->name('admin.user.list');
+        Route::get('/detail/{id}', [UserController::class, 'detail'])->name('admin.user.detail');
+        Route::post('/update/{id}', [UserController::class, 'update'])->name('admin.user.update');
+        Route::get('/create', [UserController::class, 'create'])->name('admin.user.create');
+        Route::post('/store', [UserController::class, 'store'])->name('admin.user.store');
+        Route::delete('/delete', [UserController::class, 'delete'])->name('admin.user.delete');
 
     });
 
@@ -114,7 +118,7 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Htt
     });
 
     Route::prefix('/product')->group(function () {
-        Route::get('/', [User::class, 'index'])->name('user.list');
+        Route::get('/', [User::class, 'index'])->name('product.list');
         Route::get('/category', [Category::class, 'index'])->name('admin.product.category.index');
         Route::get('/combo', [Combo::class, 'index'])->name('admin.product.combo.index');
 
