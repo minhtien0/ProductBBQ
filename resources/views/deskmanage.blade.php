@@ -18,13 +18,16 @@
             'gray-light': '#ccc',
             'bg-main': '#191a2b'
           },
+          fontFamily: {
+            mont: ['Montserrat', 'sans-serif'],
+          }
         },
       },
     }
   </script>
 </head>
+<body class="bg-white min-h-screen font-mont">
 @include('layouts.admin.header')
-<body class="bg-white min-h-screen font-sans">
   <div class="max-w-[1300px] mx-auto flex flex-col md:flex-row gap-3 px-2 py-4">
     <!-- Khung bàn (trắng) -->
     <div class="bg-[#191a2b] flex-1 max-h-[410px] md:max-w-[200px] rounded-lg p-2 shadow-md flex flex-col mb-3 md:mb-0">

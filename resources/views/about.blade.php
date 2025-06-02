@@ -56,7 +56,7 @@
 }
 </style>
 
-<body class="font-mont">
+<body class="font-mont bg-gray-darker">
 @include('layouts.user.header')
     <!-- banner -->
      <section>
@@ -78,7 +78,7 @@
 </div>
      </section>
      <!-- about -->
-      <section><div class="flex flex-col lg:flex-row gap-14 items-center max-w-7xl mx-auto px-4 py-12 bg-white">
+      <section><div class="flex flex-col lg:flex-row gap-14 items-center max-w-7xl mx-auto px-4 py-12 bg-gray-darker">
   <!-- Left: Hình ảnh và Info -->
   <div class="relative flex-shrink-0 w-full lg:w-[420px]">
     <div class="rounded-[45px] overflow-hidden shadow-2xl border-8 border-white">
@@ -100,11 +100,11 @@
   <!-- Right: Nội dung -->
   <div class="flex-1 pt-24 lg:pt-0">
     <div class="flex items-center gap-2 mb-3">
-      <span class="text-[#ff8000] text-2xl font-extrabold italic" style="font-family:Montserrat,sans-serif;">About Company</span>
+      <span class="text-[#fff] text-2xl font-extrabold italic" style="font-family:Montserrat,sans-serif;">About Company</span>
       <img src="https://cdn-icons-png.flaticon.com/128/3792/3792085.png" class="w-10 h-7" alt="" />
     </div>
-    <h2 class="text-[#262248] font-extrabold text-3xl md:text-5xl mb-3" style="font-family:Montserrat,sans-serif;">Helathy Foods Provider</h2>
-    <p class="text-[#565656] text-lg mb-8" style="font-family:Poppins,sans-serif;">
+    <h2 class="text-[#C20000] font-extrabold text-3xl md:text-5xl mb-3" style="font-family:Montserrat,sans-serif;">Helathy Foods Provider</h2>
+    <p class="text-[#fff] text-lg mb-8" style="font-family:Poppins,sans-serif;">
       Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cupiditate aspernatur molestiae minima pariatur consequatur voluptate sapiente deleniti soluta,.
     </p>
     <!-- Features List -->
@@ -112,8 +112,8 @@
       <div class="flex items-start gap-5">
         <img src="https://cdn-icons-png.flaticon.com/128/4772/4772411.png" class="w-16 h-16" alt="">
         <div>
-          <div class="text-[#262248] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">Trusted Partner</div>
-          <div class="text-[#565656] text-base" style="font-family:Poppins,sans-serif;">
+          <div class="text-[#C20000] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">Trusted Partner</div>
+          <div class="text-[#fff] text-base" style="font-family:Poppins,sans-serif;">
             Lorem Ipsum Dolor Sit Amet Consectetur, Adipisicing Elit. Minus, Officiis Placeat Iusto Quasi Adipisci Impedit Delectus Beatae Ab Maxime.
           </div>
         </div>
@@ -121,8 +121,8 @@
       <div class="flex items-start gap-5">
         <img src="https://cdn-icons-png.flaticon.com/128/4772/4772411.png" class="w-16 h-16" alt="">
         <div>
-          <div class="text-[#262248] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">First Delivery</div>
-          <div class="text-[#565656] text-base" style="font-family:Poppins,sans-serif;">
+          <div class="text-[#C20000] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">First Delivery</div>
+          <div class="text-[#fff] text-base" style="font-family:Poppins,sans-serif;">
             Lorem Ipsum Dolor Sit Amet Consectetur, Adipisicing Elit. Minus, Officiis Placeat Iusto Quasi Adipisci Impedit Delectus Beatae Ab Maxime.
           </div>
         </div>
@@ -130,8 +130,8 @@
       <div class="flex items-start gap-5">
         <img src="https://cdn-icons-png.flaticon.com/128/4772/4772411.png" class="w-16 h-16" alt="">
         <div>
-          <div class="text-[#262248] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">Secure Payment</div>
-          <div class="text-[#565656] text-base" style="font-family:Poppins,sans-serif;">
+          <div class="text-[#C20000] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">Secure Payment</div>
+          <div class="text-[#fff] text-base" style="font-family:Poppins,sans-serif;">
             Lorem Ipsum Dolor Sit Amet Consectetur, Adipisicing Elit. Minus, Officiis Placeat Iusto Quasi Adipisci Impedit Delectus Beatae Ab Maxime.
           </div>
         </div>
@@ -142,7 +142,7 @@
 </section>
 <!-- vision -->
  <section>
- <div class="flex flex-col lg:flex-row bg-[#f4faf3] min-h-screen w-full">
+ <div class="flex flex-col lg:flex-row bg-gray-darker min-h-screen w-full">
   <!-- Trái: Vision, Mission, Goals -->
   <div class="flex-1 flex flex-col justify-center gap-8 px-4 py-12 md:pl-16 md:py-16 z-10">
     <!-- Item -->

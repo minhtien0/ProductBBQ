@@ -30,7 +30,7 @@
     };
   </script>
 </head>
-<body class="bg-dark-bg min-h-screen font-mont">
+<body class="bg-gray-light min-h-screen font-mont">
     @include('layouts.user.header')
     <!-- Banner -->
     <div class="relative w-full">

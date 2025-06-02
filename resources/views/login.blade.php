@@ -42,7 +42,6 @@
                 @if (session('success_login'))
                     <div class="text-green-400 text-center text-sm">{{ session('success_login') }}</div>
                 @endif
-
                 {{-- Hiển thị lỗi validation / login --}}
                 @if ($errors->any() && session('form') === 'login')
                     <div class="text-red-500 text-sm mb-2">
@@ -68,7 +67,6 @@
                     @error('username')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
-
                     {{-- Password --}}
                     <div class="relative">
                         <input 
@@ -110,7 +108,6 @@
                     </a>
                 </p>
             </div>
-
             {{-- ===== REGISTER FORM (ẩn mặc định) ===== --}}
             <div id="registerForm" class="w-full max-w-md hidden">
                 <h2 class="text-xl font-semibold text-center mb-4 text-[#FF3D3D]">Đăng ký</h2>

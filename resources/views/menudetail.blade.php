@@ -21,6 +21,9 @@
                         'gray-darker': '#444',
                         'gray-light': '#ccc',
                     },
+                    fontFamily: {
+            mont: ['Montserrat', 'sans-serif'],
+          }
                 },
             },
         };
@@ -28,7 +31,7 @@
     </head>
     <body>
     @include('layouts.user.header')
-<body>
+<body class="font-mont bg-gray-light">
 <div class="relative w-full">
   <!-- Background image (thay src thành ảnh của bạn nếu cần) -->
   <img src="img/banner1.jpg" alt="Menu Detail" class="w-full h-[260px] md:h-[360px] object-cover">

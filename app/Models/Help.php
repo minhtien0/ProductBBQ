@@ -18,6 +18,7 @@ class Help extends Model
         'email',
         'time',
         'content',
+        'name',
         'status',
     ];
 

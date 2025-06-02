@@ -43,12 +43,12 @@
   <div class="bg-white flex items-center justify-between px-3 md:px-10 py-0 ">
     <!-- Logo -->
     <div class="flex items-center gap-2">
-      <a>
+      <a href="{{ route('views.index') }}">
         <img class="w-50 h-20 object-contain" src="img/test1.png" alt="Logo">
       </a>
       <!-- <span class="text-[#e60012] text-3xl md:text-4xl"><i class="fa-solid fa-utensils"></i></span> -->
-      <span class="text-1xl md:text-2xl text-[#262248] font-family:Quicksand,sans-serif">LUA <br> BE HOY</span>
-    </div>
+      <a href="{{ route('views.index') }}"><span class="text-1xl md:text-2xl text-[#262248] font-family:Quicksand,sans-serif">LUA <br> BE HOY</span>
+    </div></a>
     <!-- Hamburger Mobile -->
     <button id="openMenu" class="md:hidden p-2 text-[#e60012] text-2xl" aria-label="Open Menu">
       <i class="fa-solid fa-bars"></i>
@@ -57,6 +57,7 @@
     <nav class="hidden md:flex flex-1 justify-center">
       <ul class="flex items-center gap-3 md:gap-8 font-semibold text-base md:text-lg">
         <li><a href="{{ route('views.index') }}" class="text-[#262248] hover:text-[#e60012] transition">Home</a></li>
+        <li><a href="{{ route('views.index') }}#booking"  class="text-[#262248] hover:text-[#e60012] transition">Booking</a></li>
         <li><a href="{{ route('views.about') }}" class="text-[#262248] hover:text-[#e60012] transition">About</a></li>
         <li><a href="{{ route('views.menu') }}" class="text-[#262248] hover:text-[#e60012] transition">Menu</a></li>
         <li><a href="{{ route('views.blog') }}" class="text-[#262248] hover:text-[#e60012] transition">Blog</a></li>
@@ -75,7 +76,6 @@
         <span
           class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
       </div>
-
       <!-- Biểu tượng Người dùng -->
       <div class="relative">
         @if (!session()->has('staff_logged_in'))
