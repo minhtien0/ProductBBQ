@@ -1,29 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUA BE HOY</title>
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'dark-bg': '#1a1a1a',
-                        'red-primary': '#e60012',
-                        'red-hover': '#cc0010',
-                        'gray-dark': '#333',
-                        'gray-darker': '#444',
-                        'gray-light': '#ccc',
-                    },
-                },
-            },
-        };
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA BE HOY</title>
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-bg': '#1a1a1a',
+            'red-primary': '#e60012',
+            'red-hover': '#cc0010',
+            'gray-dark': '#333',
+            'gray-darker': '#444',
+            'gray-light': '#ccc',
+            'main-red': '#ff7c09',
+            'main-red':'#e60012',
+          },
+          fontFamily: {
+            mont: ['Montserrat', 'sans-serif'],
+          }
+        },
+      },
+    };
+  </script>
 </head>
 <style>
     /* about */
@@ -50,8 +55,9 @@
   .rounded-\[40px\] { border-radius: 18px !important;}
 }
 </style>
+
+<body class="font-mont">
 @include('layouts.user.header')
-<body>
     <!-- banner -->
      <section>
      <div class="relative w-full">
