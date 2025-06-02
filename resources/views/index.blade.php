@@ -21,6 +21,7 @@
                         'gray-dark': '#333',
                         'gray-darker': '#444',
                         'gray-light': '#ccc',
+                        'back-g':'#1a1a1a',
                     },
                 },
             },
@@ -294,7 +295,7 @@
         }
 
         .menu-section {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 30px 10px;
         }
@@ -689,15 +690,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #fff;
+            color: black;
             margin-bottom: 20px;
         }
 
         .counter-circle {
-            border: 2px dashed #fff8;
+            border: 2px dashed black;
             border-radius: 50%;
-            width: 128px;
-            height: 128px;
+            width: 130px;
+            height: 130px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -731,7 +732,7 @@
         .counter-label {
             font-size: 1.07rem;
             font-weight: 600;
-            color: #ffdca8;
+            color:#ff8000;
             margin-top: 18px;
             letter-spacing: 0.2px;
         }
@@ -779,8 +780,7 @@
 
 </head>
 @include('layouts.user.header')
-
-<body class="bg-dark-bg text-white">
+<body class="bg-gray-light text-white">
     <!-- Delivery Section -->
     <div class="relative min-h-[430px] md:min-h-[510px] bg-main-hero flex items-center justify-center">
         <!-- Overlay -->
@@ -818,14 +818,186 @@
             </div>
         </div>
     </div>
+      <!-- Directory -->
+      <section>
+        <div class="menu-section">
+            <div class="menu-header">
+                <div>
+                    <span style="color:#e60012;font-weight:700;font-size:1.13em;">Food Menu <i
+                            class="fa-solid fa-seedling"></i></span>
+                    <div class="menu-title text-back-g">Popular Delicious Foods</div>
+                </div>
+                <div class="menu-filters">
+                    <button class="active">All Menu</button>
+                    <button>Sườn</button>
+                    <button>Ba chỉ</button>
+                    <button>Món ăn kèm</button>
+                    <button>Nước uống</button>
+                </div>
+            </div>
+            <div class="menu-grid">
+                <!-- Card 1 -->
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card">
+                    <img src="img/danhmuc1/suon.jpg" alt="">
+                    <span class="menu-badge">Biryani</span>
+                    <div class="menu-card-content">
+                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            <span>24</span>
+                        </div>
+                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-footer">
+                            <button>Add To Cart</button>
+                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+    </section>
 
     <!-- Menu Sale -->
-    <div class="offer-section bg-gray-dark">
+    <div class="offer-section bg-gray-light">
         <div class="offer-wrapper">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
                 <div>
                     <span style="color:rgb(230 0 18); font-weight:bold; font-size:18px;">Daily Offer</span>
-                    <h2 style="font-size:1.4rem; color:#fff; font-weight:900; margin:10px 0 0 0;">Up To 75%
+                    <h2 class="text-back-g" style="font-size:1.4rem; font-weight:900; margin:10px 0 0 0; ">Up To 75%
                         Off For This Day</h2>
                 </div>
                 <div class="swiper-buttons">
@@ -1012,15 +1184,15 @@
                     </div>
                     <div class="swiper-slide">
                         <div style="position:relative;">
-                            <img src="img/combo/3.jpg"
+                            <img src="img/combo/3.jpg" 
                                 style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
                             <span class="product-img-badge">55%<br>Off</span>
                         </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
+                        <h3 id="booking" style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
                             Makhani</h3>
                         <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
                             aspernatur aut odit aut.</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
+                        <div  style="display:flex;gap:8px;margin-top:10px;">
                             <span
                                 style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
                                     class="fa fa-shopping-basket"></i></span>
@@ -1035,7 +1207,8 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div >
+
 
     <!--     Booking -->
     <section>
@@ -1096,183 +1269,12 @@
             </div>
         </div>
     </section>
-    <!-- Directory -->
-    <section>
-        <div class="menu-section">
-            <div class="menu-header">
-                <div>
-                    <span style="color:#e60012;font-weight:700;font-size:1.13em;">Food Menu <i
-                            class="fa-solid fa-seedling"></i></span>
-                    <div class="menu-title">Popular Delicious Foods</div>
-                </div>
-                <div class="menu-filters">
-                    <button class="active">All Menu</button>
-                    <button>Sườn</button>
-                    <button>Ba chỉ</button>
-                    <button>Món ăn kèm</button>
-                    <button>Nước uống</button>
-                </div>
-            </div>
-            <div class="menu-grid">
-                <!-- Card 1 -->
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Add To Cart</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Add To Cart</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Add To Cart</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Add To Cart</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Add To Cart</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Add To Cart</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Add To Cart</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Add To Cart</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-    </section>
+  
     <!--chefs -->
     <section>
         <div class="section text-center">
             <div class="testi-subtitle">Testimonial <i class="fa-solid fa-seedling"></i></div>
-            <div class="testi-title">Our Customar Feedbacks</div>
+            <div class="testi-title text-back-g" >Our Customar Feedbacks</div>
             <div class="testi-slider-wrap">
                 <div class="testi-nav">
                     <button class="testi-nav-btn swiper-button-prev"><i class="fa-solid fa-arrow-left"></i></button>

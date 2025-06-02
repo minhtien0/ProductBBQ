@@ -23,6 +23,9 @@
                         'gray-darker': '#444',
                         'gray-light': '#ccc',
                     },
+                    fontFamily: {
+                        mont: ['Montserrat', 'sans-serif'],
+                    }
                 },
             },
         };
@@ -71,9 +74,10 @@
     <!-- FontAwesome cho icon danh mục -->
     <script src="https://kit.fontawesome.com/75fc7caa04.js" crossorigin="anonymous"></script>
 </head>
-@include('layouts.user.header')
 
-<body class="bg-dark-bg text-white">
+
+<body class="bg-dark-bg text-white font-mont">
+@include('layouts.user.header')
     <div class="w-full max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-4">
         <!-- Promotion Section -->
         <section class="mb-4">

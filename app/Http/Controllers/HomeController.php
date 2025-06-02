@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Company;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use App\Models\Staff;
 use App\Models\Address;
 use App\Models\User;
+use App\Models\Help;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
@@ -37,8 +39,60 @@ class HomeController extends Controller
     }
     public function contact()
     {
-        return view('contact');
+        $infos=Company::first(); //lấy dữ liệu
+
+        return view('contact',compact('infos'));
     }
+    public function addContact(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|max:100',
+        'email' => 'required|email|max:100',
+        'sdt' => 'required|digits_between:8,12',
+        'purpose' => 'required|max:255',
+        'question' => 'required|max:255',
+        'content' => 'required|max:1000',
+        'time' => 'required|date',
+        
+    ], [
+        'name.required' => 'Vui lòng nhập tên.',
+        'name.max' => 'Tên không được vượt quá 100 ký tự.',
+        'email.required' => 'Vui lòng nhập email.',
+        'email.email' => 'Email không hợp lệ.',
+        'email.max' => 'Email không được vượt quá 100 ký tự.',
+        'sdt.required' => 'Vui lòng nhập số điện thoại.',
+        'sdt.digits_between' => 'Số điện thoại phải từ 8 đến 12 số.',
+        'purpose.required' => 'Vui lòng nhập chủ đề.',
+        'purpose.max' => 'Chủ đề không được vượt quá 255 ký tự.',
+        'question.required' => 'Vui lòng nhập tiêu đề.',
+        'question.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
+        'content.required' => 'Vui lòng nhập nội dung.',
+        'content.max' => 'Nội dung không được vượt quá 1000 ký tự.',
+        'time.required' => 'Vui lòng chọn ngày.',
+        'time.date' => 'Ngày không hợp lệ.',
+    ]);
+
+    if ($validator->fails()) {
+        $errorMsg = implode('<br>', $validator->errors()->all());
+        return redirect()->back()
+            ->withInput()
+            ->with('error', $errorMsg);
+    }
+
+    try {
+        $data = $request->only(['name', 'email', 'sdt', 'purpose', 'question', 'content', 'time']);
+        $data['status'] = '0';
+        Help::create($data);
+
+        return redirect()->back()->with('success', 'Gửi liên hệ thành công!');
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Gửi liên hệ không thành công! ' . $e->getMessage());
+    }
+}
+
+
     public function menudetail()
     {
         return view('menudetail');
@@ -57,6 +111,10 @@ class HomeController extends Controller
         $addressAll = Address::where('user_id', session('id'))
             ->get();
         return view('userdetail', compact('address', 'addressAll'));
+    }
+    public function cart()
+    {
+        return view('cart');
     }
 
     public function deskmanage()

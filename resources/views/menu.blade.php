@@ -30,13 +30,9 @@
             },
         };
     </script>
-    <!-- <style>
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style> -->
 </head>
 
-<body class="bg-dark-bg text-[#22223b] font-mont">
+<body class="bg-gray-light text-[#22223b] font-mont">
     @include('layouts.user.header')
 
     <!-- Banner -->

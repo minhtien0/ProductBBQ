@@ -20,12 +20,15 @@
                         'gray-darker': '#444',
                         'gray-light': '#ccc',
                     },
+                    fontFamily: {
+                        mont: ['Montserrat', 'sans-serif'],
+                    }
                 },
             },
         };
     </script>
     </head>
-<body class="bg-dark-bg">
+<body class="bg-gray-light font-mont">
 @include('layouts.user.header')
   <!-- Banner -->
   <div class="relative w-full">
@@ -51,19 +54,19 @@
     <div class="bg-[#f2f6fa] flex-1 rounded-lg p-6 md:p-8 shadow flex flex-col gap-6 justify-center min-w-[260px]">
       <!-- Call -->
       <div class="border-b border-[#e60012] pb-2 text-center">
-        <div class="text-[#e60012] font-bold text-lg mb-1">Call</div>
-        <div class="text-[13px] text-gray-700 leading-5">+1 347-430-5910<br>+96874565402</div>
+        <div class="text-[#e60012] font-bold text-lg mb-1"><i class="fa-solid fa-phone"></i> Call</div>
+        <div class="text-[13px] text-gray-700 leading-5">{{ $infos->sdt }}</div>
       </div>
       <!-- Mail -->
       <div class="border-b border-[#e60012] pb-2 text-center">
-        <div class="text-[#e60012] font-bold text-lg mb-1 mt-3">Mail</div>
-        <div class="text-[13px] text-gray-700 leading-5">websolutionusa1@gmail.com<br>example@gmail.com</div>
+        <div class="text-[#e60012] font-bold text-lg mb-1 mt-3"><i class="fa-solid fa-envelope"></i> Mail</div>
+        <div class="text-[13px] text-gray-700 leading-5">{{ $infos->email }}</div>
       </div>
       <!-- Location -->
       <div class="text-center mt-3">
-        <div class="text-[#e60012] font-bold text-lg mb-1">Location</div>
+        <div class="text-[#e60012] font-bold text-lg mb-1"><i class="fa-solid fa-location-dot"></i> Location</div>
         <div class="text-[13px] text-gray-700 leading-5">
-          7232 Broadway Suite 308, Jackson Heights, 11372, NY, United States
+          {{ $infos->address }}
         </div>
       </div>
     </div>
@@ -71,36 +74,65 @@
     <!-- Right: Contact Form -->
     <div class="bg-[#f2f6fa] flex-1 rounded-lg p-6 md:p-8 shadow">
       <div class="text-lg font-semibold mb-4">Contact Us</div>
-      <form class="space-y-3">
-        <!-- Name -->
-        <div class="flex flex-col md:flex-row gap-2">
-          <div class="relative flex-1">
-            <input type="text" placeholder="Name" class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
+      <form action="{{ route('help.add') }}" method="POST" class="space-y-3">
+    @csrf
+    <!-- Name, Email, Phone -->
+    <div class="flex flex-col md:flex-row gap-2">
+        <div class="relative flex-1">
+            <input name="name" value="{{ old('name') }}" type="text" placeholder="Tên"
+                   class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
             <i class="fa fa-user absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
-          </div>
-          <div class="flex-1 flex gap-2">
+        </div>
+        <div class="flex-1 flex gap-2">
             <div class="relative flex-1">
-              <input type="email" placeholder="Email" class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
-              <i class="fa fa-envelope absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
+                <input name="email" value="{{ old('email') }}" type="email" placeholder="Email"
+                       class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
+                <i class="fa fa-envelope absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
             </div>
             <div class="relative flex-1">
-              <input type="text" placeholder="Phone" class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
-              <i class="fa fa-phone absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
+                <input name="sdt" value="{{ old('sdt') }}" type="text" placeholder="Số điện thoại"
+                       class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
+                <i class="fa fa-phone absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
             </div>
-          </div>
         </div>
-        <!-- Subject -->
-        <div class="relative">
-          <input type="text" placeholder="Subject" class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
-          <i class="fa fa-tag absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
+    </div>
+    <!-- Purpose/Chủ đề -->
+    <div class="relative">
+        <input name="purpose" value="{{ old('purpose') }}" type="text" placeholder="Chủ đề"
+               class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
+        <i class="fa fa-tag absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
+    </div>
+    <!-- Question/Tiêu đề -->
+    <div class="relative">
+        <input name="question" value="{{ old('question') }}" type="text" placeholder="Tiêu đề"
+               class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
+        <i class="fa fa-question-circle absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
+    </div>
+    <!-- Message/Nội dung -->
+    <div class="relative">
+        <textarea name="content" rows="3" placeholder="Nội dung" class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm resize-none">{{ old('content') }}</textarea>
+        <i class="fa fa-pencil absolute top-3 left-2 text-[#e60012]"></i>
+    </div>
+    <!-- Date -->
+    <div class="relative">
+        <input name="time" value="{{ old('time', date('Y-m-d')) }}" type="date"
+               class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm" />
+        <i class="fa fa-calendar absolute top-1/2 left-2 -translate-y-1/2 text-[#e60012]"></i>
+    </div>
+    <!-- Error hiển thị -->
+    @if(session('error'))
+        <div class="text-red-600 text-sm bg-red-100 px-3 py-2 rounded">
+            {!! session('error') !!}
         </div>
-        <!-- Message -->
-        <div class="relative">
-          <textarea placeholder="Message" rows="3" class="pl-8 pr-2 py-2 w-full rounded border border-gray-300 focus:ring-2 focus:ring-[#e60012] outline-none text-sm resize-none"></textarea>
-          <i class="fa fa-pencil absolute top-3 left-2 text-[#e60012]"></i>
+    @endif
+    <!-- Success hiển thị -->
+    @if(session('success'))
+        <div class="text-green-600 text-sm bg-green-100 px-3 py-2 rounded">
+            {{ session('success') }}
         </div>
-        <button type="submit" class="bg-[#e60012] text-white px-5 py-2 rounded font-semibold hover:bg-[#e05c00] transition">Send Message</button>
-      </form>
+    @endif
+    <button type="submit" class="bg-[#e60012] text-white px-5 py-2 rounded font-semibold hover:bg-[#e05c00] transition">Gửi liên hệ</button>
+</form>
     </div>
   </section>
 

@@ -22,18 +22,19 @@
                         'gray-darker': '#444',
                         'gray-light': '#ccc',
                     },
+                    fontFamily: {
+                        mont: ['Montserrat', 'sans-serif'],
+                    }
                 },
             },
         };
     </script>
 </head>
 
-<body>
-    @include('layouts.user.header')
-
+<body class="font-mont">
     <body>
-
         <body>
+        @include('layouts.user.header')
             <div class="relative w-full">
                 <!-- Background image (thay src thành ảnh của bạn nếu cần) -->
                 <img src="img/banner1.jpg" alt="User Detail" class="w-full h-[260px] md:h-[360px] object-cover">
@@ -193,7 +194,7 @@
                             </div>
                         </div>
                         <!-- Address -->
-                        <div class="tab-content" id="tab-address">
+                        <div class="tab-content hidden" id="tab-address">
                             <!-- Address List View -->
                             <div id="address-list-view">
                                 <div class="flex justify-between items-center mb-4">

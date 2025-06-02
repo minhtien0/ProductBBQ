@@ -21,12 +21,15 @@
                         'gray-darker': '#444',
                         'gray-light': '#ccc',
                     },
+                    fontFamily: {
+                        mont: ['Montserrat', 'sans-serif'],
+                    }
                 },
             },
         };
     </script>
     </head>
-    <body class="bg-gray-light">
+    <body class="bg-gray-light font-mont">
 @include('layouts.user.header')
 
 <!-- HERO -->
