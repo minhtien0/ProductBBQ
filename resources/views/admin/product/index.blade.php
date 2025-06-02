@@ -129,17 +129,7 @@
                 </div>
 
                 <div class="flex space-x-2">
-                    <a href="{{ route('admin.user.export', request()->only(['email','birthday','fullname','gender'])) }}">
-                    <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                        </svg>
-                        Xuất file
-                    </button>
-                    </a>
-                    <a href="{{ route('admin.user.create') }}">
+                    <a href="{{ route('admin.product.create') }}">
                         <button class="border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -225,24 +215,25 @@
                                     <input id="selectAll" type="checkbox" class="form-checkbox h-4 w-4">
                                 </th>
                                 <th class="py-1 px-2 text-left text-sm">Ảnh đại diện</th>
-                                <th class="py-1 px-2 text-left text-sm">Họ Và Tên</th>
-                                <th class="py-1 px-2 text-left text-sm">Email</th>
-                                <th class="py-1 px-2 text-left text-sm">Số Điện Thoại</th>
-                                <th class="py-1 px-2 text-left text-sm">Ngày Sinh</th>
+                                <th class="py-1 px-2 text-left text-sm">Tên Món Ăn</th>
+                                <th class="py-1 px-2 text-left text-sm">Loại Món Ăn</th>
+                                <th class="py-1 px-2 text-left text-sm">Giá</th>
+                                <th class="py-1 px-2 text-left text-sm">Trạng Thái</th>
+                                <th class="py-1 px-2 text-left text-sm">Slug</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
+                            @foreach ($foods as $food)
                                 <tr class="bg-gray-50">
                                     <td class="py-3 px-2 border-t border-gray-200">
-                                        <input name="ids[]" value="{{ $user->id }}" type="checkbox"
+                                        <input name="ids[]" value="{{ $food->image }}" type="checkbox"
                                             class="rowCheckbox form-checkbox h-4 w-4">
                                     </td>
                                     <td class="py-3 px-4 border-t border-gray-200">
                                         <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-300">
 
-                                            @if($user->avatar)
-                                                <img src="{{ asset('img/' . $user->avatar) }}" alt=""
+                                            @if($food->image)
+                                                <img src="{{ asset('img/' . $food->image) }}" alt=""
                                                     class="w-full h-full object-cover">
                                             @else
                                                 <img src="{{ asset('img/user.jpg') }}" alt="" class="w-full h-full object-cover">
@@ -260,12 +251,13 @@
                                         </div>
                                     </td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
-                                            href="{{ route('admin.user.detail', $user->id) }}">{{ $user->fullname }}</a></td>
+                                            href="{{ route('admin.product.edit', $food->id) }}">{{ $food->name }}</a></td>
                                     <td class="py-1 px-2 border-t border-gray-200">
-                                        <span class="text-gray-600">{{ $user->email }}</span>
+                                        <span class="text-gray-600">{{ $food->type }}</span>
                                     </td>
-                                    <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $user->sdt }}</td>
-                                    <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $user->birthday }}</td>
+                                    <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $food->price }}</td>
+                                    <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $food->status }}</td>
+                                    <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $food->slug }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

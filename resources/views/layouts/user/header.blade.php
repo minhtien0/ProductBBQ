@@ -105,7 +105,7 @@
                 <i class="fa-solid fa-user text-red-500 w-4"></i>
                 <span>Thông tin cá nhân</span>
               </a>
-              @if (session('role') === '1')
+              @if (session('role') === 'Admin')
           <a href="{{ route('admin.dashboard') }}"
           class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
           <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>

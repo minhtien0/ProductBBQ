@@ -141,7 +141,7 @@
                 <div id="userToggle"
                     class="flex items-center cursor-pointer space-x-1 hover:bg-gray-200 p-2 rounded-md h-10">
                     <i class="fa-solid fa-circle-user text-gray-500"></i>
-                    <span class="text-sm text-gray-500">Đăng nhập</span>
+                    <span class="text-sm text-gray-500">{{ session('fullname') }}</span>
                 </div>
                 <div id="userDropdown"
                     class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-70 hidden">
@@ -157,7 +157,7 @@
                                 <i class="fa-solid fa-user text-red-500 w-4"></i>
                                 <span>Thông tin cá nhân</span>
                             </a>
-                            @if (session('role') === 'Quản lí')
+                            @if (session('role') === 'Admin')
                                 <a href="{{ route('admin.dashboard') }}"
                                     class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                     <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>

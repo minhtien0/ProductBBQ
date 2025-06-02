@@ -1,0 +1,199 @@
+<?php
+
+namespace App\Http\Controllers\AdminController\Product;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Menu;
+use App\Models\Food;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
+class ProductController extends Controller
+{
+    public function index(Request $request)
+    {
+        $foods=Food::all();
+        return view('admin.product.index', compact('foods'));
+    }
+
+    public function create()
+    {
+        // Lấy danh sách menus để hiển thị select dropdown
+        $menus = Menu::all();
+        return view('admin.product.create', compact('menus'));
+    }
+
+    /**
+     * Xử lý lưu Food mới
+     */
+    public function store(Request $request)
+    {
+        // 1. Validate dữ liệu đầu vào
+        $validator = Validator::make($request->all(), [
+            'name'        => 'required|string|max:255|unique:foods,name',
+            'description' => 'nullable|string',
+            'note'        => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'price'       => 'required|numeric|min:0',
+            'type'     => 'required|exists:menus,id',
+        ], [
+            // Thông báo tiếng Việt
+            'name.required'        => 'Vui lòng nhập tên món ăn.',
+            'name.string'          => 'Tên món ăn phải là chuỗi ký tự.',
+            'name.max'             => 'Tên món ăn không vượt quá 255 ký tự.',
+            'name.unique'          => 'Tên món ăn đã tồn tại.',
+
+            'description.string'   => 'Mô tả phải là chuỗi ký tự.',
+
+            'note.string'          => 'Ghi chú phải là chuỗi ký tự.',
+
+            'image.image'          => 'Ảnh phải là file hình ảnh.',
+            'image.mimes'          => 'Định dạng ảnh không hợp lệ (chỉ jpeg,png,jpg,gif).',
+            'image.max'            => 'Ảnh không vượt quá 10MB.',
+
+            'price.required'       => 'Vui lòng nhập giá tiền.',
+            'price.numeric'        => 'Giá tiền phải là số.',
+            'price.min'            => 'Giá tiền phải lớn hơn hoặc bằng 0.',
+
+            'type.required'     => 'Vui lòng chọn Menu.',
+            'type.exists'       => 'Menu đã chọn không tồn tại.',
+        ]);
+
+        // Nếu có lỗi validate → quay lại form, giữ input, show popup lỗi
+        if ($validator->fails()) {
+            $errorMsg = implode('<br>', $validator->errors()->all());
+            return redirect()->back()
+                             ->withInput()
+                             ->with('error', $errorMsg);
+        }
+
+        try {
+            // 2. Tạo mới đối tượng Food
+            $food = new Food();
+            $food->name        = $request->name;
+            $food->type        = $request->type;
+            $food->description = $request->description;
+            $food->note        = $request->note;
+            $food->price       = $request->price;
+            $food->slug        = Str::slug($request->name);
+
+            // Xử lý upload ảnh (nếu có)
+            if ($request->hasFile('image')) {
+                $fileName = time() . '_' . $request->file('image')->getClientOriginalName();
+                // Lưu vào public/uploads/foods
+                $request->file('image')->move(public_path('img'), $fileName);
+                $food->image = $fileName;
+            }
+            $food->status='Còn';
+            $food->save();
+
+            // 3. Thành công → redirect về danh sách (hoặc create) kèm popup success
+            return redirect()->route('admin.product.create')
+                             ->with('success', 'Thêm món ăn thành công!');
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi thêm Food: ' . $e->getMessage());
+            return redirect()->back()
+                             ->withInput()
+                             ->with('error', 'Có lỗi xảy ra khi thêm món ăn. Vui lòng thử lại!');
+        }
+    }
+
+     public function edit($id)
+    {
+        // Tìm món ăn theo ID, nếu không tìm thấy sẽ 404
+        $food = Food::findOrFail($id);
+        // Lấy danh sách Menu để build dropdown
+        $menus = Menu::all();
+
+        return view('admin.product.edit', compact('food', 'menus'));
+    }
+
+    /**
+     * Xử lý cập nhật Food
+     */
+    public function update(Request $request, $id)
+    {
+        // Tìm món ăn
+        $food = Food::findOrFail($id);
+
+        // 1. Validate dữ liệu đầu vào (unique name ngoại trừ record hiện tại)
+        $validator = Validator::make($request->all(), [
+            'name'        => 'required|string|max:255|unique:foods,name,' . $food->id,
+            'description' => 'nullable|string',
+            'note'        => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'price'       => 'required|numeric|min:0',
+            'type'        => 'required|exists:menus,id',
+            'status'      => 'required|in:Còn Hàng,Hết Hàng',
+        ], [
+            // Thông báo tiếng Việt
+            'name.required'        => 'Vui lòng nhập tên món ăn.',
+            'name.string'          => 'Tên món ăn phải là chuỗi ký tự.',
+            'name.max'             => 'Tên món ăn không vượt quá 255 ký tự.',
+            'name.unique'          => 'Tên món ăn đã tồn tại.',
+
+            'description.string'   => 'Mô tả phải là chuỗi ký tự.',
+
+            'note.string'          => 'Ghi chú phải là chuỗi ký tự.',
+
+            'image.image'          => 'Ảnh phải là file hình ảnh.',
+            'image.mimes'          => 'Định dạng ảnh không hợp lệ (chỉ jpeg,png,jpg,gif).',
+            'image.max'            => 'Ảnh không vượt quá 10MB.',
+
+            'price.required'       => 'Vui lòng nhập giá tiền.',
+            'price.numeric'        => 'Giá tiền phải là số.',
+            'price.min'            => 'Giá tiền phải lớn hơn hoặc bằng 0.',
+
+            'type.required'        => 'Vui lòng chọn Menu.',
+            'type.exists'          => 'Menu đã chọn không tồn tại.',
+
+            'status.required'      => 'Vui lòng chọn trạng thái.',
+            'status.in'            => 'Trạng thái không hợp lệ.',
+        ]);
+
+        // Nếu validate lỗi → quay lại form, giữ input, show popup lỗi
+        if ($validator->fails()) {
+            $errorMsg = implode('<br>', $validator->errors()->all());
+            return redirect()->back()
+                             ->withInput()
+                             ->with('error', $errorMsg);
+        }
+
+        try {
+            // 2. Cập nhật các thuộc tính của Food
+            $food->name        = $request->name;
+            $food->type        = $request->type; // menu_id
+            $food->description = $request->description;
+            $food->note        = $request->note;
+            $food->price       = $request->price;
+            $food->slug        = Str::slug($request->name);
+            $food->status      = $request->status;
+
+            // 3. Xử lý upload ảnh mới (nếu có), xóa ảnh cũ nếu có
+            if ($request->hasFile('image')) {
+                // Xóa ảnh cũ (nếu đã lưu)
+                if (!empty($food->image) && file_exists(public_path('img/' . $food->image))) {
+                    @unlink(public_path('img/' . $food->image));
+                }
+                // Lưu file mới
+                $fileName = time() . '_' . $request->file('image')->getClientOriginalName();
+                $request->file('image')->move(public_path('img'), $fileName);
+                $food->image = $fileName;
+            }
+
+            $food->save();
+
+            // 4. Thành công → redirect về trang edit (hoặc list) kèm popup success
+            return redirect()->route('admin.product.edit', $food->id)
+                             ->with('success', 'Cập nhật món ăn thành công!');
+        }
+        catch (\Exception $e) {
+            Log::error('Lỗi khi cập nhật Food [ID=' . $food->id . ']: ' . $e->getMessage());
+            return redirect()->back()
+                             ->withInput()
+                             ->with('error', 'Có lỗi xảy ra khi cập nhật món ăn. Vui lòng thử lại!');
+        }
+    }
+}

@@ -9,13 +9,43 @@ use App\Models\Address;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\UsersExport;
 
 class UserController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        // Bắt đầu query
+        $query = User::query();
+
+        // Lọc theo Email (nếu có)
+        if ($request->filled('email')) {
+            $query->where('email', 'like', '%' . $request->email . '%');
+        }
+
+        // Lọc theo Ngày sinh (nếu có)
+        if ($request->filled('birthday')) {
+            $query->whereDate('birthday', $request->birthday);
+        }
+
+        // Lọc theo Tên (nếu có) – ta sẽ tìm trong fullname hoặc trong user (username)
+        if ($request->filled('fullname')) {
+            $keyword = $request->fullname;
+            $query->where(function($q) use ($keyword) {
+                $q->where('fullname', 'like', "%{$keyword}%")
+                  ->orWhere('user', 'like', "%{$keyword}%");
+            });
+        }
+
+        // Lọc theo Giới tính (nếu có)
+        if ($request->filled('gender')) {
+            $query->where('gender', $request->gender);
+        }
+
+        // Lấy kết quả đã lọc; nếu cần phân trang thì thay get() thành paginate(...)
+        $users = $query->get();
         return view('admin.users.list', compact('users'));
     }
 
@@ -256,5 +286,21 @@ class UserController extends Controller
             ->with('success', "Đã xóa thành công {$count} người dùng.");
     }
 
+
+     public function export(Request $request)
+    {
+        // Lấy toàn bộ query parameters (email, birthday, fullname, gender)
+        // Tạo mảng $filters chỉ chứa những key cần thiết
+        $filters = [
+            'email'    => $request->query('email', ''),
+            'birthday' => $request->query('birthday', ''),
+            'fullname' => $request->query('fullname', ''),
+            'gender'   => $request->query('gender', ''),
+        ];
+
+        $fileName = 'users_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new UsersExport($filters), $fileName);
+    }
 
 }
