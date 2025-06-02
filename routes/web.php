@@ -13,8 +13,10 @@ use App\Http\Controllers\AdminController\HelpController;
 use App\Http\Controllers\AdminController\BookTable;
 use App\Http\Controllers\AdminController\CompanyController;
 use App\Http\Controllers\StaffController\Dashboard;
+//Product
 use App\Http\Controllers\AdminController\Product\Category;
 use App\Http\Controllers\AdminController\Product\Combo;
+use App\Http\Controllers\AdminController\Product\ProductController;
 
 //Đa ngôn ngữ
 Route::get('change-language/{language}', [LanguageController::class, 'changeLanguage'])->name('user.change-language');
@@ -88,6 +90,7 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Htt
         Route::get('/create', [UserController::class, 'create'])->name('admin.user.create');
         Route::post('/store', [UserController::class, 'store'])->name('admin.user.store');
         Route::delete('/delete', [UserController::class, 'delete'])->name('admin.user.delete');
+        Route::get('/export', [UserController::class, 'export'])->name('admin.user.export');
 
     });
 
@@ -102,26 +105,18 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Htt
         Route::get('/export-excel', [StaffController::class, 'exportExcel'])->name('admin.staff.exportExcel');
         Route::get('/exportTemplate', [StaffController::class, 'exportTemplateExcel'])->name('admin.staff.exportTemplateExcel');
         Route::post('/import-excel', [StaffController::class, 'importExcel'])->name('admin.staff.importExcel');
-
-
-        //Job
-        Route::get('/job', [Staff::class, 'viewJob'])->name('admin.staff.job');
-        //Đăng Kí Ca Làm
-        Route::get('/registerjob', [Staff::class, 'viewRegisterJob'])->name('admin.staff.registerjob');
-        //Chấm Công
-        Route::get('/timekeeping', [Staff::class, 'viewTimeKeeping'])->name('admin.staff.timekeeping');
-        //Tiền Tip
-        Route::get('/tip', [Staff::class, 'viewTip'])->name('admin.staff.tip');
-        //Tăng CA
-        Route::get('/ot', [Staff::class, 'viewOT'])->name('admin.staff.ot');
-        //Nghỉ Phép
-        Route::get('/off', [Staff::class, 'viewOff'])->name('admin.staff.off');
-        //Lương
-        Route::get('/salary', [Staff::class, 'viewSalary'])->name('admin.staff.salary');
     });
 
     Route::prefix('/product')->group(function () {
-        Route::get('/', [User::class, 'index'])->name('product.list');
+        Route::get('/', [ProductController::class, 'index'])->name('admin.product');
+        Route::get('/create', [ProductController::class, 'create'])->name('admin.product.create');
+        Route::post('/store', [ProductController::class, 'store'])->name('admin.product.store');
+        Route::get('/edit/{id}', [ProductController::class, 'edit'])
+            ->name('admin.product.edit');
+
+        // Xử lý cập nhật Food
+        Route::post('/update/{id}', [ProductController::class, 'update'])
+            ->name('admin.product.update');
         Route::get('/category', [Category::class, 'index'])->name('admin.product.category.index');
         Route::get('/combo', [Combo::class, 'index'])->name('admin.product.combo.index');
 
