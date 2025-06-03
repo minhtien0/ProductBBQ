@@ -115,12 +115,10 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Htt
         Route::get('/', [ProductController::class, 'index'])->name('admin.product');
         Route::get('/create', [ProductController::class, 'create'])->name('admin.product.create');
         Route::post('/store', [ProductController::class, 'store'])->name('admin.product.store');
-        Route::get('/edit/{id}', [ProductController::class, 'edit'])
-            ->name('admin.product.edit');
+        Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('admin.product.edit');
+        Route::post('/update/{id}', [ProductController::class, 'update'])->name('admin.product.update');
+        Route::delete('/delete', [ProductController::class, 'delete'])->name('admin.product.delete');
 
-        // Xử lý cập nhật Food
-        Route::post('/update/{id}', [ProductController::class, 'update'])
-            ->name('admin.product.update');
         Route::get('/category', [Category::class, 'index'])->name('admin.product.category.index');
         Route::get('/combo', [Combo::class, 'index'])->name('admin.product.combo.index');
 

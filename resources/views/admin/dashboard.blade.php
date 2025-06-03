@@ -29,29 +29,29 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-white p-4 rounded-lg shadow">
-                <h2 class="text-lg font-semibold mb-2">Lượt truy cập hàng tháng</h2>
+                <h2 class="text-lg font-semibold mb-2">Doanh thu hàng tháng</h2>
                 <div class="h-64 flex items-center justify-center">
                     <div class="w-full">
                         <canvas id="monthlyAccessChart"></canvas>
                     </div>
                 </div>
-                <p class="text-center mt-2">Lượt truy cập: {{ $totalMonthlyAccess ?? 459 }}</p>
+                <p class="text-center mt-2">Tổng Doanh Thu: {{ $totalMonthlyAccess ?? 459 }}</p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow">
-                <h2 class="text-lg font-semibold mb-2">Số lượt truy cập theo thiết bị</h2>
+                <h2 class="text-lg font-semibold mb-2">Số Lượt Đánh Giá</h2>
                 <div class="h-64 flex items-center justify-center">
                     <div class="w-full">
                         <canvas id="deviceAccessChart"></canvas>
                     </div>
                 </div>
                 <div class="text-center mt-2">
-                    <p>Chrome: {{ $chromePercentage ?? '84.79%' }}</p>
-                    <p>Edge: {{ $edgePercentage ?? '8.89%' }}</p>
-                    <p>Firefox: {{ $firefoxPercentage ?? '3.16%' }}</p>
-                    <p>Opera: {{ $operaPercentage ?? '2.02%' }}</p>
-                    <p>Safari: {{ $safariPercentage ?? '1.14%' }}</p>
+                    <p>1 Sao: {{ $chromePercentage ?? '84.79%' }}</p>
+                    <p>2 Sao: {{ $edgePercentage ?? '8.89%' }}</p>
+                    <p>3 Sao: {{ $firefoxPercentage ?? '3.16%' }}</p>
+                    <p>4 Sao: {{ $operaPercentage ?? '2.02%' }}</p>
+                    <p>5 Sao: {{ $safariPercentage ?? '1.14%' }}</p>
                 </div>
-                <p class="text-center mt-2">Số nhân viên tại đây: 1 Nhân viên</p>
+                <p class="text-center mt-2">Trung Bình Đánh Giá: 3,5</p>
             </div>
         </div>
     </div>
