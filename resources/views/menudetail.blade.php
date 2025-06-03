@@ -49,7 +49,7 @@
   </div>
 </div>
 <!-- PHẦN 1: BBQ Menu Detail -->
-<div class="bg-gray-light from-red-100 via-red to-white min-h-[160px] py-8 px-4">
+<div class="bg-gray-light from-red-100 via-red to-white min-h-[220px] py-8 px-4 ">
   <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8 -mt-4 relative z-10">
     <div class="flex flex-col md:flex-row gap-8">
       <!-- Ảnh lớn và thumbnail -->
@@ -114,31 +114,58 @@
       </div>
     </div>
     <!-- Tab mô tả / review -->
-    <div class="mt-10">
-      <div class="flex gap-2 border-b mb-5">
-        <button class="px-4 py-2 border-b-2 border-orange-500 text-orange-600 font-bold">Mô Tả</button>
-        <button class="px-4 py-2 text-gray-600">Đánh Giá</button>
+    <div class="mt-8 bg-white rounded shadow p-4">
+  <!-- Tabs -->
+  <div class="flex border-b">
+    <button id="descTabBtn" class="px-4 py-2 text-sm border-b-2 border-orange-500 text-orange-600 font-bold focus:outline-none">Description</button>
+    <button id="reviewTabBtn" class="px-4 py-2 text-sm text-gray-600 border-b-2 border-transparent focus:outline-none">Reviews</button>
+  </div>
+  <div class="pt-4">
+    <!-- Description Tab Content -->
+    <div id="descTabContent">
+      <p class="text-gray-700 mb-3">
+        Thưởng thức sườn nướng BBQ theo phong cách Mỹ - vị ngọt tự nhiên, thấm đẫm sốt BBQ đậm đà, chín mềm, kết hợp hoàn hảo với salad tươi và khoai tây chiên...
+      </p>
+    </div>
+    <!-- Reviews Tab Content -->
+    <div id="reviewTabContent" class="hidden flex flex-col md:flex-row gap-4">
+      <!-- Danh sách đánh giá (trái) -->
+      <div class="flex-1">
+        <div class="font-semibold mb-2 text-gray-800 text-sm">04 Reviews</div>
+        <div id="reviewList" class="space-y-3"></div>
+        <!-- Pagination -->
+        <div class="flex justify-center items-center gap-1 mt-4">
+          <button id="prevPageBtn" class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 bg-white hover:bg-orange-50">&lt;</button>
+          <div id="paginationBtns" class="flex gap-1"></div>
+          <button id="nextPageBtn" class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 bg-white hover:bg-orange-50">&gt;</button>
+        </div>
       </div>
-      <div>
-        <p class="text-gray-700 mb-3">
-          Thưởng thức sườn nướng BBQ theo phong cách Mỹ - vị ngọt tự nhiên, thấm đẫm sốt BBQ đậm đà, chín mềm, kết hợp hoàn hảo với salad tươi và khoai tây chiên.
-        </p>
-        <ul class="grid md:grid-cols-2 gap-3 text-gray-600 text-sm mb-3">
-          <li class="flex items-center gap-2"><span class="text-orange-500">✔</span> Sườn tươi, nhập mới mỗi ngày</li>
-          <li class="flex items-center gap-2"><span class="text-orange-500">✔</span> Sốt BBQ nhà làm độc quyền</li>
-          <li class="flex items-center gap-2"><span class="text-orange-500">✔</span> Nướng than hồng, không dầu mỡ</li>
-          <li class="flex items-center gap-2"><span class="text-orange-500">✔</span> Phục vụ kèm salad và khoai tây chiên</li>
-        </ul>
-        <p class="text-gray-700 text-sm">
-          Món ăn phù hợp cho mọi buổi tiệc, họp mặt bạn bè, gia đình. Đặt ngay để trải nghiệm vị ngon khó cưỡng từ nhà hàng BBQ chúng tôi!
-        </p>
+      <!-- Form gửi đánh giá (phải) -->
+      <div class="w-full md:w-[320px] bg-[#f6fbf7] rounded-lg p-4">
+        <div class="font-semibold mb-2 text-gray-800">Write A Review</div>
+        <form id="reviewForm" class="space-y-2">
+          <label class="block text-sm">Select Your Rating:
+            <span id="ratingStars" class="ml-2">
+              <!-- Star icons ở đây -->
+            </span>
+          </label>
+          <input type="text" id="reviewName" class="w-full border px-2 py-1 rounded text-sm" placeholder="Name" required>
+          <input type="email" id="reviewEmail" class="w-full border px-2 py-1 rounded text-sm" placeholder="Email" required>
+          <textarea id="reviewText" class="w-full border px-2 py-1 rounded text-sm" placeholder="Write your review" rows="3" required></textarea>
+          <button type="submit" class="w-full bg-orange-500 text-white font-bold py-2 rounded hover:bg-orange-600 transition">Submit Review</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
+<!-- FontAwesome for icons (bắt buộc) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  </div>
+</div>
 
 <!-- PHẦN 2: Related BBQ Items -->
-<div class="bg-dark-light max-w-6xl mx-auto py-8 px-4 ">
+<div class="bg-dark-light max-w-6xl mx-auto py-8  ">
   <h3 class="text-xl font-bold mb-4 text-gray-800">Món Nướng Gợi Ý</h3>
   <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
     <!-- Card 1 -->
@@ -197,9 +224,185 @@
         <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
       </div>
     </div>
+    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+      <div class="flex items-center justify-between mb-1">
+        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+      </div>
+      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+      <div class="flex gap-2">
+        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm Giỏ</button>
+        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+      <div class="flex items-center justify-between mb-1">
+        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+      </div>
+      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+      <div class="flex gap-2">
+        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm Giỏ</button>
+        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+      <div class="flex items-center justify-between mb-1">
+        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+      </div>
+      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+      <div class="flex gap-2">
+        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm Giỏ</button>
+        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+      <div class="flex items-center justify-between mb-1">
+        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+      </div>
+      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+      <div class="flex gap-2">
+        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm Giỏ</button>
+        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+      </div>
+    </div>
+    
   </div>
   </div>
 </body>
+<script>
+const reviews = [
+  {
+    avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+    name: "Michel Holder",
+    date: "26 Oct 2023",
+    rating: 4,
+    text: "Sure there isn't anything embarrassing hidden in the middle of text. All generators on the Internet tend to repeat predefined chunks."
+  },
+  {
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    name: "Salina Khan",
+    date: "23 Oct 2023",
+    rating: 5,
+    text: "All generators on the Internet tend to repeat predefined chunks."
+  },
+  {
+    avatar: "https://randomuser.me/api/portraits/women/65.jpg",
+    name: "Mouna Sthesia",
+    date: "20 Oct 2023",
+    rating: 4,
+    text: "Sure there isn't anything embarrassing hidden in the middle of text."
+  },
+  {
+    avatar: "https://randomuser.me/api/portraits/men/76.jpg",
+    name: "Marjan Janifar",
+    date: "19 Oct 2023",
+    rating: 4,
+    text: "Sure there isn't anything embarrassing hidden in the middle of text."
+  }
+  // Thêm review tùy ý...
+];
+
+let currentPage = 1;
+const perPage = 2;
+
+function renderStars(rating) {
+  let stars = '';
+  for (let i = 1; i <= 5; ++i)
+    stars += `<i class="fa-star ${i <= rating ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-400'}"></i>`;
+  return stars;
+}
+
+function renderReviews() {
+  const start = (currentPage - 1) * perPage;
+  const current = reviews.slice(start, start + perPage);
+  document.getElementById('reviewList').innerHTML = current.map(r =>
+    `<div class="flex gap-3 items-start bg-[#f8f8f8] rounded-lg p-3">
+      <img src="${r.avatar}" class="w-12 h-12 rounded-full object-cover border border-gray-200" />
+      <div>
+        <div class="flex gap-2 items-center mb-1">
+          <span class="font-bold text-sm text-gray-800">${r.name}</span>
+          <span class="text-xs text-gray-400">${r.date}</span>
+        </div>
+        <div class="flex gap-1 text-xs mb-1">${renderStars(r.rating)}
+          <span class="ml-1 text-gray-500">(${r.rating}/5)</span>
+        </div>
+        <div class="text-xs text-gray-600">${r.text}</div>
+      </div>
+    </div>`
+  ).join('');
+  // Pagination
+  const pageCount = Math.ceil(reviews.length / perPage);
+  let pagBtns = '';
+  for (let i = 1; i <= pageCount; ++i)
+    pagBtns += `<button class="w-8 h-8 rounded-full ${i===currentPage?'bg-orange-500 text-white':'border border-gray-300 text-gray-600 bg-white hover:bg-orange-50'}" onclick="goToPage(${i})">${i}</button>`;
+  document.getElementById('paginationBtns').innerHTML = pagBtns;
+  document.getElementById('prevPageBtn').disabled = currentPage === 1;
+  document.getElementById('nextPageBtn').disabled = currentPage === pageCount;
+}
+window.goToPage = function(i){ currentPage=i; renderReviews(); };
+
+document.getElementById('prevPageBtn').onclick = ()=>{ if(currentPage>1){ currentPage--; renderReviews(); }};
+document.getElementById('nextPageBtn').onclick = ()=>{ const pageCount=Math.ceil(reviews.length/perPage); if(currentPage<pageCount){ currentPage++; renderReviews(); }};
+
+// Tab switch
+document.getElementById('descTabBtn').onclick = function() {
+  this.classList.add("border-orange-500","text-orange-600","font-bold");
+  document.getElementById('reviewTabBtn').classList.remove("border-orange-500","text-orange-600","font-bold");
+  document.getElementById('descTabContent').classList.remove("hidden");
+  document.getElementById('reviewTabContent').classList.add("hidden");
+};
+document.getElementById('reviewTabBtn').onclick = function() {
+  this.classList.add("border-orange-500","text-orange-600","font-bold");
+  document.getElementById('descTabBtn').classList.remove("border-orange-500","text-orange-600","font-bold");
+  document.getElementById('descTabContent').classList.add("hidden");
+  document.getElementById('reviewTabContent').classList.remove("hidden");
+  renderReviews();
+};
+
+// Đánh giá: chọn sao
+let formRating = 5;
+function renderFormStars() {
+  let stars = '';
+  for(let i=1;i<=5;++i) {
+    stars += `<i class="fa-star ${i<=formRating?'fa-solid text-yellow-400':'fa-regular text-gray-400'} cursor-pointer" onclick="selectFormStar(${i})"></i>`;
+  }
+  document.getElementById('ratingStars').innerHTML = stars;
+}
+window.selectFormStar = function(i){ formRating=i; renderFormStars(); }
+renderFormStars();
+
+// Submit review
+document.getElementById('reviewForm').onsubmit = function(e){
+  e.preventDefault();
+  // Đơn giản: random avatar
+  const avatars = [
+    "https://randomuser.me/api/portraits/men/31.jpg","https://randomuser.me/api/portraits/women/67.jpg",
+    "https://randomuser.me/api/portraits/men/11.jpg","https://randomuser.me/api/portraits/women/21.jpg"];
+  reviews.unshift({
+    avatar: avatars[Math.floor(Math.random()*avatars.length)],
+    name: document.getElementById('reviewName').value,
+    date: new Date().toLocaleDateString('en-GB'),
+    rating: formRating,
+    text: document.getElementById('reviewText').value
+  });
+  this.reset(); formRating=5; renderFormStars();
+  currentPage = 1;
+  renderReviews();
+  alert("Gửi đánh giá thành công!");
+};
+</script>
+
 
 @include('layouts.user.footer')
 </html>
