@@ -106,6 +106,9 @@
                         <option value="Hết Hàng" {{ old('status', $food->status) == 'Hết Hàng' ? 'selected' : '' }}>
                             Hết Hàng
                         </option>
+                        <option value="Ngừng Kinh Doanh" {{ old('status', $food->status) == 'Ngừng Kinh Doanh' ? 'selected' : '' }}>
+                            Ngừng Kinh Doanh
+                        </option>
                     </select>
                 </div>
             </div>

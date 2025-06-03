@@ -50,7 +50,7 @@ class StaffController extends Controller
             });
         }
 
-        $lists = $query->paginate(15)->withQueryString();
+        $lists = $query->paginate(10)->withQueryString();
 
         return view('admin.staff.index', compact('lists', 'branches', 'positions'));
     }

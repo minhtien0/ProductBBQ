@@ -15,7 +15,6 @@
                     </div>
                 </div>
             </div>
-            <span class="font-bold">Gruop 1</span>
             <!-- Câu hỏi -->
             <div class="py-2 px-3 rounded-md text-gray-700 cursor-pointer  hover:bg-gray-300 hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200"
                 onclick="toggleDropdown('questionDropdown', this)">
@@ -114,7 +113,6 @@
                     </a>
                 </div>
             </div>
-            <span>Group 2</span>
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">

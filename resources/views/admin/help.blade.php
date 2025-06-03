@@ -126,7 +126,7 @@
                             <th class="w-12 py-1 px-2 text-left">
                                 <input type="checkbox" class="form-checkbox h-4 w-4">
                             </th>
-                            <th class="py-1 px-2 text-left text-sm">Mục Đích</th>
+                            <th class="py-1 px-2 text-left text-sm">Chủ Đề</th>
                             <th class="py-1 px-2 text-left text-sm">Câu Hỏi</th>
                             <th class="py-1 px-2 text-left text-sm">Người Hỏi</th>
                             <th class="py-1 px-2 text-left text-sm">SDT</th>
