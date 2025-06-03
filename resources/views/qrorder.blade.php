@@ -77,7 +77,6 @@
 
 
 <body class="bg-dark-bg text-white font-mont">
-@include('layouts.user.header')
     <div class="w-full max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-4">
         <!-- Promotion Section -->
         <section class="mb-4">
@@ -163,26 +162,52 @@
         </section>
 
         <!-- Menu Section -->
-        <section class="mb-4">
-            <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+        <section class=" relative sm:static z-30 mb-4">
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 ">
                 <!-- Category -->
-                <div class="w-full sm:w-1/3 p-2 sm:p-4 bg-gray-dark rounded-lg mb-2 sm:mb-0">
+                <div class="sticky top-0 left-0 w-full sm:w-1/3 p-2 sm:p-4 bg-gray-dark rounded-lg mb-2 sm:mb-0">
                     <h2 class="text-lg sm:text-2xl mb-1 sm:mb-2 text-red-primary">Danh Mục</h2>
-                    <button
-                        class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-center text-xs sm:text-sm text-white hover:bg-red-primary transition-colors"
-                        data-category="special"><i class="fa-solid fa-utensils"></i> <br>Món ăn đặc biệt</button>
-                    <button
-                        class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-center text-xs sm:text-sm text-white hover:bg-red-primary transition-colors"
-                        data-category="vegetable"><i class="fa-solid fa-carrot"></i><br>Món rau</button>
-                    <button
-                        class="category-btn block w-full p-2 mb-1 bg-gray-darker rounded text-center text-xs sm:text-sm text-white hover:bg-red-primary transition-colors"
-                        data-category="drink"><i class="fa-solid fa-mug-saucer"></i> <br>Đồ uống</button>
+                    <div
+                        class="flex sm:block gap-2 overflow-x-auto sm:overflow-x-visible hide-scrollbar -mx-2 sm:mx-0 pb-2 sm:pb-0">
+                        <button
+                            class="category-btn min-w-[130px] block p-2 mb-1 bg-gray-darker rounded text-center text-xs sm:text-sm text-white hover:bg-red-primary transition-colors"
+                            data-category="special"><i class="fa-solid fa-utensils"></i> <br>Món ăn đặc biệt</button>
+                        <button
+                            class="category-btn min-w-[130px] block p-2 mb-1 bg-gray-darker rounded text-center text-xs sm:text-sm text-white hover:bg-red-primary transition-colors"
+                            data-category="vegetable"><i class="fa-solid fa-carrot"></i><br>Món rau</button>
+                        <button
+                            class="category-btn min-w-[130px] block p-2 mb-1 bg-gray-darker rounded text-center text-xs sm:text-sm text-white hover:bg-red-primary transition-colors"
+                            data-category="drink"><i class="fa-solid fa-mug-saucer"></i> <br>Đồ uống</button>
+                    </div>
                 </div>
+
                 <!-- Product -->
-                <div class="w-full sm:w-2/3 p-2 sm:p-4 bg-gray-dark rounded-lg">
+                <div class="w-full sm:w-2/3 p-2 sm:p-4 bg-gray-dark rounded-lg max-h-[600px] overflow-y-auto pr-2">
                     <h2 class="text-lg sm:text-2xl mb-1 sm:mb-2 text-red-primary">Sản Phẩm</h2>
                     <div class="flex flex-wrap sm:flex-wrap gap-1 sm:gap-2">
                         <!-- Các sản phẩm, thêm w-full khi mobile -->
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center "
+                            data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu"
+                                class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <!-- Số lượng ở trên -->
+                            <div class="flex items-center justify-center gap-2 mt-2 mb-2">
+                                <button onclick="changeQty(this, -1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
+                                    type="button">-</button>
+                                <input type="number" value="1" min="1"
+                                    class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold"
+                                    readonly>
+                                <button onclick="changeQty(this, 1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
+                                    type="button">+</button>
+                            </div>
+                            <!-- Nút Thêm nằm dưới -->
+                            <button onclick="addToCartWithQty(this, 'Thịt Cá Sấu', 180000, 'img/combo/1.jpg')"
+                                class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                        </div>
                         <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center"
                             data-category="special">
                             <img src="img/combo/1.jpg" alt="Thịt Cá Sấu"
@@ -205,30 +230,6 @@
                             <button onclick="addToCartWithQty(this, 'Thịt Cá Sấu', 180000, 'img/combo/1.jpg')"
                                 class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
                         </div>
-
-                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center"
-                            data-category="special">
-                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu"
-                                class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
-                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
-                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
-                            <!-- Số lượng ở trên -->
-                            <div class="flex items-center justify-center gap-2 mt-2 mb-2">
-                                <button onclick="changeQty(this, -1)"
-                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
-                                    type="button">-</button>
-                                <input type="number" value="1" min="1"
-                                    class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold"
-                                    readonly>
-                                <button onclick="changeQty(this, 1)"
-                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
-                                    type="button">+</button>
-                            </div>
-                            <!-- Nút Thêm nằm dưới -->
-                            <button onclick="addToCartWithQty(this, 'Thịt Cá Sấu', 180000, 'img/combo/1.jpg')"
-                                class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
-                        </div>
-
                         <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center"
                             data-category="special">
                             <img src="img/combo/1.jpg" alt="Thịt Cá Sấu"
@@ -320,10 +321,81 @@
                                 class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
 
                         </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center"
+                            data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu"
+                                class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <!-- Số lượng ở trên -->
+                            <div class="flex items-center justify-center gap-2 mt-2 mb-2">
+                                <button onclick="changeQty(this, -1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
+                                    type="button">-</button>
+                                <input type="number" value="1" min="1"
+                                    class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold"
+                                    readonly>
+                                <button onclick="changeQty(this, 1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
+                                    type="button">+</button>
+                            </div>
+                            <!-- Nút Thêm nằm dưới -->
+                            <button onclick="addToCartWithQty(this, 'Thịt Cá Sấu', 180000, 'img/combo/1.jpg')"
+                                class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center"
+                            data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu"
+                                class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <!-- Số lượng ở trên -->
+                            <div class="flex items-center justify-center gap-2 mt-2 mb-2">
+                                <button onclick="changeQty(this, -1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
+                                    type="button">-</button>
+                                <input type="number" value="1" min="1"
+                                    class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold"
+                                    readonly>
+                                <button onclick="changeQty(this, 1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
+                                    type="button">+</button>
+                            </div>
+                            <!-- Nút Thêm nằm dưới -->
+                            <button onclick="addToCartWithQty(this, 'Thịt Cá Sấu', 180000, 'img/combo/1.jpg')"
+                                class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+
+                        </div>
+                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center"
+                            data-category="special">
+                            <img src="img/combo/1.jpg" alt="Thịt Cá Sấu"
+                                class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">Thịt Cá Sấu</h3>
+                            <p class="text-[10px] sm:text-xs text-gray-light">180,000 VNĐ</p>
+                            <!-- Số lượng ở trên -->
+                            <div class="flex items-center justify-center gap-2 mt-2 mb-2">
+                                <button onclick="changeQty(this, -1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
+                                    type="button">-</button>
+                                <input type="number" value="1" min="1"
+                                    class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold"
+                                    readonly>
+                                <button onclick="changeQty(this, 1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base"
+                                    type="button">+</button>
+                            </div>
+                            <!-- Nút Thêm nằm dưới -->
+                            <button onclick="addToCartWithQty(this, 'Thịt Cá Sấu', 180000, 'img/combo/1.jpg')"
+                                class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+
+                        </div>
                     </div>
                     <button
-                        class="cart-toggle bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm mt-2 hover:bg-red-hover transition-colors z-10"
-                        onclick="toggleCart()">Xem Giỏ Hàng</button>
+                        class="cart-toggle fixed bottom-2 left-1/2 -translate-x-1/2 z-50 bg-red-primary text-white p-3 rounded-full w-[90vw] max-w-xs text-base sm:hidden shadow-lg hover:bg-red-hover transition-colors"
+                        onclick="toggleCart()">
+                        Xem Giỏ Hàng
+                    </button>
                 </div>
             </div>
             <!-- Cart Popup -->
@@ -338,8 +410,9 @@
                     <div class="cart-items max-h-[300px] overflow-y-auto mb-2" id="cart-items"></div>
                     <p class="text-xs sm:text-sm mb-2 text-white" id="cart-total">Tổng: 0 VNĐ</p>
                     <button onclick="clearCart()"
-                        class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm mb-1 hover:bg-red-hover transition-colors">Xóa
-                        Giỏ Hàng</button>
+                        class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm mb-1 hover:bg-red-hover transition-colors">Gọi
+                        Món
+                    </button>
                     <button onclick="checkout()"
                         class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thanh
                         Toán</button>
@@ -347,12 +420,6 @@
             </div>
         </section>
 
-        <!-- Food Images -->
-        <section class="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4">
-            <img src="img/combo/1.jpg" alt="Food 1" class="w-full sm:w-1/3 h-auto rounded-lg object-cover shadow">
-            <img src="img/combo/3.jpg" alt="Food 2" class="w-full sm:w-1/3 h-auto rounded-lg object-cover shadow">
-            <img src="img/combo/3.jpg" alt="Food 3" class="w-full sm:w-1/3 h-auto rounded-lg object-cover shadow">
-        </section>
     </div>
 
     <!-- Swiper JS -->
@@ -414,21 +481,21 @@
                 const cartItem = document.createElement('div');
                 cartItem.className = 'cart-item flex items-center justify-between m-1.5 md:m-1 bg-gray-darker p-1.5 rounded';
                 cartItem.innerHTML = `
-            <div class="flex items-center gap-2">
-                <img src="${item.image}" alt="${item.name}" class="w-10 h-10 object-cover rounded shadow mr-2 aspect-square">
-                <div>
-                    <span class="block text-xs text-white font-semibold">${item.name}</span>
-                    <span class="block text-xs text-gray-400">${item.price.toLocaleString()} VNĐ</span>
+                <div class="flex items-center gap-2">
+                    <img src="${item.image}" alt="${item.name}" class="w-10 h-10 object-cover rounded shadow mr-2 aspect-square">
+                    <div>
+                        <span class="block text-xs text-white font-semibold">${item.name}</span>
+                        <span class="block text-xs text-gray-400">${item.price.toLocaleString()} VNĐ</span>
+                    </div>
                 </div>
-            </div>
-            <div class="flex items-center gap-1">
-               <button onclick="updateQty(${index}, -1)" class="w-3 h-3 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600">-</button>
-               <span class="mx-1 font-semibold text-white ">${item.qty}</span>
-               <button onclick="updateQty(${index}, 1)" class="w-3 h-3 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600">+</button>
+                <div class="flex items-center gap-1">
+                <button onclick="updateQty(${index}, -1)" class="w-3 h-3 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600">-</button>
+                <span class="mx-1 font-semibold text-white ">${item.qty}</span>
+                <button onclick="updateQty(${index}, 1)" class="w-3 h-3 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600">+</button>
 
-                <button onclick="removeFromCart(${index})" class="ml-2 px-2 py-1 rounded bg-red-primary text-white hover:bg-red-hover text-xs"><i class="fa-solid fa-trash-can"></i></button>
-            </div>
-        `;
+                    <button onclick="removeFromCart(${index})" class="ml-2 px-2 py-1 rounded bg-red-primary text-white hover:bg-red-hover text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            `;
                 cartItems.appendChild(cartItem);
             });
 
@@ -485,6 +552,5 @@
         });
     </script>
 </body>
-@include('layouts.user.footer')
 
 </html>

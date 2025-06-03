@@ -141,7 +141,7 @@
         /* Booking */
         .booking-section {
             display: flex;
-            max-width: 1300px;
+            max-width: 1365px;
             margin: 40px auto;
             border-radius: 18px;
             overflow: hidden;
@@ -167,7 +167,7 @@
             min-width: 240px;
             background: #ddd;
             object-fit: cover;
-            height: 430px;
+            height: 490px;
         }
 
         .booking-form-bg {

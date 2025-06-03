@@ -32,19 +32,22 @@
 </head>
 <body class="font-mont">
     @include('layouts.user.header')
-    <!-- Cart View - Responsive -->
-    <div class="w-full bg-white min-h-screen pb-8">
-  <!-- Banner -->
-  <div class="w-full h-40 md:h-52 bg-cover bg-center flex items-center px-6"
-       style="background-image: url('img/banner1.jpg');">
-    <div>
-      <div class="text-2xl md:text-3xl font-bold text-white drop-shadow">Cart View</div>
-      <div class="flex items-center gap-2 mt-1">
-        <span class="text-white text-sm"><i class="fa fa-home"></i> Home</span>
-        <span class="text-main-red font-semibold text-sm">- CartView</span>
-      </div>
+    <div class="relative w-full">
+        <!-- Background image (thay src thành ảnh của bạn nếu cần) -->
+        <img src="img/banner1.jpg" alt="Cart" class="w-full h-[260px] md:h-[360px] object-cover">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
+        <!-- Content -->
+        <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
+            <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Cart</h1>
+            <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
+                <i class="fa fa-home text-white"></i>
+                <a href="{{ route('views.index') }}"><span class="text-white">Home</span></a>
+                <span class="text-white">–</span>
+                <span class="text-[#ff8000]">Cart</span>
+            </div>
+        </div>
     </div>
-  </div>
   <!-- Cart Table -->
   <div class="max-w-6xl mx-auto mt-6 px-2">
     <div class="overflow-x-auto bg-white rounded shadow">
