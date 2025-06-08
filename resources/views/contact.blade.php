@@ -38,12 +38,12 @@
   <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
   <!-- Content -->
   <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
-    <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">About Us</h1>
+    <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Liên Hệ</h1>
     <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
       <i class="fa fa-home text-white"></i>
-      <a href="{{ route('views.index') }}" ><span class="text-white">Home</span> </a>
+      <a href="{{ route('views.index') }}" ><span class="text-white">Trang Chủ</span> </a>
       <span class="text-white">–</span>
-      <span class="text-[#ff8000]">Contact</span>
+      <span class="text-[#ff8000]">Liên Hệ</span>
     </div>
   </div>
 </div>
@@ -54,17 +54,17 @@
     <div class="bg-[#f2f6fa] flex-1 rounded-lg p-6 md:p-8 shadow flex flex-col gap-6 justify-center min-w-[260px]">
       <!-- Call -->
       <div class="border-b border-[#e60012] pb-2 text-center">
-        <div class="text-[#e60012] font-bold text-lg mb-1"><i class="fa-solid fa-phone"></i> Call</div>
+        <div class="text-[#e60012] font-bold text-lg mb-1"><i class="fa-solid fa-phone"></i> Liên Lạc</div>
         <div class="text-[13px] text-gray-700 leading-5">{{ $infos->sdt }}</div>
       </div>
       <!-- Mail -->
       <div class="border-b border-[#e60012] pb-2 text-center">
-        <div class="text-[#e60012] font-bold text-lg mb-1 mt-3"><i class="fa-solid fa-envelope"></i> Mail</div>
+        <div class="text-[#e60012] font-bold text-lg mb-1 mt-3"><i class="fa-solid fa-envelope"></i> E-Mail</div>
         <div class="text-[13px] text-gray-700 leading-5">{{ $infos->email }}</div>
       </div>
       <!-- Location -->
       <div class="text-center mt-3">
-        <div class="text-[#e60012] font-bold text-lg mb-1"><i class="fa-solid fa-location-dot"></i> Location</div>
+        <div class="text-[#e60012] font-bold text-lg mb-1"><i class="fa-solid fa-location-dot"></i> Địa Chỉ</div>
         <div class="text-[13px] text-gray-700 leading-5">
           {{ $infos->address }}
         </div>
@@ -73,7 +73,7 @@
 
     <!-- Right: Contact Form -->
     <div class="bg-[#f2f6fa] flex-1 rounded-lg p-6 md:p-8 shadow">
-      <div class="text-lg font-semibold mb-4">Contact Us</div>
+      <div class="text-lg font-semibold mb-4">Liên Hệ Với Chúng Tôi</div>
       <form action="{{ route('help.add') }}" method="POST" class="space-y-3">
     @csrf
     <!-- Name, Email, Phone -->

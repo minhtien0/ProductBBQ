@@ -403,6 +403,5 @@ document.getElementById('reviewForm').onsubmit = function(e){
 };
 </script>
 
-
 @include('layouts.user.footer')
 </html>
