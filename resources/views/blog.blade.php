@@ -40,12 +40,12 @@
         <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
         <!-- Content -->
         <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
-            <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Blog</h1>
+            <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Tin Tức</h1>
             <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
                 <i class="fa fa-home text-white"></i>
-                <a href="{{ route('views.index') }}"><span class="text-white">Home</span></a>
+                <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
                 <span class="text-white">–</span>
-                <span class="text-[#ff8000]">Blog</span>
+                <span class="text-[#ff8000]">Tin Tức/span>
             </div>
         </div>
     </div>
@@ -57,7 +57,7 @@
             <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
                 <div class="relative">
                     <img src="img/blog/blog1.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Food</span>
+                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Thức Ăn</span>
                 </div>
                 <div class="flex items-center mt-3 mb-2 gap-2">
                     <img src="img/mtien.jpg" alt=""
@@ -71,7 +71,7 @@
                 <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet consectetur adipisicing
                     elit. Voluptate sapiente deserunt accusantium...</p>
                 <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Read More <i
+                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
                             class="fa fa-arrow-right text-[10px]"></i></a>
                     <div class="flex items-center gap-1 text-gray-400">
                         <i class="fa-regular fa-comment-dots"></i>
@@ -84,7 +84,7 @@
                 <div class="relative">
                     <img src="img/blog/blog.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
                     <span
-                        class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Restaurant</span>
+                        class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Nhà Hàng</span>
                 </div>
                 <div class="flex items-center mt-3 mb-2 gap-2">
                     <img src="img/hdong.jpg" alt=""
@@ -98,7 +98,7 @@
                 <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing
                     elit. Vivamus commodo...</p>
                 <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Read More <i
+                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
                             class="fa fa-arrow-right text-[10px]"></i></a>
                     <div class="flex items-center gap-1 text-gray-400">
                         <i class="fa-regular fa-comment-dots"></i>
@@ -110,7 +110,7 @@
             <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
                 <div class="relative">
                     <img src="img/blog/blog2.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Event</span>
+                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Sự Kiện</span>
                 </div>
                 <div class="flex items-center mt-3 mb-2 gap-2">
                     <img src="img/mtien.jpg" alt=""
@@ -124,7 +124,7 @@
                 <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing
                     elit. Laboriosam, nobis...</p>
                 <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Read More <i
+                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
                             class="fa fa-arrow-right text-[10px]"></i></a>
                     <div class="flex items-center gap-1 text-gray-400">
                         <i class="fa-regular fa-comment-dots"></i>
@@ -136,7 +136,7 @@
             <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
                 <div class="relative">
                     <img src="img/blog/blog3.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Party</span>
+                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Lễ Hội</span>
                 </div>
                 <div class="flex items-center mt-3 mb-2 gap-2">
                     <img src="img/mtien.jpg" alt=""
@@ -150,7 +150,7 @@
                 <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet consectetur adipisicing
                     elit. Voluptate sapiente deserunt accusantium...</p>
                 <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Read More <i
+                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
                             class="fa fa-arrow-right text-[10px]"></i></a>
                     <div class="flex items-center gap-1 text-gray-400">
                         <i class="fa-regular fa-comment-dots"></i>
@@ -161,7 +161,7 @@
             <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
                 <div class="relative">
                     <img src="img/blog/blog2.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Event</span>
+                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Sự Kiện</span>
                 </div>
                 <div class="flex items-center mt-3 mb-2 gap-2">
                     <img src="img/mtien.jpg" alt=""
@@ -175,7 +175,7 @@
                 <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing
                     elit. Laboriosam, nobis...</p>
                 <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Read More <i
+                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
                             class="fa fa-arrow-right text-[10px]"></i></a>
                     <div class="flex items-center gap-1 text-gray-400">
                         <i class="fa-regular fa-comment-dots"></i>
@@ -186,7 +186,7 @@
             <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
                 <div class="relative">
                     <img src="img/blog/blog3.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Party</span>
+                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Lễ Hội</span>
                 </div>
                 <div class="flex items-center mt-3 mb-2 gap-2">
                     <img src="img/mtien.jpg" alt=""
@@ -200,7 +200,7 @@
                 <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet consectetur adipisicing
                     elit. Voluptate sapiente deserunt accusantium...</p>
                 <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Read More <i
+                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
                             class="fa fa-arrow-right text-[10px]"></i></a>
                     <div class="flex items-center gap-1 text-gray-400">
                         <i class="fa-regular fa-comment-dots"></i>

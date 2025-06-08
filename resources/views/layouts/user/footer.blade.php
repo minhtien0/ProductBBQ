@@ -204,8 +204,7 @@
                         <i class="fa-solid fa-utensils"></i> LUA BE HOY
                     </div>
                     <div class="footer-desc">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta facere delectus qui placeat
-                        inventore consectetur repellendus optio debitis.
+                    Nhà hàng BBQ là điểm đến lý tưởng dành cho những tín đồ yêu thích món nướng. Với không gian hiện đại, ấm cúng và phong cách phục vụ chuyên nghiệp.
                     </div>
                     <div class="footer-social">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -217,29 +216,29 @@
                 </div>
                 <!-- Short Link -->
                 <div class="footer-col">
-                    <h3>Short Link</h3>
+                    <h3>Liên Kết</h3>
                     <ul class="footer-link-list">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Our Service</a></li>
-                        <li><a href="#">Gallery</a></li>
+                        <li><a href="#">Trang Chủ</a></li>
+                        <li><a href="#">Giới Thiệu</a></li>
+                        <li><a href="#">Liên Hệ</a></li>
+                        <li><a href="#">Dịch Vụ</a></li>
+                        <li><a href="#">Tin Tức</a></li>
                     </ul>
                 </div>
                 <!-- Help Link -->
                 <div class="footer-col">
-                    <h3>Help Link</h3>
+                    <h3>Liên kết trợ giúp</h3>
                     <ul class="footer-help-list">
-                        <li><a href="#">Terms &amp; Conditions</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Refund Policy</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Contact</a></li>
+                    <li><a href="#">Điều khoản &amp; Điều kiện</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Chính sách hoàn tiền</a></li>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Liên hệ</a></li>
                     </ul>
                 </div>
                 <!-- Contact -->
                 <div class="footer-col">
-                    <h3>Contact Us</h3>
+                    <h3>Liên hệ với chúng tôi</h3>
                     <div class="footer-contact">
                         <div><i class="fa fa-phone"></i> +44 (0) 20 9994 7740</div>
                         <div><i class="fa fa-envelope"></i> themefaxbd@gmail.com</div>

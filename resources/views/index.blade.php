@@ -823,12 +823,12 @@
         <div class="menu-section">
             <div class="menu-header">
                 <div>
-                    <span style="color:#e60012;font-weight:700;font-size:1.13em;">Food Menu <i
+                    <span style="color:#e60012;font-weight:700;font-size:1.13em;">Thực Đơn Món Ăn <i
                             class="fa-solid fa-seedling"></i></span>
-                    <div class="menu-title text-back-g">Popular Delicious Foods</div>
+                    <div class="menu-title text-back-g">Món ăn ngon phổ biến</div>
                 </div>
                 <div class="menu-filters">
-                    <button class="active">All Menu</button>
+                    <button class="active">Tất Cả</button>
                     <button>Sườn</button>
                     <button>Ba chỉ</button>
                     <button>Món ăn kèm</button>
@@ -841,16 +841,16 @@
                     <img src="img/danhmuc1/suon.jpg" alt="">
                     <span class="menu-badge">Biryani</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-title">Sườn Chua Ngọt</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
-                            <button>Add To Cart</button>
+                            <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
                         </div>
@@ -860,16 +860,16 @@
                     <img src="img/danhmuc1/suon.jpg" alt="">
                     <span class="menu-badge">Biryani</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-title">Sườn Chua Ngọt</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
-                            <button>Add To Cart</button>
+                            <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
                         </div>
@@ -879,16 +879,16 @@
                     <img src="img/danhmuc1/suon.jpg" alt="">
                     <span class="menu-badge">Biryani</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-title">Sườn Chua Ngọt</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
-                            <button>Add To Cart</button>
+                            <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
                         </div>
@@ -898,16 +898,16 @@
                     <img src="img/danhmuc1/suon.jpg" alt="">
                     <span class="menu-badge">Biryani</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-title">Sườn Chua Ngọt</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
-                            <button>Add To Cart</button>
+                            <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
                         </div>
@@ -917,16 +917,16 @@
                     <img src="img/danhmuc1/suon.jpg" alt="">
                     <span class="menu-badge">Biryani</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-title">Sườn Chua Ngọt</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
-                            <button>Add To Cart</button>
+                            <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
                         </div>
@@ -936,16 +936,16 @@
                     <img src="img/danhmuc1/suon.jpg" alt="">
                     <span class="menu-badge">Biryani</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-title">Sườn Chua Ngọt</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
-                            <button>Add To Cart</button>
+                            <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
                         </div>
@@ -955,16 +955,16 @@
                     <img src="img/danhmuc1/suon.jpg" alt="">
                     <span class="menu-badge">Biryani</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-title">Sườn Chua Ngọt</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
-                            <button>Add To Cart</button>
+                            <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
                         </div>
@@ -974,16 +974,16 @@
                     <img src="img/danhmuc1/suon.jpg" alt="">
                     <span class="menu-badge">Biryani</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Hyderabadi Biryani</div>
+                        <div class="menu-card-title">Sườn Chua Ngọt</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">$65.00 <span class="old">$90.00</span></div>
+                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
-                            <button>Add To Cart</button>
+                            <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
                         </div>
@@ -996,9 +996,8 @@
         <div class="offer-wrapper">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
                 <div>
-                    <span style="color:rgb(230 0 18); font-weight:bold; font-size:18px;">Daily Offer</span>
-                    <h2 class="text-back-g" style="font-size:1.4rem; font-weight:900; margin:10px 0 0 0; ">Up To 75%
-                        Off For This Day</h2>
+                    <span style="color:rgb(230 0 18); font-weight:bold; font-size:18px;">Khuyến Mãi Hằng Ngày</span>
+                    <h2 class="text-back-g" style="font-size:1.4rem; font-weight:900; margin:10px 0 0 0; ">Giảm giá lên đến 75% cho ngày này</h2>
                 </div>
                 <div class="swiper-buttons">
                     <button class="swiper-button-prev">&#8592;</button>
@@ -1216,32 +1215,32 @@
             <img class="booking-img" src="img/logo2.jpg" alt="Restaurant" />
             <div class="booking-form-bg">
                 <form class="booking-form">
-                    <h2>Book A Table</h2>
+                    <h2>Đặt Bàn</h2>
                     <div class="booking-form-row">
                         <div style="flex:1">
-                            <label>Name</label>
-                            <input type="text" placeholder="Name" required>
+                            <label>Tên</label>
+                            <input type="text" placeholder="Tên" required>
                         </div>
                         <div style="flex:1">
-                            <label>Email</label>
-                            <input type="email" placeholder="Email" required>
+                            <label>E-mail</label>
+                            <input type="email" placeholder="E-mail" required>
                         </div>
                     </div>
                     <div class="booking-form-row">
                         <div style="flex:1">
-                            <label>Phone</label>
-                            <input type="text" placeholder="Phone" required>
+                            <label>Số Điện Thoại</label>
+                            <input type="text" placeholder="Số Điện Thoại" required>
                         </div>
                         <div style="flex:1">
-                            <label>Select Date</label>
-                            <input type="date" placeholder="DD/MM/YYYY" required>
+                            <label>Ngày Đặt Bàn</label>
+                            <input type="date" placeholder="Ngày/Tháng/Năm" required>
                         </div>
                     </div>
                     <div class="booking-form-row">
                         <div style="flex:1">
-                            <label>Select Time</label>
+                            <label>Thời Gian</label>
                             <select required>
-                                <option value="">Select</option>
+                                <option value="">Chọn Thời Gian</option>
                                 <option>11:00 AM</option>
                                 <option>12:00 PM</option>
                                 <option>1:00 PM</option>
@@ -1253,14 +1252,14 @@
                             </select>
                         </div>
                         <div style="flex:1">
-                            <label>Select Person</label>
+                            <label>Số Lượng Người</label>
                             <select required>
-                                <option value="">Select</option>
-                                <option>1 Person</option>
-                                <option>2 People</option>
-                                <option>3 People</option>
-                                <option>4 People</option>
-                                <option>5+ People</option>
+                                <option value="">Chọn Số Lượng</option>
+                                <option>1 Người</option>
+                                <option>2 Người</option>
+                                <option>3 Người</option>
+                                <option>4 Người</option>
+                                <option>5+ Người</option>
                             </select>
                         </div>
                     </div>
@@ -1273,8 +1272,8 @@
     <!--chefs -->
     <section>
         <div class="section text-center">
-            <div class="testi-subtitle">Testimonial <i class="fa-solid fa-seedling"></i></div>
-            <div class="testi-title text-back-g" >Our Customar Feedbacks</div>
+            <div class="testi-subtitle">Lời Góp Ý  <i class="fa-solid fa-seedling"></i></div>
+            <div class="testi-title text-back-g" >Phản Hồi Khách Hàng</div>
             <div class="testi-slider-wrap">
                 <div class="testi-nav">
                     <button class="testi-nav-btn swiper-button-prev"><i class="fa-solid fa-arrow-left"></i></button>
@@ -1339,28 +1338,28 @@
                         <div class="counter-num">85,000 +</div>
                         <div class="counter-icon"><i class="fa fa-users"></i></div>
                     </div>
-                    <div class="counter-label">Customer Serve</div>
+                    <div class="counter-label">Dịch vụ khách hàng</div>
                 </div>
                 <div class="counter-item">
                     <div class="counter-circle">
                         <div class="counter-num">120 +</div>
                         <div class="counter-icon"><i class="fa fa-hat-chef"></i></div>
                     </div>
-                    <div class="counter-label">Experience Chef</div>
+                    <div class="counter-label">Kinh nghiệp đầu bếp</div>
                 </div>
                 <div class="counter-item">
                     <div class="counter-circle">
                         <div class="counter-num">72,000 +</div>
                         <div class="counter-icon"><i class="fa fa-face-smile"></i></div>
                     </div>
-                    <div class="counter-label">Happy Customer</div>
+                    <div class="counter-label">Thái độ khách hàng</div>
                 </div>
                 <div class="counter-item">
                     <div class="counter-circle">
                         <div class="counter-num">30 +</div>
                         <div class="counter-icon"><i class="fa fa-trophy"></i></div>
                     </div>
-                    <div class="counter-label">Winning Award</div>
+                    <div class="counter-label">Chứng Nhận</div>
                 </div>
             </div>
         </div>
