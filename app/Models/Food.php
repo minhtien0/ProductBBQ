@@ -26,7 +26,7 @@ class Food extends Model
     ];
 
     // Mối quan hệ với bảng Menu
-    public function menu()
+    public function menus()
     {
         return $this->belongsTo(Menu::class, 'type');
     }

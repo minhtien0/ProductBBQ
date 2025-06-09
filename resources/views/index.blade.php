@@ -837,158 +837,29 @@
             </div>
             <div class="menu-grid">
                 <!-- Card 1 -->
+                 @foreach ($allFoods as $allFood)
                 <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
+                    <img src="{{ asset('img/' . $allFood->image) }}" alt="">
+                    <span class="menu-badge">{{ $allFood->menus->name }}</span>
                     <div class="menu-card-content">
-                        <div class="menu-card-title">Sườn Chua Ngọt</div>
+                        <div class="menu-card-title">{{ $allFood->name }}</div>
                         <div class="menu-card-rating">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                             <span>24</span>
                         </div>
-                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
+                        <div class="menu-card-price">{{ $allFood->price }} VNĐ<span class="old">$90.00</span></div>
                         <div class="menu-card-footer">
                             <button>Thêm Vào Giỏ Hàng</button>
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                            <button class="icon-btn"><a href="{{ route('views.menudetail') }}"><i class="fa-regular fa-eye"></i></a></button>
                         </div>
                     </div>
                 </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Sườn Chua Ngọt</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Thêm Vào Giỏ Hàng</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Sườn Chua Ngọt</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Thêm Vào Giỏ Hàng</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Sườn Chua Ngọt</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Thêm Vào Giỏ Hàng</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Sườn Chua Ngọt</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Thêm Vào Giỏ Hàng</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Sườn Chua Ngọt</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Thêm Vào Giỏ Hàng</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Sườn Chua Ngọt</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Thêm Vào Giỏ Hàng</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card">
-                    <img src="img/danhmuc1/suon.jpg" alt="">
-                    <span class="menu-badge">Biryani</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">Sườn Chua Ngọt</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">120,000 VNĐ<span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Thêm Vào Giỏ Hàng</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
-                        </div>
-                    </div>
-                </div>
+                 @endforeach
+                
+            </div>
     </section>
 
     <!-- Menu Sale -->
