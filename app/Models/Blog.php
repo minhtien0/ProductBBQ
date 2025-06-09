@@ -16,6 +16,7 @@ class Blog extends Model
         'content',
         'time',
         'image',
+        'id_staff',
         'slug',
     ];
 
@@ -23,4 +24,14 @@ class Blog extends Model
     protected $casts = [
         'ngay_dang' => 'datetime',
     ];
+
+     public function staff()
+    {
+        return $this->belongsTo(Staff::class, 'id_nv');
+    }
+
+     public function rates()
+    {
+        return $this->hasMany(Rate::class, 'blog_id');
+    }
 }

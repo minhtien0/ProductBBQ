@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Staff;
 use App\Models\Address;
 use App\Models\User;
+use App\Models\Food;
+use App\Models\Image;
+use App\Models\Menu;
 use App\Models\Help;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -19,7 +22,9 @@ class HomeController extends Controller
     //
     public function index()
     {
-        return view('index');
+        $allFoods=Food::with('menus')->get();
+        //dd($allFoods);
+        return view('index',compact('allFoods'));
     }
     public function order()
     {

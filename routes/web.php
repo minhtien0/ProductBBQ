@@ -30,14 +30,10 @@ Route::post('/register', [HomeController::class, 'register'])->name('register');
 
 // Xử lý xác nhận email
 Route::get('/verify-email/{token}', [HomeController::class, 'verifyEmail'])->name('verify.email');
-//Layout User
-Route::get('/', function () {
-    return view('index');
-});
 //Order
 Route::get('order', [HomeController::class, 'order'])->name('views.qrorder');
 //Home
-Route::get('index', [HomeController::class, 'index'])->name('views.index');
+Route::get('/', [HomeController::class, 'index'])->name('views.index');
 //About
 Route::get('about', [HomeController::class, 'about'])->name('views.about');
 //Menu
