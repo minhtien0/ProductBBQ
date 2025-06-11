@@ -48,111 +48,89 @@
                         <div class="p-3 space-y-3 text-sm">
                             <form action="{{ route('admin.product') }}" method="GET" class="space-y-4">
 
-                            {{-- 1. Tìm theo Tên món --}}
-                            <div>
-                                <label for="name" class="text-xs font-medium text-gray-700 mb-1 block">Tên Món</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value="{{ request('name') }}"
-                                    placeholder="Nhập tên món"
-                                    class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                >
-                            </div>
-
-                            {{-- 2. Giá Tiền (Khoảng giá) --}}
-                            <div class="grid grid-cols-2 gap-2">
+                                {{-- 1. Tìm theo Tên món --}}
                                 <div>
-                                    <label for="price_min" class="text-xs font-medium text-gray-700 mb-1 block">Giá từ</label>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        id="price_min"
-                                        name="price_min"
-                                        value="{{ request('price_min') }}"
-                                        placeholder="0.00"
-                                        class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                    >
+                                    <label for="name" class="text-xs font-medium text-gray-700 mb-1 block">Tên Món</label>
+                                    <input type="text" id="name" name="name" value="{{ request('name') }}"
+                                        placeholder="Nhập tên món"
+                                        class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
                                 </div>
+
+                                {{-- 2. Giá Tiền (Khoảng giá) --}}
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label for="price_min" class="text-xs font-medium text-gray-700 mb-1 block">Giá
+                                            từ</label>
+                                        <input type="number" step="0.01" id="price_min" name="price_min"
+                                            value="{{ request('price_min') }}" placeholder="0.00"
+                                            class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                                    </div>
+                                    <div>
+                                        <label for="price_max" class="text-xs font-medium text-gray-700 mb-1 block">Giá
+                                            đến</label>
+                                        <input type="number" step="0.01" id="price_max" name="price_max"
+                                            value="{{ request('price_max') }}" placeholder="1000.00"
+                                            class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                                    </div>
+                                </div>
+
+                                {{-- 3. Loại (Menu) --}}
+                                <div class="relative">
+                                    <label for="type" class="text-xs font-medium text-gray-700 mb-1 block">Loại
+                                        (Menu)</label>
+                                    <select id="type" name="type"
+                                        class="w-full border border-gray-300 rounded p-2 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                                        <option value="">-- Chọn Menu --</option>
+                                        @foreach($menus as $menu)
+                                            <option value="{{ $menu->id }}" {{ request('type') == $menu->id ? 'selected' : '' }}>
+                                                {{ $menu->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                {{-- 4. Trạng Thái --}}
+                                <div class="relative">
+                                    <label for="status" class="text-xs font-medium text-gray-700 mb-1 block">Trạng
+                                        Thái</label>
+                                    <select id="status" name="status"
+                                        class="w-full border border-gray-300 rounded p-2 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                                        <option value="">-- Chọn Trạng Thái --</option>
+                                        <option value="Còn Hàng" {{ request('status') == 'Còn Hàng' ? 'selected' : '' }}>Còn
+                                            Hàng</option>
+                                        <option value="Hết Hàng" {{ request('status') == 'Hết Hàng' ? 'selected' : '' }}>Hết
+                                            Hàng</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                {{-- 5. Nút Tìm kiếm --}}
                                 <div>
-                                    <label for="price_max" class="text-xs font-medium text-gray-700 mb-1 block">Giá đến</label>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        id="price_max"
-                                        name="price_max"
-                                        value="{{ request('price_max') }}"
-                                        placeholder="1000.00"
-                                        class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                    >
+                                    <button type="submit"
+                                        class="bg-blue-600 text-white rounded px-4 py-1.5 flex items-center justify-center w-full hover:bg-blue-700 transition duration-150 ease-in-out text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                        Tìm kiếm
+                                    </button>
                                 </div>
-                            </div>
 
-                            {{-- 3. Loại (Menu) --}}
-                            <div class="relative">
-                                <label for="type" class="text-xs font-medium text-gray-700 mb-1 block">Loại (Menu)</label>
-                                <select
-                                    id="type"
-                                    name="type"
-                                    class="w-full border border-gray-300 rounded p-2 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                >
-                                    <option value="">-- Chọn Menu --</option>
-                                    @foreach($menus as $menu)
-                                        <option
-                                            value="{{ $menu->id }}"
-                                            {{ request('type') == $menu->id ? 'selected' : '' }}
-                                        >
-                                            {{ $menu->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            {{-- 4. Trạng Thái --}}
-                            <div class="relative">
-                                <label for="status" class="text-xs font-medium text-gray-700 mb-1 block">Trạng Thái</label>
-                                <select
-                                    id="status"
-                                    name="status"
-                                    class="w-full border border-gray-300 rounded p-2 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                >
-                                    <option value="">-- Chọn Trạng Thái --</option>
-                                    <option value="Còn Hàng" {{ request('status')=='Còn Hàng' ? 'selected' : '' }}>Còn Hàng</option>
-                                    <option value="Hết Hàng" {{ request('status')=='Hết Hàng' ? 'selected' : '' }}>Hết Hàng</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            {{-- 5. Nút Tìm kiếm --}}
-                            <div>
-                                <button
-                                    type="submit"
-                                    class="bg-blue-600 text-white rounded px-4 py-1.5 flex items-center justify-center w-full hover:bg-blue-700 transition duration-150 ease-in-out text-sm"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
-                                         stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                    Tìm kiếm
-                                </button>
-                            </div>
-
-                        </form>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -176,7 +154,7 @@
                         </svg>
                         Xóa
                     </button>
-                    
+
                     <div id="PopupDelete"
                         class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
                         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
@@ -217,7 +195,7 @@
                                 <p id="Message" class="text-gray-700 text-base leading-relaxed mb-8"></p>
 
                                 <div class="flex justify-between space-x-4">
-                                    <button  type="submit" form="deleteForm"
+                                    <button type="submit" form="deleteForm"
                                         class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-teal-600 text-white font-semibold rounded-lg hover:from-yellow-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl">
                                         Xác nhận
                                     </button>
@@ -291,6 +269,11 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @if ($foods instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                        <div class="mt-4">
+                            {{ $foods->links() }}
+                        </div>
+                    @endif
                 </div>
             </form>
         </div>

@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminController\Product\Category;
 use App\Http\Controllers\AdminController\Product\Combo;
 use App\Http\Controllers\AdminController\Product\ProductController;
 
+
 //Đa ngôn ngữ
 Route::get('change-language/{language}', [LanguageController::class, 'changeLanguage'])->name('user.change-language');
 //Đăng nhập
@@ -135,3 +136,7 @@ Route::prefix('staff')->middleware([\App\Http\Middleware\Locale::class])->group(
     Route::get('/index', [Dashboard::class, 'index'])->name('staff.dashboard');
 
 });
+
+
+
+

@@ -1080,7 +1080,7 @@
     </div >
 
 
-    <!--     Booking -->
+    <!--Booking -->
     <section>
         <div class="booking-section">
             <img class="booking-img" src="img/logo2.jpg" alt="Restaurant" />
