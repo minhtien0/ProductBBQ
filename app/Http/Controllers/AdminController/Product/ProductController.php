@@ -53,14 +53,14 @@ class ProductController extends Controller
         }
 
         // 4. Cuối cùng phân trang (vd: 10 bản ghi/trang) và giữ nguyên tham số GET (appends)
-        $foods = $query->orderBy('name', 'asc')
-            ->paginate(10)
-            ->withQueryString();
+        $foodsQuery = $query->orderBy('name', 'asc');
+        $foods = $foodsQuery->count() > 10
+            ? $foodsQuery->paginate(10)->withQueryString()
+            : $foodsQuery->get();
 
         // 5. Trả về view, truyền các biến cần thiết
         return view('admin.product.index', compact('foods', 'menus'));
     }
-
     public function create()
     {
         // Lấy danh sách menus để hiển thị select dropdown
@@ -164,10 +164,10 @@ class ProductController extends Controller
         // Lấy danh sách Menu để build dropdown
         $menus = Menu::all();
 
-        $images=Image::where('id_food','=',$id)
-        ->get();
+        $images = Image::where('id_food', '=', $id)
+            ->get();
 
-        return view('admin.product.edit', compact('food', 'menus','images'));
+        return view('admin.product.edit', compact('food', 'menus', 'images'));
     }
 
     /**
@@ -251,7 +251,7 @@ class ProductController extends Controller
                     $img = Image::find($imgId);
                     if ($img) {
                         // xóa file vật lý
-                        File::delete(public_path('img/details/food/'.$img->img));
+                        File::delete(public_path('img/details/food/' . $img->img));
                         // xoá record
                         $img->delete();
                     }
@@ -263,15 +263,15 @@ class ProductController extends Controller
                     $img = Image::find($imgId);
                     if ($img) {
                         // xóa file cũ
-                        File::delete(public_path('img/details/food/'.$img->img));
+                        File::delete(public_path('img/details/food/' . $img->img));
                         // lưu file mới
                         $fileName = time()
-                                . '_'. Str::random(5)
-                                . '_'. $file->getClientOriginalName();
+                            . '_' . Str::random(5)
+                            . '_' . $file->getClientOriginalName();
                         $file->move(public_path('img/details/food'), $fileName);
                         // cập nhật record
                         $img->update([
-                        'img' => $fileName
+                            'img' => $fileName
                         ]);
                     }
                 }
