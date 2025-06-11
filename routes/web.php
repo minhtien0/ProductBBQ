@@ -46,16 +46,20 @@ Route::get('contact', [HomeController::class, 'contact'])->name('views.contact')
 Route::post('/contact/add', [HomeController::class, 'addContact'])->name('help.add');
 
 //MenuDetail
-Route::get('menudetail', [HomeController::class, 'menudetail'])->name('views.menudetail');
+Route::get('menudetail/{id}', [HomeController::class, 'menudetail'])->name('views.menudetail');
 //BlogDetail
 Route::get('blogdetail', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
 //UserDetail
 Route::get('userdetail', [HomeController::class, 'userdetail'])->name('views.userdetail');
-Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update-profile');
-Route::post('/user/add-address', [UserController::class, 'addAaddress'])->name('user.add-address');
+Route::post('/user/update-profile', [HomeController::class, 'updateProfile'])->name('user.update-profile');
+Route::post('/user/add-address', [HomeController::class, 'addAddress'])->name('user.add-address');
 
 //Cart
 Route::get('/cart', [HomeController::class, 'cart'])->name('views.cart');
+Route::post('/cart', [HomeController::class, 'storeCart'])->name('cart.add');
+Route::post('/favorite', [HomeController::class, 'toggleFavorite'])->name('favorite.toggle');
+Route::patch('/cart/{id}', [HomeController::class, 'updateQuantityCart'])->name('cart.updateQuantity');
+Route::delete('/cart/{id}', [HomeController::class, 'destroyCart'])->name('cart.destroy');
 
 //huydong test layout quản lí bàn
 Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.deskmanage');
@@ -123,7 +127,7 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Htt
 
     Route::prefix('/blog')->group(function () {
         Route::get('/', [Blog::class, 'index'])->name('admin.blog');
-        Route::get('/detail', [User::class, 'detail'])->name('user.detail');
+        Route::get('/detail', [Blog::class, 'detail'])->name('admin.blog.detail');
 
     });
 

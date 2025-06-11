@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUA BE HOY</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -10,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <x-notification-popup />
+    <script src="{{ asset('js/notification.js') }}"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -21,7 +24,7 @@
                         'gray-dark': '#333',
                         'gray-darker': '#444',
                         'gray-light': '#ccc',
-                        'back-g':'#1a1a1a',
+                        'back-g': '#1a1a1a',
                     },
                 },
             },
@@ -552,7 +555,7 @@
             position: relative;
             box-shadow: 0 6px 32px rgba(37, 34, 70, .10);
             border: 5px solid var(--primary);
-            
+
         }
 
         .testi-avatar-wrap {
@@ -732,7 +735,7 @@
         .counter-label {
             font-size: 1.07rem;
             font-weight: 600;
-            color:#ff8000;
+            color: #ff8000;
             margin-top: 18px;
             letter-spacing: 0.2px;
         }
@@ -780,7 +783,9 @@
 
 </head>
 @include('layouts.user.header')
-<body class="bg-gray-light text-white">
+
+<body class="bg-gray-light text-white" @if(session('success')) data-success="{{ session('success') }}"
+@elseif(session('error')) data-error="{{ session('error') }}" @endif>
     <!-- Delivery Section -->
     <div class="relative min-h-[430px] md:min-h-[510px] bg-main-hero flex items-center justify-center">
         <!-- Overlay -->
@@ -818,8 +823,8 @@
             </div>
         </div>
     </div>
-      <!-- Directory -->
-      <section>
+    <!-- Directory -->
+    <section>
         <div class="menu-section">
             <div class="menu-header">
                 <div>
@@ -837,28 +842,126 @@
             </div>
             <div class="menu-grid">
                 <!-- Card 1 -->
-                 @foreach ($allFoods as $allFood)
-                <div class="menu-card">
-                    <img src="{{ asset('img/' . $allFood->image) }}" alt="">
-                    <span class="menu-badge">{{ $allFood->menus->name }}</span>
-                    <div class="menu-card-content">
-                        <div class="menu-card-title">{{ $allFood->name }}</div>
-                        <div class="menu-card-rating">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                            <span>24</span>
-                        </div>
-                        <div class="menu-card-price">{{ $allFood->price }} VNĐ<span class="old">$90.00</span></div>
-                        <div class="menu-card-footer">
-                            <button>Thêm Vào Giỏ Hàng</button>
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><a href="{{ route('views.menudetail') }}"><i class="fa-regular fa-eye"></i></a></button>
+                @foreach ($allFoods as $allFood)
+                    <div class="menu-card">
+                        <img src="{{ asset('img/' . $allFood->image) }}" alt="">
+                        <span class="menu-badge">{{ $allFood->menus->name }}</span>
+                        <div class="menu-card-content">
+                            <div class="menu-card-title">{{ $allFood->name }}</div>
+                            <div class="menu-card-rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                                <span>24</span>
+                            </div>
+                            <div class="menu-card-price">{{ $allFood->price }} VNĐ<span class="old">$90.00</span></div>
+                            <div class="menu-card-footer">
+                                <button type="button"
+                                    class="add-to-cart px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+                                    data-food-id="{{ $allFood->id }}">
+                                    Thêm Vào Giỏ Hàng
+                                </button>
+                                <button type="button"
+                                    class="favorite-btn icon-btn {{ in_array($allFood->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
+                                    data-food-id="{{ $allFood->id }}">
+                                    <i
+                                        class="{{ in_array($allFood->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }}"></i>
+                                </button>
+                                <button class="icon-btn"><a href="{{ route('views.menudetail', $allFood->id) }}"><i
+                                            class="fa-regular fa-eye"></i></a></button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                 @endforeach
-                
+                @endforeach
+                <!-- Chức năng thêm giỏ hàng -->
+                <script>
+                    // Lấy CSRF token từ meta
+                    const csrfToken = document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content');
+
+                    // Bắt sự kiện click trên tất cả nút .add-to-cart
+                    document.querySelectorAll('.add-to-cart').forEach(btn => {
+                        btn.addEventListener('click', async e => {
+                            const foodId = btn.dataset.foodId;
+                            try {
+                                const res = await fetch("{{ route('cart.add') }}", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': csrfToken,
+                                        'Accept': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                    },
+                                    body: JSON.stringify({
+                                        food_id: foodId,
+                                        quantity: 1
+                                    })
+                                });
+
+                                const data = await res.json();
+                                if (res.ok && data.success) {
+                                    // gọi trực tiếp hàm showPopup với message
+                                    showPopup(data.message);
+                                } else {
+                                    // API trả lỗi, hoặc success=false
+                                    showPopup(data.message || data.error || 'Có lỗi xảy ra');
+                                }
+
+                            } catch (err) {
+                                showPopup(err.message || 'Lỗi kết nối');
+                            }
+                        });
+                    });
+                </script>
+                <!-- Chức năng thêm yêu thích -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const url = "{{ route('favorite.toggle') }}";
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+                        document.querySelectorAll('.favorite-btn').forEach(btn => {
+                            btn.addEventListener('click', async () => {
+                                const foodId = btn.dataset.foodId;
+
+                                try {
+                                    const res = await fetch(url, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json',
+                                            'X-CSRF-TOKEN': csrfToken,
+                                            'X-Requested-With': 'XMLHttpRequest',
+                                        },
+                                        body: JSON.stringify({ food_id: foodId })
+                                    });
+
+                                    const data = await res.json();
+
+                                    if (res.ok && data.success) {
+                                        // Cập nhật icon & màu
+                                        if (data.favorited) {
+                                            btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                                            btn.classList.add('text-red-500');
+                                            btn.classList.remove('text-gray-500');
+                                        } else {
+                                            btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
+                                            btn.classList.add('text-gray-500');
+                                            btn.classList.remove('text-red-500');
+                                        }
+                                        // Hiển thị popup thông báo
+                                        showPopup(data.message);
+                                    } else {
+                                        showPopup(data.message || 'Có lỗi xảy ra');
+                                    }
+                                } catch (err) {
+                                    showPopup(err.message || 'Lỗi kết nối');
+                                }
+                            });
+                        });
+                    });
+                </script>
+
             </div>
     </section>
 
@@ -868,7 +971,8 @@
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
                 <div>
                     <span style="color:rgb(230 0 18); font-weight:bold; font-size:18px;">Khuyến Mãi Hằng Ngày</span>
-                    <h2 class="text-back-g" style="font-size:1.4rem; font-weight:900; margin:10px 0 0 0; ">Giảm giá lên đến 75% cho ngày này</h2>
+                    <h2 class="text-back-g" style="font-size:1.4rem; font-weight:900; margin:10px 0 0 0; ">Giảm giá lên
+                        đến 75% cho ngày này</h2>
                 </div>
                 <div class="swiper-buttons">
                     <button class="swiper-button-prev">&#8592;</button>
@@ -1054,7 +1158,7 @@
                     </div>
                     <div class="swiper-slide">
                         <div style="position:relative;">
-                            <img src="img/combo/3.jpg" 
+                            <img src="img/combo/3.jpg"
                                 style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
                             <span class="product-img-badge">55%<br>Off</span>
                         </div>
@@ -1062,7 +1166,7 @@
                             Makhani</h3>
                         <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
                             aspernatur aut odit aut.</p>
-                        <div  style="display:flex;gap:8px;margin-top:10px;">
+                        <div style="display:flex;gap:8px;margin-top:10px;">
                             <span
                                 style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
                                     class="fa fa-shopping-basket"></i></span>
@@ -1077,7 +1181,7 @@
                 </div>
             </div>
         </div>
-    </div >
+    </div>
 
 
     <!--Booking -->
@@ -1139,12 +1243,12 @@
             </div>
         </div>
     </section>
-  
+
     <!--chefs -->
     <section>
         <div class="section text-center">
-            <div class="testi-subtitle">Lời Góp Ý  <i class="fa-solid fa-seedling"></i></div>
-            <div class="testi-title text-back-g" >Phản Hồi Khách Hàng</div>
+            <div class="testi-subtitle">Lời Góp Ý <i class="fa-solid fa-seedling"></i></div>
+            <div class="testi-title text-back-g">Phản Hồi Khách Hàng</div>
             <div class="testi-slider-wrap">
                 <div class="testi-nav">
                     <button class="testi-nav-btn swiper-button-prev"><i class="fa-solid fa-arrow-left"></i></button>

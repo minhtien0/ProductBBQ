@@ -10,8 +10,11 @@ use App\Models\User;
 use App\Models\Food;
 use App\Models\Image;
 use App\Models\Menu;
+use App\Models\Rate;
+use App\Models\Cart;
 use App\Models\Help;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -22,9 +25,14 @@ class HomeController extends Controller
     //
     public function index()
     {
-        $allFoods=Food::with('menus')->get();
+        $allFoods = Food::with('menus')->get();
+        $favIds = Cart::where('user_id', session('id'))
+            ->where('type', 'Yêu Thích')
+            ->pluck('food_id')
+            ->toArray();
+
         //dd($allFoods);
-        return view('index',compact('allFoods'));
+        return view('index', compact('allFoods', 'favIds'));
     }
     public function order()
     {
@@ -44,63 +52,70 @@ class HomeController extends Controller
     }
     public function contact()
     {
-        $infos=Company::first(); //lấy dữ liệu
+        $infos = Company::first(); //lấy dữ liệu
 
-        return view('contact',compact('infos'));
+        return view('contact', compact('infos'));
     }
     public function addContact(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|max:100',
-        'email' => 'required|email|max:100',
-        'sdt' => 'required|digits_between:8,12',
-        'purpose' => 'required|max:255',
-        'question' => 'required|max:255',
-        'content' => 'required|max:1000',
-        'time' => 'required|date',
-        
-    ], [
-        'name.required' => 'Vui lòng nhập tên.',
-        'name.max' => 'Tên không được vượt quá 100 ký tự.',
-        'email.required' => 'Vui lòng nhập email.',
-        'email.email' => 'Email không hợp lệ.',
-        'email.max' => 'Email không được vượt quá 100 ký tự.',
-        'sdt.required' => 'Vui lòng nhập số điện thoại.',
-        'sdt.digits_between' => 'Số điện thoại phải từ 8 đến 12 số.',
-        'purpose.required' => 'Vui lòng nhập chủ đề.',
-        'purpose.max' => 'Chủ đề không được vượt quá 255 ký tự.',
-        'question.required' => 'Vui lòng nhập tiêu đề.',
-        'question.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
-        'content.required' => 'Vui lòng nhập nội dung.',
-        'content.max' => 'Nội dung không được vượt quá 1000 ký tự.',
-        'time.required' => 'Vui lòng chọn ngày.',
-        'time.date' => 'Ngày không hợp lệ.',
-    ]);
-
-    if ($validator->fails()) {
-        $errorMsg = implode('<br>', $validator->errors()->all());
-        return redirect()->back()
-            ->withInput()
-            ->with('error', $errorMsg);
-    }
-
-    try {
-        $data = $request->only(['name', 'email', 'sdt', 'purpose', 'question', 'content', 'time']);
-        $data['status'] = '0';
-        Help::create($data);
-
-        return redirect()->back()->with('success', 'Gửi liên hệ thành công!');
-    } catch (\Exception $e) {
-        return redirect()->back()
-            ->withInput()
-            ->with('error', 'Gửi liên hệ không thành công! ' . $e->getMessage());
-    }
-}
-
-
-    public function menudetail()
     {
-        return view('menudetail');
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:100',
+            'email' => 'required|email|max:100',
+            'sdt' => 'required|digits_between:8,12',
+            'purpose' => 'required|max:255',
+            'question' => 'required|max:255',
+            'content' => 'required|max:1000',
+            'time' => 'required|date',
+
+        ], [
+            'name.required' => 'Vui lòng nhập tên.',
+            'name.max' => 'Tên không được vượt quá 100 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.max' => 'Email không được vượt quá 100 ký tự.',
+            'sdt.required' => 'Vui lòng nhập số điện thoại.',
+            'sdt.digits_between' => 'Số điện thoại phải từ 8 đến 12 số.',
+            'purpose.required' => 'Vui lòng nhập chủ đề.',
+            'purpose.max' => 'Chủ đề không được vượt quá 255 ký tự.',
+            'question.required' => 'Vui lòng nhập tiêu đề.',
+            'question.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
+            'content.required' => 'Vui lòng nhập nội dung.',
+            'content.max' => 'Nội dung không được vượt quá 1000 ký tự.',
+            'time.required' => 'Vui lòng chọn ngày.',
+            'time.date' => 'Ngày không hợp lệ.',
+        ]);
+
+        if ($validator->fails()) {
+            $errorMsg = implode('<br>', $validator->errors()->all());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMsg);
+        }
+
+        try {
+            $data = $request->only(['name', 'email', 'sdt', 'purpose', 'question', 'content', 'time']);
+            $data['status'] = '0';
+            Help::create($data);
+
+            return redirect()->back()->with('success', 'Gửi liên hệ thành công!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gửi liên hệ không thành công! ' . $e->getMessage());
+        }
+    }
+
+
+    public function menudetail($id)
+    {
+        $foods = Food::with('menus')->where('id', '=', $id)->first();
+        $detailImages = Image::where('id_food', '=', $id)->get();
+        $rates = Rate::join('users', 'rates.user_id', '=', 'users.id')
+            ->where('food_id', '=', $id)
+            ->select('rates.*', 'users.*')
+            ->get();
+        //dd($rates);
+        return view('menudetail', compact('foods', 'detailImages', 'rates'));
     }
     public function blogdetail()
     {
@@ -112,20 +127,335 @@ class HomeController extends Controller
         $address = Address::where('user_id', session('id'))
             ->where('default', 1)
             ->first();
-
         $addressAll = Address::where('user_id', session('id'))
             ->get();
-        return view('userdetail', compact('address', 'addressAll'));
+        $foodFavorites= Cart::join('foods', 'carts.food_id', '=', 'foods.id')
+            ->join('menus', 'foods.type', '=', 'menus.id')
+            ->where('carts.user_id', '=', session('id'))
+            ->where('carts.type', '=', 'Yêu Thích')
+            ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
+            ->get();
+        $myReviews=Rate::join('foods','rates.food_id','=','foods.id')
+        ->join('menus','foods.type','=','menus.id')
+        ->select('rates.*','foods.*','menus.name as type_menu')
+        ->get();
+        
+        return view('userdetail', compact('address', 'addressAll','foodFavorites','myReviews'));
     }
+
+    public function updateProfile(Request $request)
+    {
+        // 0. Lấy ID từ session, nếu chưa login thì chuyển về login hoặc báo lỗi
+        $userId = session('id');
+        if (empty($userId)) {
+            return redirect()->route('login')
+                ->with('error', 'Vui lòng đăng nhập để thực hiện chức năng này!');
+        }
+
+        // 1. Khai báo validator với thông báo tiếng Việt
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'fullname' => 'required|string|max:255',
+                'email' => "required|email|unique:users,email,{$userId}",
+                'sdt' => 'required|string|max:20',
+                'house_number' => 'required|string|max:100',
+                'ward' => 'required|string|max:100',
+                'district' => 'required|string|max:100',
+                'city' => 'required|string|max:100',
+            ],
+            [
+                'fullname.required' => 'Vui lòng nhập họ và tên.',
+                'fullname.max' => 'Họ và tên không được vượt quá 255 ký tự.',
+                'email.required' => 'Vui lòng nhập địa chỉ email.',
+                'email.email' => 'Email không đúng định dạng.',
+                'email.unique' => 'Email này đã được sử dụng.',
+                'sdt.required' => 'Vui lòng nhập số điện thoại.',
+                'sdt.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+                'house_number.required' => 'Vui lòng nhập số nhà.',
+                'ward.required' => 'Vui lòng nhập phường/xã.',
+                'district.required' => 'Vui lòng nhập quận/huyện.',
+                'city.required' => 'Vui lòng nhập thành phố.',
+            ]
+        );
+
+        // 2. Nếu validation thất bại, chuyển lỗi vào $errors để Blade @error() hiển thị
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($validator);
+        }
+
+        // 3. Thực hiện cập nhật trong try…catch
+        try {
+            $data = $validator->validated();
+
+            // 3.1. Cập nhật bảng users
+            $user = User::findOrFail($userId);
+            $user->fullname = $data['fullname'];
+            $user->email = $data['email'];
+            $user->sdt = $data['sdt'];
+            $user->save();
+
+            // 3.2. Cập nhật hoặc tạo mới bản ghi addresses
+            Address::updateOrCreate(
+                ['user_id' => $userId],
+                [
+                    'house_number' => $data['house_number'],
+                    'ward' => $data['ward'],
+                    'district' => $data['district'],
+                    'city' => $data['city'],
+                ]
+            );
+
+            // 3.3. Cập nhật lại session để hiển thị ở layout/form
+            session([
+                'fullname' => $user->fullname,
+                'email' => $user->email,
+                'sdt' => $user->sdt,
+                // bạn có thể lưu thêm địa chỉ nếu muốn
+            ]);
+
+            return redirect()->back()
+                ->with('success', 'Cập nhật thông tin thành công!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Cập nhật không thành công! ' . $e->getMessage());
+        }
+    }
+
+    public function addAddress(Request $request)
+    {
+        $userId = session('id');
+        if (empty($userId)) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập!');
+        }
+
+        // Validate dữ liệu
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'sdt' => 'required|string|max:255',
+            'house_number' => 'required|string|max:255',
+            'ward' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'note' => 'nullable|string|max:255',
+            'default' => 'required|in:0,1',
+        ], [
+            'name.required' => 'Vui lòng nhập tên người nhận.',
+            'sdt.required' => 'Vui lòng nhập số điện thoại.',
+            'house_number.required' => 'Vui lòng nhập số nhà.',
+            'ward.required' => 'Vui lòng nhập phường/xã.',
+            'district.required' => 'Vui lòng nhập quận/huyện.',
+            'city.required' => 'Vui lòng nhập tỉnh/thành phố.',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($validator);
+        }
+
+        try {
+            $data = $validator->validated();
+
+            // Nếu default = 1 thì cập nhật tất cả address của user khác thành 0
+            if ($data['default'] == 1) {
+                \App\Models\Address::where('user_id', $userId)->update(['default' => 0]);
+            }
+
+            // Thêm địa chỉ mới
+            \App\Models\Address::create([
+                'user_id' => $userId,
+                'name' => $data['name'],
+                'sdt' => $data['sdt'],
+                'house_number' => $data['house_number'],
+                'ward' => $data['ward'],
+                'district' => $data['district'],
+                'city' => $data['city'],
+                'note' => $data['note'] ?? null,
+                'default' => $data['default'],
+            ]);
+
+            return back()->with('success', 'Thêm địa chỉ thành công!');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'Lưu không thành công! ' . $e->getMessage());
+        }
+    }
+
+
+
+    //Chức Năng Giỏ Hàng
     public function cart()
     {
-        return view('cart');
+        $carts = Cart::join('foods', 'carts.food_id', '=', 'foods.id')
+            ->join('menus', 'foods.type', '=', 'menus.id')
+            ->where('carts.user_id', '=', session('id'))
+            ->where('carts.type', '=', 'Giỏ Hàng')
+            ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
+            ->get();
+        //dd($carts);
+        $initialCartTotal = $carts->sum(fn($item) => $item->quantity * $item->food->price);
+        return view('cart', compact('carts', 'initialCartTotal'));
+    }
+
+    public function storeCart(Request $request)
+    {
+        $data = $request->validate([
+            'food_id' => 'required|exists:foods,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        if (empty(session('id'))) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vui lòng đăng nhập để thực hiện chức năng này!'
+                ], 401);
+            }
+            return back()->with('error', 'Vui lòng đăng nhập để thực hiện chức năng này!');
+        }
+
+        $userId = session('id');
+        $type = 'Giỏ Hàng';
+
+        $cart = Cart::firstWhere([
+            'user_id' => $userId,
+            'food_id' => $data['food_id'],
+            'type' => $type,
+        ]);
+
+        if ($cart) {
+            $cart->increment('quantity', $data['quantity']);
+        } else {
+            Cart::create([
+                'user_id' => $userId,
+                'food_id' => $data['food_id'],
+                'quantity' => $data['quantity'],
+                'type' => $type,
+            ]);
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã thêm vào giỏ hàng!'
+            ]);
+        }
+
+        return back()->with('success', 'Đã thêm vào giỏ hàng!');
+    }
+
+    public function toggleFavorite(Request $request)
+    {
+        $data = $request->validate([
+            'food_id' => 'required|exists:foods,id',
+        ]);
+
+        $userId = session('id');
+        if (!$userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập để sử dụng chức năng này!'
+            ], 401);
+        }
+
+        $type = 'Yêu Thích';
+
+        // Kiểm tra đã yêu thích chưa
+        $fav = Cart::where('user_id', $userId)
+            ->where('food_id', $data['food_id'])
+            ->where('type', $type)
+            ->first();
+
+        if ($fav) {
+            // đã có → xoá
+            $fav->delete();
+            return response()->json([
+                'success' => true,
+                'favorited' => false,
+                'message' => 'Đã xoá khỏi danh sách yêu thích'
+            ]);
+        } else {
+            // chưa có → tạo mới
+            Cart::create([
+                'user_id' => $userId,
+                'food_id' => $data['food_id'],
+                'quantity' => 1,
+                'type' => $type,
+            ]);
+            return response()->json([
+                'success' => true,
+                'favorited' => true,
+                'message' => 'Đã thêm vào danh sách yêu thích'
+            ]);
+        }
+    }
+
+    public function updateQuantityCart(Request $request, $id)
+    {
+        $cart = Cart::findOrFail($id);
+
+        // action: 'increment' hoặc 'decrement'
+        $action = $request->input('action');
+        if ($action === 'increment') {
+            $cart->increment('quantity', 1);
+        } elseif ($action === 'decrement') {
+            if ($cart->quantity > 1) {
+                $cart->decrement('quantity', 1);
+            } else {
+                // nếu xuống 0 thì xóa
+                $cart->delete();
+                return response()->json([
+                    'success' => true,
+                    'removed' => true,
+                    'id' => $id,
+                    'cartTotal' => $this->recalcCartTotal(),
+                ]);
+            }
+        }
+
+        // tính lại tổng tiền item này và tổng tiền giỏ hàng
+        $itemTotal = $cart->quantity * $cart->food->price;
+        return response()->json([
+            'success' => true,
+            'removed' => false,
+            'id' => $id,
+            'quantity' => $cart->quantity,
+            'itemTotal' => $itemTotal,
+            'cartTotal' => $this->recalcCartTotal(),
+        ]);
+    }
+
+    // DELETE /cart/{id}
+    public function destroyCart($id)
+    {
+        $cart = Cart::findOrFail($id);
+        $cart->delete();
+        return response()->json([
+            'success' => true,
+            'removedId' => $id,
+            'cartTotal' => $this->recalcCartTotal(),
+        ]);
+    }
+
+    protected function recalcCartTotal()
+    {
+        $userId = session('id');
+        return Cart::where('user_id', $userId)
+            ->where('type', 'Giỏ Hàng')
+            ->get()
+            ->sum(fn($c) => $c->quantity * $c->food->price);
     }
 
     public function deskmanage()
     {
         return view('deskmanage');
     }
+
+
 
 
     public function login(Request $request)
@@ -237,7 +567,7 @@ class HomeController extends Controller
         $user->email = $request->email;
         $user->email_verify_token = $token;
         $user->token_created_at = $now;
-        $user->role=0;
+        $user->role = 0;
         $user->save();
 
         // Gửi email xác nhận
