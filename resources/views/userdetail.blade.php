@@ -4,12 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Trang Cá Nhân</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <x-notification-popup />
+    <script src="{{ asset('js/notification.js') }}"></script>
+    <script>
+                    // Lấy CSRF token từ meta
+                    const csrfToken = document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content');
+
+                    // Bắt sự kiện click trên tất cả nút .add-to-cart
+                    document.querySelectorAll('.add-to-cart').forEach(btn => {
+                        btn.addEventListener('click', async e => {
+                            const foodId = btn.dataset.foodId;
+                            try {
+                                const res = await fetch("{{ route('cart.add') }}", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': csrfToken,
+                                        'Accept': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                    },
+                                    body: JSON.stringify({
+                                        food_id: foodId,
+                                        quantity: 1
+                                    })
+                                });
+
+                                const data = await res.json();
+                                if (res.ok && data.success) {
+                                    // gọi trực tiếp hàm showPopup với message
+                                    showPopup(data.message);
+                                } else {
+                                    // API trả lỗi, hoặc success=false
+                                    showPopup(data.message || data.error || 'Có lỗi xảy ra');
+                                }
+
+                            } catch (err) {
+                                showPopup(err.message || 'Lỗi kết nối');
+                            }
+                        });
+                    });
+    </script>
     <script>
         tailwind.config = {
             theme: {
@@ -31,10 +74,15 @@
     </script>
 </head>
 
-<body class="font-mont">
+<body class="font-mont"
+@if(session('success')) data-success="{{ session('success') }}"
+@elseif(session('error')) data-error="{{ session('error') }}" @endif
+>
+
     <body>
+
         <body>
-        @include('layouts.user.header')
+            @include('layouts.user.header')
             <div class="relative w-full">
                 <!-- Background image (thay src thành ảnh của bạn nếu cần) -->
                 <img src="img/banner1.jpg" alt="User Detail" class="w-full h-[260px] md:h-[360px] object-cover">
@@ -162,32 +210,89 @@
                                 <form action="{{ route('user.update-profile') }}" method="POST"
                                     class="bg-white rounded shadow p-5">
                                     @csrf
+
                                     <div class="flex flex-col gap-5">
+                                        {{-- Email --}}
+                                        <div>
+                                            <label class="block font-semibold text-gray-700 mb-1">Email</label>
+                                            <input type="email" name="email"
+                                                class="w-full border rounded px-3 py-2 @error('email') border-red-500 @enderror"
+                                                value="{{ old('email', session('email')) }}" required>
+                                            @error('email')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+
+                                        {{-- Fullname --}}
                                         <div>
                                             <label class="block font-semibold text-gray-700 mb-1">Name</label>
-                                            <input type="text" name="fullname" class="w-full border rounded px-3 py-2"
-                                                value="{{ session('fullname') }}" required>
+                                            <input type="text" name="fullname"
+                                                class="w-full border rounded px-3 py-2 @error('fullname') border-red-500 @enderror"
+                                                value="{{ old('fullname', session('fullname')) }}" required>
+                                            @error('fullname')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
                                         </div>
-                                        <div class="grid md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label class="block font-semibold text-gray-700 mb-1">Email</label>
-                                                <input type="email" name="email" class="w-full border rounded px-3 py-2"
-                                                    value="{{ session('email') }}" required>
-                                            </div>
-                                            <div>
-                                                <label class="block font-semibold text-gray-700 mb-1">Phone</label>
-                                                <input type="text" name="sdt" class="w-full border rounded px-3 py-2"
-                                                    value="{{ session('sdt') }}" required>
-                                            </div>
-                                        </div>
+
+                                        {{-- Phone --}}
                                         <div>
-                                            <label class="block font-semibold text-gray-700 mb-1">Address</label>
-                                            <textarea name="address" class="w-full border rounded px-3 py-2" rows="2"
-                                                required>@if($address){{ $address->house_number }}, {{ $address->ward }}, {{ $address->district }}, {{ $address->city }}@endif</textarea>
+                                            <label class="block font-semibold text-gray-700 mb-1">Phone</label>
+                                            <input type="text" name="sdt"
+                                                class="w-full border rounded px-3 py-2 @error('sdt') border-red-500 @enderror"
+                                                value="{{ old('sdt', session('sdt')) }}" required>
+                                            @error('sdt')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
                                         </div>
+
+                                        {{-- Địa chỉ --}}
+                                        <div>
+                                            <label class="block font-semibold text-gray-700 mb-1">Số Nhà</label>
+                                            <input type="text" name="house_number"
+                                                class="w-full border rounded px-3 py-2 @error('house_number') border-red-500 @enderror"
+                                                value="{{ old('house_number', $address->house_number ?? '') }}"
+                                                required>
+                                            @error('house_number')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+
+                                        <!-- Tương tự cho ward, district, city -->
+                                        <div>
+                                            <label class="block font-semibold text-gray-700 mb-1">Xã/Phường</label>
+                                            <input type="text" name="ward"
+                                                class="w-full border rounded px-3 py-2 @error('ward') border-red-500 @enderror"
+                                                value="{{ old('ward', $address->ward ?? '') }}" required>
+                                            @error('ward')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="block font-semibold text-gray-700 mb-1">Huyện/Quận</label>
+                                            <input type="text" name="district"
+                                                class="w-full border rounded px-3 py-2 @error('district') border-red-500 @enderror"
+                                                value="{{ old('district', $address->district ?? '') }}" required>
+                                            @error('district')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="block font-semibold text-gray-700 mb-1">Tỉnh/TP</label>
+                                            <input type="text" name="city"
+                                                class="w-full border rounded px-3 py-2 @error('city') border-red-500 @enderror"
+                                                value="{{ old('city', $address->city ?? '') }}" required>
+                                            @error('city')
+                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+
                                         <div>
                                             <button type="submit"
-                                                class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 rounded font-bold">Submit</button>
+                                                class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 rounded font-bold">
+                                                Cập nhật
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -230,61 +335,57 @@
                             <!-- Add Address View -->
                             <div id="address-add-view" class="hidden">
                                 <div class="flex justify-between items-center mb-4">
-                                    <h2 class="text-xl font-bold text-gray-800">Add New Address</h2>
+                                    <h2 class="text-xl font-bold text-gray-800">Thêm Địa Chỉ</h2>
                                     <button id="btn-cancel-add-address"
                                         class="px-4 py-1.5 bg-orange-200 hover:bg-orange-300 text-orange-600 rounded-full text-sm font-semibold">
-                                        Cancel
+                                        Hủy
                                     </button>
                                 </div>
-                                <form action="{{ route('user.add-address') }}" method="POST"
-                                    class="bg-white rounded shadow p-6">
-                                    @csrf
-                                    <div class="grid md:grid-cols-2 gap-3 mb-3">
-                                        <input type="text" name="first_name" placeholder="First Name"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm" required>
-                                        <input type="text" name="last_name" placeholder="Last Name"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm" required>
-                                        <input type="text" name="company_name" placeholder="Company Name (Optional)"
-                                            class="md:col-span-2 border border-gray-300 rounded px-3 py-2 text-sm">
-                                        <select name="country" class="border border-gray-300 rounded px-3 py-2 text-sm"
-                                            required>
-                                            <option value="">Select Country</option>
-                                            <option value="Vietnam">Vietnam</option>
-                                            <option value="USA">USA</option>
-                                        </select>
-                                        <input type="text" name="street" placeholder="Street Address *"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm" required>
-                                        <input type="text" name="apartment"
-                                            placeholder="Apartment, suite, unit, etc. (optional)"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm">
-                                        <input type="text" name="city" placeholder="Town / City *"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm" required>
-                                        <input type="text" name="state" placeholder="State *"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm" required>
-                                        <input type="text" name="zip" placeholder="Zip *"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm" required>
-                                        <input type="text" name="phone" placeholder="Phone *"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm" required>
-                                        <input type="email" name="email" placeholder="Email *"
-                                            class="border border-gray-300 rounded px-3 py-2 text-sm" required>
-                                    </div>
-                                    <textarea name="address" placeholder="Address"
-                                        class="border border-gray-300 rounded px-3 py-2 w-full text-sm min-h-[70px] mb-4"></textarea>
-                                    <div class="mb-4 flex gap-4">
-                                        <label class="flex items-center">
-                                            <input type="radio" name="type" value="Home" class="mr-1"> Home
-                                        </label>
-                                        <label class="flex items-center">
-                                            <input type="radio" name="type" value="Office" class="mr-1"> Office
-                                        </label>
-                                    </div>
-                                    <div class="flex gap-3">
-                                        <button type="reset"
-                                            class="bg-orange-200 text-orange-700 px-6 py-2 rounded font-bold">Reset</button>
-                                        <button type="submit"
-                                            class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-bold">Save</button>
-                                    </div>
+                                <form action="{{ route('user.add-address') }}" method="POST" class="bg-white rounded shadow p-6" id="addressForm">
+                                @csrf
+                                <div class="grid md:grid-cols-2 gap-3 mb-3">
+                                    <input type="text" name="name" placeholder="Tên người nhận *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('name') border-red-500 @enderror"
+                                        value="{{ old('name') }}" required>
+                                    <input type="text" name="sdt" placeholder="Số điện thoại *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('sdt') border-red-500 @enderror"
+                                        value="{{ old('sdt') }}" required>
+                                    <input type="text" name="house_number" placeholder="Số nhà *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('house_number') border-red-500 @enderror"
+                                        value="{{ old('house_number') }}" required>
+                                    <input type="text" name="ward" placeholder="Phường/Xã *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('ward') border-red-500 @enderror"
+                                        value="{{ old('ward') }}" required>
+                                    <input type="text" name="district" placeholder="Quận/Huyện *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('district') border-red-500 @enderror"
+                                        value="{{ old('district') }}" required>
+                                    <input type="text" name="city" placeholder="Tỉnh/Thành phố *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('city') border-red-500 @enderror"
+                                        value="{{ old('city') }}" required>
+                                </div>
+                                <textarea name="note" placeholder="Ghi chú" class="border border-gray-300 rounded px-3 py-2 w-full text-sm min-h-[70px] mb-4">{{ old('note') }}</textarea>
+                                <div class="mb-4 flex gap-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="default" value="1"
+                                            class="mr-1"
+                                            {{ old('default', '1') == '1' ? 'checked' : '' }}
+                                            onclick="setDefaultRadio(this.value)"> Home
+                                    </label> 
+                                </div>
+                                <div class="flex gap-3">
+                                    <button type="reset"
+                                        class="bg-orange-200 text-orange-700 px-6 py-2 rounded font-bold"
+                                        onclick="clearFormData()">Cài Lại</button>
+                                    <button type="submit"
+                                        class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-bold">Lưu</button>
+                                </div>
                                 </form>
+<script>
+function clearFormData() {
+    // Xóa mọi dữ liệu nhập trên form (giữ đúng theo nút reset)
+    document.getElementById('addressForm').reset();
+}
+</script>
                             </div>
                         </div>
 
@@ -512,26 +613,27 @@
                         </div>
                         <!-- Wishlist -->
                         <div class="tab-content hidden" id="tab-wishlist">
-                            <h2 class="text-xl font-bold text-gray-800 mb-4">Wishlist</h2>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Yêu Thích</h2>
+                           
                             <div class="grid md:grid-cols-3 gap-4">
                                 <!-- Example product -->
+                                  @foreach ($foodFavorites as $foodFavorite)
                                 <div class="bg-white rounded shadow p-3 flex flex-col items-center">
-                                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80"
-                                        class="rounded w-full h-32 object-cover mb-2" />
-                                    <div class="text-base font-semibold text-gray-800 text-center mb-1">Hyderabadi
-                                        Biryani</div>
+                                    <a href="{{ route('views.menudetail', $foodFavorite->id) }}"><img src="{{ asset('img/'.$foodFavorite->image) }}"></a>
+                                    <a href="{{ route('views.menudetail', $foodFavorite->id) }}"><div class="text-base font-semibold text-gray-800 text-center mb-1">{{ $foodFavorite->name }}</div></a>
                                     <div class="flex items-center text-yellow-400 mb-1 text-xs">
                                         <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
                                             class="fa fa-star-half-alt"></i><i class="fa-regular fa-star"></i>
                                         <span class="ml-1 text-gray-600">(24)</span>
                                     </div>
-                                    <div class="mb-2 text-orange-500 font-bold">$65.00 <span
+                                    <div class="mb-2 text-orange-500 font-bold">{{number_format( $foodFavorite->price) }} <span
                                             class="text-gray-400 line-through text-xs">$90.00</span></div>
-                                    <button class="bg-orange-500 text-white px-4 py-1 rounded mt-auto">Add To
-                                        Cart</button>
+                                    <button type="button" class="add-to-cart bg-orange-500 text-white px-4 py-1 rounded mt-auto" data-food-id="{{ $foodFavorite->id }}">Thêm Giỏ Hàng</button>
                                 </div>
+                                    @endforeach
                                 <!-- Repeat products as needed -->
                             </div>
+                         
                             <!-- Pagination -->
                             <div class="flex justify-center items-center gap-2 mt-4">
                                 <button
@@ -548,27 +650,48 @@
                         </div>
                         <!-- Review -->
                         <div class="tab-content hidden" id="tab-review">
-                            <h2 class="text-xl font-bold text-gray-800 mb-4">Review</h2>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Đánh Giá</h2>
                             <div class="space-y-6">
+                                @foreach ($myReviews as $myReview)
                                 <div class="flex gap-4 bg-white rounded shadow p-4 items-center">
-                                    <img src="img/danhmuc1/suon.jpg" class="rounded-full w-14 h-14 object-cover" />
+                                    <img src="{{ asset('img/'.$myReview->image) }}" class="rounded-full w-14 h-14 object-cover" />
                                     <div class="flex-1">
-                                        <div class="font-bold text-gray-800">Sườn Chua Ngọt <span
-                                                class="ml-3 text-xs text-gray-400">29 Oct 2022</span></div>
+                                        <div class="font-bold text-gray-800">{{ $myReview->name }} <span
+                                                class="ml-3 text-xs text-gray-400">{{ $myReview->time }}</span></div>
                                         <div class="flex items-center text-yellow-400 text-xs mb-1">
-                                            <i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                class="fa fa-star"></i><i class="fa fa-star-half-alt"></i><i
-                                                class="fa-regular fa-star"></i>
-                                            <span class="ml-1 text-gray-600">(120)</span>
+                                        @php
+                                            $fullStars = floor($myReview->rate);
+                                            $halfStar = ($myReview->rate - $fullStars) >= 0.5 ? 1 : 0;
+                                            $emptyStars = 5 - $fullStars - $halfStar;
+                                        @endphp
+
+                                        {{-- In sao đầy --}}
+                                        @for ($i = 0; $i < $fullStars; $i++)
+                                            <i class="fa fa-star text-yellow-500"></i>
+                                        @endfor
+
+                                        {{-- In nửa sao nếu có --}}
+                                        @if ($halfStar)
+                                            <i class="fa fa-star-half-alt text-yellow-500"></i>
+                                        @endif
+
+                                        {{-- In sao rỗng --}}
+                                        @for ($i = 0; $i < $emptyStars; $i++)
+                                            <i class="fa-regular fa-star text-yellow-500"></i>
+                                        @endfor
+
+                                        {{-- Hiển thị số điểm nếu cần --}}
+                                        <span class="ml-2 text-sm text-gray-600"></span>
+                                        <span class="ml-1 text-gray-600">(120)</span>
                                         </div>
-                                        <div class="text-sm text-gray-600">Một món ăn quá ngon, thật là chu xì, không
-                                            biết đầu bếp thiên tài nào đã chế biến ngon được như thế</div>
+                                        <div class="text-sm text-gray-600">{!! $myReview->description !!}</div>
                                         <div class="mt-1">
                                             <span
-                                                class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">Active</span>
+                                                class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">{{ $myReview->type_menu }}</span>
                                         </div>
                                     </div>
                                 </div>
+                                 @endforeach
                                 <!-- More reviews ... -->
                             </div>
                             <!-- Pagination -->
@@ -619,6 +742,46 @@
                     </div>
                 </div>
             </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Đặt toàn bộ JS thêm giỏ hàng ở đây
+        const csrfToken = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute('content');
+
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', async e => {
+                const foodId = btn.dataset.foodId;
+                try {
+                    const res = await fetch("{{ route('cart.add') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify({
+                            food_id: foodId,
+                            quantity: 1
+                        })
+                    });
+
+                    const data = await res.json();
+                    if (res.ok && data.success) {
+                        showPopup(data.message);
+                    } else {
+                        showPopup(data.message || data.error || 'Có lỗi xảy ra');
+                    }
+
+                } catch (err) {
+                    showPopup(err.message || 'Lỗi kết nối');
+                }
+            });
+        });
+    });
+</script>
 
             <script>
                 // Tab logic

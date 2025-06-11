@@ -45,7 +45,7 @@
                 <i class="fa fa-home text-white"></i>
                 <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
                 <span class="text-white">–</span>
-                <span class="text-[#ff8000]">Tin Tức/span>
+                <span class="text-[#ff8000]">Tin Tức</span>
             </div>
         </div>
     </div>
