@@ -20,7 +20,7 @@ class ProductController extends Controller
         $menus = Menu::all(); // giả sử model Menu tồn tại
 
         // 2. Bắt đầu tạo query builder cho Food
-        $query = Food::query();
+        $query = Food::query()->with('menus');;
 
         // 3. Áp dụng các điều kiện filter nếu request có chứa giá trị tương ứng
 
@@ -130,7 +130,7 @@ class ProductController extends Controller
                 $request->file('image')->move(public_path('img'), $fileName);
                 $food->image = $fileName;
             }
-            $food->status = 'Còn';
+            $food->status = 'Còn Hàng';
             $food->save();
 
             if ($request->hasFile('detail_images')) {

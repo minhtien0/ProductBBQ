@@ -56,58 +56,14 @@
   <div class="flex-1 flex flex-col">
     <!-- BLOG CARD -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-7">
-      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-xl w-full h-56 object-cover mb-4" />
+      <img src="{{ asset('img/blog/'.$blog->image) }}" class="rounded-xl w-full h-56 object-cover mb-4" />
       <div class="flex items-center text-xs text-gray-500 gap-4 mb-3">
-        <span><i class="fa fa-user mr-1"></i> BBQ Master</span>
+        <span><i class="fa fa-user mr-1"></i> {{ $blog->fullname }}</span>
         <span><i class="fa fa-comment mr-1"></i> 5 Bình luận</span>
-        <span><i class="fa fa-calendar mr-1"></i> 10/07/2024</span>
+        <span><i class="fa fa-calendar mr-1"></i> {{ \Carbon\Carbon::parse($blog->time_blog)->format('d/m/Y') }}</span>
       </div>
-      <h1 class="text-2xl font-bold text-gray-800 mb-2">5 Tuyệt Chiêu Tẩm Ướp Sườn Nướng BBQ Đậm Đà</h1>
-      <p class="text-gray-700 mb-4">
-        Để có một buổi tiệc nướng BBQ hoàn hảo, bí quyết nằm ở khâu tẩm ướp thịt. Cùng khám phá cách ướp sườn kiểu Mỹ chuẩn vị nhà hàng với sốt đặc biệt, kết hợp cùng nhiều loại gia vị hấp dẫn, giúp từng miếng thịt thấm đều và mềm ngon khó cưỡng.
-      </p>
-      <h2 class="text-lg font-bold text-gray-800 mb-2">1. Chọn nguyên liệu tươi, thịt nhiều vân mỡ</h2>
-      <p class="text-gray-700 mb-3">
-        Sườn heo, bò phải còn tươi, dày, nhiều vân mỡ sẽ giúp giữ ẩm khi nướng, miếng thịt không bị khô. Ướp kèm chút muối hồng và tiêu để giữ vị ngọt tự nhiên.
-      </p>
-      <ul class="mb-4 grid md:grid-cols-2 gap-2 text-gray-700">
-        <li class="flex items-center"><span class="text-orange-500 mr-2">✔</span> Sườn non tươi nhập mỗi ngày</li>
-        <li class="flex items-center"><span class="text-orange-500 mr-2">✔</span> Gia vị ướp chuẩn Mỹ</li>
-        <li class="flex items-center"><span class="text-orange-500 mr-2">✔</span> Sốt BBQ nhà làm</li>
-        <li class="flex items-center"><span class="text-orange-500 mr-2">✔</span> Đảm bảo vị mềm, mọng nước</li>
-      </ul>
-      <div class="grid md:grid-cols-2 gap-5 items-center mb-4">
-        <img src="img/danhmuc1/suon.jpg"" class="rounded-lg w-full h-32 object-cover" />
-        <div>
-          <h3 class="text-base font-bold text-gray-800 mb-2">2. Kỹ thuật nướng than hồng</h3>
-          <p class="text-gray-700 text-sm mb-1">Để sườn không bị cháy mà vẫn chín đều, hãy nướng ở nhiệt vừa, trở mặt thường xuyên và phết sốt BBQ liên tục để lớp ngoài bóng đẹp, thơm lừng.</p>
-          <ul class="text-gray-700 text-sm">
-            <li class="flex items-center"><span class="text-orange-500 mr-2">✔</span> Không nướng lửa quá lớn</li>
-            <li class="flex items-center"><span class="text-orange-500 mr-2">✔</span> Luôn giữ ẩm thịt bằng sốt và bơ lạt</li>
-          </ul>
-        </div>
-      </div>
-      <h2 class="text-lg font-bold text-gray-800 mb-2">3. Salad và món ăn kèm tăng vị</h2>
-      <p class="text-gray-700 mb-3">
-        Đừng quên chuẩn bị salad, dưa leo muối hoặc khoai tây chiên để cân bằng vị ngấy và giúp bữa BBQ thêm trọn vẹn. Thêm một chút sốt chua cay sẽ làm nổi bật vị thịt nướng.
-      </p>
-      <ul class="mb-3 text-gray-700">
-        <li class="flex items-center"><span class="text-orange-500 mr-2">✔</span> Salad trộn rau củ tươi</li>
-        <li class="flex items-center"><span class="text-orange-500 mr-2">✔</span> Khoai tây chiên giòn</li>
-      </ul>
-      <div class="text-gray-500 text-sm mt-6 flex flex-wrap gap-2 items-center">
-        <span class="font-semibold">Tags:</span>
-        <span class="bg-gray-100 px-2 py-0.5 rounded">BBQ</span>
-        <span class="bg-gray-100 px-2 py-0.5 rounded">Grill</span>
-        <span class="bg-gray-100 px-2 py-0.5 rounded">Sườn Nướng</span>
-        <span class="bg-gray-100 px-2 py-0.5 rounded">Tiệc Ngoài Trời</span>
-      </div>
-      <div class="flex items-center gap-2 mt-3">
-        <span class="font-semibold">Chia sẻ:</span>
-        <a href="#" class="text-orange-500 hover:text-orange-700 text-xl"><i class="fab fa-facebook"></i></a>
-        <a href="#" class="text-orange-500 hover:text-orange-700 text-xl"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="text-orange-500 hover:text-orange-700 text-xl"><i class="fab fa-instagram"></i></a>
-      </div>
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ $blog->title }}</h1>
+      <p>{!! $blog->content !!}</p>
     </div>
     <!-- COMMENTS BLOCK -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-7">

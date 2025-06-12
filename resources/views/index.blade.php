@@ -867,7 +867,7 @@
                                     <i
                                         class="{{ in_array($allFood->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }}"></i>
                                 </button>
-                                <button class="icon-btn"><a href="{{ route('views.menudetail', $allFood->id) }}"><i
+                                <button class="icon-btn"><a href="{{ route('views.menudetail', [$allFood->id,$allFood->slug]) }}"><i
                                             class="fa-regular fa-eye"></i></a></button>
                             </div>
                         </div>

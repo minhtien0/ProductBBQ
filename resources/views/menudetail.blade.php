@@ -58,7 +58,7 @@
           class="rounded-lg w-full h-[220px] object-cover mb-4 border-2 border-orange-400" />
         <div class="flex gap-2">
           @foreach ($detailImages as $detailImage)
-          <img onclick="document.getElementById('main-img').src=this.src" src="{{ asset('img/'.$detailImage->img) }}"
+          <img onclick="document.getElementById('main-img').src=this.src" src="{{ asset('img/details/food/'.$detailImage->img) }}"
             class="w-14 h-14 rounded-lg object-cover border-2 border-orange-200 cursor-pointer hover:border-orange-500 transition" />
           @endforeach
         </div>
@@ -127,7 +127,7 @@
       </div>
       <div class="pt-4">
         <!-- Description Tab Content -->
-        <div id="descTabContent">
+        <div id="descTabContent" class="w-full h-auto">
           <p class="text-gray-700 mb-3">
             {!!$foods->note !!}
           </p>

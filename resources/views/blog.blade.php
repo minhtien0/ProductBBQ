@@ -53,25 +53,23 @@
     <!-- Blog Cards Grid -->
     <div class="max-w-6xl mx-auto px-3 py-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Blog Card -->
+            @foreach ($blogs as $blog )
             <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
                 <div class="relative">
-                    <img src="img/blog/blog1.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Thức Ăn</span>
+                    <img src="{{ asset('img/blog/'.$blog->image) }}" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
+                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">{{ $blog->type }}</span>
                 </div>
                 <div class="flex items-center mt-3 mb-2 gap-2">
                     <img src="img/mtien.jpg" alt=""
                         class="w-7 h-7 rounded-full object-cover border-2 border-white shadow">
                     <div>
-                        <p class="font-semibold text-xs text-[#22223b] leading-tight">Moni Islam</p>
-                        <p class="text-gray-400 text-xs">1 May, 2023</p>
+                        <p class="font-semibold text-xs text-[#22223b] leading-tight">{{ $blog->fullname }}</p>
+                        <p class="text-gray-400 text-xs">{{ \Carbon\Carbon::parse($blog->time_blog)->format('d/m/Y') }}</p>
                     </div>
                 </div>
-                <h3 class="font-semibold text-base mb-1 line-clamp-2">Operates Approximately 400 Restaurants</h3>
-                <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet consectetur adipisicing
-                    elit. Voluptate sapiente deserunt accusantium...</p>
+                <h3 class="font-semibold text-base mb-1 line-clamp-2">{{ $blog->title }}</h3>
                 <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
+                    <a href="{{ route('views.blogdetail',[$blog->id_blog,$blog->slug]) }}" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
                             class="fa fa-arrow-right text-[10px]"></i></a>
                     <div class="flex items-center gap-1 text-gray-400">
                         <i class="fa-regular fa-comment-dots"></i>
@@ -79,135 +77,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Repeat Card -->
-            <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
-                <div class="relative">
-                    <img src="img/blog/blog.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span
-                        class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Nhà Hàng</span>
-                </div>
-                <div class="flex items-center mt-3 mb-2 gap-2">
-                    <img src="img/hdong.jpg" alt=""
-                        class="w-7 h-7 rounded-full object-cover border-2 border-white shadow">
-                    <div>
-                        <p class="font-semibold text-xs text-[#22223b] leading-tight">John Deo</p>
-                        <p class="text-gray-400 text-xs">6 June, 2023</p>
-                    </div>
-                </div>
-                <h3 class="font-semibold text-base mb-1 line-clamp-2">Introducing Our New Summer Menu!</h3>
-                <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit. Vivamus commodo...</p>
-                <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
-                            class="fa fa-arrow-right text-[10px]"></i></a>
-                    <div class="flex items-center gap-1 text-gray-400">
-                        <i class="fa-regular fa-comment-dots"></i>
-                        <span class="ml-1 text-[#e60012]">120</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Repeat Card -->
-            <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
-                <div class="relative">
-                    <img src="img/blog/blog2.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Sự Kiện</span>
-                </div>
-                <div class="flex items-center mt-3 mb-2 gap-2">
-                    <img src="img/mtien.jpg" alt=""
-                        class="w-7 h-7 rounded-full object-cover border-2 border-white shadow">
-                    <div>
-                        <p class="font-semibold text-xs text-[#22223b] leading-tight">Jakia Talma</p>
-                        <p class="text-gray-400 text-xs">28 Apr, 2023</p>
-                    </div>
-                </div>
-                <h3 class="font-semibold text-base mb-1 line-clamp-2">Summer Water Rose + Bubbly Rose is Here!</h3>
-                <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing
-                    elit. Laboriosam, nobis...</p>
-                <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
-                            class="fa fa-arrow-right text-[10px]"></i></a>
-                    <div class="flex items-center gap-1 text-gray-400">
-                        <i class="fa-regular fa-comment-dots"></i>
-                        <span class="ml-1 text-[#e60012]">120</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Card Row 2 -->
-            <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
-                <div class="relative">
-                    <img src="img/blog/blog3.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Lễ Hội</span>
-                </div>
-                <div class="flex items-center mt-3 mb-2 gap-2">
-                    <img src="img/mtien.jpg" alt=""
-                        class="w-7 h-7 rounded-full object-cover border-2 border-white shadow">
-                    <div>
-                        <p class="font-semibold text-xs text-[#22223b] leading-tight">Isret Sultana</p>
-                        <p class="text-gray-400 text-xs">3 May, 2023</p>
-                    </div>
-                </div>
-                <h3 class="font-semibold text-base mb-1 line-clamp-2">Tender Fried Baby Squid With A Salt, Pepper</h3>
-                <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet consectetur adipisicing
-                    elit. Voluptate sapiente deserunt accusantium...</p>
-                <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
-                            class="fa fa-arrow-right text-[10px]"></i></a>
-                    <div class="flex items-center gap-1 text-gray-400">
-                        <i class="fa-regular fa-comment-dots"></i>
-                        <span class="ml-1 text-[#e60012]">120</span>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
-                <div class="relative">
-                    <img src="img/blog/blog2.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Sự Kiện</span>
-                </div>
-                <div class="flex items-center mt-3 mb-2 gap-2">
-                    <img src="img/mtien.jpg" alt=""
-                        class="w-7 h-7 rounded-full object-cover border-2 border-white shadow">
-                    <div>
-                        <p class="font-semibold text-xs text-[#22223b] leading-tight">Jakia Talma</p>
-                        <p class="text-gray-400 text-xs">28 Apr, 2023</p>
-                    </div>
-                </div>
-                <h3 class="font-semibold text-base mb-1 line-clamp-2">Summer Water Rose + Bubbly Rose is Here!</h3>
-                <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing
-                    elit. Laboriosam, nobis...</p>
-                <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
-                            class="fa fa-arrow-right text-[10px]"></i></a>
-                    <div class="flex items-center gap-1 text-gray-400">
-                        <i class="fa-regular fa-comment-dots"></i>
-                        <span class="ml-1 text-[#e60012]">120</span>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col">
-                <div class="relative">
-                    <img src="img/blog/blog3.jpg" alt="" class="rounded-lg w-full h-36 md:h-44 object-cover" />
-                    <span class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">Lễ Hội</span>
-                </div>
-                <div class="flex items-center mt-3 mb-2 gap-2">
-                    <img src="img/mtien.jpg" alt=""
-                        class="w-7 h-7 rounded-full object-cover border-2 border-white shadow">
-                    <div>
-                        <p class="font-semibold text-xs text-[#22223b] leading-tight">Isret Sultana</p>
-                        <p class="text-gray-400 text-xs">3 May, 2023</p>
-                    </div>
-                </div>
-                <h3 class="font-semibold text-base mb-1 line-clamp-2">Tender Fried Baby Squid With A Salt, Pepper</h3>
-                <p class="text-gray-500 text-sm line-clamp-2 mb-3">Lorem ipsum dolor sit amet consectetur adipisicing
-                    elit. Voluptate sapiente deserunt accusantium...</p>
-                <div class="flex justify-between items-center mt-auto text-xs">
-                    <a href="#" class="text-[#22223b] hover:text-[#e60012] font-medium">Đọc thêm <i
-                            class="fa fa-arrow-right text-[10px]"></i></a>
-                    <div class="flex items-center gap-1 text-gray-400">
-                        <i class="fa-regular fa-comment-dots"></i>
-                        <span class="ml-1 text-[#e60012]">120</span>
-                    </div>
-                </div>
-            </div>
+             @endforeach
         </div>
 
         <!-- Pagination -->

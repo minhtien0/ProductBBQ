@@ -44,7 +44,7 @@
     <!-- Logo -->
     <div class="flex items-center gap-2">
       <a href="{{ route('views.index') }}">
-        <img class="w-50 h-20 object-contain" src="img/test1.png" alt="Logo">
+        <img class="w-50 h-20 object-contain" src="{{ asset('img/test1.png') }}" alt="Logo">
       </a>
       <!-- <span class="text-[#e60012] text-3xl md:text-4xl"><i class="fa-solid fa-utensils"></i></span> -->
       <a href="{{ route('views.index') }}"><span class="text-1xl md:text-2xl text-[#262248] font-family:Quicksand,sans-serif">LUA <br> BE HOY</span>

@@ -145,7 +145,7 @@
                             Thêm mới
                         </button>
                     </a>
-                    <button onclick="openPopupDelete('Bạn muốn muốn xóa người dùng này?')"
+                    <button onclick="openPopupDelete('Bạn muốn muốn xóa món ăn này?')"
                         class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -260,7 +260,7 @@
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
                                             href="{{ route('admin.product.edit', $food->id) }}">{{ $food->name }}</a></td>
                                     <td class="py-1 px-2 border-t border-gray-200">
-                                        <span class="text-gray-600">{{ $food->type }}</span>
+                                        <span class="text-gray-600">{{ $food->menus->name ?? '-' }}</span>
                                     </td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $food->price }}</td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $food->status }}</td>

@@ -11,6 +11,7 @@ use App\Models\Food;
 use App\Models\Image;
 use App\Models\Menu;
 use App\Models\Rate;
+use App\Models\Blog;
 use App\Models\Cart;
 use App\Models\Help;
 use Illuminate\Support\Carbon;
@@ -48,7 +49,10 @@ class HomeController extends Controller
     }
     public function blog()
     {
-        return view('blog');
+        $blogs=Blog::join('users', 'blog.id_staff', '=', 'users.id')
+                ->select('blog.*', 'users.*', 'blog.id as id_blog','blog.created_at as time_blog','users.avatar as avatar')
+                ->get();
+        return view('blog',compact('blogs'));
     }
     public function contact()
     {
@@ -106,7 +110,7 @@ class HomeController extends Controller
     }
 
 
-    public function menudetail($id)
+    public function menudetail($id,$slug)
     {
         $foods = Food::with('menus')->where('id', '=', $id)->first();
         $detailImages = Image::where('id_food', '=', $id)->get();
@@ -114,12 +118,16 @@ class HomeController extends Controller
             ->where('food_id', '=', $id)
             ->select('rates.*', 'users.*')
             ->get();
-        //dd($rates);
+        //dd($detailImages);
         return view('menudetail', compact('foods', 'detailImages', 'rates'));
     }
-    public function blogdetail()
+    public function blogdetail($id,$slug)
     {
-        return view('blogdetail');
+        $blog=Blog::join('users','blog.id_staff','=','users.id')
+        ->where('blog.id','=',$id)
+        ->select('blog.*', 'users.*', 'blog.id as id_blog','blog.created_at as time_blog','users.avatar as avatar')
+        ->first();
+        return view('blogdetail',compact('blog'));
     }
     //Trang chi tiết người dùng
     public function userdetail()

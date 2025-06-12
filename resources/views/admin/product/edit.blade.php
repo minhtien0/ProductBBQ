@@ -5,7 +5,7 @@
         @csrf
 
         {{-- Phần chính --}}
-        <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm p-6 mt-3">
+        <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h1 class="text-lg font-bold text-gray-800 mb-6">Sửa Món Ăn</h1>
 
             {{-- Hiển thị lỗi validate (nếu có) --}}
