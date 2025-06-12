@@ -14,15 +14,16 @@ class Blog extends Model
         'title',
         'type',
         'content',
-        'time',
         'image',
         'id_staff',
         'slug',
+        'created_at',
+        'updated_at',
     ];
 
     // Định dạng kiểu dữ liệu cho cột ngay_dang
     protected $casts = [
-        'ngay_dang' => 'datetime',
+        'created_at' => 'datetime',
     ];
 
      public function staff()
