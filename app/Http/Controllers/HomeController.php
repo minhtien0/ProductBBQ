@@ -27,12 +27,12 @@ class HomeController extends Controller
     public function index()
     {
         $allFoods = Food::with('menus')->get();
-        $favIds = Cart::where('user_id', session('id'))
+        $favIds = Cart::where('user_id', session('user_id'))
             ->where('type', 'Yêu Thích')
             ->pluck('food_id')
             ->toArray();
 
-        //dd($allFoods);
+        //dd(session('role'));
         return view('index', compact('allFoods', 'favIds'));
     }
     public function order()
@@ -49,10 +49,10 @@ class HomeController extends Controller
     }
     public function blog()
     {
-        $blogs=Blog::join('users', 'blog.id_staff', '=', 'users.id')
-                ->select('blog.*', 'users.*', 'blog.id as id_blog','blog.created_at as time_blog','users.avatar as avatar')
-                ->get();
-        return view('blog',compact('blogs'));
+        $blogs = Blog::join('users', 'blog.id_staff', '=', 'users.id')
+            ->select('blog.*', 'users.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'users.avatar as avatar')
+            ->get();
+        return view('blog', compact('blogs'));
     }
     public function contact()
     {
@@ -110,7 +110,7 @@ class HomeController extends Controller
     }
 
 
-    public function menudetail($id,$slug)
+    public function menudetail($id, $slug)
     {
         $foods = Food::with('menus')->where('id', '=', $id)->first();
         $detailImages = Image::where('id_food', '=', $id)->get();
@@ -121,40 +121,40 @@ class HomeController extends Controller
         //dd($detailImages);
         return view('menudetail', compact('foods', 'detailImages', 'rates'));
     }
-    public function blogdetail($id,$slug)
+    public function blogdetail($id, $slug)
     {
-        $blog=Blog::join('users','blog.id_staff','=','users.id')
-        ->where('blog.id','=',$id)
-        ->select('blog.*', 'users.*', 'blog.id as id_blog','blog.created_at as time_blog','users.avatar as avatar')
-        ->first();
-        return view('blogdetail',compact('blog'));
+        $blog = Blog::join('users', 'blog.id_staff', '=', 'users.id')
+            ->where('blog.id', '=', $id)
+            ->select('blog.*', 'users.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'users.avatar as avatar')
+            ->first();
+        return view('blogdetail', compact('blog'));
     }
     //Trang chi tiết người dùng
     public function userdetail()
     {
-        $address = Address::where('user_id', session('id'))
+        $address = Address::where('user_id', session('user_id'))
             ->where('default', 1)
             ->first();
-        $addressAll = Address::where('user_id', session('id'))
+        $addressAll = Address::where('user_id', session('user_id'))
             ->get();
-        $foodFavorites= Cart::join('foods', 'carts.food_id', '=', 'foods.id')
+        $foodFavorites = Cart::join('foods', 'carts.food_id', '=', 'foods.id')
             ->join('menus', 'foods.type', '=', 'menus.id')
-            ->where('carts.user_id', '=', session('id'))
+            ->where('carts.user_id', '=', session('user_id'))
             ->where('carts.type', '=', 'Yêu Thích')
             ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
             ->get();
-        $myReviews=Rate::join('foods','rates.food_id','=','foods.id')
-        ->join('menus','foods.type','=','menus.id')
-        ->select('rates.*','foods.*','menus.name as type_menu')
-        ->get();
-        
-        return view('userdetail', compact('address', 'addressAll','foodFavorites','myReviews'));
+        $myReviews = Rate::join('foods', 'rates.food_id', '=', 'foods.id')
+            ->join('menus', 'foods.type', '=', 'menus.id')
+            ->select('rates.*', 'foods.*', 'menus.name as type_menu')
+            ->get();
+
+        return view('userdetail', compact('address', 'addressAll', 'foodFavorites', 'myReviews'));
     }
 
     public function updateProfile(Request $request)
     {
         // 0. Lấy ID từ session, nếu chưa login thì chuyển về login hoặc báo lỗi
-        $userId = session('id');
+        $userId = session('user_id');
         if (empty($userId)) {
             return redirect()->route('login')
                 ->with('error', 'Vui lòng đăng nhập để thực hiện chức năng này!');
@@ -235,7 +235,7 @@ class HomeController extends Controller
 
     public function addAddress(Request $request)
     {
-        $userId = session('id');
+        $userId = session('user_id');
         if (empty($userId)) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập!');
         }
@@ -293,6 +293,94 @@ class HomeController extends Controller
         }
     }
 
+    public function deleteAddress($id)
+    {
+        $address = Address::findOrFail($id);
+        $address->delete();
+
+        // Quay về trang trước với thông báo
+        return redirect()->back()->with('success', 'Đã xóa địa chỉ thành công!');
+    }
+
+    public function editAddress(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required|exists:addresses,id',
+            'name' => 'required|string|max:255',
+            'sdt' => 'required|string|max:20',
+            'house_number' => 'required|string|max:255',
+            'ward' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'note' => 'nullable|string|max:500',
+            'default' => 'required|in:0,1',
+        ]);
+
+        $address = Address::findOrFail($request->id);
+        $address->name = $request->name;
+        $address->sdt = $request->sdt;
+        $address->house_number = $request->house_number;
+        $address->ward = $request->ward;
+        $address->district = $request->district;
+        $address->city = $request->city;
+        $address->note = $request->note;
+        $address->default = $request->default;
+        $address->save();
+
+        return redirect()->back()->with('success', 'Cập nhật địa chỉ thành công!');
+    }
+
+    //Đổi Mật Khẩu
+    public function changePassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'current_password' => 'required',
+                'new_password' => [
+                    'required',
+                    'string',
+                    'min:6',
+                    'confirmed',
+                    'regex:/[!@#$%^&*(),.?":{}|<>]/'
+                ]
+            ], [
+                'new_password.confirmed' => 'Nhập lại mật khẩu không khớp!',
+                'new_password.min' => 'Mật khẩu mới phải từ 6 ký tự!',
+                'new_password.regex' => 'Mật khẩu mới phải có ký tự đặc biệt (!@#$%^&*(),.?":{}|<>])!'
+            ]);
+
+            if ($validator->fails()) {
+                // Trả về lỗi cho từng trường
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = \App\Models\User::find(session('user_id'));
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Không tìm thấy người dùng!']);
+            }
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json(['success' => false, 'message' => 'Mật khẩu hiện tại không đúng!']);
+            }
+
+            if (Hash::check($request->new_password, $user->password)) {
+                return response()->json(['success' => false, 'message' => 'Mật khẩu mới không được trùng mật khẩu hiện tại!']);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json(['success' => true, 'message' => 'Đổi mật khẩu thành công!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Đã có lỗi xảy ra: ' . $e->getMessage()]);
+        }
+    }
+
+
+
 
 
     //Chức Năng Giỏ Hàng
@@ -300,7 +388,7 @@ class HomeController extends Controller
     {
         $carts = Cart::join('foods', 'carts.food_id', '=', 'foods.id')
             ->join('menus', 'foods.type', '=', 'menus.id')
-            ->where('carts.user_id', '=', session('id'))
+            ->where('carts.user_id', '=', session('user_id'))
             ->where('carts.type', '=', 'Giỏ Hàng')
             ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
             ->get();
@@ -316,7 +404,7 @@ class HomeController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        if (empty(session('id'))) {
+        if (empty(session('user_id'))) {
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -326,7 +414,7 @@ class HomeController extends Controller
             return back()->with('error', 'Vui lòng đăng nhập để thực hiện chức năng này!');
         }
 
-        $userId = session('id');
+        $userId = session('user_id');
         $type = 'Giỏ Hàng';
 
         $cart = Cart::firstWhere([
@@ -362,7 +450,7 @@ class HomeController extends Controller
             'food_id' => 'required|exists:foods,id',
         ]);
 
-        $userId = session('id');
+        $userId = session('user_id');
         if (!$userId) {
             return response()->json([
                 'success' => false,
@@ -451,7 +539,7 @@ class HomeController extends Controller
 
     protected function recalcCartTotal()
     {
-        $userId = session('id');
+        $userId = session('user_id');
         return Cart::where('user_id', $userId)
             ->where('type', 'Giỏ Hàng')
             ->get()
@@ -468,56 +556,85 @@ class HomeController extends Controller
 
     public function login(Request $request)
     {
-        if ($request->isMethod('post')) {
-            $user = $request->input('username'); // tên input là "username"
-            $password = $request->input('password');
 
-            $validationErrors = [];
-
-            if (empty($user)) {
-                $validationErrors['username'] = 'Vui lòng nhập mã nhân viên (code_nv)';
-            }
-
-            if (empty($password)) {
-                $validationErrors['password'] = 'Vui lòng nhập CCCD';
-            }
-
-            if (empty($validationErrors)) {
-                $staff = User::where('user', $user)
-                    ->where('password', $password)
-                    ->first();
-
-                if ($staff) {
-                    session(['staff_logged_in' => true]);
-                    session(['id' => $staff->id]);
-                    session(['fullname' => $staff->fullname]);
-                    session(['role' => $staff->role]);
-                    session(['sdt' => $staff->sdt]);
-                    session(['email' => $staff->email]);
-                    session(['birthday' => $staff->birthday]);
-                    session(['gender' => $staff->gender]);
-                    session(['avatar' => $staff->avatar]);
-
-                    return redirect('/')->with('success', 'Đăng nhập thành công');
-                } else {
-                    $validationErrors['failed'] = 'Mã nhân viên hoặc CCCD không chính xác';
-                }
-            }
-
-            return redirect()->back()
-                ->withErrors($validationErrors)
-                ->withInput($request->except('password'));
+        if (session()->has('staff_logged_in')) {
+            return redirect()->route('admin.dashboard');
+        }
+        if (session()->has('user_logged_in')) {
+            return redirect()->route('views.index');
+        }
+        // Nếu là GET thì chỉ show form đăng nhập, không validate gì cả
+        if ($request->isMethod('get')) {
+            // Đảm bảo có flash 'form' để JS mở đúng form nếu bạn dùng toggleForms()
+            $request->session()->flash('form', 'login');
+            return view('login');
         }
 
-        return view('login');
+        // Nếu là POST (submit login) thì xử lý như sau
+        $request->session()->flash('form', 'login');
+
+        // Validation cơ bản
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ], [
+            'username.required' => 'Vui lòng nhập tài khoản.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $inputUser = $request->username;
+        $inputPass = $request->password;
+
+        // 1) Thử đăng nhập bằng Staff (ma_nv / CCCD)
+        $staff = Staff::where('code_nv', $inputUser)
+            ->where('CCCD', $inputPass)
+            ->first();
+
+        if ($staff) {
+            session([
+                'staff_logged_in' => true,
+                'staff_id' => $staff->id,
+                'staff_name' => $staff->fullname,
+                'staff_email' => $staff->email,
+                'staff_role' => $staff->role,
+            ]);
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Đăng nhập Admin thành công!');
+        }
+
+        // 2) Thử đăng nhập bằng User (user / hashed password)
+        $user = User::where('user', $inputUser)->first();
+        if ($user && Hash::check($inputPass, $user->password)) {
+            session([
+                'user_logged_in' => true,
+                'user_id' => $user->id,
+                'user_name' => $user->fullname,
+                'user_sdt' => $user->sdt,
+                'user_email' => $user->email,
+                'user_birthday' => $user->birthday,
+                'user_gender' => $user->gender,
+                'user_avatar' => $user->avatar,
+            ]);
+            return redirect()->route('views.index')
+                ->with('success', 'Đăng nhập thành công!');
+        }
+
+        // Nếu cả 2 đều không khớp
+        return redirect()->back()
+            ->withErrors(['failed' => 'Tài khoản hoặc mật khẩu không chính xác'])
+            ->withInput($request->except('password'));
     }
 
     public function logout(Request $request)
     {
         // Xóa tất cả session liên quan đến đăng nhập
-        $request->session()->forget(['staff_logged_in', 'id', 'fullname', 'gender', 'avatar', 'birthday', 'email', 'sdt', 'role']);
-
-
+        $request->session()->flush();
         return redirect('/login')->with('success', 'Đăng xuất thành công');
     }
 
@@ -532,7 +649,7 @@ class HomeController extends Controller
         // Validation 5 trường: fullname, sdt, user, password_plain, password_plain_confirmation, email
         $validator = Validator::make($request->all(), [
             'fullname' => 'required|string|max:255',
-            'sdt' => 'required|string|max:20',
+            'sdt' => 'required|string|max:20|unique:users,sdt',
             'user' => 'required|string|max:50|unique:users,user',
             'password_plain' => [
                 'required',
@@ -545,6 +662,7 @@ class HomeController extends Controller
         ], [
             'fullname.required' => 'Bạn cần nhập Họ và tên.',
             'sdt.required' => 'Bạn cần nhập Số điện thoại.',
+            'sdt.unique' => 'SDT đã tồn tại.',
             'user.required' => 'Bạn cần nhập Username.',
             'user.unique' => 'Username đã tồn tại.',
             'password_plain.required' => 'Bạn cần nhập Password.',
@@ -559,7 +677,9 @@ class HomeController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('form', 'register')
+                ->with('show_register', true);
         }
 
         // Tạo token xác nhận
@@ -583,7 +703,8 @@ class HomeController extends Controller
 
         return redirect()->back()
             ->with('success_register', 'Đăng ký thành công! Vui lòng kiểm tra email để xác nhận.')
-            ->with('form', 'register');
+            ->with('form', 'register')
+            ->with('show_register', true);
     }
 
 

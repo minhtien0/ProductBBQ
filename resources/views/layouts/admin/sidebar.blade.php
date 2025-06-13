@@ -17,29 +17,18 @@
             </div>
             <!-- Câu hỏi -->
             <div class="py-2 px-3 rounded-md text-gray-700 cursor-pointer  hover:bg-gray-300 hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200"
-                onclick="toggleDropdown('questionDropdown', this)">
+              >
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
                         <a href="{{ route('admin.staff') }}">
-                        <i class="fa-solid fa-clipboard-user w-4 h-4 text-gray-500 mr-1"></i>
+                        <i class="fa-solid fa-clipboard-user w-4 h-4 text-gray-500 mr-2"></i>
                         <span class="text-sm">Nhân viên</span>
                         </a>
                     </div>
-                    <i class="fa-solid fa-chevron-down w-4 h-4 text-gray-500 transition-transform duration-300"></i>
+                 
                 </div>
             </div>
-            <div id="questionDropdown"
-                class="pl-6 space-y-1 hidden transform scale-y-0 opacity-0 transition-all duration-300 origin-top">
-                <div class="py-1.5 px-2 rounded-md text-gray-700 cursor-pointer hover:bg-gray-300 hover:text-teal-500 hover:scale-105 transition-all duration-200 opacity-0 animate-fade-in"
-                    style="animation-delay: 0.2s;">
-                    <div class="flex items-center space-x-2">
-                        <a href="{{ route('admin.staff') }}">
-                            <i class="fa-solid fa-clipboard-user w-4 h-4 mr-2"></i>
-                            <span class="text-sm">Nhân Viên</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Thống Báo -->
             <div

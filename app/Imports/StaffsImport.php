@@ -41,14 +41,9 @@ class StaffsImport implements ToModel, WithHeadingRow, WithValidation
             'time_work' => $this->transformDate($mapped['ngay_vao_lam'] ?? null),
             'type' => $mapped['loai_nv'] ?? 'Part Time',
             'role' => $mapped['chuc_vu'] ?? 'Nhân Viên',
-            'hourly_salary' => $mapped['luong_gio'] ?? null,
-            'basic_salary' => $mapped['luong_co_ban'] ?? null,
             'STK' => $mapped['so_tai_khoan'] ?? null,
             'bank' => $mapped['ngan_hang'] ?? null,
             'code_nv' => 'NV' . $mapped['cccd'],
-            'branch_id' => 1,
-
-
         ]);
     }
 
@@ -94,7 +89,7 @@ class StaffsImport implements ToModel, WithHeadingRow, WithValidation
             '*.dia_chi' => 'required|string|max:255',
             '*.email' => 'required|email|max:255',
             '*.ngay_vao_lam' => 'required|date_format:d/m/Y',
-            '*.so_tai_khoan' => 'required|string|max:30',
+            '*.so_tai_khoan' => 'required|int|digits_between:10,20',
             '*.ngan_hang' => 'required|string|max:100',
         ];
     }
@@ -118,6 +113,7 @@ class StaffsImport implements ToModel, WithHeadingRow, WithValidation
             '*.ngay_sinh.date_format' => 'Ngày sinh phải định dạng DD/MM/YYYY.',
             '*.gioi_tinh.in' => 'Giới tính chỉ: Nam, Nữ hoặc Khác.',
             '*.sdt.digits_between' => 'SĐT phải 9–10 chữ số.',
+            '*.so_tai_khoan.digits_between' => 'Chiều dài STK phải 10-20 chữ số.',
             '*.email.email' => 'Email không đúng định dạng.',
             '*.ngay_vao_lam.date_format' => 'Ngày vào làm phải DD/MM/YYYY.',
             '*.cccd.unique' => 'CCCD này đã tồn tại trong hệ thống.',

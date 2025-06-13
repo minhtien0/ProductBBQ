@@ -26,9 +26,6 @@ class StaffsExport implements FromCollection, WithEvents, WithStyles
     {
         $f = $this->filters;
 
-        if (!empty($f['branch_id'])) {
-            $query->where('branch_id', $f['branch_id']);
-        }
         if (!empty($f['staff_type'])) {
             $query->where('type', $f['staff_type']);
         }
@@ -54,7 +51,7 @@ class StaffsExport implements FromCollection, WithEvents, WithStyles
     }
     public function collection()
     {
-        $query = Staff::with('branch');
+        $query = Staff::query();
 
         // Áp filter
         $this->applyFilters($query);
@@ -72,11 +69,8 @@ class StaffsExport implements FromCollection, WithEvents, WithStyles
                 $staff->address,
                 $staff->email,
                 $staff->time_work,
-                $staff->branch ? $staff->branch->name : '',
                 $staff->type,
                 $staff->role,
-                $staff->hourly_wage,
-                $staff->Basic_Salary,
                 $staff->STK,
                 $staff->bank,
             ];
@@ -109,11 +103,8 @@ class StaffsExport implements FromCollection, WithEvents, WithStyles
                     'Địa chỉ',
                     'Email',
                     'Ngày vào làm',
-                    'Đơn vị (ID)',
                     'Loại NV',
                     'Chức vụ',
-                    'Lương giờ',
-                    'Lương cơ bản',
                     'Số tài khoản',
                     'Ngân hàng'
                 ];
@@ -140,7 +131,7 @@ class StaffsExport implements FromCollection, WithEvents, WithStyles
                 ]);
 
                 // Style cho hàng headings (A2:Q2)
-                $sheet->getStyle('A2:Q2')->applyFromArray([
+                $sheet->getStyle('A2:N2')->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'size' => 12,
@@ -163,7 +154,7 @@ class StaffsExport implements FromCollection, WithEvents, WithStyles
                 // Style cho dữ liệu (từ hàng 3 trở đi)
                 $highestRow = $sheet->getHighestRow();
                 if ($highestRow > 2) {
-                    $sheet->getStyle("A3:Q{$highestRow}")->applyFromArray([
+                    $sheet->getStyle("A3:N{$highestRow}")->applyFromArray([
                         'alignment' => [
                             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -177,7 +168,7 @@ class StaffsExport implements FromCollection, WithEvents, WithStyles
                 }
 
                 // Tự động điều chỉnh kích thước cột
-                foreach (range('A', 'Q') as $columnID) {
+                foreach (range('A', 'N') as $columnID) {
                     $sheet->getColumnDimension($columnID)->setAutoSize(true);
                 }
             },

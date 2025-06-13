@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <x-notification-popup />
@@ -113,43 +114,44 @@
                                 <input type="file" class="hidden" />
                             </label>
                         </div>
-                        <div class="mt-3 mb-6 text-lg font-bold text-white">Nguyễn Minh Tiến</div>
+                        <div class="mt-3 mb-6 text-lg font-bold text-white">{{ session('user_name') }}</div>
                         <nav class="w-full">
                             <button
                                 class="tab-btn w-full flex items-center px-5 py-3 text-white text-base font-medium hover:bg-orange-600 focus:outline-none active-tab"
                                 data-tab="profile">
-                                <i class="fa fa-user mr-2"></i> Personal Info
+                                <i class="fa fa-user mr-2"></i> Thông Tin Cá Nhân
                             </button>
                             <button
                                 class="tab-btn w-full flex items-center px-5 py-3 text-white text-base font-medium hover:bg-orange-600 focus:outline-none"
                                 data-tab="address">
-                                <i class="fa fa-map-marker-alt mr-2"></i> Address
+                                <i class="fa fa-map-marker-alt mr-2"></i> Địa Chỉ
                             </button>
                             <button
                                 class="tab-btn w-full flex items-center px-5 py-3 text-white text-base font-medium hover:bg-orange-600 focus:outline-none"
                                 data-tab="order">
-                                <i class="fa fa-shopping-cart mr-2"></i> Order
+                                <i class="fa fa-shopping-cart mr-2"></i> Đơn Hàng
                             </button>
                             <button
                                 class="tab-btn w-full flex items-center px-5 py-3 text-white text-base font-medium hover:bg-orange-600 focus:outline-none"
                                 data-tab="wishlist">
-                                <i class="fa fa-heart mr-2"></i> Wishlist
+                                <i class="fa fa-heart mr-2"></i> Yêu Thích
                             </button>
                             <button
                                 class="tab-btn w-full flex items-center px-5 py-3 text-white text-base font-medium hover:bg-orange-600 focus:outline-none"
                                 data-tab="review">
-                                <i class="fa fa-star mr-2"></i> Reviews
+                                <i class="fa fa-star mr-2"></i> Đánh Giá
                             </button>
                             <button
                                 class="tab-btn w-full flex items-center px-5 py-3 text-white text-base font-medium hover:bg-orange-600 focus:outline-none"
                                 data-tab="password">
-                                <i class="fa fa-key mr-2"></i> Change Password
+                                <i class="fa fa-key mr-2"></i> Đổi Mật Khẩu
                             </button>
-                            <button
+                             <a href="{{ route('logout') }}"><button
                                 class="tab-btn w-full flex items-center px-5 py-3 text-white text-base font-medium hover:bg-orange-600 focus:outline-none border-t border-orange-400"
                                 data-tab="logout">
-                                <i class="fa fa-sign-out-alt mr-2"></i> Logout
+                                <i class="fa fa-sign-out-alt mr-2"></i> Đăng Xuất
                             </button>
+                            </a>
                         </nav>
                     </div>
 
@@ -160,31 +162,31 @@
                             <!-- Xem thông tin -->
                             <div id="profile-view">
                                 <div class="flex justify-between items-center mb-4">
-                                    <h2 class="text-xl font-bold text-gray-800">Personal Information</h2>
+                                    <h2 class="text-xl font-bold text-gray-800">Thông Tin Cá Nhân</h2>
                                     <button id="btn-edit-profile"
                                         class="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm font-semibold">
-                                        Edit
+                                        Chỉnh Sửa
                                     </button>
                                 </div>
                                 <div class="bg-white rounded shadow p-5">
                                     <div class="flex flex-col gap-3">
                                         <div class="flex flex-col md:flex-row md:items-center md:gap-3">
-                                            <span class="w-28 font-semibold text-gray-700">Name:</span>
-                                            <span class="text-gray-800">{{ session('fullname') }}</span>
+                                            <span class="w-28 font-semibold text-gray-700">Họ Và Tên:</span>
+                                            <span class="text-gray-800">{{ session('user_name') }}</span>
                                         </div>
                                         <hr>
                                         <div class="flex flex-col md:flex-row md:items-center md:gap-3">
                                             <span class="w-28 font-semibold text-gray-700">Email:</span>
-                                            <span class="text-gray-800">{{ session('email') }}</span>
+                                            <span class="text-gray-800">{{ session('user_email') }}</span>
                                         </div>
                                         <hr>
                                         <div class="flex flex-col md:flex-row md:items-center md:gap-3">
-                                            <span class="w-28 font-semibold text-gray-700">Phone:</span>
-                                            <span class="text-gray-800">{{ session('sdt') }}</span>
+                                            <span class="w-28 font-semibold text-gray-700">SĐT:</span>
+                                            <span class="text-gray-800">{{ session('user_sdt') }}</span>
                                         </div>
                                         <hr>
                                         <div class="flex flex-col md:flex-row md:items-center md:gap-3">
-                                            <span class="w-28 font-semibold text-gray-700">Address:</span>
+                                            <span class="w-28 font-semibold text-gray-700">Địa Chỉ:</span>
                                             <span class="text-gray-800">
                                                 @if($address)
                                                     {{ $address->house_number }}, {{ $address->ward }},
@@ -201,10 +203,10 @@
                             <!-- Form chỉnh sửa -->
                             <div id="profile-edit" class="hidden">
                                 <div class="flex justify-between items-center mb-4">
-                                    <h2 class="text-xl font-bold text-gray-800">Edit Information</h2>
+                                    <h2 class="text-xl font-bold text-gray-800">Chỉnh Sửa Thông Tin</h2>
                                     <button id="btn-cancel-edit"
                                         class="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm font-semibold">
-                                        Cancel
+                                        Hủy
                                     </button>
                                 </div>
                                 <form action="{{ route('user.update-profile') }}" method="POST"
@@ -217,7 +219,7 @@
                                             <label class="block font-semibold text-gray-700 mb-1">Email</label>
                                             <input type="email" name="email"
                                                 class="w-full border rounded px-3 py-2 @error('email') border-red-500 @enderror"
-                                                value="{{ old('email', session('email')) }}" required>
+                                                value="{{ old('email', session('user_email')) }}" required>
                                             @error('email')
                                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                             @enderror
@@ -225,10 +227,10 @@
 
                                         {{-- Fullname --}}
                                         <div>
-                                            <label class="block font-semibold text-gray-700 mb-1">Name</label>
+                                            <label class="block font-semibold text-gray-700 mb-1">Họ Và Tên</label>
                                             <input type="text" name="fullname"
                                                 class="w-full border rounded px-3 py-2 @error('fullname') border-red-500 @enderror"
-                                                value="{{ old('fullname', session('fullname')) }}" required>
+                                                value="{{ old('fullname', session('user_name')) }}" required>
                                             @error('fullname')
                                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                             @enderror
@@ -236,10 +238,10 @@
 
                                         {{-- Phone --}}
                                         <div>
-                                            <label class="block font-semibold text-gray-700 mb-1">Phone</label>
+                                            <label class="block font-semibold text-gray-700 mb-1">SĐT:</label>
                                             <input type="text" name="sdt"
                                                 class="w-full border rounded px-3 py-2 @error('sdt') border-red-500 @enderror"
-                                                value="{{ old('sdt', session('sdt')) }}" required>
+                                                value="{{ old('sdt', session('user_sdt')) }}" required>
                                             @error('sdt')
                                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                             @enderror
@@ -303,10 +305,10 @@
                             <!-- Address List View -->
                             <div id="address-list-view">
                                 <div class="flex justify-between items-center mb-4">
-                                    <h2 class="text-xl font-bold text-gray-800">Address</h2>
+                                    <h2 class="text-xl font-bold text-gray-800">Địa Chỉ</h2>
                                     <button id="btn-show-add-address"
                                         class="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm font-semibold">
-                                        Add New
+                                        Thêm mới
                                     </button>
                                 </div>
                                 <div class="grid md:grid-cols-2 gap-4">
@@ -318,10 +320,31 @@
                                                     <i class="fa fa-home mr-1"></i> {{ $addressAlls->name }}
                                                 </span>
                                                 <span>
-                                                    <button class="text-orange-400 hover:text-orange-600"><i
-                                                            class="fa fa-edit"></i></button>
-                                                    <button class="ml-2 text-orange-400 hover:text-orange-600"><i
-                                                            class="fa fa-trash"></i></button>
+                                                   
+                                                   <button 
+                                                        type="button"
+                                                        class="btn-show-edit-address  text-orange-500"
+                                                        data-id="{{ $addressAlls->id }}"
+                                                        data-name="{{ $addressAlls->name }}"
+                                                        data-sdt="{{ $addressAlls->sdt }}"
+                                                        data-house_number="{{ $addressAlls->house_number }}"
+                                                        data-ward="{{ $addressAlls->ward }}"
+                                                        data-district="{{ $addressAlls->district }}"
+                                                        data-city="{{ $addressAlls->city }}"
+                                                        data-note="{{ $addressAlls->note }}"
+                                                        data-default="{{ $addressAlls->default }}"
+                                                    >
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+
+
+                                                    <form action="{{ route('user.destroyAddress', $addressAlls->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="ml-2 text-orange-400 hover:text-orange-600 btn-delete-address">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </span>
                                             </div>
                                             <p class="text-sm text-gray-600">
@@ -369,7 +392,13 @@
                                         <input type="radio" name="default" value="1"
                                             class="mr-1"
                                             {{ old('default', '1') == '1' ? 'checked' : '' }}
-                                            onclick="setDefaultRadio(this.value)"> Home
+                                            onclick="setDefaultRadio(this.value)"> Nhà
+                                    </label> 
+                                    <label class="flex items-center">
+                                        <input type="radio" name="default" value="0"
+                                            class="mr-1"
+                                            {{ old('default', '0') == '0' ? 'checked' : '' }}
+                                            onclick="setDefaultRadio(this.value)"> Khác
                                     </label> 
                                 </div>
                                 <div class="flex gap-3">
@@ -380,12 +409,75 @@
                                         class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-bold">Lưu</button>
                                 </div>
                                 </form>
-<script>
-function clearFormData() {
-    // Xóa mọi dữ liệu nhập trên form (giữ đúng theo nút reset)
-    document.getElementById('addressForm').reset();
-}
-</script>
+                                <script>
+                                function clearFormData() {
+                                    // Xóa mọi dữ liệu nhập trên form (giữ đúng theo nút reset)
+                                    document.getElementById('addressForm').reset();
+                                }
+                                </script>
+                            </div>
+
+                             <!-- edit Address View -->
+                            <div id="address-edit-view" class="hidden">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-xl font-bold text-gray-800">Sửa Địa Chỉ</h2>
+                                    <button id="btn-cancel-edit-address"
+                                        class="px-4 py-1.5 bg-orange-200 hover:bg-orange-300 text-orange-600 rounded-full text-sm font-semibold">
+                                        Hủy
+                                    </button>
+                                </div>
+                                <form action="{{ route('user.edit-address') }}" method="POST" class="bg-white rounded shadow p-6" id="addressEditForm">
+                                @csrf
+                                 <input type="hidden" name="id" id="edit_address_id">
+                                <div class="grid md:grid-cols-2 gap-3 mb-3">
+                                    <input type="text" name="name" placeholder="Tên người nhận *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('name') border-red-500 @enderror"
+                                        value="{{ old('name') }}" required>
+                                    <input type="text" name="sdt" placeholder="Số điện thoại *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('sdt') border-red-500 @enderror"
+                                        value="{{ old('sdt') }}" required>
+                                    <input type="text" name="house_number" placeholder="Số nhà *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('house_number') border-red-500 @enderror"
+                                        value="{{ old('house_number') }}" required>
+                                    <input type="text" name="ward" placeholder="Phường/Xã *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('ward') border-red-500 @enderror"
+                                        value="{{ old('ward') }}" required>
+                                    <input type="text" name="district" placeholder="Quận/Huyện *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('district') border-red-500 @enderror"
+                                        value="{{ old('district') }}" required>
+                                    <input type="text" name="city" placeholder="Tỉnh/Thành phố *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('city') border-red-500 @enderror"
+                                        value="{{ old('city') }}" required>
+                                </div>
+                                <textarea name="note" placeholder="Ghi chú" class="border border-gray-300 rounded px-3 py-2 w-full text-sm min-h-[70px] mb-4">{{ old('note') }}</textarea>
+                                <div class="mb-4 flex gap-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="default" value="1"
+                                            class="mr-1"
+                                            {{ old('default', '1') == '1' ? 'checked' : '' }}
+                                            onclick="setDefaultRadio(this.value)"> Nhà
+                                    </label> 
+                                    <label class="flex items-center">
+                                        <input type="radio" name="default" value="0"
+                                            class="mr-1"
+                                            {{ old('default', '0') == '0' ? 'checked' : '' }}
+                                            onclick="setDefaultRadio(this.value)"> Khác
+                                    </label> 
+                                </div>
+                                <div class="flex gap-3">
+                                    <button type="reset"
+                                        class="bg-orange-200 text-orange-700 px-6 py-2 rounded font-bold"
+                                        onclick="clearFormData()">Cài Lại</button>
+                                    <button type="submit"
+                                        class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-bold">Lưu</button>
+                                </div>
+                                </form>
+                                <script>
+                                function clearFormData() {
+                                    // Xóa mọi dữ liệu nhập trên form (giữ đúng theo nút reset)
+                                    document.getElementById('addressEditForm').reset();
+                                }
+                                </script>
                             </div>
                         </div>
 
@@ -619,8 +711,8 @@ function clearFormData() {
                                 <!-- Example product -->
                                   @foreach ($foodFavorites as $foodFavorite)
                                 <div class="bg-white rounded shadow p-3 flex flex-col items-center">
-                                    <a href="{{ route('views.menudetail', $foodFavorite->id) }}"><img src="{{ asset('img/'.$foodFavorite->image) }}"></a>
-                                    <a href="{{ route('views.menudetail', $foodFavorite->id) }}"><div class="text-base font-semibold text-gray-800 text-center mb-1">{{ $foodFavorite->name }}</div></a>
+                                    <a href="{{ route('views.menudetail', [$foodFavorite->id,$foodFavorite->slug]) }}"><img src="{{ asset('img/'.$foodFavorite->image) }}"></a>
+                                    <a href="{{ route('views.menudetail', [$foodFavorite->id,$foodFavorite->slug]) }}"><div class="text-base font-semibold text-gray-800 text-center mb-1">{{ $foodFavorite->name }}</div></a>
                                     <div class="flex items-center text-yellow-400 mb-1 text-xs">
                                         <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
                                             class="fa fa-star-half-alt"></i><i class="fa-regular fa-star"></i>
@@ -710,28 +802,26 @@ function clearFormData() {
                         </div>
                         <!-- Change Password -->
                         <div class="tab-content hidden" id="tab-password">
-                            <h2 class="text-xl font-bold text-gray-800 mb-4">Change Password</h2>
-                            <form class="bg-white rounded shadow p-6 flex flex-col md:flex-row gap-4">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Đổi Mật Khẩu</h2>
+                            <form id="changePasswordForm" class="bg-white rounded shadow p-6 flex flex-col md:flex-row gap-4">
+                                @csrf
                                 <div class="flex-1">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-                                    <input type="password" class="border border-gray-300 rounded px-3 py-2 w-full"
-                                        placeholder="Current Password">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Mật Khẩu Hiện Tại</label>
+                                    <input type="password" name="current_password" class="border border-gray-300 rounded px-3 py-2 w-full" placeholder="Current Password" required>
                                 </div>
                                 <div class="flex-1">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                                    <input type="password" class="border border-gray-300 rounded px-3 py-2 w-full"
-                                        placeholder="New Password">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Mật Khẩu Mới</label>
+                                    <input type="password" name="new_password" class="border border-gray-300 rounded px-3 py-2 w-full" placeholder="New Password" required>
                                 </div>
                                 <div class="flex-1">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                                    <input type="password" class="border border-gray-300 rounded px-3 py-2 w-full"
-                                        placeholder="Confirm Password">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nhập Lại Mật Khẩu</label>
+                                    <input type="password" name="new_password_confirmation" class="border border-gray-300 rounded px-3 py-2 w-full" placeholder="Confirm Password" required>
                                 </div>
                                 <div class="flex items-end">
-                                    <button
-                                        class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 rounded mt-6 font-bold">Submit</button>
+                                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 rounded mt-6 font-bold">Xác Nhận</button>
                                 </div>
                             </form>
+                            <div id="changePasswordMsg" class="mt-2"></div>
                         </div>
                         <!-- Logout (fake redirect) -->
                         <div class="tab-content hidden text-center" id="tab-logout">
@@ -743,6 +833,8 @@ function clearFormData() {
                 </div>
             </div>
 
+    
+    <!-- Thêm giỏ hàng -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Đặt toàn bộ JS thêm giỏ hàng ở đây
@@ -783,6 +875,76 @@ function clearFormData() {
     });
 </script>
 
+
+  <!-- Đổi Mật Khẩu -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('changePasswordForm');
+    const msgDiv = document.getElementById('changePasswordMsg');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        msgDiv.innerHTML = '';
+        const formData = new FormData(form);
+        fetch("{{ route('user.change-password') }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+        .then(async res => {
+            const data = await res.json();
+            if (data.success) {
+                msgDiv.innerHTML = '<div class="text-green-600 font-bold">' + data.message + '</div>';
+                form.reset();
+            } else {
+                // Nếu có lỗi validate từng trường
+                if (data.errors) {
+                    let errorHtml = '<ul class="text-red-500 font-bold">';
+                    Object.values(data.errors).forEach(errArr => {
+                        errorHtml += '<li>' + errArr[0] + '</li>';
+                    });
+                    errorHtml += '</ul>';
+                    msgDiv.innerHTML = errorHtml;
+                } else {
+                    msgDiv.innerHTML = '<div class="text-red-500 font-bold">' + data.message + '</div>';
+                }
+            }
+        })
+        .catch(error => {
+            msgDiv.innerHTML = '<div class="text-red-500 font-bold">Có lỗi kết nối server!</div>';
+        });
+    });
+});
+</script>
+
+
+ <!-- Popup comfirm xóa -->
+<script>
+    document.querySelectorAll('.btn-delete-address').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            let form = this.closest('form');
+            Swal.fire({
+                title: 'Bạn chắc chắn muốn xóa?',
+                text: "Không thể hoàn tác sau khi xóa!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
+     <!-- Xử lí content -->
             <script>
                 // Tab logic
                 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -831,6 +993,46 @@ function clearFormData() {
                         addressListView.classList.remove('hidden');
                     });
                 });
+
+                //addressEdit
+                document.addEventListener('DOMContentLoaded', function () {
+                    const btnCancelEdit = document.getElementById('btn-cancel-edit-address');
+                    const addressListView = document.getElementById('address-list-view');
+                    const addressEditView = document.getElementById('address-edit-view');
+
+                    // Tất cả nút sửa
+                    document.querySelectorAll('.btn-show-edit-address').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            if(addressListView) addressListView.classList.add('hidden');
+                            if(addressEditView) addressEditView.classList.remove('hidden');
+
+                            // Lấy form SỬA theo ID
+                            const editForm = document.getElementById('addressEditForm');
+                            editForm.querySelector('input[name="id"]').value = this.dataset.id;
+                            editForm.querySelector('input[name="name"]').value = this.dataset.name;
+                            editForm.querySelector('input[name="sdt"]').value = this.dataset.sdt;
+                            editForm.querySelector('input[name="house_number"]').value = this.dataset.house_number;
+                            editForm.querySelector('input[name="ward"]').value = this.dataset.ward;
+                            editForm.querySelector('input[name="district"]').value = this.dataset.district;
+                            editForm.querySelector('input[name="city"]').value = this.dataset.city;
+                            editForm.querySelector('textarea[name="note"]').value = this.dataset.note || "";
+
+                            let def = this.dataset.default === "1" ? "1" : "0";
+                            editForm.querySelectorAll('input[name="default"]').forEach(radio => {
+                                radio.checked = (radio.value === def);
+                            });
+                        });
+                    });
+
+                    if(btnCancelEdit) {
+                        btnCancelEdit.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            if(addressEditView) addressEditView.classList.add('hidden');
+                            if(addressListView) addressListView.classList.remove('hidden');
+                        });
+                    }
+                });
+
                 // Go Back to Order List
                 document.getElementById('go-back-btn').onclick = function () {
                     document.getElementById('invoice-detail').classList.add('hidden');

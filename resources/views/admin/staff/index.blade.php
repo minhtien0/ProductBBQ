@@ -1,26 +1,8 @@
 @extends('admin.index')
 @section('content')
     <!-- Content -->
-    <div class="w-full bg-white mt-4" @if(session('success')) data-success="{{ session('success') }}"
+    <div class="w-full bg-white" @if(session('success')) data-success="{{ session('success') }}"
     @elseif(session('error')) data-error="{{ session('error') }}" @endif>
-        <!--Nút chọn loại nhân viên-->
-        <div class="flex px-5 py-3">
-            <span>
-                <button class="w-24 h-10 rounded shadow-xl text-sm mr-4 bg-white hover:bg-gray-400">
-                    <i class="fa-solid fa-user-group"></i> Nhân viên
-                </button>
-            </span>
-            <span>
-                <button class="w-40 h-10 rounded shadow-xl text-sm mr-4  bg-white hover:bg-gray-400">
-                    <i class="fa-solid fa-users-viewfinder"></i> Nhân viên Nghỉ Phép
-                </button>
-            </span>
-            <span>
-                <button class="w-24 h-10 rounded shadow-xl text-sm  bg-white hover:bg-gray-400">
-                    <i class="fa-solid fa-user-nurse"></i> Cấp quản lí
-                </button>
-            </span>
-        </div>
         <div class="px-5 py-3">
             <!-- Action buttons -->
             <div class="flex justify-between mb-4">
@@ -54,23 +36,6 @@
 
                         <!-- Đặt tất cả các field và button vào trong 1 form duy nhất -->
                         <form method="GET" action="{{ route('admin.staff') }}" class="p-3 space-y-3 text-sm">
-
-                            <!-- Chi nhánh -->
-                            <div class="relative">
-                                <select name="branch_id"
-                                    class="w-full border rounded p-1.5 pr-8 focus:ring-2 focus:ring-blue-500">
-                                    <option value="">-- Chọn chi nhánh --</option>
-                                    @foreach($branches as $b)
-                                        <option value="{{ $b->id }}" @if(request('branch_id') == $b->id) selected @endif>
-                                            {{ $b->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <!-- arrow icon -->
-                                </div>
-                            </div>
-
                             <!-- Loại nhân viên -->
                             <div class="relative">
                                 <select name="staff_type"
@@ -126,17 +91,7 @@
                                     <!-- arrow icon -->
                                 </div>
                             </div>
-
-                            <!-- Lương cơ bản tối thiểu -->
-                            <input type="number" name="min_basic_salary" placeholder="Lương Cơ Bản ≥"
-                                value="{{ request('min_basic_salary') }}"
-                                class="w-full border rounded p-1.5 focus:ring-2 focus:ring-blue-500">
-
-                            <!-- Lương giờ tối thiểu -->
-                            <input type="number" name="min_hourly_salary" placeholder="Lương Theo Giờ ≥"
-                                value="{{ request('min_hourly_salary') }}"
-                                class="w-full border rounded p-1.5 focus:ring-2 focus:ring-blue-500">
-
+                        
                             <!-- Mã hoặc tên nhân viên -->
                             <input type="text" name="q" placeholder="Nhập mã hoặc tên nhân viên" value="{{ request('q') }}"
                                 class="w-full border rounded p-1.5 focus:ring-2 focus:ring-blue-500">
@@ -229,7 +184,7 @@
                             Thêm Mới
                         </button>
                     </a>
-                    <button type="submit" form="deleteForm"
+                    <button onclick="openPopupDelete('Bạn muốn muốn xóa nhân viên này?')"
                         class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -238,6 +193,58 @@
                         </svg>
                         Xóa
                     </button>
+                    <div id="PopupDelete"
+                        class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
+                        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+                            <!-- Header -->
+                            <div class="bg-gradient-to-r from-yellow-500 to-teal-600 px-6 py-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <h2 class="text-lg font-semibold text-white">Thông báo</h2>
+                                    </div>
+                                    <button onclick="closePopupDelete()"
+                                        class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="px-6 py-8 text-center">
+                                <div
+                                    class="w-16 h-16 bg-gradient-to-br from-yellow-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+
+                                <p id="Message" class="text-gray-700 text-base leading-relaxed mb-8"></p>
+
+                                <div class="flex justify-between space-x-4">
+                                    <button type="submit" form="deleteForm"
+                                        class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-teal-600 text-white font-semibold rounded-lg hover:from-yellow-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                        Xác nhận
+                                    </button>
+                                    <button onclick="closePopupDelete()"
+                                        class="flex-1 px-6 py-3 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 font-semibold rounded-lg hover:from-gray-400 hover:to-gray-500 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                        Đóng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -255,7 +262,7 @@
                                 <th class="py-1 px-2 text-left text-sm">Mã Nhân Viên</th>
                                 <th class="py-1 px-2 text-left text-sm">Tên Nhân Viên</th>
                                 <th class="py-1 px-2 text-left text-sm">Email</th>
-                                <th class="py-1 px-2 text-left text-sm">Chi Nhánh</th>
+                                <th class="py-1 px-2 text-left text-sm">Loại</th>
                                 <th class="py-1 px-2 text-left text-sm">Trạng Thái</th>
                                 <th class="py-1 px-2 text-left text-sm">Ngày Vào Làm</th>
                             </tr>
@@ -276,7 +283,7 @@
                                     </td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->email }}</td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">
-                                        {{ $list->branch ? $list->branch->name : 'Chưa có' }}
+                                      {{ $list->type }}
                                     </td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->status }}</td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->time_work }}</td>

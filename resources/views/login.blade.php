@@ -33,23 +33,7 @@
 
             {{-- ===== LOGIN FORM ===== --}}
             <div id="loginForm" class="w-full max-w-md">
-                <h2 class="text-xl font-semibold text-center mb-4 text-[#FF3D3D]">Đăng nhập</h2>
-
-                {{-- Thông báo success / lỗi chung --}}
-                @if (session('success_logout'))
-                    <div class="text-green-400 text-center text-sm">{{ session('success_logout') }}</div>
-                @endif
-                @if (session('success_login'))
-                    <div class="text-green-400 text-center text-sm">{{ session('success_login') }}</div>
-                @endif
-                {{-- Hiển thị lỗi validation / login --}}
-                @if ($errors->any() && session('form') === 'login')
-                    <div class="text-red-500 text-sm mb-2">
-                        @foreach ($errors->all() as $err)
-                            <div>{{ $err }}</div>
-                        @endforeach
-                    </div>
-                @endif
+                <h2 class="text-xl font-semibold text-center mb-4 text-[#FF3D3D]">Đăng nhập</h2>           
 
                 <form method="POST" action="{{ route('login') }}" class="space-y-4">
                     @csrf
