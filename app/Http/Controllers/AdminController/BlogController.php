@@ -97,7 +97,7 @@ class BlogController extends Controller
             $blog->type = $request->type; // hoặc $request->loai_blog nếu form gửi
             $blog->content = $request->content;
             $blog->slug = Str::slug($request->title);
-            $blog->id_staff = session('id'); // lấy từ session đăng nhập
+            $blog->id_staff = session('staff_id'); // lấy từ session đăng nhập
             $blog->created_at = now();
             // Xử lý ảnh
             if ($request->hasFile('image')) {

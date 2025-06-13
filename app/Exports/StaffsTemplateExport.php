@@ -25,7 +25,7 @@ class StaffsTemplateExport implements FromCollection, WithEvents, WithStyles,Ski
             BeforeSheet::class => function (BeforeSheet $event) {
                 $event->sheet->insertNewRowBefore(1, 1);
                 $event->sheet->setCellValue('A1', 'Danh Sách Nhân Viên (Mẫu)');
-                $event->sheet->mergeCells('A1:O1');
+                $event->sheet->mergeCells('A1:M1');
             },
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
@@ -43,8 +43,6 @@ class StaffsTemplateExport implements FromCollection, WithEvents, WithStyles,Ski
                     ['name' => 'Ngày vào làm', 'required' => true],
                     ['name' => 'Loại NV', 'required' => false],
                     ['name' => 'Chức vụ', 'required' => false],
-                    ['name' => 'Lương giờ', 'required' => false],
-                    ['name' => 'Lương cơ bản', 'required' => false],
                     ['name' => 'Số tài khoản', 'required' => true],
                     ['name' => 'Ngân hàng', 'required' => true]
                 ];
@@ -87,7 +85,7 @@ class StaffsTemplateExport implements FromCollection, WithEvents, WithStyles,Ski
                 ]);
 
                 // Style heading
-                $sheet->getStyle('A2:O2')->applyFromArray([
+                $sheet->getStyle('A2:M2')->applyFromArray([
                     'font' => ['bold' => true, 'size' => 12],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -105,7 +103,7 @@ class StaffsTemplateExport implements FromCollection, WithEvents, WithStyles,Ski
                 ]);
 
                 // Tự động điều chỉnh kích thước cột
-                foreach (range('A', 'O') as $columnID) {
+                foreach (range('A', 'M') as $columnID) {
                     $sheet->getColumnDimension($columnID)->setAutoSize(true);
                 }
 

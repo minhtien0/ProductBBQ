@@ -19,9 +19,6 @@ use App\Http\Controllers\AdminController\Product\Category;
 use App\Http\Controllers\AdminController\Product\Combo;
 use App\Http\Controllers\AdminController\Product\ProductController;
 
-
-//Đa ngôn ngữ
-Route::get('change-language/{language}', [LanguageController::class, 'changeLanguage'])->name('user.change-language');
 //Đăng nhập
 Route::match(['get', 'post'], '/login', [HomeController::class, 'login'])->name('login');
 //Đăng xuất
@@ -54,6 +51,10 @@ Route::get('blogdetail/{id}/{slug}', [HomeController::class, 'blogdetail'])->nam
 Route::get('userdetail', [HomeController::class, 'userdetail'])->name('views.userdetail');
 Route::post('/user/update-profile', [HomeController::class, 'updateProfile'])->name('user.update-profile');
 Route::post('/user/add-address', [HomeController::class, 'addAddress'])->name('user.add-address');
+Route::delete('/user/deleteAddress/{id}', [HomeController::class, 'deleteAddress'])->name('user.destroyAddress');
+Route::post('/user/edit-address', [HomeController::class, 'editAddress'])->name('user.edit-address');
+Route::post('/user/change-password', [HomeController::class, 'changePassword'])->name('user.change-password');
+
 
 //Cart
 Route::get('/cart', [HomeController::class, 'cart'])->name('views.cart');
@@ -67,7 +68,7 @@ Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.de
 
 
 //Group Admin
-Route::prefix('admin')->middleware([\App\Http\Middleware\Locale::class, \App\Http\Middleware\CheckAdminRole::class])->group(function () {
+Route::prefix('admin')->middleware([ \App\Http\Middleware\CheckAdminRole::class])->group(function () {
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');

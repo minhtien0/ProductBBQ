@@ -33,7 +33,7 @@
                 <div id="languageDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 hidden">
                     <div class="py-1">
                         <!-- Tiếng Anh -->
-                        <a href="{{ route('user.change-language', 'en') }}"
+                        <a href=""
                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg"
                                 alt="English" class="w-8 h-6 mr-3">
@@ -41,7 +41,7 @@
                         </a>
 
                         <!-- Tiếng Nhật -->
-                        <a href="{{ route('user.change-language', 'ja') }}"
+                        <a href=""
                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Flag_of_Japan.svg" alt="日本語"
                                 class="w-8 h-6 mr-3">
@@ -49,7 +49,7 @@
                         </a>
 
                         <!-- Tiếng Việt -->
-                        <a href="{{ route('user.change-language', 'vi') }}"
+                        <a href=""
                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg" alt="日本語"
                                 class="w-8 h-6 mr-3">
@@ -141,23 +141,17 @@
                 <div id="userToggle"
                     class="flex items-center cursor-pointer space-x-1 hover:bg-gray-200 p-2 rounded-md h-10">
                     <i class="fa-solid fa-circle-user text-gray-500"></i>
-                    <span class="text-sm text-gray-500">{{ session('fullname') }}</span>
+                    <span class="text-sm text-gray-500">{{ session('staff_name') }}</span>
                 </div>
                 <div id="userDropdown"
                     class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-70 hidden">
                     <div class="p-3">
                         <div class="mb-3">
-                            <p class="text-sm font-semibold">{{ session('fullname') }}</p>
-                            <p class="text-xs text-gray-500">{{ session('email') }}</p>
+                            <p class="text-sm font-semibold">{{ session('staff_name') }}</p>
+                            <p class="text-xs text-gray-500">{{ session('staff_email') }}</p>
                         </div>
-                        <div class="space-y-2">
-                            {{-- Dành cho Quản lí --}}
-                            <a href="{{ route('views.userdetail') }}"
-                                class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-                                <i class="fa-solid fa-user text-red-500 w-4"></i>
-                                <span>Thông tin cá nhân</span>
-                            </a>
-                            @if (session('role') === 'Admin')
+                        <div class="space-y-2">           
+                            @if (session('staff_role') === 'Quản Lí')
                                 <a href="{{ route('admin.dashboard') }}"
                                     class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                     <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>
@@ -168,12 +162,24 @@
                                     <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
                                     <span>Quyền Nhân Viên</span>
                                 </a>
-                            @elseif (session('role') === 'Nhân viên')
+                                 <a href="{{ route('staff.dashboard') }}"
+                                    class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                    <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
+                                    <span>Quyền Thu Ngân</span>
+                                </a>
+                            @elseif (session('staff_role') === 'Nhân viên')
                                 {{-- Chỉ hiển thị với Nhân viên --}}
                                 <a href="{{ route('staff.dashboard') }}"
                                     class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                     <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
                                     <span>Quyền Nhân Viên</span>
+                                </a>
+                             @elseif (session('staff_role') === 'Thu Ngân')
+                                {{-- Chỉ hiển thị với Nhân viên --}}
+                                <a href="{{ route('staff.dashboard') }}"
+                                    class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                    <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
+                                    <span>Quyền Thu Ngân</span>
                                 </a>
                             @endif
 

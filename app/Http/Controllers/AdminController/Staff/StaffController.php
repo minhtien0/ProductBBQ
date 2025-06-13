@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\AdminController\Staff;
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
-use App\Models\Branch;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -19,14 +18,10 @@ class StaffController extends Controller
     //
     public function index(Request $request)
     {
-        $branches = Branch::all();  // hoặc từ model của bạn
         $positions = ['Quản Lí', 'Nhân Viên', 'Đầu Bếp', 'Tạp Vụ'];
 
         $query = Staff::query();
 
-        if ($request->filled('branch_id')) {
-            $query->where('branch_id', $request->branch_id);
-        }
         if ($request->filled('staff_type')) {
             $query->where('type', $request->staff_type);
         }
@@ -35,12 +30,6 @@ class StaffController extends Controller
         }
         if ($request->filled('position')) {
             $query->where('role', $request->position);
-        }
-        if ($request->filled('min_basic_salary')) {
-            $query->where('Basic_Salary', '>=', $request->min_basic_salary);
-        }
-        if ($request->filled('min_hourly_salary')) {
-            $query->where('hourly_wage', '>=', $request->min_hourly_salary);
         }
         if ($request->filled('q')) {
             $q = $request->q;
@@ -52,16 +41,15 @@ class StaffController extends Controller
 
         $lists = $query->paginate(10)->withQueryString();
 
-        return view('admin.staff.index', compact('lists', 'branches', 'positions'));
+        return view('admin.staff.index', compact('lists', 'positions'));
     }
 
 
     public function detail($id)
     {
-        $staff = Staff::with('branch')->findOrFail($id);
-        $branches = Branch::all();
-        // Trả về view detail
-        return view('admin.staff.detail', compact('staff', 'branches'));
+        $staff = Staff::findOrFail($id);
+        //dd($staff);
+        return view('admin.staff.detail', compact('staff'));
     }
 
     public function update(Request $request, $id)
@@ -107,8 +95,7 @@ class StaffController extends Controller
 
     public function create()
     {
-        $branches = Branch::all(); // Lấy tất cả đơn vị để đưa vào select
-        return view('admin.staff.create', compact('branches'));
+        return view('admin.staff.create');
     }
 
     public function add(Request $request)
@@ -123,7 +110,6 @@ class StaffController extends Controller
             'address' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'time_work' => 'required|date',
-            'branch' => 'required|exists:branchs,id',
             'type' => 'required|in:Full Time,Part Time',
             'status' => 'required',
         ], [
@@ -147,8 +133,6 @@ class StaffController extends Controller
             'email.max' => 'Email không được vượt quá 255 ký tự.',
             'time_work.required' => 'Vui lòng chọn ngày vào làm.',
             'time_work.date' => 'Ngày vào làm không đúng định dạng.',
-            'branch.required' => 'Vui lòng chọn đơn vị.',
-            'branch.exists' => 'Đơn vị không tồn tại.',
             'type.required' => 'Vui lòng chọn loại nhân viên.',
             'type.in' => 'Loại nhân viên không hợp lệ.',
             'status.required' => 'Vui lòng chọn trạng thái.',
@@ -164,9 +148,9 @@ class StaffController extends Controller
         try {
             // Xử lý upload hình ảnh
             $avataName = null;
-            if ($request->hasFile('avatar')) {
-                $avataName = time() . '_' . $request->file('avatar')->getClientOriginalName();
-                $request->file('avatar')->move(public_path('img'), $avataName);
+            if ($request->hasFile('avata')) {
+                $avataName = time() . '_' . $request->file('avata')->getClientOriginalName();
+                $request->file('avata')->move(public_path('img'), $avataName);
             }
 
             $staff = new Staff();
@@ -179,14 +163,11 @@ class StaffController extends Controller
             $staff->address = $request->address;
             $staff->email = $request->email;
             $staff->time_work = $request->time_work;
-            $staff->branch_id = $request->branch;
             $staff->type = $request->type;
             $staff->avata = $avataName;
             $staff->STK = $request->STK;
             $staff->bank = $request->bank;
             $staff->role = $request->role;
-            $staff->hourly_wage = $request->hourly_wage;
-            $staff->Basic_Salary = $request->Basic_Salary;
             $staff->code_nv = 'NV' . $staff->CCCD;
             $staff->save();
 
@@ -213,7 +194,6 @@ class StaffController extends Controller
     public function exportExcel(Request $request)
     {
         $filters = $request->only([
-            'branch_id',
             'staff_type',
             'status',
             'position',

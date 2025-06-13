@@ -3,7 +3,7 @@
     <form action="{{ route('admin.staff.update', $staff->id) }}" method="POST" enctype="multipart/form-data"
         class="flex w-full">
         @csrf
-        <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm p-6 mt-3">
+        <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h1 class="text-lg font-bold text-gray-800 mb-6">Thông Tin Nhân Viên</h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -69,17 +69,19 @@
                     <input type="text" id="time_work" name="time_work" value="{{ $staff->time_work }}"
                         class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <div>
-                    <label for="branch" class="block text-xs font-medium text-gray-700 mb-1">Đơn Vị</label>
-                    <select id="branch" name="branch"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Chọn Đơn Vị</option>
-                        @foreach($branches as $branch)
-                            <option value="{{ $branch->id }}" {{ $staff->branch_id == $branch->id ? 'selected' : '' }}>
-                                {{ $branch->name }}
-                            </option>
-                        @endforeach
-                    </select>
+
+                 <div >
+                    <label for="STK" class="block text-xs font-medium text-gray-700 mb-1">Chức Vụ</label>
+                    <div>
+                        <select id="role" name="role"
+                            class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Chọn chức vụ</option>
+                            <option value="Quản Lí" {{ $staff->role == 'Quản Lí' ? 'selected' : '' }}>Quản Lí</option>
+                            <option value="Nhân Viên" {{ $staff->role == 'Nhân Viên' ? 'selected' : '' }}>Nhân Viên</option>
+                            <option value="Đầu Bếp" {{ $staff->role == 'Đầu Bếp' ? 'selected' : '' }}>Đầu Bếp</option>
+                            <option value="Thu Ngân" {{ $staff->role == 'Thu Ngân' ? 'selected' : '' }}>Thu Ngân</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -103,19 +105,6 @@
                         <option value="Tạm Vắng" {{ $staff->status == 'Tạm Vắng' ? 'selected' : '' }}>Tạm Vắng</option>
                         <option value="Ngưng Làm" {{ $staff->status == 'Ngưng Làm' ? 'selected' : '' }}>Ngưng Làm</option>
                     </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div id="basic-salary-div" class="transition">
-                    <label for="Basic_Salary" class="block text-xs font-medium text-gray-700 mb-1">Lương Cơ Bản</label>
-                    <input type="number" id="Basic_Salary" name="Basic_Salary" value="{{ $staff->Basic_salary }}"
-                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div id="hourly-wage-div" class="transition">
-                    <label for="hourly_wage" class="block text-xs font-medium text-gray-700 mb-1">Lương Theo Giờ</label>
-                    <input type="number" id="hourly_wage" name="hourly_wage" value="{{ $staff->hourly_wage }}"
-                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
         </div>
@@ -149,7 +138,9 @@
                                     class="w-24 h-24 rounded-full object-cover">
                             </div>
                         @endif
-                        <input type="file" class="hidden" id="avatar" name="avatar" accept="image/*">
+                         <img id="preview-img" src="#" alt="Ảnh xem trước"
+                            class="w-24 h-24 rounded-full object-cover mx-auto mb-2 hidden">
+                        <input type="file" class="hidden" id="avatar" name="avatar" accept="image/*"  onchange="previewImage(event)">
                         <button type="button"
                             class="mt-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-all duration-200"
                             onclick="document.getElementById('avatar').click()">
@@ -172,25 +163,23 @@
                     <input type="text" id="bank" name="bank" value="{{ $staff->bank }}"
                         class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-
-                <div class="mb-3">
-                    <label for="STK" class="block text-xs font-medium text-gray-700 mb-1">Chức Vụ</label>
-                    <div>
-                        <select id="role" name="role"
-                            class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">Chọn chức vụ</option>
-                            <option value="Đang Làm" {{ $staff->role == 'Quản Lí' ? 'selected' : '' }}>Quản Lí</option>
-                            <option value="Thử Việc" {{ $staff->role == 'Nhân Viên' ? 'selected' : '' }}>Nhân Viên</option>
-                            <option value="Tạm Vắng" {{ $staff->role == 'Đầu Bếp' ? 'selected' : '' }}>Đầu Bếp</option>
-                            <option value="Ngưng Làm" {{ $staff->role == 'Tạp Vụ' ? 'selected' : '' }}>Tạp Vụ</option>
-                            <option value="Ngưng Làm" {{ $staff->role == 'Thử Việc' ? 'selected' : '' }}>Thử Việc</option>
-                        </select>
-                    </div>
-                </div>
-
             </div>
         </div>
     </form>
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('preview-img');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
     <x-notification-popup />
     <script src="{{ asset('js/notification.js') }}"></script>
 @endsection

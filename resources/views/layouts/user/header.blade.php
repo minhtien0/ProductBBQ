@@ -78,63 +78,54 @@
       </div>
       <!-- Biểu tượng Người dùng -->
       <div class="relative">
-        @if (!session()->has('staff_logged_in'))
-          <a href="{{ route('login') }}">
-            <span id=""
-            class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
-            <i class="fa-solid fa-user"></i>
-            </span>
-          </a>
-        @else
-          <span id="userIconToggle"
-            class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
-            <i class="fa-solid fa-user"></i>
-          </span>
-        @endif
-        <!-- Dropdown -->
-        <div id="userDropdown"
-          class="absolute right-0 mt-2 w-64 bg-[#fff2e1] rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-50 hidden">
-          <div class="p-3">
-            <div class="mb-3">
-              <p class="text-sm font-semibold text-black">{{ session('fullname') }}</p>
-              <p class="text-xs text-gray-500">{{ session('email') }}</p>
-            </div>
-            <div class="space-y-2">
-              <!-- Dành cho Quản lí -->
-              <a href="{{ route('views.userdetail')}}" class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-                <i class="fa-solid fa-user text-red-500 w-4"></i>
-                <span>Thông tin cá nhân</span>
-              </a>
-              @if (session('role') === 'Admin')
-          <a href="{{ route('admin.dashboard') }}"
-          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-          <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>
-          <span>Dashboard tổng quan</span>
-          </a>
-          <a href="{{ route('staff.dashboard') }}"
-          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-          <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
-          <span>Quyền Nhân Viên</span>
-          </a>
-        @elseif (session('role') === 'Nhân viên')
-          <!-- Chỉ hiển thị với Nhân viên -->
-          <a href="{{ route('staff.dashboard') }}"
-          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-          <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
-          <span>Quyền Nhân Viên</span>
-          </a>
-        @endif
+  {{-- Nếu chưa có session staff và user thì show link đến login --}}
+  @if (!session()->has('user_logged_in'))
+    <a href="{{ route('login') }}">
+      <span
+        class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+        <i class="fa-solid fa-user"></i>
+      </span>
+    </a>
+  @else
+    {{-- Nếu đã login (staff hoặc user) thì show dropdown toggle --}}
+    <span id="userIconToggle"
+      class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+      <i class="fa-solid fa-user"></i>
+    </span>
+  @endif
 
-              <!-- Đăng xuất (ai cũng có thể thấy) -->
-              <a href="{{ route('logout') }}"
-                class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-                <i class="fa-solid fa-sign-out-alt text-red-500 w-4"></i>
-                <span>Đăng xuất</span>
-              </a>
-            </div>
-          </div>
-        </div>
+  <!-- Dropdown -->
+  <div id="userDropdown"
+    class="absolute right-0 mt-2 w-64 bg-[#fff2e1] rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-50">
+    <div class="p-3">
+      {{-- Tên & email --}}
+      <div class="mb-3">
+        <p class="text-sm font-semibold text-black">
+          {{ session('user_name') }}
+        </p>
+        <p class="text-xs text-gray-500">
+          {{ session('user_email') }}
+        </p>
       </div>
+
+      <div class="space-y-2">
+        <a href="{{ route('views.userdetail') }}"
+          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+          <i class="fa-solid fa-user text-red-500 w-4"></i>
+          <span>Thông tin cá nhân</span>
+        </a>
+
+        {{-- Đăng xuất --}}
+        <a href="{{ route('logout') }}"
+          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+          <i class="fa-solid fa-sign-out-alt text-red-500 w-4"></i>
+          <span>Đăng xuất</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
     </div>
   </div>
   <!-- Mobile Popup Menu -->
