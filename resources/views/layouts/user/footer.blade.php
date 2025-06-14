@@ -195,6 +195,9 @@
         }
 </style>
 <section>
+    <div class="scroll_btn hidden fixed bottom-6 right-6 bg-red-600 text-white p-4 rounded-full text-2xl shadow-lg cursor-pointer hover:bg-red-700 z-50">
+  <i class="fas fa-hand-pointer" aria-hidden="true"></i>
+</div>
 <footer>
         <div class="footer-section">
             <div class="footer-wrap">
@@ -255,3 +258,25 @@
         </div>
     </footer>
     </section>
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const scrollBtn = document.querySelector('.scroll_btn');
+
+    // Hiện/ẩn nút khi cuộn
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        scrollBtn.classList.remove('hidden');
+      } else {
+        scrollBtn.classList.add('hidden');
+      }
+    });
+
+    // Cuộn mượt lên đầu khi bấm
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  });
+</script>
