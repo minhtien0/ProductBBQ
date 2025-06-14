@@ -833,17 +833,18 @@
                     <div class="menu-title text-back-g">Món ăn ngon phổ biến</div>
                 </div>
                 <div class="menu-filters">
-                    <button class="active">Tất Cả</button>
-                    <button>Sườn</button>
-                    <button>Ba chỉ</button>
-                    <button>Món ăn kèm</button>
-                    <button>Nước uống</button>
+                    <button class="filter-btn active" data-type="all">Tất Cả</button>
+                    <button class="filter-btn" data-type="Món nướng BBQ">Món nướng BBQ</button>
+                    <button class="filter-btn" data-type="Món khai vị">Món khai vị</button>
+                    <button class="filter-btn" data-type="Đồ uống">Đồ uống</button>
+                    <button class="filter-btn" data-type="Tráng miệng">Tráng miệng</button>
                 </div>
+
             </div>
             <div class="menu-grid">
                 <!-- Card 1 -->
                 @foreach ($allFoods as $allFood)
-                    <div class="menu-card">
+                    <div class="menu-card" data-type="{{ $allFood->menus->name }}">
                         <img src="{{ asset('img/' . $allFood->image) }}" alt="">
                         <span class="menu-badge">{{ $allFood->menus->name }}</span>
                         <div class="menu-card-content">
@@ -867,7 +868,8 @@
                                     <i
                                         class="{{ in_array($allFood->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }}"></i>
                                 </button>
-                                <button class="icon-btn"><a href="{{ route('views.menudetail', [$allFood->id,$allFood->slug]) }}"><i
+                                <button class="icon-btn"><a
+                                        href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}"><i
                                             class="fa-regular fa-eye"></i></a></button>
                             </div>
                         </div>
@@ -957,6 +959,32 @@
                                 } catch (err) {
                                     showPopup(err.message || 'Lỗi kết nối');
                                 }
+                            });
+                        });
+                    });
+                    // lọc theo menu món
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const filterButtons = document.querySelectorAll('.filter-btn');
+                        const cards = document.querySelectorAll('.menu-card');
+
+                        filterButtons.forEach(button => {
+                            button.addEventListener('click', () => {
+                                // Bỏ class active khỏi tất cả
+                                filterButtons.forEach(btn => btn.classList.remove('active'));
+                                // Gán active cho nút được bấm
+                                button.classList.add('active');
+
+                                const selectedType = button.dataset.type;
+
+                                cards.forEach(card => {
+                                    const cardType = card.dataset.type;
+
+                                    if (selectedType === 'all' || cardType === selectedType) {
+                                        card.style.display = 'block';
+                                    } else {
+                                        card.style.display = 'none';
+                                    }
+                                });
                             });
                         });
                     });
