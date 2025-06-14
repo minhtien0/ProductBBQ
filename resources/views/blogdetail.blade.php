@@ -35,7 +35,7 @@
 <!-- HERO -->
 <div class="relative w-full">
   <!-- Background image (thay src thành ảnh của bạn nếu cần) -->
-  <img src="img/banner1.jpg" alt="Blog Detail" class="w-full h-[260px] md:h-[360px] object-cover">
+  <img src="{{ asset('img/banner1.jpg') }}" alt="Blog Detail" class="w-full h-[260px] md:h-[360px] object-cover">
   <!-- Overlay -->
   <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
   <!-- Content -->

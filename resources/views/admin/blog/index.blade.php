@@ -221,7 +221,7 @@
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
                                             href="{{ route('admin.blog.edit',$blog->id_blog) }}">{{ $blog->title }}</a></td>
                                     <td class="py-1 px-2 border-t border-gray-200">
-                                        <span class="text-gray-600">{{ $blog->type }}</span>
+                                        <span class="text-gray-600">{{ $blog->type_blog }}</span>
                                     </td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $blog->fullname }}</td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">
