@@ -49,8 +49,8 @@ class HomeController extends Controller
     }
     public function blog()
     {
-        $blogs = Blog::join('users', 'blog.id_staff', '=', 'users.id')
-            ->select('blog.*', 'users.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'users.avatar as avatar')
+        $blogs = Blog::join('staffs', 'blog.id_staff', '=', 'staffs.id')
+            ->select('blog.*', 'staffs.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'staffs.avata as avatar')
             ->get();
         return view('blog', compact('blogs'));
     }
@@ -123,9 +123,9 @@ class HomeController extends Controller
     }
     public function blogdetail($id, $slug)
     {
-        $blog = Blog::join('users', 'blog.id_staff', '=', 'users.id')
+        $blog = Blog::join('staffs', 'blog.id_staff', '=', 'staffs.id')
             ->where('blog.id', '=', $id)
-            ->select('blog.*', 'users.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'users.avatar as avatar')
+            ->select('blog.*', 'staffs.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'staffs.avata as avatar')
             ->first();
         return view('blogdetail', compact('blog'));
     }

@@ -21,8 +21,8 @@ class BlogController extends Controller
 
     // 2. Query blog
     $query = Blog::query()
-    ->join('users', 'blog.id_staff', '=', 'users.id')
-    ->select('blog.*', 'users.*', 'blog.id as id_blog','blog.created_at as time_blog');
+    ->join('staffs', 'blog.id_staff', '=', 'staffs.id')
+    ->select('blog.*', 'staffs.*', 'blog.id as id_blog','blog.created_at as time_blog', 'blog.type as type_blog');
 
     // 3.1. Lọc theo title (tách từ khóa, tìm từng từ LIKE)
     if ($request->filled('title')) {
