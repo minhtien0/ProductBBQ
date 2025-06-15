@@ -1,12 +1,13 @@
+<script src="https://cdn.tailwindcss.com"></script>
 <header>
-    <div class="flex items-center justify-between w-full px-4 py-2 bg-white shadow">
+    <div class="flex items-center justify-between  px-4 py-2 bg-white shadow">
         <!-- Logo - Bên trái -->
-        <div class="flex-shrink-0">
-            <a> <img class="h-10 w-20" src="{{ asset('img/logo1.jpg') }}"> </a>
+        <div class="flex-shrink-0 w-20 h-10">
+            <a href="{{ route('views.index') }}"> <img class="h-10 w-20" src="{{ asset('img/logoadmin.jpg') }}"> </a>
         </div>
 
         <!-- Tìm Kiếm - Ở giữa -->
-        <div class="flex-grow max-w-lg mx-auto">
+      <!--   <div class="flex-grow max-w-lg mx-auto">
             <div class="relative">
                 <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
@@ -18,7 +19,7 @@
                 <input type="text" placeholder="Search"
                     class="w-full py-1 px-10 text-sm text-gray-900 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-gray-300">
             </div>
-        </div>
+        </div> -->
 
         <!-- Thông Tin - Bên phải -->
         <div class="flex items-center space-x-2">

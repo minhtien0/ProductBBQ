@@ -425,38 +425,57 @@
         .menu-card-footer {
             margin-top: auto;
             display: flex;
-            gap: 9px;
+            justify-content: center;
+            /* Căn giữa các nút */
             align-items: center;
+            gap: 14px;
+            /* Tăng khoảng cách cho thoáng */
         }
 
-        .menu-card-footer button,
-        .menu-card-footer a {
-            border: 2px solid var(--primary);
-            background: var(--primary);
-            color: #fff;
-            font-weight: 700;
-            border-radius: 5px;
-            padding: 6px 15px;
-            font-size: .98em;
-            cursor: pointer;
-            transition: background .18s, color .18s;
+        .menu-card-footer button:not(.icon-btn),
+        .menu-card-footer a:not(.icon-btn) {
+            background: linear-gradient(to right, #e60012, #e60012);
+            color: white;
+            font-weight: bold;
+            padding: 8px 18px;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 24px;
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(255, 124, 9, 0.25);
+            transition: 0.3s ease;
+        }
+
+        .menu-card-footer button:not(.icon-btn):hover,
+        .menu-card-footer a:not(.icon-btn):hover {
+            background: white;
+            color: #e60012;
+            border: 2px solid #e60012;
+            box-shadow: 0 6px 15px rgba(255, 124, 9, 0.4);
+            transform: translateY(-2px);
         }
 
         .menu-card-footer .icon-btn {
-            padding: 6px 10px;
-            background: #fff;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            border-radius: 5px;
-            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: #e60012;
+            border: 2px solid #e60012;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            width: 42px;
+            height: 42px;
+            transition: 0.25s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .menu-card-footer .icon-btn:hover {
-            background: var(--primary);
-            color: #fff;
+            background: #e60012;
+            color: white;
+            transform: scale(1.1);
         }
 
         .menu-card-footer button:hover {
@@ -839,10 +858,9 @@
                     <button class="filter-btn" data-type="Đồ uống">Đồ uống</button>
                     <button class="filter-btn" data-type="Tráng miệng">Tráng miệng</button>
                 </div>
-
             </div>
-            <div class="menu-grid">
-                <!-- Card 1 -->
+
+            <div id="menu-grid" class="menu-grid">
                 @foreach ($allFoods as $allFood)
                     <div class="menu-card" data-type="{{ $allFood->menus->name }}">
                         <img src="{{ asset('img/' . $allFood->image) }}" alt="">
@@ -875,123 +893,78 @@
                         </div>
                     </div>
                 @endforeach
-                <!-- Chức năng thêm giỏ hàng -->
-                <script>
-                    // Lấy CSRF token từ meta
-                    const csrfToken = document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content');
+            </div>
 
-                    // Bắt sự kiện click trên tất cả nút .add-to-cart
-                    document.querySelectorAll('.add-to-cart').forEach(btn => {
-                        btn.addEventListener('click', async e => {
-                            const foodId = btn.dataset.foodId;
-                            try {
-                                const res = await fetch("{{ route('cart.add') }}", {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': csrfToken,
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest',
-                                    },
-                                    body: JSON.stringify({
-                                        food_id: foodId,
-                                        quantity: 1
-                                    })
-                                });
+            <!-- PHÂN TRANG -->
+            <div id="pagination" class="flex justify-center items-center gap-2 mt-6"></div>
 
-                                const data = await res.json();
-                                if (res.ok && data.success) {
-                                    // gọi trực tiếp hàm showPopup với message
-                                    showPopup(data.message);
-                                } else {
-                                    // API trả lỗi, hoặc success=false
-                                    showPopup(data.message || data.error || 'Có lỗi xảy ra');
-                                }
+            <!-- FILTER + PAGINATION SCRIPT -->
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    const filterButtons = document.querySelectorAll('.filter-btn');
+                    const cards = document.querySelectorAll('.menu-card');
+                    const paginationContainer = document.getElementById('pagination');
+                    const itemsPerPage = 8;
+                    let currentPage = 1;
 
-                            } catch (err) {
-                                showPopup(err.message || 'Lỗi kết nối');
+                    function paginate(cardsArray, page) {
+                        const start = (page - 1) * itemsPerPage;
+                        const end = start + itemsPerPage;
+
+                        cards.forEach(card => card.style.display = "none");
+                        cardsArray.forEach((card, index) => {
+                            if (index >= start && index < end) {
+                                card.style.display = "block";
                             }
                         });
-                    });
-                </script>
-                <!-- Chức năng thêm yêu thích -->
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const url = "{{ route('favorite.toggle') }}";
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                    }
 
-                        document.querySelectorAll('.favorite-btn').forEach(btn => {
-                            btn.addEventListener('click', async () => {
-                                const foodId = btn.dataset.foodId;
+                    function renderPagination(cardsArray) {
+                        paginationContainer.innerHTML = "";
+                        const totalPages = Math.ceil(cardsArray.length / itemsPerPage);
+                        if (totalPages <= 0) return;
 
-                                try {
-                                    const res = await fetch(url, {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'Accept': 'application/json',
-                                            'X-CSRF-TOKEN': csrfToken,
-                                            'X-Requested-With': 'XMLHttpRequest',
-                                        },
-                                        body: JSON.stringify({ food_id: foodId })
-                                    });
-
-                                    const data = await res.json();
-
-                                    if (res.ok && data.success) {
-                                        // Cập nhật icon & màu
-                                        if (data.favorited) {
-                                            btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
-                                            btn.classList.add('text-red-500');
-                                            btn.classList.remove('text-gray-500');
-                                        } else {
-                                            btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
-                                            btn.classList.add('text-gray-500');
-                                            btn.classList.remove('text-red-500');
-                                        }
-                                        // Hiển thị popup thông báo
-                                        showPopup(data.message);
-                                    } else {
-                                        showPopup(data.message || 'Có lỗi xảy ra');
-                                    }
-                                } catch (err) {
-                                    showPopup(err.message || 'Lỗi kết nối');
-                                }
+                        for (let i = 1; i <= totalPages; i++) {
+                            const btn = document.createElement("button");
+                            btn.textContent = i;
+                            btn.className = `w-8 h-8 border rounded ${i === currentPage ? 'bg-[#e60012] text-white font-bold' : 'text-gray-700 border-gray-300'} hover:bg-[#e60012] hover:text-white transition`;
+                            btn.addEventListener("click", () => {
+                                currentPage = i;
+                                paginate(cardsArray, currentPage);
+                                renderPagination(cardsArray);
                             });
+                            paginationContainer.appendChild(btn);
+                        }
+                    }
+
+                    function applyFilter(selectedType) {
+                        const filteredCards = [...cards].filter(card =>
+                            selectedType === 'all' || card.dataset.type.trim().toLowerCase() === selectedType.trim().toLowerCase()
+                        );
+
+                        currentPage = 1;
+                        paginate(filteredCards, currentPage);
+                        renderPagination(filteredCards);
+                    }
+
+                    // Gắn sự kiện click cho filter
+                    filterButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            filterButtons.forEach(btn => btn.classList.remove('active'));
+                            button.classList.add('active');
+                            const selectedType = button.dataset.type;
+                            applyFilter(selectedType);
                         });
                     });
-                    // lọc theo menu món
-                    document.addEventListener("DOMContentLoaded", () => {
-                        const filterButtons = document.querySelectorAll('.filter-btn');
-                        const cards = document.querySelectorAll('.menu-card');
 
-                        filterButtons.forEach(button => {
-                            button.addEventListener('click', () => {
-                                // Bỏ class active khỏi tất cả
-                                filterButtons.forEach(btn => btn.classList.remove('active'));
-                                // Gán active cho nút được bấm
-                                button.classList.add('active');
+                    // Khởi động mặc định với "Tất cả"
+                    applyFilter('all');
+                });
+            </script>
 
-                                const selectedType = button.dataset.type;
-
-                                cards.forEach(card => {
-                                    const cardType = card.dataset.type;
-
-                                    if (selectedType === 'all' || cardType === selectedType) {
-                                        card.style.display = 'block';
-                                    } else {
-                                        card.style.display = 'none';
-                                    }
-                                });
-                            });
-                        });
-                    });
-                </script>
-
-            </div>
+        </div>
     </section>
+
 
     <!-- Menu Sale -->
     <div class="offer-section bg-gray-light">
