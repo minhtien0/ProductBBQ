@@ -55,6 +55,9 @@
       <table id="cart-table" class="min-w-full text-sm">
         <thead>
           <tr class="bg-orange-500 text-white">
+            <th class="px-3 py-2 text-center">
+              <input type="checkbox" id="check-all" class="form-checkbox h-4 w-4 text-orange-500">
+            </th>
             <th class="px-3 py-2 text-left">Image</th>
             <th class="px-3 py-2 text-left">Details</th>
             <th class="px-3 py-2 text-left">Price</th>
@@ -66,6 +69,9 @@
         <tbody id="cart-items">
           @foreach ($carts as $cart)
             <tr data-id="{{ $cart->id_cart }}" class="border-b hover:bg-orange-50">
+              <td class="px-3 py-2 text-center">
+                <input type="checkbox" class="cart-checkbox form-checkbox h-4 w-4 text-orange-500" data-id="{{ $cart->id_cart }}">
+              </td>
               <td class="px-3 py-2">
                 <img src="{{ asset('img/' . $cart->image) }}" alt="{{ $cart->name }}"
                      class="w-16 h-16 object-cover rounded" />
@@ -114,8 +120,11 @@
       <img src="img/bannerfood2.jpg" alt="Cart Food"
            class="w-full h-48 md:h-60 object-cover rounded shadow" />
     </div>
+
+    <!-- Chi tiết thanh toán -->
     <div class="w-full lg:w-1/3">
       <div class="bg-orange-50 rounded shadow px-5 py-4">
+        <div id="selected-products-detail" class="mb-2"></div>
         <div class="font-bold text-gray-700 mb-3">
           Total Cart (<span id="cart-count">{{ $carts->count() }}</span>)
         </div>
@@ -130,7 +139,7 @@
           <span>Discount:</span> <span id="discount">$10.00</span>
         </div>
         <div class="flex justify-between text-base font-bold mb-3">
-          <span>Total:</span> <span id="total">$320.00</span>
+          <span>Total:</span> <span id="total">{{ number_format($initialCartTotal) }} VNĐ</span>
         </div>
         <div class="flex mb-3">
           <input type="text" placeholder="Coupon Code"
@@ -156,19 +165,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const base      = "{{ url('cart') }}";  
 
   tbody.addEventListener('click', async e => {
-    e.preventDefault();
+    // Cộng/trừ/xóa vẫn giữ nguyên
     const incBtn = e.target.closest('.btn-inc');
     const decBtn = e.target.closest('.btn-dec');
     const rmBtn  = e.target.closest('.btn-remove');
     if (!incBtn && !decBtn && !rmBtn) return;
+
+    e.preventDefault();
 
     const tr  = e.target.closest('tr[data-id]');
     const id  = tr.dataset.id;
     const url = rmBtn
       ? `${base}/${id}`                       // DELETE
       : `{{ url('cart') }}/${id}`;           // PATCH
-
-    console.log('→', rmBtn ? 'DELETE' : 'PATCH', url);
 
     try {
       const res = await fetch(url, {
@@ -195,13 +204,92 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('cart-count').textContent =
         document.querySelectorAll('#cart-items tr').length;
 
+      setTimeout(updateSelectedDetail, 100);
+
     } catch (err) {
       console.error(err);
       alert(err.message);
     }
   });
+
+  // --- Selected detail logic (checkbox) ---
+  const checkAll  = document.getElementById('check-all');
+  const summary   = document.getElementById('selected-products-detail');
+  const totalEl   = document.getElementById('total');
+
+  function parseCartRow(tr) {
+    return {
+      id: tr.dataset.id,
+      name: tr.querySelector('td:nth-child(3) .font-bold').textContent,
+      price: parseInt(tr.querySelector('td.price').textContent.replace(/\D/g,'')),
+      quantity: parseInt(tr.querySelector('.qty').textContent),
+      total: parseInt(tr.querySelector('.item-total').textContent.replace(/\D/g,'')),
+    };
+  }
+
+  function updateSelectedDetail() {
+    const checkedRows = Array.from(document.querySelectorAll('.cart-checkbox:checked'))
+      .map(cb => cb.closest('tr[data-id]'))
+      .filter(Boolean);
+
+    let html = '';
+    let total = 0;
+    if (checkedRows.length === 0) {
+      html = '<div class="text-gray-400 italic text-sm">Chưa chọn sản phẩm nào.</div>';
+    } else {
+      html += '<div class="font-semibold mb-2 text-orange-500">Sản phẩm đã chọn:</div>';
+      html += '<div class="divide-y">';
+      checkedRows.forEach(tr => {
+        const cart = parseCartRow(tr);
+        total += cart.total;
+        html += `
+          <div class="flex items-center justify-between py-1">
+            <span>${cart.name} x <b>${cart.quantity}</b></span>
+            <span class="font-bold text-gray-800">${cart.total.toLocaleString()} VNĐ</span>
+          </div>
+        `;
+      });
+      html += '</div>';
+    }
+    summary.innerHTML = html;
+    totalEl.textContent = total.toLocaleString() + ' VNĐ';
+  }
+
+  // Gắn sự kiện change cho từng checkbox (bắt buộc dùng delegation để không bị miss do DOM động)
+  tbody.addEventListener('change', function(e) {
+    if (e.target.classList.contains('cart-checkbox')) {
+      // Nếu bỏ check một cái thì bỏ luôn checkall
+      if (!e.target.checked) checkAll.checked = false;
+      // Nếu tất cả đều check thì check luôn checkall
+      else if (document.querySelectorAll('.cart-checkbox:checked').length === document.querySelectorAll('.cart-checkbox').length) {
+        checkAll.checked = true;
+      }
+      updateSelectedDetail();
+    }
+  });
+
+  // Check all
+  checkAll.addEventListener('change', function() {
+    document.querySelectorAll('.cart-checkbox').forEach(cb => {
+      cb.checked = checkAll.checked;
+    });
+    updateSelectedDetail();
+  });
+
+  // Số lượng/cộng/trừ/xóa thì update luôn chi tiết
+  tbody.addEventListener('click', function(e) {
+    setTimeout(updateSelectedDetail, 200);
+  });
+
+  // Gọi cập nhật lần đầu
+  updateSelectedDetail();
+
+  // Đảm bảo checkall đúng trạng thái nếu load lại có tick trước đó
+  if(document.querySelectorAll('.cart-checkbox:checked').length === document.querySelectorAll('.cart-checkbox').length && document.querySelectorAll('.cart-checkbox').length !== 0){
+    checkAll.checked = true;
+  }
 });
 </script>
-</body>
 
+</body>
 </html>
