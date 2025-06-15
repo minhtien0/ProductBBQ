@@ -176,28 +176,27 @@
                         <th class="w-12 py-1 px-2 text-left">
                             <input type="checkbox" class="form-checkbox h-4 w-4">
                         </th>
-                        <th class="py-1 px-2 text-left text-sm">STT</th>
-                        <th class="py-1 px-2 text-left text-sm">ID</th>
-                        <th class="py-1 px-2 text-left text-sm">Tên Danh Mục</th>
+                        <th class="py-1 px-2 text-left text-sm">Tên Loại</th>
                         <th class="py-1 px-2 text-left text-sm">Ghi Chú</th>
+                        <th class="py-1 px-2 text-left text-sm">Thời Gian Tạo</th>
                     </tr>
                 </thead>
                 <tbody>
-
+                    @foreach ($categories as $category )
                     <tr class="bg-gray-50">
                         <td class="py-3 px-2 border-t border-gray-200">
                             <input type="checkbox" class="form-checkbox h-4 w-4">
                         </td>
-                        <td class="py-3 px-4 border-t border-gray-200">
-                            1
-                        </td>
                         <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
-                                href="{{ route('user.detail') }}">DM01</a></td>
+                                href="">{{ $category->name }}</a></td>
                         <td class="py-1 px-2 border-t border-gray-200">
-                            <span class="text-gray-600">Nước Giải Khát</span>
+                            <span class="text-gray-600">{{ $category->notes }}</span>
                         </td>
-                        <td class="py-1 px-2 border-t border-gray-200 text-gray-700">-</td>
+                        <td class="py-1 px-2 border-t border-gray-200">
+                            <span class="text-gray-600">{{ $category->create_at }}</span>
+                        </td>
                     </tr>
+                       @endforeach
                 </tbody>
             </table>
         </div>

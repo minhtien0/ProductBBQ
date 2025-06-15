@@ -47,7 +47,8 @@
         <img class="w-50 h-20 object-contain" src="{{ asset('img/test1.png') }}" alt="Logo">
       </a>
       <!-- <span class="text-[#e60012] text-3xl md:text-4xl"><i class="fa-solid fa-utensils"></i></span> -->
-      <a href="{{ route('views.index') }}"><span class="text-1xl md:text-2xl text-[#262248] font-family:Quicksand,sans-serif">LUA <br> BE HOY</span>
+      <a href="{{ route('views.index') }}"><span
+          class="text-1xl md:text-2xl text-[#262248] font-family:Quicksand,sans-serif">LUA <br> BE HOY</span>
     </div></a>
     <!-- Hamburger Mobile -->
     <button id="openMenu" class="md:hidden p-2 text-[#e60012] text-2xl" aria-label="Open Menu">
@@ -56,9 +57,12 @@
     <!-- Navigation -->
     <nav class="hidden md:flex flex-1 justify-center">
       <ul class="flex items-center gap-3 md:gap-8 font-semibold text-base md:text-lg">
-        <li><a href="{{ route('views.index') }}" class="text-[#262248] hover:text-[#e60012] transition">Trang Chủ</a></li>
-        <li><a href="{{ route('views.index') }}#booking"  class="text-[#262248] hover:text-[#e60012] transition">Đặt Bàn</a></li>
-        <li><a href="{{ route('views.about') }}" class="text-[#262248] hover:text-[#e60012] transition">Thông Tin</a></li>
+        <li><a href="{{ route('views.index') }}" class="text-[#262248] hover:text-[#e60012] transition">Trang Chủ</a>
+        </li>
+        <li><a href="{{ route('views.index') }}#booking" class="text-[#262248] hover:text-[#e60012] transition">Đặt
+            Bàn</a></li>
+        <li><a href="{{ route('views.about') }}" class="text-[#262248] hover:text-[#e60012] transition">Thông Tin</a>
+        </li>
         <li><a href="{{ route('views.menu') }}" class="text-[#262248] hover:text-[#e60012] transition">Thực Đơn</a></li>
         <li><a href="{{ route('views.blog') }}" class="text-[#262248] hover:text-[#e60012] transition">Tin Tức</a></li>
         <li><a href="{{ route('views.contact') }}" class="text-[#262248] hover:text-[#e60012] transition">Liên Hệ</a>
@@ -69,62 +73,71 @@
     <div class="flex items-center gap-2 md:gap-5">
       <!-- Biểu tượng Giỏ hàng -->
       <div class="relative">
+        @if (!session()->has('user_logged_in'))
         <span
-          class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
-          <a href="{{ route('views.cart') }}"><i class="fa-solid fa-basket-shopping"></i></a>
-        </span>
-        <span
-          class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
+        class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+        <a href="{{ route('login') }}"><i class="fa-solid fa-basket-shopping"></i></a>
+      </span>
+      <span
+        class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
+        @else
+      <span
+        class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+        <a href="{{ route('views.cart') }}"><i class="fa-solid fa-basket-shopping"></i></a>
+      </span>
+      <span
+        class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
+    @endif
       </div>
       <!-- Biểu tượng Người dùng -->
       <div class="relative">
-  {{-- Nếu chưa có session staff và user thì show link đến login --}}
-  @if (!session()->has('user_logged_in'))
-    <a href="{{ route('login') }}">
-      <span
+        {{-- Nếu chưa có session staff và user thì show link đến login --}}
+        @if (!session()->has('user_logged_in'))
+      <a href="{{ route('login') }}">
+        <span
+        class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
+        <i class="fa-solid fa-user"></i>
+        </span>
+      </a>
+    @else
+      {{-- Nếu đã login (staff hoặc user) thì show dropdown toggle --}}
+      <span id="userIconToggle"
         class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
         <i class="fa-solid fa-user"></i>
       </span>
-    </a>
-  @else
-    {{-- Nếu đã login (staff hoặc user) thì show dropdown toggle --}}
-    <span id="userIconToggle"
-      class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] cursor-pointer hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
-      <i class="fa-solid fa-user"></i>
-    </span>
-  @endif
+    @endif
 
-  <!-- Dropdown -->
-  <div id="userDropdown"
-    class="absolute right-0 mt-2 w-64 bg-[#fff2e1] rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-50">
-    <div class="p-3">
-      {{-- Tên & email --}}
-      <div class="mb-3">
-        <p class="text-sm font-semibold text-black">
-          {{ session('user_name') }}
-        </p>
-        <p class="text-xs text-gray-500">
-          {{ session('user_email') }}
-        </p>
+        <!-- Dropdown -->
+        <div id="userDropdown"
+          class="absolute right-0 mt-2 w-64 bg-[#fff2e1] rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-50">
+          <div class="p-3">
+            {{-- Tên & email --}}
+            <div class="mb-3">
+              <p class="text-sm font-semibold text-black">
+                {{ session('user_name') }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ session('user_email') }}
+              </p>
+            </div>
+
+            <div class="space-y-2">
+              <a href="{{ route('views.userdetail') }}"
+                class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                <i class="fa-solid fa-user text-red-500 w-4"></i>
+                <span>Thông tin cá nhân</span>
+              </a>
+
+              {{-- Đăng xuất --}}
+              <a href="{{ route('logout') }}"
+                class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                <i class="fa-solid fa-sign-out-alt text-red-500 w-4"></i>
+                <span>Đăng xuất</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="space-y-2">
-        <a href="{{ route('views.userdetail') }}"
-          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-          <i class="fa-solid fa-user text-red-500 w-4"></i>
-          <span>Thông tin cá nhân</span>
-        </a>
-
-        {{-- Đăng xuất --}}
-        <a href="{{ route('logout') }}"
-          class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-          <i class="fa-solid fa-sign-out-alt text-red-500 w-4"></i>
-          <span>Đăng xuất</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
 
     </div>
   </div>

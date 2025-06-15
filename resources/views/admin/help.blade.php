@@ -142,7 +142,7 @@
                                     <input type="checkbox" class="form-checkbox h-4 w-4">
                                 </td>
                                 <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
-                                        href="{{ route('user.detail') }}">{{ $help->purpose }}</a></td>
+                                        href="">{{ $help->purpose }}</a></td>
                                 <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $help->question }}</td>
                                 <td class="py-1 px-2 border-t border-gray-200">
                                     <span class="text-gray-600">Nguyễn Minh Tiến</span>

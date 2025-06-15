@@ -15,8 +15,8 @@ use App\Http\Controllers\AdminController\BookTable;
 use App\Http\Controllers\AdminController\CompanyController;
 use App\Http\Controllers\StaffController\Dashboard;
 //Product
-use App\Http\Controllers\AdminController\Product\Category;
-use App\Http\Controllers\AdminController\Product\Combo;
+use App\Http\Controllers\AdminController\Product\CategoryController;
+use App\Http\Controllers\AdminController\Product\ComboController;
 use App\Http\Controllers\AdminController\Product\ProductController;
 
 //Đăng nhập
@@ -48,7 +48,7 @@ Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->nam
 //BlogDetail
 Route::get('blogdetail/{id}/{slug}', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
 //UserDetail
-Route::get('userdetail', [HomeController::class, 'userdetail'])->name('views.userdetail');
+Route::get('userdetail', [HomeController::class, 'userdetail'])->middleware([ \App\Http\Middleware\CheckAdminRole::class])->name('views.userdetail');
 Route::post('/user/update-profile', [HomeController::class, 'updateProfile'])->name('user.update-profile');
 Route::post('/user/add-address', [HomeController::class, 'addAddress'])->name('user.add-address');
 Route::delete('/user/deleteAddress/{id}', [HomeController::class, 'deleteAddress'])->name('user.destroyAddress');
@@ -121,10 +121,16 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\CheckAdminRole::class]
         Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('admin.product.edit');
         Route::post('/update/{id}', [ProductController::class, 'update'])->name('admin.product.update');
         Route::delete('/delete', [ProductController::class, 'delete'])->name('admin.product.delete');
-
-        Route::get('/category', [Category::class, 'index'])->name('admin.product.category.index');
-        Route::get('/combo', [Combo::class, 'index'])->name('admin.product.combo.index');
-
+        //Menu
+        Route::get('/category', [CategoryController::class, 'index'])->name('admin.product.category.index');
+        //Combo
+        Route::get('/combo', [ComboController::class, 'index'])->name('admin.product.combo.index');
+        Route::get('/food-combo/add', [ComboController::class, 'showAddForm'])->name('admin.product.food_combo.addForm');
+        Route::post('/food-combo/add', [ComboController::class, 'add'])->name('admin.product.food_combo.add');
+        Route::get('/food/search', [ComboController::class, 'ajaxSearch'])->name('admin.food.search');
+        Route::get('/food_combo/{id}/edit', [ComboController::class, 'edit'])->name('admin.food_combo.edit');
+        Route::put('/food_combo/{id}', [ComboController::class, 'update'])->name('admin.food_combo.update');
+        Route::delete('/delete', [ComboController::class, 'delete'])->name('admin.product.combo.delete');
     });
 
     Route::prefix('/blog')->group(function () {
