@@ -11,8 +11,11 @@ use App\Models\Food;
 use App\Models\Image;
 use App\Models\Menu;
 use App\Models\Rate;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Blog;
 use App\Models\Cart;
+use App\Models\Voucher;
 use App\Models\Help;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
@@ -41,7 +44,16 @@ class HomeController extends Controller
     }
     public function about()
     {
-        return view('about');
+        $newBlogs = Blog::join('staffs','staffs.id','=','blog.id_staff')
+            -> where('blog.created_at', '>=', Carbon::now()->subDays(30))
+             ->orderBy('blog.created_at', 'desc')
+             ->select('blog.*','staffs.*','blog.type as type_blog','blog.id as id_blog')
+             ->get();
+        $countStaff=Staff::count();
+        $countUser=User::count();
+        $countRate=Rate::count();
+    
+        return view('about', compact('countStaff','countUser','countRate'),['newBlogs' => $newBlogs]);
     }
     public function menu()
     {
@@ -50,7 +62,7 @@ class HomeController extends Controller
     public function blog()
     {
         $blogs = Blog::join('staffs', 'blog.id_staff', '=', 'staffs.id')
-            ->select('blog.*', 'staffs.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'staffs.avata as avatar')
+            ->select('blog.*', 'staffs.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'staffs.avata as avatar', 'blog.type as type_blog')
             ->get();
         return view('blog', compact('blogs'));
     }
@@ -127,7 +139,18 @@ class HomeController extends Controller
             ->where('blog.id', '=', $id)
             ->select('blog.*', 'staffs.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'staffs.avata as avatar')
             ->first();
-        return view('blogdetail', compact('blog'));
+        $allTags=Blog::select('type')->distinct()->get();
+        $newBlogs = Blog::where('created_at', '>=', Carbon::now()->subDays(30))
+            ->where('id','!=',$blog->id_blog)
+             ->orderBy('created_at', 'desc')
+             ->get();
+        $commentBlogs=Blog::join('rates','blog.id','=','rates.blog_id')
+        ->join('users','rates.user_id','=','users.id')
+        ->where('blog.id','=',$id)
+        ->select('rates.time as time_comment','users.fullname as name_comment','users.avatar as avatar_comment','rates.content as content_comment')
+        ->get();
+       //dd($commentBlogs);
+        return view('blogdetail', compact('blog','allTags','newBlogs','commentBlogs'));
     }
     //Trang chi tiết người dùng
     public function userdetail()
@@ -379,10 +402,6 @@ class HomeController extends Controller
         }
     }
 
-
-
-
-
     //Chức Năng Giỏ Hàng
     public function cart()
     {
@@ -392,10 +411,19 @@ class HomeController extends Controller
             ->where('carts.type', '=', 'Giỏ Hàng')
             ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
             ->get();
-        //dd($carts);
+
+        $addressUsers = Address::where('user_id', '=', session('user_id'))->get();
+        $now = now();
+        $vouchers = Voucher::where('time_start', '<=', $now)
+            ->where('time_end', '>=', $now)
+            ->where('quantity', '>', 0)
+            ->where('status', 'Còn')
+            ->get();
+        //dd($vouchers);
         $initialCartTotal = $carts->sum(fn($item) => $item->quantity * $item->food->price);
-        return view('cart', compact('carts', 'initialCartTotal'));
+        return view('cart', compact('carts', 'initialCartTotal', 'addressUsers', 'vouchers'));
     }
+
 
     public function storeCart(Request $request)
     {
@@ -443,6 +471,105 @@ class HomeController extends Controller
 
         return back()->with('success', 'Đã thêm vào giỏ hàng!');
     }
+
+    public function storeOrder(Request $request)
+{
+    // 1. Validate (giữ nguyên rule bạn đã khai báo, bổ sung products.*)
+    $validator = Validator::make($request->all(), [
+        'address_id'           => 'required|integer|exists:addresses,id',
+        'totalprice'           => 'required|integer|min:1',
+        'voucher_id'           => 'nullable|integer|exists:vouchers,id',
+        'totalbill'            => 'required|integer|min:1',
+        'typepayment'          => 'required|in:1,2',           // hoặc in:cash,bank
+        'note'                 => 'nullable|string|max:500',
+        'products'             => 'required|array|min:1',
+        'products.*.id'        => 'required|integer',
+        'products.*.quantity'  => 'required|integer|min:1',
+    ], [
+       'address_id.required'           => 'Bạn phải chọn địa chỉ.',
+    'address_id.integer'            => 'Địa chỉ không hợp lệ.',
+    'address_id.exists'             => 'Địa chỉ không tồn tại.',
+
+    'totalprice.required'           => 'Thiếu tổng tiền món.',
+    'totalprice.integer'            => 'Tổng tiền phải là số.',
+    'totalprice.min'                => 'Tổng tiền phải lớn hơn 0.',
+
+    'voucher_id.integer'            => 'Mã giảm giá không hợp lệ.',
+    'voucher_id.exists'             => 'Mã giảm giá không tồn tại.',
+
+    'totalbill.required'            => 'Thiếu tổng tiền thanh toán.',
+    'totalbill.integer'             => 'Tổng tiền thanh toán phải là số.',
+    'totalbill.min'                 => 'Tổng tiền thanh toán phải lớn hơn 0.',
+
+    'typepayment.required'          => 'Bạn phải chọn phương thức thanh toán.',
+    'typepayment.in'                => 'Phương thức thanh toán không hợp lệ.',
+
+    'note.string'                   => 'Ghi chú phải là chuỗi ký tự.',
+    'note.max'                      => 'Ghi chú không được vượt quá 500 ký tự.',
+
+    'products.required'             => 'Bạn phải chọn ít nhất một sản phẩm.',
+    'products.array'                => 'Dữ liệu sản phẩm không hợp lệ.',
+    'products.*.id.required'        => 'Thiếu ID sản phẩm.',
+    'products.*.id.integer'         => 'ID sản phẩm phải là số.',
+    'products.*.id.exists'          => 'Sản phẩm không tồn tại.',
+    'products.*.quantity.required'  => 'Thiếu số lượng sản phẩm.',
+    'products.*.quantity.integer'   => 'Số lượng sản phẩm phải là số.',
+    'products.*.quantity.min'       => 'Số lượng sản phẩm phải ít nhất là 1.',
+    ]);
+
+    if ($validator->fails()) {
+        // nếu AJAX: trả về 422 + JSON lỗi
+        return response()->json([
+            'success' => false,
+            'errors'  => $validator->errors()
+        ], 422);
+    }
+
+    // 2. Tạo code không trùng
+    do {
+        $code = 'NMT' . strtoupper(Str::random(8));
+    } while (\App\Models\Order::where('code', $code)->exists());
+
+    try {
+        // 3. Lưu Order
+        $order = \App\Models\Order::create([
+            'code'         => $code,
+            'table_id'     => null,
+            'id_user'      => session('user_id'),
+            'address'      => $request->address_id,
+            'id_staff'     => null,
+            'totalprice'   => $request->totalprice,
+            'voucher'      => $request->voucher_id,
+            'totalbill'    => $request->totalbill,
+            'statusorder'  => 'Chờ Xác Nhận',
+            'typepayment'  => (int)$request->typepayment,
+            'note'         => $request->note,
+            'type'         => 1,  // bán mang đi
+        ]);
+
+        // 4. Lưu từng OrderDetail
+        foreach ($request->products as $item) {
+            \App\Models\OrderDetail::create([
+                'order_id'   => $order->id,
+                'product_id' => $item['id'],        // phải là ['id']
+                'quantity'   => $item['quantity'],
+                'status'     => 'Chờ xử lý',
+            ]);
+        }
+
+        // 5. Trả về JSON thành công
+        return response()->json([
+            'success' => true,
+            'message' => 'Đặt hàng thành công!'
+        ]);
+    } catch (\Exception $e) {
+        // 6. Bắt lỗi, trả về JSON lỗi
+        return response()->json([
+            'success' => false,
+            'message' => 'Có lỗi xảy ra: '.$e->getMessage()
+        ], 500);
+    }
+}
 
     public function toggleFavorite(Request $request)
     {

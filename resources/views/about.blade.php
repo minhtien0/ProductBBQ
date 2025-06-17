@@ -360,30 +360,30 @@ Tại sao LỬA BÉ HOY lại nổi bật</h2>
       <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
         <div
           class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="50000">0</span>+
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countUser }}">0</span><span class="font-bold text-white text-2xl md:text-3xl">+</span>
         </div>
-        <div class="text-white text-xs mt-2">Customers Served</div>
+        <div class="text-white text-xs mt-2">Khách Hàng</div>
       </div>
       <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
         <div
           class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="15">0</span>+
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countStaff }}">0</span><span class="font-bold text-white text-2xl md:text-3xl">+</span>
         </div>
-        <div class="text-white text-xs mt-2">BBQ Chefs</div>
+        <div class="text-white text-xs mt-2">Nhân Viên</div>
       </div>
       <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
         <div
           class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="45000">0</span>+
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countRate }}">0</span><span class="font-bold text-white text-2xl md:text-3xl">+</span>
         </div>
-        <div class="text-white text-xs mt-2">Happy BBQ Fans</div>
+        <div class="text-white text-xs mt-2">Đánh Giá</div>
       </div>
       <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
         <div
           class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="5">0</span>+
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="5">2</span><span class="font-bold text-white text-2xl md:text-3xl ml-2"> Yoe</span>
         </div>
-        <div class="text-white text-xs mt-2">Awards Won</div>
+        <div class="text-white text-xs mt-2">Kinh Nghiệm</div>
       </div>
     </div>
   </section>
@@ -393,8 +393,8 @@ Tại sao LỬA BÉ HOY lại nổi bật</h2>
     <div class="max-w-5xl mx-auto px-2">
       <div class="flex items-center justify-between mb-2">
         <div>
-          <div class="text-orange-500 font-bold text-sm">News & Blog <i class="fa-solid fa-seedling"></i></div>
-          <div class="text-xl md:text-2xl font-bold mb-2">Our Latest BBQ Blog</div>
+          <div class="text-orange-500 font-bold text-sm">Tin Tức & Thông Tin <i class="fa-solid fa-seedling"></i></div>
+          <div class="text-xl md:text-2xl font-bold mb-2">Tin Tức Mới Nhất</div>
         </div>
         <div class="flex gap-2">
           <button
@@ -407,62 +407,26 @@ Tại sao LỬA BÉ HOY lại nổi bật</h2>
       </div>
       <div class="swiper blogSwiper">
         <div class="swiper-wrapper">
-          <!-- Blog 1 -->
+          <!-- Blog  -->
+           @foreach ($newBlogs as $newBlog)     
           <div class="swiper-slide ">
             <div class="bg-white rounded-2xl shadow p-3 h-[370px]">
-              <img src="img/bbq_blog1.jpg" class="w-full h-40 object-cover rounded-lg mb-2" alt="">
+              <a href="{{ route('views.blogdetail', [$newBlog->id_blog, $newBlog->slug]) }}"><img src="{{ asset('img/blog/'.$newBlog->image) }}" class="w-full h-40 object-cover rounded-lg mb-2" alt="">
+              </a>
               <div class="flex items-center gap-2 mb-2">
-                <img src="https://randomuser.me/api/portraits/men/32.jpg"
+                <img src="{{ asset('img/'.$newBlog->avata) }}"
                   class="w-7 h-7 rounded-full border-2 border-white" alt="">
-                <span class="text-xs text-gray-600 font-semibold">Huy BBQ</span>
+                <span class="text-xs text-gray-600 font-semibold">{{ $newBlog->fullname }}</span>
               </div>
-              <div class="text-base font-bold mb-1">Khám Phá Món Sườn Nướng Mật Ong Mới!</div>
-              <div class="text-xs text-gray-500 mb-2">Hương vị ngọt ngào từ mật ong hòa quyện với thịt sườn nướng than,
-                một trải nghiệm BBQ không thể bỏ qua...</div>
+              <div class="text-base font-bold mb-1">{{ $newBlog->title }}</div>
               <div class="flex justify-between items-center">
-                <a href="#" class="text-orange-500 font-bold text-xs">Read More <i
+                <a href="{{ route('views.blogdetail', [$newBlog->id_blog, $newBlog->slug]) }}" class="text-orange-500 font-bold text-xs">Đọc Thêm <i
                     class="fa-solid fa-arrow-right"></i></a>
-                <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">New</span>
+                <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">{{ $newBlog->type_blog }}</span>
               </div>
             </div>
           </div>
-          <!-- Blog 2 -->
-          <div class="swiper-slide">
-            <div class="bg-white rounded-2xl shadow p-3 h-[370px]">
-              <img src="img/bbq_blog2.jpg" class="w-full h-40 object-cover rounded-lg mb-2" alt="">
-              <div class="flex items-center gap-2 mb-2">
-                <img src="https://randomuser.me/api/portraits/women/65.jpg"
-                  class="w-7 h-7 rounded-full border-2 border-white" alt="">
-                <span class="text-xs text-gray-600 font-semibold">Lan BBQ</span>
-              </div>
-              <div class="text-base font-bold mb-1">Sốt BBQ Cay Mới Ra Mắt Mùa Hè!</div>
-              <div class="text-xs text-gray-500 mb-2">Sốt cay ớt tươi kết hợp mật ong, lý tưởng cho những tín đồ BBQ yêu
-                thích vị mạnh...</div>
-              <div class="flex justify-between items-center">
-                <a href="#" class="text-orange-500 font-bold text-xs">Read More <i
-                    class="fa-solid fa-arrow-right"></i></a>
-                <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">Hot</span>
-              </div>
-            </div>
-          </div>
-          <!-- Blog 3 -->
-          <div class="swiper-slide">
-            <div class="bg-white rounded-2xl shadow p-3 h-[370px]">
-              <img src="img/bbq_blog3.jpg" class="w-full h-40 object-cover rounded-lg mb-2" alt="">
-              <div class="flex items-center gap-2 mb-2">
-                <img src="img/bbq_chef.jpg" class="w-7 h-7 rounded-full border-2 border-white" alt="">
-                <span class="text-xs text-gray-600 font-semibold">Hùng BBQ</span>
-              </div>
-              <div class="text-base font-bold mb-1">Hải Sản Nướng Bơ Tỏi Tuyệt Hảo</div>
-              <div class="text-xs text-gray-500 mb-2">Tôm và mực tươi sống nướng với bơ tỏi, mang đến hương vị biển cả
-                đậm đà...</div>
-              <div class="flex justify-between items-center">
-                <a href="#" class="text-orange-500 font-bold text-xs">Read More <i
-                    class="fa-solid fa-arrow-right"></i></a>
-                <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">Blog</span>
-              </div>
-            </div>
-          </div>
+          @endforeach
           <!-- Thêm slide mới tùy ý -->
         </div>
         <div class="swiper-pagination-blog mt-3"></div>

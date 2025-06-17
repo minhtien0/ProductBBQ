@@ -1,6 +1,6 @@
 @extends('admin.index')
 @section('content')
-    <div class="w-full bg-white mt-4">
+    <div class="w-full bg-white">
         <div class="px-5 py-3">
             <!-- Action buttons -->
             <div class="flex justify-between mb-4">
@@ -145,7 +145,7 @@
                                         href="">{{ $help->purpose }}</a></td>
                                 <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $help->question }}</td>
                                 <td class="py-1 px-2 border-t border-gray-200">
-                                    <span class="text-gray-600">Nguyễn Minh Tiến</span>
+                                    <span class="text-gray-600">{{ $help->name }}</span>
                                 </td>
                                 <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $help->sdt }}</td>
                                 <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $help->email }}</td>

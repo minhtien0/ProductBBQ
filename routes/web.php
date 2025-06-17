@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminController\VoucherController;
 use App\Http\Controllers\AdminController\HelpController;
 use App\Http\Controllers\AdminController\BookTable;
 use App\Http\Controllers\AdminController\CompanyController;
+use App\Http\Controllers\AdminController\OrderController;
 use App\Http\Controllers\StaffController\Dashboard;
 //Product
 use App\Http\Controllers\AdminController\Product\CategoryController;
@@ -48,7 +49,7 @@ Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->nam
 //BlogDetail
 Route::get('blogdetail/{id}/{slug}', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
 //UserDetail
-Route::get('userdetail', [HomeController::class, 'userdetail'])->middleware([ \App\Http\Middleware\CheckAdminRole::class])->name('views.userdetail');
+Route::get('userdetail', [HomeController::class, 'userdetail'])->middleware([ \App\Http\Middleware\CheckLoggedIn::class])->name('views.userdetail');
 Route::post('/user/update-profile', [HomeController::class, 'updateProfile'])->name('user.update-profile');
 Route::post('/user/add-address', [HomeController::class, 'addAddress'])->name('user.add-address');
 Route::delete('/user/deleteAddress/{id}', [HomeController::class, 'deleteAddress'])->name('user.destroyAddress');
@@ -57,11 +58,13 @@ Route::post('/user/change-password', [HomeController::class, 'changePassword'])-
 
 
 //Cart
-Route::get('/cart', [HomeController::class, 'cart'])->name('views.cart');
+Route::get('/cart', [HomeController::class, 'cart']) ->middleware([\App\Http\Middleware\CheckLoggedIn::class])->name('views.cart');
 Route::post('/cart', [HomeController::class, 'storeCart'])->name('cart.add');
 Route::post('/favorite', [HomeController::class, 'toggleFavorite'])->name('favorite.toggle');
 Route::patch('/cart/{id}', [HomeController::class, 'updateQuantityCart'])->name('cart.updateQuantity');
 Route::delete('/cart/{id}', [HomeController::class, 'destroyCart'])->name('cart.destroy');
+Route::post('/order/add', [HomeController::class, 'storeOrder'])->name('order.store');
+
 
 //huydong test layout quản lí bàn
 Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.deskmanage');
@@ -130,7 +133,7 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\CheckAdminRole::class]
         Route::get('/food/search', [ComboController::class, 'ajaxSearch'])->name('admin.food.search');
         Route::get('/food_combo/{id}/edit', [ComboController::class, 'edit'])->name('admin.food_combo.edit');
         Route::put('/food_combo/{id}', [ComboController::class, 'update'])->name('admin.food_combo.update');
-        Route::delete('/delete', [ComboController::class, 'delete'])->name('admin.product.combo.delete');
+        Route::delete('/delete/combo', [ComboController::class, 'delete'])->name('admin.product.combo.delete');
     });
 
     Route::prefix('/blog')->group(function () {
@@ -141,6 +144,10 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\CheckAdminRole::class]
         Route::get('/edit/{id}', [BlogController::class, 'edit'])->name('admin.blog.edit');
         Route::post('/update/{id}', [BlogController::class, 'update'])->name('admin.blog.update');
 
+    });
+
+    Route::prefix('/order')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('admin.order');
     });
 
 });

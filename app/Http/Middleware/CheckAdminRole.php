@@ -15,7 +15,6 @@ class CheckAdminRole
 
         // Kiểm tra quyền
         $role = session('staff_role'); // Giả sử bạn đã lưu 'role' trong session khi đăng nhập
-
         if ($role !== 'Quản Lí') {
             abort(403, 'Bạn không có quyền truy cập trang quản trị.');
         }
