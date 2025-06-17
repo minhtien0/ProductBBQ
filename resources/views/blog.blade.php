@@ -54,15 +54,15 @@
 
     <!-- Blog Cards Grid -->
     <div class="max-w-6xl mx-auto px-3 py-8">
-        <div id="blog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="blog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 h-full">
             @foreach ($blogs as $index => $blog)
-                <div class="blog-card bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col"
+                <div class="blog-card bg-white rounded-xl shadow hover:shadow-lg transition p-3 flex flex-col h-full"
                     data-index="{{ $index }}">
                     <div class="relative">
                         <img src="{{ asset('img/blog/' . $blog->image) }}" alt=""
                             class="rounded-lg w-full h-36 md:h-44 object-cover" />
                         <span
-                            class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">{{ $blog->type }}</span>
+                            class="absolute top-2 left-2 bg-[#e60012] text-white text-xs px-2 py-1 rounded">{{ $blog->type_blog }}</span>
                     </div>
                     <div class="flex items-center mt-3 mb-2 gap-2">
                         <img src="img/mtien.jpg" alt=""

@@ -13,13 +13,25 @@ class Order extends Model
     protected $fillable = [
         'code',
         'table_id',
-        'create_at',
+        'id_user',
+        'address',
+        'id_staff',
+        'totalprice',
+        'voucher',
+        'totalbill',
+        'statusorder',
+        'typepayment',
         'status',
+        'note',
+        'type',
+        'created_at',
+        'updated_at',
     ];
 
     // Định dạng kiểu dữ liệu
     protected $casts = [
-        'create_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // Mối quan hệ với bảng Table

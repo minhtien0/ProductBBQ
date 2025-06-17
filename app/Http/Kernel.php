@@ -25,5 +25,6 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'locale' => \App\Http\Middleware\Locale::class,
         'check.admin' => \App\Http\Middleware\CheckAdminRole::class,
+        'checkLoggedIn' => \App\Http\Middleware\CheckLoggedIn::class,
     ];
 }

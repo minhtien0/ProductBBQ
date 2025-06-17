@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <x-notification-popup />
+    <script src="{{ asset('js/notification.js') }}"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -28,7 +30,10 @@
         };
     </script>
     </head>
-<body class="bg-gray-light font-mont">
+<body class="bg-gray-light font-mont"
+@if(session('success')) data-success="{{ session('success') }}"
+@elseif(session('error')) data-error="{{ session('error') }}" @endif
+>
 @include('layouts.user.header')
   <!-- Banner -->
   <div class="relative w-full">
