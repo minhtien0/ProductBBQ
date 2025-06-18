@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\BookingTable;
 use App\Models\Company;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
@@ -44,16 +46,16 @@ class HomeController extends Controller
     }
     public function about()
     {
-        $newBlogs = Blog::join('staffs','staffs.id','=','blog.id_staff')
-            -> where('blog.created_at', '>=', Carbon::now()->subDays(30))
-             ->orderBy('blog.created_at', 'desc')
-             ->select('blog.*','staffs.*','blog.type as type_blog','blog.id as id_blog')
-             ->get();
-        $countStaff=Staff::count();
-        $countUser=User::count();
-        $countRate=Rate::count();
-    
-        return view('about', compact('countStaff','countUser','countRate'),['newBlogs' => $newBlogs]);
+        $newBlogs = Blog::join('staffs', 'staffs.id', '=', 'blog.id_staff')
+            ->where('blog.created_at', '>=', Carbon::now()->subDays(30))
+            ->orderBy('blog.created_at', 'desc')
+            ->select('blog.*', 'staffs.*', 'blog.type as type_blog', 'blog.id as id_blog')
+            ->get();
+        $countStaff = Staff::count();
+        $countUser = User::count();
+        $countRate = Rate::count();
+
+        return view('about', compact('countStaff', 'countUser', 'countRate'), ['newBlogs' => $newBlogs]);
     }
     public function menu()
     {
@@ -71,6 +73,61 @@ class HomeController extends Controller
         $infos = Company::first(); //lấy dữ liệu
 
         return view('contact', compact('infos'));
+    }
+    public function storeBookingTable(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nameuser' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'sdt' => 'required|regex:/^[0-9]{9,15}$/',
+            'date' => 'required|date|after_or_equal:today',
+            'time' => 'required',
+            'quantitypeople' => 'required|integer|min:1|max:20',
+        ], [
+            'nameuser.required' => 'Vui lòng nhập tên.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'sdt.required' => 'Vui lòng nhập số điện thoại.',
+            'sdt.regex' => 'Số điện thoại không hợp lệ.',
+            'date.required' => 'Vui lòng chọn ngày.',
+            'date.after_or_equal' => 'Ngày đặt bàn phải từ hôm nay trở đi.',
+            'time.required' => 'Vui lòng chọn thời gian.',
+            'quantitypeople.required' => 'Vui lòng chọn số lượng người.',
+            'quantitypeople.integer' => 'Số lượng phải là số.',
+            'quantitypeople.min' => 'Phải có ít nhất 1 người.',
+            'quantitypeople.max' => 'Tối đa 20 người.',
+        ]);
+
+        if ($validator->fails()) {
+            // Trả về lỗi cho AJAX
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()->all(),
+            ], 422);
+        }
+        $validated = $validator->validated();
+
+        try {
+            $booking = new BookingTable();
+            $booking->nameuser = $validated['nameuser'];
+            $booking->email = $validated['email'];
+            $booking->sdt = $validated['sdt'];
+            $booking->quantitypeople = $validated['quantitypeople'];
+            $booking->time_booking = $validated['date'] . ' ' . $validated['time'] . ':00';
+            $booking->status = 'Chờ xác nhận';
+            $booking->time_order = now();
+            $booking->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Đặt bàn thành công! Chúng tôi sẽ liên hệ lại bạn sớm.'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['Có lỗi xảy ra khi đặt bàn. Vui lòng thử lại sau!']
+            ], 500);
+        }
     }
     public function addContact(Request $request)
     {
@@ -139,18 +196,18 @@ class HomeController extends Controller
             ->where('blog.id', '=', $id)
             ->select('blog.*', 'staffs.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'staffs.avata as avatar')
             ->first();
-        $allTags=Blog::select('type')->distinct()->get();
+        $allTags = Blog::select('type')->distinct()->get();
         $newBlogs = Blog::where('created_at', '>=', Carbon::now()->subDays(30))
-            ->where('id','!=',$blog->id_blog)
-             ->orderBy('created_at', 'desc')
-             ->get();
-        $commentBlogs=Blog::join('rates','blog.id','=','rates.blog_id')
-        ->join('users','rates.user_id','=','users.id')
-        ->where('blog.id','=',$id)
-        ->select('rates.time as time_comment','users.fullname as name_comment','users.avatar as avatar_comment','rates.content as content_comment')
-        ->get();
-       //dd($commentBlogs);
-        return view('blogdetail', compact('blog','allTags','newBlogs','commentBlogs'));
+            ->where('id', '!=', $blog->id_blog)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $commentBlogs = Blog::join('rates', 'blog.id', '=', 'rates.blog_id')
+            ->join('users', 'rates.user_id', '=', 'users.id')
+            ->where('blog.id', '=', $id)
+            ->select('rates.time as time_comment', 'users.fullname as name_comment', 'users.avatar as avatar_comment', 'rates.content as content_comment')
+            ->get();
+        //dd($commentBlogs);
+        return view('blogdetail', compact('blog', 'allTags', 'newBlogs', 'commentBlogs'));
     }
     //Trang chi tiết người dùng
     public function userdetail()
@@ -168,10 +225,27 @@ class HomeController extends Controller
             ->get();
         $myReviews = Rate::join('foods', 'rates.food_id', '=', 'foods.id')
             ->join('menus', 'foods.type', '=', 'menus.id')
+            ->join('users', 'users.id', '=', 'rates.user_id')
+            ->where('users.id', '=', session('user_id'))
             ->select('rates.*', 'foods.*', 'menus.name as type_menu')
             ->get();
-
-        return view('userdetail', compact('address', 'addressAll', 'foodFavorites', 'myReviews'));
+        $myOrderLists = Order::join('users', 'users.id', '=', 'orders.id_user')
+            ->join('order_details', 'order_details.order_id', '=', 'orders.id')
+            ->join('foods', 'order_details.product_id', '=', 'foods.id')
+            ->where('users.id', session('user_id'))
+            ->select(
+                'order_details.*',
+                'foods.*',
+                'users.*',
+                'orders.*',
+                'orders.id as id_order',
+                'orders.code as order_code', // Lấy code của đơn hàng, tránh trùng code với food/user
+                'orders.created_at as time_order'
+            )
+            ->get()
+            ->groupBy('order_id');
+        //dd($myOrderLists);
+        return view('userdetail', compact('address', 'addressAll', 'foodFavorites', 'myReviews', 'myOrderLists'));
     }
 
     public function updateProfile(Request $request)
@@ -473,103 +547,103 @@ class HomeController extends Controller
     }
 
     public function storeOrder(Request $request)
-{
-    // 1. Validate (giữ nguyên rule bạn đã khai báo, bổ sung products.*)
-    $validator = Validator::make($request->all(), [
-        'address_id'           => 'required|integer|exists:addresses,id',
-        'totalprice'           => 'required|integer|min:1',
-        'voucher_id'           => 'nullable|integer|exists:vouchers,id',
-        'totalbill'            => 'required|integer|min:1',
-        'typepayment'          => 'required|in:1,2',           // hoặc in:cash,bank
-        'note'                 => 'nullable|string|max:500',
-        'products'             => 'required|array|min:1',
-        'products.*.id'        => 'required|integer',
-        'products.*.quantity'  => 'required|integer|min:1',
-    ], [
-       'address_id.required'           => 'Bạn phải chọn địa chỉ.',
-    'address_id.integer'            => 'Địa chỉ không hợp lệ.',
-    'address_id.exists'             => 'Địa chỉ không tồn tại.',
+    {
+        // 1. Validate (giữ nguyên rule bạn đã khai báo, bổ sung products.*)
+        $validator = Validator::make($request->all(), [
+            'address_id' => 'required|integer|exists:addresses,id',
+            'totalprice' => 'required|integer|min:1',
+            'voucher_id' => 'nullable|integer|exists:vouchers,id',
+            'totalbill' => 'required|integer|min:1',
+            'typepayment' => 'required|in:1,2',           // hoặc in:cash,bank
+            'note' => 'nullable|string|max:500',
+            'products' => 'required|array|min:1',
+            'products.*.id' => 'required|integer',
+            'products.*.quantity' => 'required|integer|min:1',
+        ], [
+            'address_id.required' => 'Bạn phải chọn địa chỉ.',
+            'address_id.integer' => 'Địa chỉ không hợp lệ.',
+            'address_id.exists' => 'Địa chỉ không tồn tại.',
 
-    'totalprice.required'           => 'Thiếu tổng tiền món.',
-    'totalprice.integer'            => 'Tổng tiền phải là số.',
-    'totalprice.min'                => 'Tổng tiền phải lớn hơn 0.',
+            'totalprice.required' => 'Thiếu tổng tiền món.',
+            'totalprice.integer' => 'Tổng tiền phải là số.',
+            'totalprice.min' => 'Tổng tiền phải lớn hơn 0.',
 
-    'voucher_id.integer'            => 'Mã giảm giá không hợp lệ.',
-    'voucher_id.exists'             => 'Mã giảm giá không tồn tại.',
+            'voucher_id.integer' => 'Mã giảm giá không hợp lệ.',
+            'voucher_id.exists' => 'Mã giảm giá không tồn tại.',
 
-    'totalbill.required'            => 'Thiếu tổng tiền thanh toán.',
-    'totalbill.integer'             => 'Tổng tiền thanh toán phải là số.',
-    'totalbill.min'                 => 'Tổng tiền thanh toán phải lớn hơn 0.',
+            'totalbill.required' => 'Thiếu tổng tiền thanh toán.',
+            'totalbill.integer' => 'Tổng tiền thanh toán phải là số.',
+            'totalbill.min' => 'Tổng tiền thanh toán phải lớn hơn 0.',
 
-    'typepayment.required'          => 'Bạn phải chọn phương thức thanh toán.',
-    'typepayment.in'                => 'Phương thức thanh toán không hợp lệ.',
+            'typepayment.required' => 'Bạn phải chọn phương thức thanh toán.',
+            'typepayment.in' => 'Phương thức thanh toán không hợp lệ.',
 
-    'note.string'                   => 'Ghi chú phải là chuỗi ký tự.',
-    'note.max'                      => 'Ghi chú không được vượt quá 500 ký tự.',
+            'note.string' => 'Ghi chú phải là chuỗi ký tự.',
+            'note.max' => 'Ghi chú không được vượt quá 500 ký tự.',
 
-    'products.required'             => 'Bạn phải chọn ít nhất một sản phẩm.',
-    'products.array'                => 'Dữ liệu sản phẩm không hợp lệ.',
-    'products.*.id.required'        => 'Thiếu ID sản phẩm.',
-    'products.*.id.integer'         => 'ID sản phẩm phải là số.',
-    'products.*.id.exists'          => 'Sản phẩm không tồn tại.',
-    'products.*.quantity.required'  => 'Thiếu số lượng sản phẩm.',
-    'products.*.quantity.integer'   => 'Số lượng sản phẩm phải là số.',
-    'products.*.quantity.min'       => 'Số lượng sản phẩm phải ít nhất là 1.',
-    ]);
-
-    if ($validator->fails()) {
-        // nếu AJAX: trả về 422 + JSON lỗi
-        return response()->json([
-            'success' => false,
-            'errors'  => $validator->errors()
-        ], 422);
-    }
-
-    // 2. Tạo code không trùng
-    do {
-        $code = 'NMT' . strtoupper(Str::random(8));
-    } while (\App\Models\Order::where('code', $code)->exists());
-
-    try {
-        // 3. Lưu Order
-        $order = \App\Models\Order::create([
-            'code'         => $code,
-            'table_id'     => null,
-            'id_user'      => session('user_id'),
-            'address'      => $request->address_id,
-            'id_staff'     => null,
-            'totalprice'   => $request->totalprice,
-            'voucher'      => $request->voucher_id,
-            'totalbill'    => $request->totalbill,
-            'statusorder'  => 'Chờ Xác Nhận',
-            'typepayment'  => (int)$request->typepayment,
-            'note'         => $request->note,
-            'type'         => 1,  // bán mang đi
+            'products.required' => 'Bạn phải chọn ít nhất một sản phẩm.',
+            'products.array' => 'Dữ liệu sản phẩm không hợp lệ.',
+            'products.*.id.required' => 'Thiếu ID sản phẩm.',
+            'products.*.id.integer' => 'ID sản phẩm phải là số.',
+            'products.*.id.exists' => 'Sản phẩm không tồn tại.',
+            'products.*.quantity.required' => 'Thiếu số lượng sản phẩm.',
+            'products.*.quantity.integer' => 'Số lượng sản phẩm phải là số.',
+            'products.*.quantity.min' => 'Số lượng sản phẩm phải ít nhất là 1.',
         ]);
 
-        // 4. Lưu từng OrderDetail
-        foreach ($request->products as $item) {
-            \App\Models\OrderDetail::create([
-                'order_id'   => $order->id,
-                'product_id' => $item['id'],        // phải là ['id']
-                'quantity'   => $item['quantity'],
-                'status'     => 'Chờ xử lý',
-            ]);
+        if ($validator->fails()) {
+            // nếu AJAX: trả về 422 + JSON lỗi
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        // 5. Trả về JSON thành công
-        return response()->json([
-            'success' => true,
-            'message' => 'Đặt hàng thành công!'
-        ]);
-    } catch (\Exception $e) {
-        // 6. Bắt lỗi, trả về JSON lỗi
-        return response()->json([
-            'success' => false,
-            'message' => 'Có lỗi xảy ra: '.$e->getMessage()
-        ], 500);
+        // 2. Tạo code không trùng
+        do {
+            $code = 'NMT' . strtoupper(Str::random(8));
+        } while (\App\Models\Order::where('code', $code)->exists());
+
+        try {
+            // 3. Lưu Order
+            $order = \App\Models\Order::create([
+                'code' => $code,
+                'table_id' => null,
+                'id_user' => session('user_id'),
+                'address' => $request->address_id,
+                'id_staff' => null,
+                'totalprice' => $request->totalprice,
+                'voucher' => $request->voucher_id,
+                'totalbill' => $request->totalbill,
+                'statusorder' => 'Chờ Xác Nhận',
+                'typepayment' => (int) $request->typepayment,
+                'note' => $request->note,
+                'type' => 1,  // bán mang đi
+            ]);
+
+            // 4. Lưu từng OrderDetail
+            foreach ($request->products as $item) {
+                \App\Models\OrderDetail::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['id'],        // phải là ['id']
+                    'quantity' => $item['quantity'],
+                    'status' => 'Chờ xử lý',
+                ]);
+            }
+
+            // 5. Trả về JSON thành công
+            return response()->json([
+                'success' => true,
+                'message' => 'Đặt hàng thành công!'
+            ]);
+        } catch (\Exception $e) {
+            // 6. Bắt lỗi, trả về JSON lỗi
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
 
     public function toggleFavorite(Request $request)
     {

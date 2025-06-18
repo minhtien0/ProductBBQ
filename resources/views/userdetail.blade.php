@@ -484,58 +484,39 @@
                         <!-- Order -->
                         <!-- Order List Tab -->
                         <div class="tab-content hidden" id="tab-order">
-                            <h2 class="text-xl font-bold text-gray-800 mb-4">Order List</h2>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Danh Sách Đơn Hàng</h2>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full bg-white rounded shadow overflow-hidden text-sm">
                                     <thead>
                                         <tr class="bg-orange-500 text-white">
-                                            <th class="px-4 py-2 text-left">Order</th>
-                                            <th class="px-4 py-2 text-left">Date</th>
-                                            <th class="px-4 py-2 text-left">Status</th>
-                                            <th class="px-4 py-2 text-right">Amount</th>
-                                            <th class="px-4 py-2">Action</th>
+                                            <th class="px-4 py-2 text-left">Mã Đơn</th>
+                                            <th class="px-4 py-2 text-left">Ngày Đặt Đơn</th>
+                                            <th class="px-4 py-2 text-left">Trạng Thái</th>
+                                            <th class="px-4 py-2 text-right">Giá Trị</th>
+                                            <th class="px-4 py-2">Hành Động</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td class="px-4 py-2">#2545768745</td>
-                                            <td class="px-4 py-2">July 16, 2022</td>
-                                            <td class="px-4 py-2"><span
-                                                    class="bg-green-100 text-green-600 px-3 py-1 rounded-full">Completed</span>
-                                            </td>
-                                            <td class="px-4 py-2 text-right">$660</td>
-                                            <td class="px-4 py-2 text-center">
-                                                <button
-                                                    class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs view-detail-btn">View
-                                                    Details</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-4 py-2">#2457945235</td>
-                                            <td class="px-4 py-2">Jan 21, 2021</td>
-                                            <td class="px-4 py-2"><span
-                                                    class="bg-green-100 text-green-600 px-3 py-1 rounded-full">Complete</span>
-                                            </td>
-                                            <td class="px-4 py-2 text-right">$654</td>
-                                            <td class="px-4 py-2 text-center">
-                                                <button
-                                                    class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs view-detail-btn">View
-                                                    Details</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-4 py-2">#2468875648</td>
-                                            <td class="px-4 py-2">July 11, 2020</td>
-                                            <td class="px-4 py-2"><span
-                                                    class="bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Active</span>
-                                            </td>
-                                            <td class="px-4 py-2 text-right">$440</td>
-                                            <td class="px-4 py-2 text-center">
-                                                <button
-                                                    class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs view-detail-btn">View
-                                                    Details</button>
-                                            </td>
-                                        </tr>
+                                        @foreach($myOrderLists as $orderId => $items)
+                                            @php
+                                                $firstItem = $items->first(); // Lấy 1 item trong nhóm (chứa thông tin đơn hàng)
+                                            @endphp
+                                            <tr>
+                                                <td class="px-4 py-2">#{{ $firstItem->order_code }}</td>
+                                                <td class="px-4 py-2">{{ $firstItem->time_order }}</td>
+                                                <td class="px-4 py-2">
+                                                    <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full">
+                                                        {{ $firstItem->statusorder }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2 text-right">{{ $firstItem->totalprice }} VNĐ</td>
+                                                <td class="px-4 py-2 text-center">
+                                                    <button class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs view-detail-btn">
+                                                        Chi Tiết
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -546,9 +527,9 @@
                             <div class="flex items-center gap-2 mb-2">
                                 <button id="go-back-btn"
                                     class="bg-orange-100 hover:bg-orange-200 text-orange-500 px-4 py-1.5 rounded-full text-sm font-bold flex items-center">
-                                    <i class="fa fa-arrow-left mr-2"></i>Go Back
+                                    <i class="fa fa-arrow-left mr-2"></i>Quay Lại
                                 </button>
-                                <span class="text-lg font-semibold text-gray-800">Invoice</span>
+                                <span class="text-lg font-semibold text-gray-800">Đơn Hàng</span>
                             </div>
                             <!-- Steps -->
                             <div class="flex items-center gap-0 mt-2 mb-4">
@@ -557,7 +538,7 @@
                                         class="border-2 border-orange-400 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1 text-orange-500">
                                         <i class="fa fa-clock"></i>
                                     </div>
-                                    <div class="text-xs text-orange-500 font-bold">Order Pending</div>
+                                    <div class="text-xs text-orange-500 font-bold">Chờ Xác Nhận</div>
                                 </div>
                                 <div class="h-1 w-8 bg-orange-400"></div>
                                 <div class="flex flex-col items-center flex-1">
@@ -565,7 +546,7 @@
                                         class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                         <i class="fa fa-check"></i>
                                     </div>
-                                    <div class="text-xs text-gray-500 font-bold">Order Accept</div>
+                                    <div class="text-xs text-gray-500 font-bold">Đã Xác Nhận</div>
                                 </div>
                                 <div class="h-1 w-8 bg-gray-300"></div>
                                 <div class="flex flex-col items-center flex-1">
@@ -573,7 +554,7 @@
                                         class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                         <i class="fa fa-box"></i>
                                     </div>
-                                    <div class="text-xs text-gray-500 font-bold">Order Process</div>
+                                    <div class="text-xs text-gray-500 font-bold">Đang Thực Hiện</div>
                                 </div>
                                 <div class="h-1 w-8 bg-gray-300"></div>
                                 <div class="flex flex-col items-center flex-1">
@@ -581,7 +562,7 @@
                                         class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                         <i class="fa fa-truck"></i>
                                     </div>
-                                    <div class="text-xs text-gray-500 font-bold">On The Way</div>
+                                    <div class="text-xs text-gray-500 font-bold">Đang Gia Hàng</div>
                                 </div>
                                 <div class="h-1 w-8 bg-gray-300"></div>
                                 <div class="flex flex-col items-center flex-1">
@@ -589,13 +570,13 @@
                                         class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                         <i class="fa fa-flag-checkered"></i>
                                     </div>
-                                    <div class="text-xs text-gray-500 font-bold">Completed</div>
+                                    <div class="text-xs text-gray-500 font-bold">Hoàn Thành</div>
                                 </div>
                             </div>
                             <!-- Invoice Info -->
                             <div class="flex flex-col md:flex-row md:justify-between mb-2 gap-3">
                                 <div>
-                                    <div class="text-xs text-gray-700 font-semibold mb-1">Invoice To</div>
+                                    <div class="text-xs text-gray-700 font-semibold mb-1">Đơn Hàng:</div>
                                     <div class="text-sm text-gray-700">
                                         Nguyễn Minh Tiến <br>
                                         7232 Broadway Suite 308, Jackson Heights, 11372, NY, United States<br>
@@ -604,8 +585,8 @@
                                 </div>
                                 <div class="text-sm text-gray-600 mt-2 md:mt-0">
                                     <div><span class="font-semibold">Invoice No:</span> 4576</div>
-                                    <div><span class="font-semibold">Order ID:</span> #2545768745</div>
-                                    <div><span class="font-semibold">Date:</span> 10-11-2022</div>
+                                    <div><span class="font-semibold">Mã Hóa Đơn:</span> #2545768745</div>
+                                    <div><span class="font-semibold">Ngày Tháng:</span> 10-11-2022</div>
                                 </div>
                             </div>
                             <!-- Table Invoice -->
@@ -613,11 +594,11 @@
                                 <table class="min-w-full bg-white border rounded shadow mt-2 mb-2 text-sm">
                                     <thead>
                                         <tr class="bg-orange-500 text-white">
-                                            <th class="px-2 py-1 border">SL</th>
-                                            <th class="px-2 py-1 border">Item Description</th>
-                                            <th class="px-2 py-1 border">Price</th>
-                                            <th class="px-2 py-1 border">Quantity</th>
-                                            <th class="px-2 py-1 border">Total</th>
+                                            <th class="px-2 py-1 border">STT</th>
+                                            <th class="px-2 py-1 border">Tên Món Ăn</th>
+                                            <th class="px-2 py-1 border">Giá</th>
+                                            <th class="px-2 py-1 border">Số Lượng</th>
+                                            <th class="px-2 py-1 border">Tổng Tiền</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -675,22 +656,22 @@
                                     </tbody>
                                     <tfoot>
                                         <tr class="bg-white">
-                                            <td colspan="3" class="border px-2 py-1 text-right font-bold">Sub Total</td>
+                                            <td colspan="3" class="border px-2 py-1 text-right font-bold">Chi Tiết:</td>
                                             <td class="border px-2 py-1 text-center font-bold">2</td>
                                             <td class="border px-2 py-1 text-right font-bold">$240</td>
                                         </tr>
                                         <tr class="bg-white">
                                             <td colspan="4" class="border px-2 py-1 text-right text-xs text-gray-600">
-                                                (-) Discount Coupon</td>
+                                                (-) Mã Giảm Giá</td>
                                             <td class="border px-2 py-1 text-right">$0.00</td>
                                         </tr>
                                         <tr class="bg-white">
                                             <td colspan="4" class="border px-2 py-1 text-right text-xs text-gray-600">
-                                                (+) Shipping Cost</td>
+                                                (+) Phí Vận Chuyển</td>
                                             <td class="border px-2 py-1 text-right">$10.00</td>
                                         </tr>
                                         <tr class="bg-white">
-                                            <td colspan="4" class="border px-2 py-1 text-right font-bold">Total Paid
+                                            <td colspan="4" class="border px-2 py-1 text-right font-bold">Tổng Thanh Toán
                                             </td>
                                             <td class="border px-2 py-1 text-right font-bold">$250</td>
                                         </tr>

@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>LUA BE HOY</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
@@ -1190,57 +1192,69 @@
         <div class="booking-section">
             <img class="booking-img" src="img/logo2.jpg" alt="Restaurant" />
             <div class="booking-form-bg">
-                <form class="booking-form">
+                <form class="booking-form" method="POST" action="{{ route('booking.store') }}">
+                    @csrf
                     <h2>Đặt Bàn</h2>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="booking-form-row">
                         <div style="flex:1">
                             <label>Tên</label>
-                            <input type="text" placeholder="Tên" required>
+                            <input type="text" name="nameuser" placeholder="Tên" required value="{{ old('nameuser') }}">
                         </div>
                         <div style="flex:1">
                             <label>E-mail</label>
-                            <input type="email" placeholder="E-mail" required>
+                            <input type="email" name="email" placeholder="E-mail" required value="{{ old('email') }}">
                         </div>
                     </div>
                     <div class="booking-form-row">
                         <div style="flex:1">
                             <label>Số Điện Thoại</label>
-                            <input type="text" placeholder="Số Điện Thoại" required>
+                            <input type="text" name="sdt" placeholder="Số Điện Thoại" required value="{{ old('sdt') }}">
                         </div>
                         <div style="flex:1">
                             <label>Ngày Đặt Bàn</label>
-                            <input type="date" placeholder="Ngày/Tháng/Năm" required>
+                            <input type="date" name="date" required value="{{ old('date') }}">
                         </div>
                     </div>
                     <div class="booking-form-row">
                         <div style="flex:1">
                             <label>Thời Gian</label>
-                            <select required>
+                            <select name="time" required>
                                 <option value="">Chọn Thời Gian</option>
-                                <option>11:00 AM</option>
-                                <option>12:00 PM</option>
-                                <option>1:00 PM</option>
-                                <option>2:00 PM</option>
-                                <option>5:00 PM</option>
-                                <option>6:00 PM</option>
-                                <option>7:00 PM</option>
-                                <option>8:00 PM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                                <option value="18:00">6:00 PM</option>
+                                <option value="19:00">7:00 PM</option>
+                                <option value="20:00">8:00 PM</option>
                             </select>
                         </div>
                         <div style="flex:1">
                             <label>Số Lượng Người</label>
-                            <select required>
+                            <select name="quantitypeople" required>
                                 <option value="">Chọn Số Lượng</option>
-                                <option>1 Người</option>
-                                <option>2 Người</option>
-                                <option>3 Người</option>
-                                <option>4 Người</option>
-                                <option>5+ Người</option>
+                                <option value="1">1 Người</option>
+                                <option value="2">2 Người</option>
+                                <option value="3">3 Người</option>
+                                <option value="4">4 Người</option>
+                                <option value="5">5+ Người</option>
                             </select>
                         </div>
                     </div>
+                    <div id="form-message" style="margin:10px 0"></div>
                     <button type="submit">Confirm</button>
                 </form>
+
             </div>
         </div>
     </section>
@@ -1386,6 +1400,43 @@
                 0: { slidesPerView: 1 },
                 900: { slidesPerView: 2 }
             }
+        });
+    </script>
+    <!--BookingTable-->
+    <script>
+        $('.booking-form').on('submit', function (e) {
+            e.preventDefault();
+            var $form = $(this);
+            var $btn = $form.find('button[type=submit]');
+            var $msg = $('#form-message');
+            $btn.prop('disabled', true);
+            $msg.html('');
+            $.ajax({
+                url: "{{ route('booking.store') }}",
+                method: 'POST',
+                data: $form.serialize(),
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                success: function (res) {
+                    if (res.status === 'success') {
+                        $msg.html('<div style="color:green">' + res.message + '</div>');
+                        $form[0].reset();
+                    } else {
+                        $msg.html('<div style="color:red">' + (res.errors ? res.errors.join('<br>') : 'Có lỗi xảy ra') + '</div>');
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                        $msg.html('<div style="color:red">' + xhr.responseJSON.errors.join('<br>') + '</div>');
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        $msg.html('<div style="color:red">' + xhr.responseJSON.errors.join('<br>') + '</div>');
+                    } else {
+                        $msg.html('<div style="color:red">Lỗi không xác định!</div>');
+                    }
+                },
+                complete: function () {
+                    $btn.prop('disabled', false);
+                }
+            });
         });
     </script>
 </body>
