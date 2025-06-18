@@ -106,67 +106,6 @@
         </div>
     </div>
 </body>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const blogCards = document.querySelectorAll(".blog-card");
-        const cardsPerPage = 6;
-        let currentPage = 1;
-        const totalPages = Math.ceil(blogCards.length / cardsPerPage);
-        const paginationContainer = document.querySelector("nav.flex.gap-2");
-
-        function showPage(page) {
-            blogCards.forEach((card, index) => {
-                card.style.display = (index >= (page - 1) * cardsPerPage && index < page * cardsPerPage) ? "block" : "none";
-            });
-        }
-
-        function renderPagination() {
-            paginationContainer.innerHTML = "";
-
-            const prev = document.createElement("button");
-            prev.className = "w-8 h-8 rounded-full border border-gray-300 text-gray-700 hover:bg-[#e60012] hover:text-white transition";
-            prev.innerHTML = `<i class="fa fa-angle-left"></i>`;
-            prev.disabled = currentPage === 1;
-            prev.onclick = () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    showPage(currentPage);
-                    renderPagination();
-                }
-            };
-            paginationContainer.appendChild(prev);
-
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.className = `w-8 h-8 rounded-full border ${i === currentPage ? 'text-[#e60012] border-[#e60012] font-semibold' : 'border-gray-300 text-gray-700'} hover:bg-[#e60012] hover:text-white transition`;
-                btn.textContent = i;
-                btn.onclick = () => {
-                    currentPage = i;
-                    showPage(currentPage);
-                    renderPagination();
-                };
-                paginationContainer.appendChild(btn);
-            }
-
-            const next = document.createElement("button");
-            next.className = "w-8 h-8 rounded-full border border-gray-300 text-gray-700 hover:bg-[#e60012] hover:text-white transition";
-            next.innerHTML = `<i class="fa fa-angle-right"></i>`;
-            next.disabled = currentPage === totalPages;
-            next.onclick = () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    showPage(currentPage);
-                    renderPagination();
-                }
-            };
-            paginationContainer.appendChild(next);
-        }
-
-        showPage(currentPage);
-        renderPagination();
-    });
-</script>
-
 @include('layouts.user.footer')
 
 </html>

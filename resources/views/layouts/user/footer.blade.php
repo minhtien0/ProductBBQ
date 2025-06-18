@@ -195,7 +195,7 @@
         }
 </style>
 <section>
-    <div class="scroll_btn hidden fixed bottom-6 right-6 w-12 h-12 bg-red-600 text-white text-2xl shadow-lg cursor-pointer hover:bg-red-700 z-50 rounded-full flex items-center justify-center">
+    <div class="scroll_btn hidden fixed bottom-6 right-6 bg-red-600 text-white p-4 rounded-full text-2xl shadow-lg cursor-pointer hover:bg-red-700 z-50">
   <i class="fas fa-hand-pointer" aria-hidden="true"></i>
 </div>
 <footer>
