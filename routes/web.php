@@ -34,12 +34,14 @@ Route::get('/verify-email/{token}', [HomeController::class, 'verifyEmail'])->nam
 Route::get('order', [HomeController::class, 'order'])->name('views.qrorder');
 //Home
 Route::get('/', [HomeController::class, 'index'])->name('views.index');
+Route::get('/search-food', [HomeController::class, 'searchFood'])->name('food.search');
 //About
 Route::get('about', [HomeController::class, 'about'])->name('views.about');
 //Menu
 Route::get('menu', [HomeController::class, 'menu'])->name('views.menu');
 //Blog
 Route::get('blog', [HomeController::class, 'blog'])->name('views.blog');
+
 //Contact
 Route::get('contact', [HomeController::class, 'contact'])->name('views.contact');
 Route::post('/contact/add', [HomeController::class, 'addContact'])->name('help.add');
@@ -50,6 +52,8 @@ Route::post('/booking', [HomeController::class, 'storeBookingTable'])->name('boo
 Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->name('views.menudetail');
 //BlogDetail
 Route::get('blogdetail/{id}/{slug}', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
+Route::get('/ajax-search-blog', [HomeController::class, 'ajaxSearchBlog'])->name('ajax.search.blog');
+
 //UserDetail
 Route::get('userdetail', [HomeController::class, 'userdetail'])->middleware([ \App\Http\Middleware\CheckLoggedIn::class])->name('views.userdetail');
 Route::post('/user/update-profile', [HomeController::class, 'updateProfile'])->name('user.update-profile');

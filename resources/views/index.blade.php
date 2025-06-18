@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <x-notification-popup />
@@ -822,12 +824,20 @@
                 <p class="text-sm md:text-base mb-6 text-gray-100">Khám phá thực đơn BBQ thơm ngon với các món nướng đậm
                     vị, không gian ấm cúng, phục vụ tận tâm và ưu đãi hấp dẫn mỗi ngày.</p>
                 <!-- Search box -->
-                <form class="flex items-center gap-2 bg-white/80 rounded-full px-2 py-1 max-w-lg w-full shadow-lg">
-                    <input type="text" placeholder="Search…"
-                        class="flex-1 bg-transparent text-gray-900 px-3 py-2 rounded-l-full outline-none border-none placeholder-gray-400 text-sm">
-                    <button
-                        class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-full font-medium text-sm">Search</button>
+                <!-- Search form (giữ UI gốc) -->
+                <form id="hero-search-form"
+                    class="flex items-center gap-2 bg-white/80 rounded-full px-2 py-1 max-w-2xl w-full shadow-lg mx-auto mt-8">
+                    <input id="hero-search-input" type="text" placeholder="Tìm..." autocomplete="off"
+                        class="flex-1 bg-transparent text-gray-900 px-5 py-3 rounded-l-full outline-none border-none placeholder-gray-400 text-lg">
+                    <button type="submit"
+                        class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium text-lg">Tìm Kiếm</button>
                 </form>
+
+                <!-- Popup kết quả -->
+                <div id="search-dropdown"
+          class="hidden absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-2xl shadow-lg max-h-80 overflow-y-auto z-50 text-base sm:text-base">
+          <!-- Kết quả AJAX sẽ hiện ở đây -->
+        </div>
             </div>
             <!-- Right image circle + sale -->
             <div class="relative mt-10 md:mt-0 md:ml-8 flex-shrink-0 flex items-center justify-center">
@@ -1438,6 +1448,61 @@
                 }
             });
         });
+        // tìm kiếm
+        $(document).ready(function () {
+    function renderResults(data) {
+        if (data.results && data.results.length) {
+            let html = data.results.map(food => `
+                <div class="flex items-center gap-4 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b last:border-b-0" onclick="window.location='/menudetail/${food.id}/${food.slug ?? ''}'">
+                    <img src="${food.image}" class="w-14 h-14 rounded-lg object-cover border" alt="">
+                    <div>
+                        <div class="font-bold text-[#e60012] text-base mb-1">${food.text}</div>
+                        <div class="text-gray-800 text-sm mb-1">Giá: <b>${food.price} VNĐ</b></div>
+                        <div class="text-gray-600 text-xs">${food.desc ?? ''}</div>
+                    </div>
+                </div>
+            `).join('');
+            $('#search-dropdown').html(html).removeClass('hidden');
+        } else {
+            $('#search-dropdown').html(`<div class="px-6 py-4 text-gray-500 text-center">Không tìm thấy món ăn nào.</div>`).removeClass('hidden');
+        }
+    }
+
+    // Khi gõ search (keyup)
+    $('#hero-search-input').on('input', function () {
+        let keyword = $(this).val().trim();
+        if (!keyword) {
+            $('#search-dropdown').addClass('hidden').html('');
+            return;
+        }
+        $.ajax({
+            url: "{{ route('food.search') }}",
+            data: { term: keyword },
+            dataType: 'json',
+            success: renderResults,
+            error: function () {
+                $('#search-dropdown').html(`<div class="px-6 py-4 text-red-600 text-center">Có lỗi xảy ra, thử lại!</div>`).removeClass('hidden');
+            }
+        });
+    });
+
+    // Submit form cũng trigger search (giữ lại)
+    $('#hero-search-form').on('submit', function(e) {
+        e.preventDefault();
+        $('#hero-search-input').trigger('input');
+    });
+
+    // Ẩn dropdown khi click ra ngoài hoặc xóa input
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('#hero-search-input, #search-dropdown').length) {
+            $('#search-dropdown').addClass('hidden');
+        }
+    });
+    // Ẩn dropdown khi clear input
+    $('#hero-search-input').on('blur', function() {
+        setTimeout(() => $('#search-dropdown').addClass('hidden'), 200);
+    });
+});
     </script>
 </body>
 @include('layouts.user.footer')

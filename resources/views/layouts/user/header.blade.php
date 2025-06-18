@@ -55,20 +55,51 @@
       <i class="fa-solid fa-bars"></i>
     </button>
     <!-- Navigation -->
-    <nav class="hidden md:flex flex-1 justify-center">
-      <ul class="flex items-center gap-3 md:gap-8 font-semibold text-base md:text-lg">
-        <li><a href="{{ route('views.index') }}" class="text-[#262248] hover:text-[#e60012] transition">Trang Chủ</a>
-        </li>
-        <li><a href="{{ route('views.index') }}#booking" class="text-[#262248] hover:text-[#e60012] transition">Đặt
-            Bàn</a></li>
-        <li><a href="{{ route('views.about') }}" class="text-[#262248] hover:text-[#e60012] transition">Thông Tin</a>
-        </li>
-        <li><a href="{{ route('views.menu') }}" class="text-[#262248] hover:text-[#e60012] transition">Thực Đơn</a></li>
-        <li><a href="{{ route('views.blog') }}" class="text-[#262248] hover:text-[#e60012] transition">Tin Tức</a></li>
-        <li><a href="{{ route('views.contact') }}" class="text-[#262248] hover:text-[#e60012] transition">Liên Hệ</a>
-        </li>
-      </ul>
-    </nav>
+    @php
+  $currentRoute = Route::currentRouteName();
+@endphp
+
+<nav class="hidden md:flex flex-1 justify-center">
+  <ul class="flex items-center gap-3 md:gap-8 font-semibold text-base md:text-lg">
+    <li>
+      <a href="{{ route('views.index') }}"
+         class="transition {{ $currentRoute == 'views.index' ? 'text-[#e60012] font-bold underline underline-offset-8' : 'text-[#262248]' }} hover:text-[#e60012]">
+        Trang Chủ
+      </a>
+    </li>
+    <li>
+      <a href="{{ route('views.index') }}#booking"
+         class="transition {{ url()->current() == url(route('views.index')) && request()->getRequestUri() == '/#booking' ? 'text-[#e60012] font-bold underline underline-offset-8' : 'text-[#262248]' }} hover:text-[#e60012]">
+        Đặt Bàn
+      </a>
+    </li>
+    <li>
+      <a href="{{ route('views.about') }}"
+         class="transition {{ $currentRoute == 'views.about' ? 'text-[#e60012] font-bold underline underline-offset-8' : 'text-[#262248]' }} hover:text-[#e60012]">
+        Thông Tin
+      </a>
+    </li>
+    <li>
+      <a href="{{ route('views.menu') }}"
+         class="transition {{ $currentRoute == 'views.menu' ? 'text-[#e60012] font-bold underline underline-offset-8' : 'text-[#262248]' }} hover:text-[#e60012]">
+        Thực Đơn
+      </a>
+    </li>
+    <li>
+      <a href="{{ route('views.blog') }}"
+         class="transition {{ $currentRoute == 'views.blog' ? 'text-[#e60012] font-bold underline underline-offset-8' : 'text-[#262248]' }} hover:text-[#e60012]">
+        Tin Tức
+      </a>
+    </li>
+    <li>
+      <a href="{{ route('views.contact') }}"
+         class="transition {{ $currentRoute == 'views.contact' ? 'text-[#e60012] font-bold underline underline-offset-8' : 'text-[#262248]' }} hover:text-[#e60012]">
+        Liên Hệ
+      </a>
+    </li>
+  </ul>
+</nav>
+
     <!-- Right Icons -->
     <div class="flex items-center gap-2 md:gap-5">
       <!-- Biểu tượng Giỏ hàng -->
