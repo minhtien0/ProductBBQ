@@ -52,46 +52,93 @@ class StaffController extends Controller
         return view('admin.staff.detail', compact('staff'));
     }
 
-    public function update(Request $request, $id)
-    {
+   public function update(Request $request, $id)
+{
+    try {
+        // Tìm nhân viên theo ID, nếu không tìm thấy sẽ throw exception
         $staff = Staff::findOrFail($id);
 
-        $request->validate([
+        // Sử dụng Validator::make để xác thực dữ liệu
+        $validator = Validator::make($request->all(), [
             'fullname' => 'required|string|max:255',
             'code_nv' => 'required|string|max:50',
-            'date_of_birth' => 'nullable|date',
-            'gender' => 'nullable|string',
-            'SDT' => 'nullable|string|max:20',
-            'CCCD' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-            'email' => 'nullable|email',
-            'time_work' => 'nullable|date',
-            'type' => 'nullable|string',
-            'status' => 'nullable|string',
-            'role' => 'nullable|string',
+            'date_of_birth' => 'required|date',
+            'gender' => 'required|in:Nam,Nữ,Khác',
+            'SDT' => 'required|string|max:20',
+            'CCCD' => 'required|string|max:20',
+            'address' => 'required|string',
+            'email' => 'required|email',
+            'time_work' => 'required|date',
+            'type' => 'required|in:Full Time,Part Time',
+            'status' => 'required|string',
+            'role' => 'required|in:Quản Lí,Nhân Viên,Đầu Bếp,Tạp Vụ',
             'STK' => 'nullable|string|max:50',
             'bank' => 'nullable|string|max:100',
             'avata' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+        ], [
+            'fullname.required' => 'Vui lòng nhập họ và tên.',
+            'date_of_birth.required' => 'Vui lòng chọn ngày sinh.',
+            'gender.required' => 'Vui lòng chọn giới tính.',
+            'SDT.required' => 'Vui lòng nhập SDT.',
+            'CCCD.required' => 'Vui lòng nhập CCCD.',
+            'address.required' => 'Vui lòng nhập địa chỉ.',
+            'email.required' => 'Vui lòng nhập địa chỉ email.',
+            'time_work.required' => 'Vui lòng chọn thời gian làm việc.',
+            'type.required' => 'Vui lòng chọn loại nhân viên.',
+            'status.required' => 'Vui lòng chọn trạng thái làm việc.',
+            'role.required' => 'Vui lòng chọn chức vụ làm việc.',
+            'fullname.max' => 'Họ và tên không được vượt quá 255 ký tự.',
+            'code_nv.required' => 'Vui lòng nhập mã nhân viên.',
+            'code_nv.max' => 'Mã nhân viên không được vượt quá 50 ký tự.',
+            'date_of_birth.date' => 'Ngày sinh không đúng định dạng.',
+            'gender.in' => 'Giới tính không hợp lệ.',
+            'SDT.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+            'CCCD.max' => 'CCCD không được vượt quá 20 ký tự.',
+            'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+            'email.email' => 'Email không đúng định dạng.',
+            'time_work.date' => 'Ngày vào làm không đúng định dạng.',
+            'type.in' => 'Loại nhân viên không hợp lệ.',
+            'role.in' => 'Chức vụ không hợp lệ.',
+            'STK.max' => 'Số tài khoản không được vượt quá 50 ký tự.',
+            'bank.max' => 'Ngân hàng không được vượt quá 100 ký tự.',
+            'avata.image' => 'Avatar phải là hình ảnh.',
+            'avata.mimes' => 'Avatar phải có định dạng jpeg, png, jpg, gif.',
+            'avata.max' => 'Avatar không được vượt quá 10MB.',
         ]);
 
+        // Kiểm tra nếu validation thất bại
+        if ($validator->fails()) {
+            $errorMsg = implode('<br>', $validator->errors()->all());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMsg);
+        }
+
+        // Cập nhật dữ liệu (trừ avatar)
         $staff->fill($request->except('avatar'));
 
-        // Xử lý avatar
+        // Xử lý avatar nếu có file upload
         if ($request->hasFile('avatar')) {
-            // Xoá ảnh cũ nếu có
+            // Xóa ảnh cũ nếu tồn tại
             if ($staff->avata && file_exists(public_path('img/' . $staff->avata))) {
                 @unlink(public_path('img/' . $staff->avata));
             }
 
+            // Lưu ảnh mới
             $avataName = time() . '_' . $request->file('avatar')->getClientOriginalName();
             $request->file('avatar')->move(public_path('img'), $avataName);
-            $staff->avata = $avataName; // CHỈNH LẠI field này
+            $staff->avata = $avataName;
         }
 
+        // Lưu dữ liệu vào database
         $staff->save();
 
-        return redirect()->route('admin.staff', )->with('success', 'Cập nhật thành công!');
+        // Trả về thông báo thành công
+        return redirect()->route('admin.staff')->with('success', 'Cập nhật thành công!');
+    } catch (\Exception $e) {
+        return back()->withInput()->with('error', 'Có lỗi xảy ra khi cập nhật nhân viên: ' . $e->getMessage());
     }
+}
 
     public function create()
     {

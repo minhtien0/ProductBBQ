@@ -67,7 +67,7 @@
                 </div>
                 <!-- Notification Dropdown -->
                 <div id="notificationDropdown"
-                    class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-60 hidden max-h-96 overflow-y-auto">
+                    class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-[60] hidden max-h-96 overflow-y-auto">
                     <div class="p-3">
                         <h2 class="text-base font-semibold mb-3">Notifications</h2>
                         <!-- Notification Items -->
@@ -145,7 +145,7 @@
                     <span class="text-sm text-gray-500">{{ session('staff_name') }}</span>
                 </div>
                 <div id="userDropdown"
-                    class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-70 hidden">
+                    class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg transform scale-y-0 opacity-0 transition-all duration-300 origin-top z-[999] hidden">
                     <div class="p-3">
                         <div class="mb-3">
                             <p class="text-sm font-semibold">{{ session('staff_name') }}</p>

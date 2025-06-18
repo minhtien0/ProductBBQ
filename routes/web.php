@@ -43,6 +43,8 @@ Route::get('blog', [HomeController::class, 'blog'])->name('views.blog');
 //Contact
 Route::get('contact', [HomeController::class, 'contact'])->name('views.contact');
 Route::post('/contact/add', [HomeController::class, 'addContact'])->name('help.add');
+//BookingTable
+Route::post('/booking', [HomeController::class, 'storeBookingTable'])->name('booking.store');
 
 //MenuDetail
 Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->name('views.menudetail');
@@ -148,6 +150,12 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\CheckAdminRole::class]
 
     Route::prefix('/order')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('admin.order');
+        //Mang Về
+        Route::get('/bringback', [OrderController::class, 'bringBack'])->name('admin.order.bringback');
+        Route::get('detail/{order}', [OrderController::class, 'showOrder'])->name('admin.order.show');
+        Route::post('{order}/status', [OrderController::class, 'updateStatusBringBack'])->name('admin.order.updateStatusBringBack');
+        //Tại Quán
+        Route::get('/onsite', [OrderController::class, 'onSite'])->name('admin.order.onsite');
     });
 
 });

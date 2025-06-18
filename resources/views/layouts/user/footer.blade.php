@@ -249,12 +249,12 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
+           <!--  <div class="footer-bottom">
                 Copyright © <span style="color:#fff;font-weight:700;">RegFood</span> 2023. All Rights Reserved
                 <span class="footer-scrolltop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
                     <i class="fa fa-arrow-up"></i>
                 </span>
-            </div>
+            </div> -->
         </div>
     </footer>
     </section>
