@@ -187,7 +187,8 @@
             </svg>
           </div>
           <div>
-            <div class="text-white text-3xl font-extrabold mb-1" style="font-family:Montserrat,sans-serif;">Tầm nhìn</div>
+            <div class="text-white text-3xl font-extrabold mb-1" style="font-family:Montserrat,sans-serif;">Tầm nhìn
+            </div>
             <div class="text-white text-lg" style="font-family:Poppins,sans-serif;">
               Trở thành thương hiệu BBQ hàng đầu, lan tỏa hương vị nướng truyền thống đến mọi gia đình Việt Nam.
             </div>
@@ -223,31 +224,40 @@
             </svg>
           </div>
           <div>
-            <div class="text-white text-3xl font-extrabold mb-1" style="font-family:Montserrat,sans-serif;">Thành tựu</div>
+            <div class="text-white text-3xl font-extrabold mb-1" style="font-family:Montserrat,sans-serif;">Thành tựu
+            </div>
             <div class="text-white text-lg" style="font-family:Poppins,sans-serif;">
               Đạt 100.000 khách hàng hài lòng và mở rộng 5 chi nhánh mới vào năm 2027.
             </div>
           </div>
         </div>
       </div>
-      <!-- Phải: Hình ảnh & overlay X -->
-      <div class="relative flex-1 flex items-center justify-center min-h-[480px]">
-        <div class="relative w-full h-[400px] md:w-[600px] md:h-[600px] lg:h-[680px]">
-          <img src="img/banner2.jpg" class="w-full h-full object-cover rounded-[4px] shadow-xl"
-            alt="BBQ Restaurant" />
-          <!-- X overlay effect -->
-          <div class="absolute inset-0 pointer-events-none">
-            <svg width="100%" height="100%" viewBox="0 0 600 600" class="w-full h-full">
-              <rect x="0" y="0" width="600" height="600" fill="none" />
-              <rect x="-80" y="240" width="760" height="32" rx="12" fill="#e9f9f2" transform="rotate(45 300 300)" />
-              <rect x="-80" y="328" width="760" height="32" rx="12" fill="#e9f9f2" transform="rotate(-45 300 300)" />
-            </svg>
-            <!-- Các hình vuông cam để trang trí góc -->
-            <div class="absolute left-[-48px] top-[-48px] w-32 h-32 bg-[#ff8000] rotate-45 z-10"></div>
-            <div class="absolute right-[-48px] bottom-[-48px] w-32 h-32 bg-[#ff8000] rotate-45 z-10"></div>
+      <!-- Slide quảng cáo -->
+      <div class="relative w-full max-w-3xl mx-auto my-8 pt-[65px] pr-10">
+        <div class="swiper mySwiper h-[500px] lg:h-[545px] w-full rounded-lg shadow-lg overflow-hidden flex-1">
+          <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            <div class="swiper-slide relative aspect-[16/7] sm:aspect-[16/6] md:aspect-[16/5]">
+              <img src="img/banner1.jpg" class="w-full h-full object-cover" alt="Slide 1">
+            </div>
+            <!-- Slide 2 -->
+            <div class="swiper-slide relative aspect-[16/7] sm:aspect-[16/6] md:aspect-[16/5]">
+              <img src="img/banner2.jpg" class="w-full h-full object-cover" alt="Slide 2">
+            </div>
+            <!-- Slide 3 -->
+            <div class="swiper-slide relative aspect-[16/7] sm:aspect-[16/6] md:aspect-[16/5]">
+              <img src="img/logo2.jpg" class="w-full h-full object-cover" alt="Slide 3">
+            </div>
           </div>
+          <!-- Nút điều hướng -->
+          <div class="swiper-button-next text-white hidden"></div>
+          <div class="swiper-button-prev text-white hidden"></div>
+          <!-- Pagination -->
+          <div class="swiper-pagination !bottom-2 hidden    "></div>
         </div>
       </div>
+
+
     </div>
   </section>
   <section class="max-w-7xl mx-auto px-4 py-16 flex flex-col lg:flex-row gap-10 items-start">
@@ -258,7 +268,7 @@
         <span class="text-xl">🌱</span>
       </div>
       <h2 class="text-3xl sm:text-4xl font-extrabold text-[#292953] mb-3">
-Tại sao LỬA BÉ HOY lại nổi bật</h2>
+        Tại sao LỬA BÉ HOY lại nổi bật</h2>
       <p class="mb-7 text-gray-600 max-w-xl">
         LỬA BÉ HOY cam kết mang đến hương vị BBQ đích thực với sự tận tâm trong từng món nướng. Từ nguyên liệu tươi ngon
         đến kỹ thuật nướng độc đáo, chúng tôi tạo nên trải nghiệm ẩm thực khó quên.
@@ -333,22 +343,16 @@ Tại sao LỬA BÉ HOY lại nổi bật</h2>
     <!-- RIGHT: Images Grid -->
     <div class="w-full lg:w-[350px] pt-16  flex flex-col gap-3">
       <div class="grid grid-cols-2 gap-3">
-        <img src="img/blog/blog.jpg"
-          class="rounded-xl h-28 w-full object-cover" alt="BBQ Meats">
-        <img src="img/blog/blog2.jpg"
-          class="rounded-xl h-28 w-full object-cover" alt="BBQ Grilling">
+        <img src="img/blog/blog.jpg" class="rounded-xl h-28 w-full object-cover" alt="BBQ Meats">
+        <img src="img/blog/blog2.jpg" class="rounded-xl h-28 w-full object-cover" alt="BBQ Grilling">
       </div>
       <div class="grid grid-cols-2 gap-3">
-        <img src="img/blog/blog1.jpg"
-          class="rounded-xl h-28 w-full object-cover" alt="BBQ Chef">
-        <img src="img/blog/blog3.jpg"
-          class="rounded-xl h-28 w-full object-cover" alt="BBQ Event">
+        <img src="img/blog/blog1.jpg" class="rounded-xl h-28 w-full object-cover" alt="BBQ Chef">
+        <img src="img/blog/blog3.jpg" class="rounded-xl h-28 w-full object-cover" alt="BBQ Event">
       </div>
-        <div class="grid grid-cols-2 gap-3">
-        <img src="img/blog/blog5.jpg"
-          class="rounded-xl h-28 w-full object-cover" alt="BBQ Chef">
-        <img src="img/blog/blog4.jpg"
-          class="rounded-xl h-28 w-full object-cover" alt="BBQ Event">
+      <div class="grid grid-cols-2 gap-3">
+        <img src="img/blog/blog5.jpg" class="rounded-xl h-28 w-full object-cover" alt="BBQ Chef">
+        <img src="img/blog/blog4.jpg" class="rounded-xl h-28 w-full object-cover" alt="BBQ Event">
       </div>
     </div>
   </section>
@@ -360,28 +364,32 @@ Tại sao LỬA BÉ HOY lại nổi bật</h2>
       <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
         <div
           class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countUser }}">0</span><span class="font-bold text-white text-2xl md:text-3xl">+</span>
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countUser }}">0</span><span
+            class="font-bold text-white text-2xl md:text-3xl">+</span>
         </div>
         <div class="text-white text-xs mt-2">Khách Hàng</div>
       </div>
       <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
         <div
           class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countStaff }}">0</span><span class="font-bold text-white text-2xl md:text-3xl">+</span>
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countStaff }}">0</span><span
+            class="font-bold text-white text-2xl md:text-3xl">+</span>
         </div>
         <div class="text-white text-xs mt-2">Nhân Viên</div>
       </div>
       <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
         <div
           class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countRate }}">0</span><span class="font-bold text-white text-2xl md:text-3xl">+</span>
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countRate }}">0</span><span
+            class="font-bold text-white text-2xl md:text-3xl">+</span>
         </div>
         <div class="text-white text-xs mt-2">Đánh Giá</div>
       </div>
       <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
         <div
           class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="5">2</span><span class="font-bold text-white text-2xl md:text-3xl ml-2"> Yoe</span>
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="5">2</span><span
+            class="font-bold text-white text-2xl md:text-3xl ml-2"> Yoe</span>
         </div>
         <div class="text-white text-xs mt-2">Kinh Nghiệm</div>
       </div>
@@ -408,34 +416,62 @@ Tại sao LỬA BÉ HOY lại nổi bật</h2>
       <div class="swiper blogSwiper">
         <div class="swiper-wrapper">
           <!-- Blog  -->
-           @foreach ($newBlogs as $newBlog)     
-          <div class="swiper-slide ">
-            <div class="bg-white rounded-2xl shadow p-3 h-[370px]">
-              <a href="{{ route('views.blogdetail', [$newBlog->id_blog, $newBlog->slug]) }}"><img src="{{ asset('img/blog/'.$newBlog->image) }}" class="w-full h-40 object-cover rounded-lg mb-2" alt="">
-              </a>
-              <div class="flex items-center gap-2 mb-2">
-                <img src="{{ asset('img/'.$newBlog->avata) }}"
-                  class="w-7 h-7 rounded-full border-2 border-white" alt="">
-                <span class="text-xs text-gray-600 font-semibold">{{ $newBlog->fullname }}</span>
-              </div>
-              <div class="text-base font-bold mb-1">{{ $newBlog->title }}</div>
-              <div class="flex justify-between items-center">
-                <a href="{{ route('views.blogdetail', [$newBlog->id_blog, $newBlog->slug]) }}" class="text-orange-500 font-bold text-xs">Đọc Thêm <i
-                    class="fa-solid fa-arrow-right"></i></a>
-                <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">{{ $newBlog->type_blog }}</span>
-              </div>
-            </div>
+          @foreach ($newBlogs as $newBlog)
+        <div class="swiper-slide">
+        <div class="bg-white rounded-2xl shadow p-3 h-[370px] relative flex flex-col">
+          <a href="{{ route('views.blogdetail', [$newBlog->id_blog, $newBlog->slug]) }}">
+          <img src="{{ asset('img/blog/' . $newBlog->image) }}" class="w-full h-40 object-cover rounded-lg mb-2"
+            alt="">
+          </a>
+          <div class="flex items-center gap-2 mb-2">
+          <img src="{{ asset('img/' . $newBlog->avata) }}" class="w-7 h-7 rounded-full border-2 border-white"
+            alt="">
+          <span class="text-xs text-gray-600 font-semibold">{{ $newBlog->fullname }}</span>
           </div>
-          @endforeach
+          <div class="text-base font-bold mb-1">{{ $newBlog->title }}</div>
+          <div class="flex-1"></div>
+          <!-- Badge absolute góc phải -->
+          <span
+          class="absolute right-3 bottom-3 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold z-10">
+          {{ $newBlog->type_blog }}
+          </span>
+          <!-- Đọc Thêm là chữ nhỏ góc trái -->
+          <a href="{{ route('views.blogdetail', [$newBlog->id_blog, $newBlog->slug]) }}"
+          class="absolute left-3 bottom-3 text-orange-500 text-xs font-bold hover:underline flex items-center gap-1">
+          Đọc Thêm <i class="fa-solid fa-arrow-right text-[10px] pt-1"></i>
+          </a>
+        </div>
+        </div>
+
+      @endforeach
+
           <!-- Thêm slide mới tùy ý -->
         </div>
-        <div class="swiper-pagination-blog mt-3"></div>
+        <div class="swiper-pagination-blog mt-3 hidden"></div>
       </div>
     </div>
   </section>
 
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <script>
+    //slide quảng cáo
+    document.addEventListener("DOMContentLoaded", function () {
+      new Swiper(".mySwiper", {
+        loop: true,
+        autoplay: {
+          delay: 4000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+    });
     // Testimonial slider
     new Swiper('.testiSwiper', {
       slidesPerView: 1,

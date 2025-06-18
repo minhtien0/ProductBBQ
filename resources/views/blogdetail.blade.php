@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
   <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -122,13 +123,18 @@
     <div class="w-full md:w-80 flex-shrink-0 space-y-7 mt-7 md:mt-0">
       <div class="sticky top-6 space-y-7">
         <!-- Search -->
-        <div class="bg-white rounded-xl shadow p-4">
-          <form class="flex">
-            <input type="text" placeholder="Tìm kiếm món BBQ..."
-              class="flex-1 border border-gray-200 rounded-l-lg px-3 py-2 outline-none text-sm">
-            <button class="bg-orange-500 text-white px-4 py-2 rounded-r-lg font-semibold text-sm">Tìm</button>
-          </form>
-        </div>
+        <div class="bg-white rounded-xl shadow p-4 relative">
+  <form id="sidebar-blog-search-form" autocomplete="off" class="flex">
+    <input id="sidebar-blog-search-input" type="text" placeholder="Tìm kiếm bài viết..." 
+      class="flex-1 border border-gray-200 rounded-l-lg px-3 py-2 outline-none text-sm bg-white">
+    <button class="bg-orange-500 text-white px-4 py-2 rounded-r-lg font-semibold text-sm" type="submit">Tìm</button>
+  </form>
+  <!-- Kết quả dropdown -->
+  <div id="sidebar-blog-search-dropdown"
+       class="hidden absolute left-0 right-0 top-12 bg-white border border-gray-200 rounded-xl shadow-lg max-h-96 overflow-y-auto z-50 text-sm">
+    <!-- AJAX results will be inserted here -->
+  </div>
+</div>
         <!-- Latest Post -->
         <div class="bg-white rounded-xl shadow p-4">
           <div class="font-bold mb-3 text-gray-800">Bài Viết Mới</div>
@@ -162,5 +168,59 @@
   @include('layouts.user.footer')
   <script src="https://kit.fontawesome.com/3f46e86e1a.js" crossorigin="anonymous"></script>
 </body>
+<script>
+$(document).ready(function () {
+    let typingTimer, lastVal = "";
+    const $input = $('#sidebar-blog-search-input');
+    const $dropdown = $('#sidebar-blog-search-dropdown');
+    const delay = 200;
+
+    $input.on('input', function () {
+        clearTimeout(typingTimer);
+        const query = $(this).val().trim();
+        if (!query) {
+            $dropdown.html('').addClass('hidden');
+            lastVal = "";
+            return;
+        }
+        typingTimer = setTimeout(function () {
+            if (lastVal === query) return;
+            lastVal = query;
+            $.get("{{ route('ajax.search.blog') }}", {q: query}, function (res) {
+                if (res.results && res.results.length) {
+                    let html = res.results.map(blog => `
+                        <div class="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
+                             onclick="window.location='/blogdetail/${blog.id}/${blog.slug}'">
+                          <img src="${blog.image}" class="w-12 h-12 rounded object-cover border" alt="">
+                          <div>
+                            <div class="font-semibold text-[black] mb-0.5">${blog.title}</div>
+                            <div class="text-gray-500 text-xs">${blog.date}</div>
+                          </div>
+                        </div>
+                    `).join('');
+                    $dropdown.html(html).removeClass('hidden');
+                } else {
+                    $dropdown.html('<div class="px-4 py-4 text-gray-500 text-center">Không tìm thấy bài viết.</div>').removeClass('hidden');
+                }
+            });
+        }, delay);
+    });
+
+    // Đóng dropdown khi click ra ngoài
+    $(document).on('mousedown', function(e) {
+        if (!$(e.target).closest('#sidebar-blog-search-form, #sidebar-blog-search-dropdown').length) {
+            $dropdown.addClass('hidden');
+        }
+    });
+
+    // Ngăn reload khi bấm enter (submit form)
+    $('#sidebar-blog-search-form').on('submit', function(e){
+        e.preventDefault();
+        $input.trigger('input');
+    });
+});
+</script>
+
+
 
 </html>

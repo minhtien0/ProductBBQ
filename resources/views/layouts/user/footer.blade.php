@@ -195,12 +195,12 @@
         }
 </style>
 <section>
-    <div class="scroll_btn hidden fixed bottom-6 right-6 bg-red-600 text-white p-4 rounded-full text-2xl shadow-lg cursor-pointer hover:bg-red-700 z-50">
-  <i class="fas fa-hand-pointer" aria-hidden="true"></i>
+   <div class="scroll_btn hidden fixed bottom-4 right-4 bg-red-600 text-white p-3 md:p-4 rounded-full text-xl md:text-2xl shadow-lg cursor-pointer hover:bg-red-700 z-50 w-12 h-12">
+  <i class="fas fa-hand-pointer flex items-center justify-center" aria-hidden="true"></i>
 </div>
 <footer>
-        <div class="footer-section">
-            <div class="footer-wrap">
+        <div class="footer-section overflow-x-hidden">
+            <div class="footer-wrap w-full max-w-[1300px] mx-auto px-6 flex flex-wrap justify-between gap-6 md:gap-10 overflow-hidden">
                 <!-- Logo & Social -->
                 <div class="footer-col">
                     <div class="footer-logo">
@@ -249,12 +249,6 @@
                     </div>
                 </div>
             </div>
-           <!--  <div class="footer-bottom">
-                Copyright © <span style="color:#fff;font-weight:700;">RegFood</span> 2023. All Rights Reserved
-                <span class="footer-scrolltop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-                    <i class="fa fa-arrow-up"></i>
-                </span>
-            </div> -->
         </div>
     </footer>
     </section>

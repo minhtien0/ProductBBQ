@@ -40,6 +40,27 @@ class HomeController extends Controller
         //dd(session('role'));
         return view('index', compact('allFoods', 'favIds'));
     }
+    public function searchFood(Request $request)
+    {
+        $q = $request->input('term'); // Select2 sẽ gửi 'term'
+        $foods = \App\Models\Food::where('name', 'like', "%$q%")->limit(10)->get();
+        
+        $results = [];
+        foreach ($foods as $food) {
+            $results[] = [
+                'id' => $food->id,
+                'slug'  => $food->slug,
+                'text' => $food->name,
+                'image' => asset('img/' . $food->image), // hoặc đúng đường dẫn ảnh
+                'price' => $food->price,
+                'desc' => $food->description ?? '',
+            ];
+        }
+        
+
+        return response()->json(['results' => $results]);
+    }
+
     public function order()
     {
         return view('qrorder');
@@ -68,6 +89,26 @@ class HomeController extends Controller
             ->get();
         return view('blog', compact('blogs'));
     }
+    public function ajaxSearchBlog(Request $request)
+{
+    $q = $request->input('q');
+    $blogs = Blog::where('title', 'like', '%' . $q . '%')
+        ->orderBy('created_at', 'desc')
+        ->limit(10)
+        ->get(['id', 'slug', 'title', 'image', 'created_at']);
+
+    $results = $blogs->map(function($b) {
+        return [
+            'id'    => $b->id,
+            'slug'  => $b->slug,
+            'title' => $b->title,
+            'image' => asset('img/blog/' . $b->image),
+            'date'  => $b->created_at ? $b->created_at->format('d/m/Y') : '',
+        ];
+    });
+
+    return response()->json(['results' => $results]);
+}
     public function contact()
     {
         $infos = Company::first(); //lấy dữ liệu
