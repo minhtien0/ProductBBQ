@@ -44,19 +44,19 @@ class HomeController extends Controller
     {
         $q = $request->input('term'); // Select2 sẽ gửi 'term'
         $foods = \App\Models\Food::where('name', 'like', "%$q%")->limit(10)->get();
-        
+
         $results = [];
         foreach ($foods as $food) {
             $results[] = [
                 'id' => $food->id,
-                'slug'  => $food->slug,
+                'slug' => $food->slug,
                 'text' => $food->name,
                 'image' => asset('img/' . $food->image), // hoặc đúng đường dẫn ảnh
                 'price' => $food->price,
                 'desc' => $food->description ?? '',
             ];
         }
-        
+
 
         return response()->json(['results' => $results]);
     }
@@ -90,25 +90,25 @@ class HomeController extends Controller
         return view('blog', compact('blogs'));
     }
     public function ajaxSearchBlog(Request $request)
-{
-    $q = $request->input('q');
-    $blogs = Blog::where('title', 'like', '%' . $q . '%')
-        ->orderBy('created_at', 'desc')
-        ->limit(10)
-        ->get(['id', 'slug', 'title', 'image', 'created_at']);
+    {
+        $q = $request->input('q');
+        $blogs = Blog::where('title', 'like', '%' . $q . '%')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get(['id', 'slug', 'title', 'image', 'created_at']);
 
-    $results = $blogs->map(function($b) {
-        return [
-            'id'    => $b->id,
-            'slug'  => $b->slug,
-            'title' => $b->title,
-            'image' => asset('img/blog/' . $b->image),
-            'date'  => $b->created_at ? $b->created_at->format('d/m/Y') : '',
-        ];
-    });
+        $results = $blogs->map(function ($b) {
+            return [
+                'id' => $b->id,
+                'slug' => $b->slug,
+                'title' => $b->title,
+                'image' => asset('img/blog/' . $b->image),
+                'date' => $b->created_at ? $b->created_at->format('d/m/Y') : '',
+            ];
+        });
 
-    return response()->json(['results' => $results]);
-}
+        return response()->json(['results' => $results]);
+    }
     public function contact()
     {
         $infos = Company::first(); //lấy dữ liệu
@@ -288,6 +288,37 @@ class HomeController extends Controller
         //dd($myOrderLists);
         return view('userdetail', compact('address', 'addressAll', 'foodFavorites', 'myReviews', 'myOrderLists'));
     }
+
+    public function ajaxDetailOrder($orderId)
+{
+    $order = \App\Models\Order::where('orders.id', $orderId)
+        ->join('users', 'users.id', '=', 'orders.id_user')
+        ->join('addresses', 'orders.address', '=', 'addresses.id')
+        ->select('orders.*', 'users.fullname as customer_name', 'users.sdt', 'addresses.house_number','addresses.ward','addresses.district','addresses.city')
+        ->first();
+    //dd($order);
+    if (!$order)
+        return response()->json(['status' => 'error', 'message' => 'Không tìm thấy đơn hàng'], 404);
+
+    $orderDetails = \App\Models\OrderDetail::where('order_id', $orderId)
+        ->join('foods', 'foods.id', '=', 'order_details.product_id')
+        ->select('order_details.*', 'foods.name as food_name', 'foods.price as food_price')
+        ->get();
+
+    // Lấy giá trị voucher
+    $voucher = \App\Models\Voucher::where('id', $order->voucher ?? 0)->first();
+    $voucherPrice = $voucher ? $voucher->value : 0;
+
+    return response()->json([
+        'status' => 'success',
+        'order' => $order,
+        'details' => $orderDetails,
+        'discount' => $voucherPrice,
+        'shipping' => 10, // tuỳ bạn cứng code phí ship
+    ]);
+}
+
+
 
     public function updateProfile(Request $request)
     {
