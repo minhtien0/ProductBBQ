@@ -72,6 +72,14 @@ Route::post('/favorite', [HomeController::class, 'toggleFavorite'])->name('favor
 Route::patch('/cart/{id}', [HomeController::class, 'updateQuantityCart'])->name('cart.updateQuantity');
 Route::delete('/cart/{id}', [HomeController::class, 'destroyCart'])->name('cart.destroy');
 Route::post('/order/add', [HomeController::class, 'storeOrder'])->name('order.store');
+// vnpay return
+Route::get('/vnpay/return', [HomeController::class,'vnpayReturn'])->name('vnpay.return');
+// Hủy đơn hàng của chính user
+Route::patch('/orders/{order}/cancel', [HomeController::class, 'cancelOrder'])->name('orders.cancel'); 
+//Đánh giá đơn hàng
+Route::post('/reviews', [HomeController::class, 'rateOrder'])->name('reviews.store');
+
+
 
 
 //huydong test layout quản lí bàn

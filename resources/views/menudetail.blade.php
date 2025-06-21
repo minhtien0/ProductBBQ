@@ -149,9 +149,9 @@
           </div>
           <!-- Form gửi đánh giá (phải) -->
           <div class="w-full md:w-[320px] bg-[#f6fbf7] rounded-lg p-4">
-            <div class="font-semibold mb-2 text-gray-800">Write A Review</div>
+            <div class="font-semibold mb-2 text-gray-800">Viết Đánh Giá</div>
             <form id="reviewForm" class="space-y-2">
-              <label class="block text-sm">Select Your Rating:
+              <label class="block text-sm">Chọn số sao:
                 <span id="ratingStars" class="ml-2">
                   <!-- Star icons ở đây -->
                 </span>
@@ -163,8 +163,7 @@
               <textarea id="reviewText" class="w-full border px-2 py-1 rounded text-sm" placeholder="Write your review"
                 rows="3" required></textarea>
               <button type="submit"
-                class="w-full bg-orange-500 text-white font-bold py-2 rounded hover:bg-orange-600 transition">Submit
-                Review</button>
+                class="w-full bg-orange-500 text-white font-bold py-2 rounded hover:bg-orange-600 transition">Đánh Giá</button>
             </form>
           </div>
         </div>
