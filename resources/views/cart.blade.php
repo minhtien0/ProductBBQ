@@ -409,7 +409,7 @@ data-error="{{ session('error') }}" @endif>
         totalPriceInput.value = total; // hidden input cho tổng tiền món
 
         // Tính lại totalbill
-        const bill = Math.max(total - selectedDiscount - delivery, 0);
+        const bill = Math.max(total - selectedDiscount + delivery, 0);
         totalBillEl.textContent = bill.toLocaleString() + ' VNĐ';
         totalBillInput.value = bill;
       }

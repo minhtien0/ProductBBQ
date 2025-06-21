@@ -105,12 +105,12 @@
             <div class="max-w-6xl mx-auto px-2 md:px-4 py-8">
                 <div class="bg-white rounded-xl shadow border overflow-hidden flex flex-col md:flex-row">
                     <!-- SIDEBAR -->
-                    <div class="bg-orange-500 w-full md:w-60 flex-shrink-0 flex flex-col items-center py-6">
+                    <div class="bg-[#e60012] w-full md:w-60 flex-shrink-0 flex flex-col items-center py-6">
                         <div class="relative">
                             <img src="img/mtien.jpg"
                                 class="w-24 h-24 rounded-full border-4 border-white object-cover" />
                             <label class="absolute bottom-1 right-0 bg-white rounded-full p-1 shadow cursor-pointer">
-                                <i class="fa fa-camera text-orange-500"></i>
+                                <i class="fa fa-camera text-[#e60012]"></i>
                                 <input type="file" class="hidden" />
                             </label>
                         </div>
@@ -164,7 +164,7 @@
                                 <div class="flex justify-between items-center mb-4">
                                     <h2 class="text-xl font-bold text-gray-800">Thông Tin Cá Nhân</h2>
                                     <button id="btn-edit-profile"
-                                        class="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm font-semibold">
+                                        class="px-4 py-1.5 bg-[#e60012] hover:bg-orange-600 text-white rounded-full text-sm font-semibold">
                                         Chỉnh Sửa
                                     </button>
                                 </div>
@@ -398,7 +398,7 @@
                                         <input type="radio" name="default" value="0"
                                             class="mr-1"
                                             {{ old('default', '0') == '0' ? 'checked' : '' }}
-                                            onclick="setDefaultRadio(this.value)"> Khác
+                                            onclick="setDefaultRadio(this.value)"> KhácThông
                                     </label> 
                                 </div>
                                 <div class="flex gap-3">
@@ -430,26 +430,41 @@
                                 @csrf
                                  <input type="hidden" name="id" id="edit_address_id">
                                 <div class="grid md:grid-cols-2 gap-3 mb-3">
+                                    <div><label class="block font-semibold text-gray-700 mb-1">Tên người nhận</label>
                                     <input type="text" name="name" placeholder="Tên người nhận *"
-                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('name') border-red-500 @enderror"
-                                        value="{{ old('name') }}" required>
-                                    <input type="text" name="sdt" placeholder="Số điện thoại *"
-                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('sdt') border-red-500 @enderror"
-                                        value="{{ old('sdt') }}" required>
-                                    <input type="text" name="house_number" placeholder="Số nhà *"
-                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('house_number') border-red-500 @enderror"
-                                        value="{{ old('house_number') }}" required>
-                                    <input type="text" name="ward" placeholder="Phường/Xã *"
-                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('ward') border-red-500 @enderror"
-                                        value="{{ old('ward') }}" required>
-                                    <input type="text" name="district" placeholder="Quận/Huyện *"
-                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('district') border-red-500 @enderror"
-                                        value="{{ old('district') }}" required>
-                                    <input type="text" name="city" placeholder="Tỉnh/Thành phố *"
-                                        class="border border-gray-300 rounded px-3 py-2 text-sm @error('city') border-red-500 @enderror"
-                                        value="{{ old('city') }}" required>
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm w-full @error('name') border-red-500 @enderror"
+                                        value="{{ old('name') }}" required></div>
+                                    
+                                    <div><label class="block font-semibold text-gray-700 mb-1">Số điện thoại</label><input type="text" name="sdt" placeholder="Số điện thoại *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm w-full @error('sdt') border-red-500 @enderror"
+                                        value="{{ old('sdt') }}" required></div>
+                                    
+                                    <div><label class="block font-semibold text-gray-700 mb-1">Số nhà</label>
+                                <input type="text" name="house_number" placeholder="Số nhà *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm w-full @error('house_number') border-red-500 @enderror"
+                                        value="{{ old('house_number') }}" required></div>
+                                    
+
+                                    <div><label class="block font-semibold text-gray-700 mb-1">Phường/Xã</label>
+                                <input type="text" name="ward" placeholder="Phường/Xã *"
+                                        class="border border-gray-300 rounded px-3 py-2 text-sm w-full @error('ward') border-red-500 @enderror"
+                                        value="{{ old('ward') }}" required></div>
+                                    
+                                    <div><label class="block font-semibold text-gray-700 mb-1">Quận/Huyện</label>
+                                <input type="text" name="district" placeholder="Quận/Huyện *"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm @error('district') border-red-500 @enderror"
+                                        value="{{ old('district') }}" required></div>
+                                    
+
+                                    <div><label class="block font-semibold text-gray-700 mb-1">Tỉnh/TP</label>
+                                <input type="text" name="city" placeholder="Tỉnh/Thành phố *"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm @error('city') border-red-500 @enderror"
+                                        value="{{ old('city') }}" required></div>
+                                    
                                 </div>
-                                <textarea name="note" placeholder="Ghi chú" class="border border-gray-300 rounded px-3 py-2 w-full text-sm min-h-[70px] mb-4">{{ old('note') }}</textarea>
+                                <div><label class="block font-semibold text-gray-700 mb-1">Ghi Chú</label>
+                            <textarea name="note" placeholder="Ghi chú" class="border border-gray-300 rounded px-3 py-2 w-full text-sm min-h-[70px] mb-4">{{ old('note') }}</textarea></div>
+                                
                                 <div class="mb-4 flex gap-4">
                                     <label class="flex items-center">
                                         <input type="radio" name="default" value="1"
@@ -511,7 +526,8 @@
                                                 </td>
                                                 <td class="px-4 py-2 text-right">{{ $firstItem->totalprice }} VNĐ</td>
                                                 <td class="px-4 py-2 text-center">
-                                                    <button class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs view-detail-btn">
+                                                    <button class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs view-detail-btn"
+                                                    data-order-id="{{ $firstItem->id_order }}">
                                                         Chi Tiết
                                                     </button>
                                                 </td>
@@ -532,8 +548,8 @@
                                 <span class="text-lg font-semibold text-gray-800">Đơn Hàng</span>
                             </div>
                             <!-- Steps -->
-                            <div class="flex items-center gap-0 mt-2 mb-4">
-                                <div class="flex flex-col items-center flex-1">
+                            <div class="flex items-center gap-0 mt-2 mb-4" id="order-status-steps">
+                                <div class="flex flex-col items-center flex-1" data-step="Chờ Xác Nhận">
                                     <div
                                         class="border-2 border-orange-400 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1 text-orange-500">
                                         <i class="fa fa-clock"></i>
@@ -541,7 +557,7 @@
                                     <div class="text-xs text-orange-500 font-bold">Chờ Xác Nhận</div>
                                 </div>
                                 <div class="h-1 w-8 bg-orange-400"></div>
-                                <div class="flex flex-col items-center flex-1">
+                                <div class="flex flex-col items-center flex-1" data-step="Đã Xác Nhận">
                                     <div
                                         class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                         <i class="fa fa-check"></i>
@@ -549,7 +565,7 @@
                                     <div class="text-xs text-gray-500 font-bold">Đã Xác Nhận</div>
                                 </div>
                                 <div class="h-1 w-8 bg-gray-300"></div>
-                                <div class="flex flex-col items-center flex-1">
+                                <div class="flex flex-col items-center flex-1" data-step="Đang Thực Hiện">
                                     <div
                                         class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                         <i class="fa fa-box"></i>
@@ -557,7 +573,7 @@
                                     <div class="text-xs text-gray-500 font-bold">Đang Thực Hiện</div>
                                 </div>
                                 <div class="h-1 w-8 bg-gray-300"></div>
-                                <div class="flex flex-col items-center flex-1">
+                                <div class="flex flex-col items-center flex-1" data-step="Đang Gia Hàng">
                                     <div
                                         class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                         <i class="fa fa-truck"></i>
@@ -565,7 +581,7 @@
                                     <div class="text-xs text-gray-500 font-bold">Đang Gia Hàng</div>
                                 </div>
                                 <div class="h-1 w-8 bg-gray-300"></div>
-                                <div class="flex flex-col items-center flex-1">
+                                <div class="flex flex-col items-center flex-1" data-step="Hoàn Thành">
                                     <div
                                         class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                         <i class="fa fa-flag-checkered"></i>
@@ -684,6 +700,7 @@
                                         class="fa fa-file-pdf mr-2"></i>Print PDF</button>
                             </div>
                         </div>
+                        
                         <!-- Wishlist -->
                         <div class="tab-content hidden" id="tab-wishlist">
                             <h2 class="text-xl font-bold text-gray-800 mb-4">Yêu Thích</h2>
@@ -926,102 +943,209 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
      <!-- Xử lí content -->
-            <script>
-                // Tab logic
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        // Remove active class from all
-                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
-                        // Hide all contents
-                        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-                        // Activate this
-                        this.classList.add('active-tab');
-                        document.getElementById('tab-' + this.dataset.tab).classList.remove('hidden');
-                    });
+           <script>
+//Xử lí trạng thái đơn hàng
+          // Xử lý trạng thái đơn hàng (ORDER STEPS)
+function setOrderStepStatus(currentStatus) {
+    const statusSteps = [
+        'Chờ Xác Nhận',
+        'Đã Xác Nhận',
+        'Đang Thực Hiện',
+        'Đang Gia Hàng',
+        'Hoàn Thành'
+    ];
+    const currentIdx = statusSteps.indexOf(currentStatus);
+
+    // Đổi màu cho từng bước
+    document.querySelectorAll('#order-status-steps [data-step]').forEach((stepDiv, i) => {
+        const iconDiv = stepDiv.querySelector('div.border-2');
+        const labelDiv = stepDiv.querySelector('div.text-xs');
+        if (i <= currentIdx) {
+            iconDiv.classList.remove('border-gray-300', 'text-gray-500');
+            iconDiv.classList.add('border-orange-400', 'text-orange-500');
+            labelDiv.classList.remove('text-gray-500');
+            labelDiv.classList.add('text-orange-500');
+        } else {
+            iconDiv.classList.remove('border-orange-400', 'text-orange-500');
+            iconDiv.classList.add('border-gray-300', 'text-gray-500');
+            labelDiv.classList.remove('text-orange-500');
+            labelDiv.classList.add('text-gray-500');
+        }
+    });
+
+    // Đổi màu các bar nối giữa các bước
+    document.querySelectorAll('#order-status-steps .h-1').forEach((bar, i) => {
+        if (i < currentIdx) {
+            bar.classList.remove('bg-gray-300');
+            bar.classList.add('bg-orange-400');
+        } else {
+            bar.classList.remove('bg-orange-400');
+            bar.classList.add('bg-gray-300');
+        }
+    });
+}
+
+    // === TAB SWITCHING ===
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            this.classList.add('active-tab');
+            document.getElementById('tab-' + this.dataset.tab).classList.remove('hidden');
+        });
+    });
+
+    // === PROFILE EDIT ===
+    document.getElementById('btn-edit-profile')?.addEventListener('click', function () {
+        document.getElementById('profile-view').classList.add('hidden');
+        document.getElementById('profile-edit').classList.remove('hidden');
+    });
+    document.getElementById('btn-cancel-edit')?.addEventListener('click', function () {
+        document.getElementById('profile-edit').classList.add('hidden');
+        document.getElementById('profile-view').classList.remove('hidden');
+    });
+
+    // === ĐỊA CHỈ: Hiện/ẩn form Thêm ===
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnShowAdd = document.getElementById('btn-show-add-address');
+        const btnCancelAdd = document.getElementById('btn-cancel-add-address');
+        const addressListView = document.getElementById('address-list-view');
+        const addressAddView = document.getElementById('address-add-view');
+
+        btnShowAdd?.addEventListener('click', function () {
+            addressListView?.classList.add('hidden');
+            addressAddView?.classList.remove('hidden');
+        });
+        btnCancelAdd?.addEventListener('click', function (e) {
+            e.preventDefault();
+            addressAddView?.classList.add('hidden');
+            addressListView?.classList.remove('hidden');
+        });
+    });
+
+    // === ĐỊA CHỈ: Hiện/ẩn form Sửa ===
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnCancelEdit = document.getElementById('btn-cancel-edit-address');
+        const addressListView = document.getElementById('address-list-view');
+        const addressEditView = document.getElementById('address-edit-view');
+        document.querySelectorAll('.btn-show-edit-address').forEach(btn => {
+            btn.addEventListener('click', function () {
+                addressListView?.classList.add('hidden');
+                addressEditView?.classList.remove('hidden');
+                const editForm = document.getElementById('addressEditForm');
+                editForm.querySelector('input[name="id"]').value = this.dataset.id;
+                editForm.querySelector('input[name="name"]').value = this.dataset.name;
+                editForm.querySelector('input[name="sdt"]').value = this.dataset.sdt;
+                editForm.querySelector('input[name="house_number"]').value = this.dataset.house_number;
+                editForm.querySelector('input[name="ward"]').value = this.dataset.ward;
+                editForm.querySelector('input[name="district"]').value = this.dataset.district;
+                editForm.querySelector('input[name="city"]').value = this.dataset.city;
+                editForm.querySelector('textarea[name="note"]').value = this.dataset.note || "";
+                let def = this.dataset.default === "1" ? "1" : "0";
+                editForm.querySelectorAll('input[name="default"]').forEach(radio => {
+                    radio.checked = (radio.value === def);
                 });
-                // Khi bấm Edit
-                document.getElementById('btn-edit-profile').onclick = function () {
-                    document.getElementById('profile-view').classList.add('hidden');
-                    document.getElementById('profile-edit').classList.remove('hidden');
-                };
-                // Khi bấm Cancel
-                document.getElementById('btn-cancel-edit').onclick = function () {
-                    document.getElementById('profile-edit').classList.add('hidden');
-                    document.getElementById('profile-view').classList.remove('hidden');
-                };
-                // Show Invoice Detail
-                document.querySelectorAll('.view-detail-btn').forEach(btn => {
-                    btn.onclick = function () {
-                        document.getElementById('tab-order').classList.add('hidden');
-                        document.getElementById('invoice-detail').classList.remove('hidden');
-                    }
-                });
-                //address
-                document.addEventListener('DOMContentLoaded', function () {
-                    const btnShowAdd = document.getElementById('btn-show-add-address');
-                    const btnCancelAdd = document.getElementById('btn-cancel-add-address');
-                    const addressListView = document.getElementById('address-list-view');
-                    const addressAddView = document.getElementById('address-add-view');
+            });
+        });
+        btnCancelEdit?.addEventListener('click', function (e) {
+            e.preventDefault();
+            addressEditView?.classList.add('hidden');
+            addressListView?.classList.remove('hidden');
+        });
+    });
 
-                    btnShowAdd.addEventListener('click', function () {
-                        addressListView.classList.add('hidden');
-                        addressAddView.classList.remove('hidden');
-                    });
+    // === ORDER: Xem chi tiết đơn hàng (AJAX, KHÔNG ảnh hưởng tab khác) ===
+    document.querySelectorAll('.view-detail-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const orderId = this.dataset.orderId || this.getAttribute('data-order-id');
+            // Nếu bạn đã có API thì fetch ở đây
+            if (orderId) {
+                fetch(`/order-detail/${orderId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            renderInvoiceDetail(data);
+                            document.getElementById('tab-order').classList.add('hidden');
+                            document.getElementById('invoice-detail').classList.remove('hidden');
+                        } else {
+                            alert('Không tìm thấy đơn hàng');
+                        }
+                    })
+                    .catch(() => alert('Lỗi kết nối máy chủ!'));
+            } else {
+                // Nếu chỉ dùng dữ liệu mẫu hoặc không có API
+                document.getElementById('tab-order').classList.add('hidden');
+                document.getElementById('invoice-detail').classList.remove('hidden');
+            }
+        });
+    });
 
-                    btnCancelAdd.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        addressAddView.classList.add('hidden');
-                        addressListView.classList.remove('hidden');
-                    });
-                });
+    // === ORDER: Quay lại danh sách đơn hàng ===
+    document.getElementById('go-back-btn')?.addEventListener('click', function () {
+        document.getElementById('invoice-detail').classList.add('hidden');
+        document.getElementById('tab-order').classList.remove('hidden');
+    });
 
-                //addressEdit
-                document.addEventListener('DOMContentLoaded', function () {
-                    const btnCancelEdit = document.getElementById('btn-cancel-edit-address');
-                    const addressListView = document.getElementById('address-list-view');
-                    const addressEditView = document.getElementById('address-edit-view');
+    // === MẶC ĐỊNH: Hiện tab đầu tiên nếu reload ===
+    document.getElementById('tab-profile')?.classList.remove('hidden');
 
-                    // Tất cả nút sửa
-                    document.querySelectorAll('.btn-show-edit-address').forEach(btn => {
-                        btn.addEventListener('click', function () {
-                            if(addressListView) addressListView.classList.add('hidden');
-                            if(addressEditView) addressEditView.classList.remove('hidden');
+    // === HÀM ĐỔ DỮ LIỆU ĐƠN HÀNG VÀO INVOICE (bạn custom lại theo layout mình) ===
+    function renderInvoiceDetail(data) {
+        // Ví dụ: hiển thị thông tin khách và đơn hàng
+        const order = data.order;
+        const details = data.details;
 
-                            // Lấy form SỬA theo ID
-                            const editForm = document.getElementById('addressEditForm');
-                            editForm.querySelector('input[name="id"]').value = this.dataset.id;
-                            editForm.querySelector('input[name="name"]').value = this.dataset.name;
-                            editForm.querySelector('input[name="sdt"]').value = this.dataset.sdt;
-                            editForm.querySelector('input[name="house_number"]').value = this.dataset.house_number;
-                            editForm.querySelector('input[name="ward"]').value = this.dataset.ward;
-                            editForm.querySelector('input[name="district"]').value = this.dataset.district;
-                            editForm.querySelector('input[name="city"]').value = this.dataset.city;
-                            editForm.querySelector('textarea[name="note"]').value = this.dataset.note || "";
+        document.querySelector('#invoice-detail .text-sm.text-gray-700').innerHTML =
+            `${order.customer_name} <br>${order.house_number}, ${order.ward}, ${order.district}, ${order.city}<br>${order.sdt}`;
 
-                            let def = this.dataset.default === "1" ? "1" : "0";
-                            editForm.querySelectorAll('input[name="default"]').forEach(radio => {
-                                radio.checked = (radio.value === def);
-                            });
-                        });
-                    });
+        document.querySelector('#invoice-detail .text-sm.text-gray-600').innerHTML =
+            `<div><span class="font-semibold">Invoice No:</span> ${order.id}</div>
+             <div><span class="font-semibold">Mã Hóa Đơn:</span> #${order.code}</div>
+             <div><span class="font-semibold">Ngày Tháng:</span> ${order.created_at.substring(0,10)}</div>`;
 
-                    if(btnCancelEdit) {
-                        btnCancelEdit.addEventListener('click', function (e) {
-                            e.preventDefault();
-                            if(addressEditView) addressEditView.classList.add('hidden');
-                            if(addressListView) addressListView.classList.remove('hidden');
-                        });
-                    }
-                });
+        let tbody = '';
+        let total = 0;
+        let totalQty = 0;
+        details.forEach((item, idx) => {
+            const itemTotal = item.food_price * item.quantity;
+            total += itemTotal;
+            totalQty += item.quantity;
+            tbody += `<tr>
+                <td class="px-2 py-1 border text-center">${(idx+1).toString().padStart(2,'0')}</td>
+                <td class="px-2 py-1 border">${item.food_name}</td>
+                <td class="px-2 py-1 border text-right">${item.food_price.toLocaleString()}đ</td>
+                <td class="px-2 py-1 border text-center">${item.quantity}</td>
+                <td class="px-2 py-1 border text-right">${itemTotal.toLocaleString()}đ</td>
+            </tr>`;
+        });
+        document.querySelector('#invoice-detail tbody').innerHTML = tbody;
 
-                // Go Back to Order List
-                document.getElementById('go-back-btn').onclick = function () {
-                    document.getElementById('invoice-detail').classList.add('hidden');
-                    document.getElementById('tab-order').classList.remove('hidden');
-                }
-                // Default show first tab if reload
-                document.getElementById('tab-profile').classList.remove('hidden');
-            </script>
+        let discount = data.discount || 0;
+        let shipping = data.shipping || 0;
+        let finalTotal = total - discount + shipping;
+        let tfoot = `
+            <tr>
+                <td colspan="3" class="border px-2 py-1 text-right font-bold">Chi Tiết:</td>
+                <td class="border px-2 py-1 text-center font-bold">${totalQty}</td>
+                <td class="border px-2 py-1 text-right font-bold">${total.toLocaleString()}đ</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="border px-2 py-1 text-right text-xs text-gray-600">(-) Mã Giảm Giá</td>
+                <td class="border px-2 py-1 text-right">${discount.toLocaleString()}đ</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="border px-2 py-1 text-right text-xs text-gray-600"> (+) Phí Vận Chuyển</td>
+                <td class="border px-2 py-1 text-right">${shipping.toLocaleString()}đ</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="border px-2 py-1 text-right font-bold">Tổng Thanh Toán</td>
+                <td class="border px-2 py-1 text-right font-bold">${finalTotal.toLocaleString()}đ</td>
+            </tr>`;
+        document.querySelector('#invoice-detail tfoot').innerHTML = tfoot;
+        setOrderStepStatus(data.order.statusorder);
+    }
+</script>
+
         </body>
     </body>
 

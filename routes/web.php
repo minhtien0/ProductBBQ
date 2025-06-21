@@ -61,6 +61,8 @@ Route::post('/user/add-address', [HomeController::class, 'addAddress'])->name('u
 Route::delete('/user/deleteAddress/{id}', [HomeController::class, 'deleteAddress'])->name('user.destroyAddress');
 Route::post('/user/edit-address', [HomeController::class, 'editAddress'])->name('user.edit-address');
 Route::post('/user/change-password', [HomeController::class, 'changePassword'])->name('user.change-password');
+Route::get('/order-detail/{id}', [HomeController::class, 'ajaxDetailOrder'])->name('order.detail.ajax');
+
 
 
 //Cart
@@ -160,6 +162,7 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\CheckAdminRole::class]
         Route::post('{order}/status', [OrderController::class, 'updateStatusBringBack'])->name('admin.order.updateStatusBringBack');
         //Tại Quán
         Route::get('/onsite', [OrderController::class, 'onSite'])->name('admin.order.onsite');
+        
     });
 
 });
