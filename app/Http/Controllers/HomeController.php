@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
@@ -80,7 +81,9 @@ class HomeController extends Controller
     }
     public function menu()
     {
-        return view('menu');
+        $menus=Menu::all();
+        $foods = Food::with('menus')->get();
+        return view('menu',compact('menus','foods'));
     }
     public function blog()
     {
@@ -283,41 +286,95 @@ class HomeController extends Controller
                 'orders.code as order_code', // Lấy code của đơn hàng, tránh trùng code với food/user
                 'orders.created_at as time_order'
             )
+            ->orderBy('time_order', 'desc')
             ->get()
             ->groupBy('order_id');
         //dd($myOrderLists);
         return view('userdetail', compact('address', 'addressAll', 'foodFavorites', 'myReviews', 'myOrderLists'));
     }
 
+    //Trang Chi Tiết Đơn Hàng
     public function ajaxDetailOrder($orderId)
-{
-    $order = \App\Models\Order::where('orders.id', $orderId)
-        ->join('users', 'users.id', '=', 'orders.id_user')
-        ->join('addresses', 'orders.address', '=', 'addresses.id')
-        ->select('orders.*', 'users.fullname as customer_name', 'users.sdt', 'addresses.house_number','addresses.ward','addresses.district','addresses.city')
-        ->first();
-    //dd($order);
-    if (!$order)
-        return response()->json(['status' => 'error', 'message' => 'Không tìm thấy đơn hàng'], 404);
+    {
+        $order = \App\Models\Order::where('orders.id', $orderId)
+            ->join('users', 'users.id', '=', 'orders.id_user')
+            ->join('addresses', 'orders.address', '=', 'addresses.id')
+            ->select('orders.*', 'users.fullname as customer_name', 'users.sdt', 'addresses.house_number', 'addresses.ward', 'addresses.district', 'addresses.city')
+            ->first();
+        //dd($order);
+        if (!$order)
+            return response()->json(['status' => 'error', 'message' => 'Không tìm thấy đơn hàng'], 404);
 
-    $orderDetails = \App\Models\OrderDetail::where('order_id', $orderId)
-        ->join('foods', 'foods.id', '=', 'order_details.product_id')
-        ->select('order_details.*', 'foods.name as food_name', 'foods.price as food_price')
-        ->get();
+        $orderDetails = \App\Models\OrderDetail::where('order_id', $orderId)
+            ->join('foods', 'foods.id', '=', 'order_details.product_id')
+            ->select('order_details.*', 'foods.name as food_name', 'foods.price as food_price')
+            ->get();
 
-    // Lấy giá trị voucher
-    $voucher = \App\Models\Voucher::where('id', $order->voucher ?? 0)->first();
-    $voucherPrice = $voucher ? $voucher->value : 0;
+        // Lấy giá trị voucher
+        $voucher = \App\Models\Voucher::where('id', $order->voucher ?? 0)->first();
+        $voucherPrice = $voucher ? $voucher->value : 0;
 
-    return response()->json([
-        'status' => 'success',
-        'order' => $order,
-        'details' => $orderDetails,
-        'discount' => $voucherPrice,
-        'shipping' => 10, // tuỳ bạn cứng code phí ship
-    ]);
-}
+        return response()->json([
+            'status' => 'success',
+            'order' => $order,
+            'details' => $orderDetails,
+            'discount' => $voucherPrice,
+            'shipping' => 10, // tuỳ bạn cứng code phí ship
+        ]);
+    }
 
+    //Hủy Đơn Hàng
+    public function cancelOrder(Request $request, $id)
+    {
+        $order = Order::where('id', $id)
+                      ->where('id_user', session('user_id'))   // đảm bảo là đơn của chính user
+                      ->firstOrFail();
+
+        if ($order->statusorder !== 'Chờ Xác Nhận') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể hủy đơn ở trạng thái này.'
+            ], 400);
+        }
+
+        $order->statusorder = 'Đã Hủy';  // hoặc 'Hủy' tuỳ bạn đặt
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đơn hàng đã được hủy.'
+        ]);
+    }
+
+
+    public function rateOrder(Request $request)
+    {
+        // Validate input
+        $data = $request->validate([
+            'rating'   => 'required|integer|min:1|max:5',
+            'review'   => 'required|string|max:1000',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|max:255',
+            'food_id'  => 'nullable|integer|exists:foods,id',
+            'blog_id'  => 'nullable|integer|exists:blogs,id',
+            // nếu cần validate hình ảnh thì thêm rule 'images.*' => 'image|max:2048'
+        ]);
+
+        // Tạo record mới
+        $rate = new Rate();
+        $rate->user_id  = session('user_id') ;         
+        $rate->food_id  = $data['food_id']  ?? null;
+        $rate->blog_id  = null;
+        $rate->rate     = $data['rating'];
+        $rate->content  = $data['review'];
+        $rate->time     = now();
+        $rate->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cảm ơn bạn đã gửi đánh giá!',
+        ]);
+    }
 
 
     public function updateProfile(Request $request)
@@ -620,102 +677,216 @@ class HomeController extends Controller
 
     public function storeOrder(Request $request)
     {
-        // 1. Validate (giữ nguyên rule bạn đã khai báo, bổ sung products.*)
+        // 1. Validate dữ liệu
         $validator = Validator::make($request->all(), [
             'address_id' => 'required|integer|exists:addresses,id',
             'totalprice' => 'required|integer|min:1',
             'voucher_id' => 'nullable|integer|exists:vouchers,id',
             'totalbill' => 'required|integer|min:1',
-            'typepayment' => 'required|in:1,2',           // hoặc in:cash,bank
+            'typepayment' => 'required|in:1,2',
             'note' => 'nullable|string|max:500',
             'products' => 'required|array|min:1',
             'products.*.id' => 'required|integer',
             'products.*.quantity' => 'required|integer|min:1',
         ], [
             'address_id.required' => 'Bạn phải chọn địa chỉ.',
-            'address_id.integer' => 'Địa chỉ không hợp lệ.',
             'address_id.exists' => 'Địa chỉ không tồn tại.',
-
             'totalprice.required' => 'Thiếu tổng tiền món.',
-            'totalprice.integer' => 'Tổng tiền phải là số.',
             'totalprice.min' => 'Tổng tiền phải lớn hơn 0.',
-
-            'voucher_id.integer' => 'Mã giảm giá không hợp lệ.',
-            'voucher_id.exists' => 'Mã giảm giá không tồn tại.',
-
             'totalbill.required' => 'Thiếu tổng tiền thanh toán.',
-            'totalbill.integer' => 'Tổng tiền thanh toán phải là số.',
             'totalbill.min' => 'Tổng tiền thanh toán phải lớn hơn 0.',
-
             'typepayment.required' => 'Bạn phải chọn phương thức thanh toán.',
             'typepayment.in' => 'Phương thức thanh toán không hợp lệ.',
-
-            'note.string' => 'Ghi chú phải là chuỗi ký tự.',
-            'note.max' => 'Ghi chú không được vượt quá 500 ký tự.',
-
             'products.required' => 'Bạn phải chọn ít nhất một sản phẩm.',
-            'products.array' => 'Dữ liệu sản phẩm không hợp lệ.',
             'products.*.id.required' => 'Thiếu ID sản phẩm.',
-            'products.*.id.integer' => 'ID sản phẩm phải là số.',
-            'products.*.id.exists' => 'Sản phẩm không tồn tại.',
-            'products.*.quantity.required' => 'Thiếu số lượng sản phẩm.',
-            'products.*.quantity.integer' => 'Số lượng sản phẩm phải là số.',
             'products.*.quantity.min' => 'Số lượng sản phẩm phải ít nhất là 1.',
         ]);
 
         if ($validator->fails()) {
-            // nếu AJAX: trả về 422 + JSON lỗi
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
-        // 2. Tạo code không trùng
-        do {
-            $code = 'NMT' . strtoupper(Str::random(8));
-        } while (\App\Models\Order::where('code', $code)->exists());
+        // Trường hợp thanh toán qua VNPAY (typepayment = 2)
+        if ((int) $request->typepayment === 2) {
+            session([
+                'pending_order' => [
+                    'address_id' => $request->address_id,
+                    'totalprice' => $request->totalprice,
+                    'voucher_id' => $request->voucher_id,
+                    'totalbill' => $request->totalbill,
+                    'note' => $request->note,
+                    'products' => $request->products,
+                ]
+            ]);
+            // --- Build URL VNPAY ---
+            $vnp_TmnCode = "U8U9C1HI";
+            $vnp_HashSecret = "NJGOGY2HL4CARZZ7BB0JO24BH0U2WUIU";
+            $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+            $vnp_Returnurl = route('vnpay.return');
 
+            // Mã tham chiếu
+            $vnp_TxnRef = 'NMT' . strtoupper(Str::random(8));
+
+            // Prepare data
+            $inputData = [
+                "vnp_Version" => "2.1.0",
+                "vnp_TmnCode" => $vnp_TmnCode,
+                "vnp_Amount" => $request->totalbill * 100,
+                "vnp_Command" => "pay",
+                "vnp_CreateDate" => date('YmdHis'),
+                "vnp_CurrCode" => "VND",
+                "vnp_IpAddr" => $request->ip(),
+                "vnp_Locale" => "vn",
+                "vnp_OrderInfo" => "Thanh toan GD:" . $vnp_TxnRef,
+                "vnp_OrderType" => "other",
+                "vnp_ReturnUrl" => $vnp_Returnurl,
+                "vnp_TxnRef" => $vnp_TxnRef,
+                //"vnp_ExpireDate" => date('YmdHis', strtotime('+15 minutes')),
+            ];
+
+            ksort($inputData);
+            $query = '';
+            $hashdata = '';
+            $i = 0;
+            foreach ($inputData as $key => $value) {
+                $hashdata .= ($i++ ? '&' : '') . "{$key}=" . urlencode($value);
+                $query .= urlencode($key) . "=" . urlencode($value) . '&';
+            }
+            $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+            $vnp_Url .= "?" . $query . "vnp_SecureHash={$vnpSecureHash}";
+
+            // Trả về JSON để frontend redirect
+            return response()->json([
+                'success' => true,
+                'redirect' => $vnp_Url,
+            ]);
+        }
+
+        // Trường hợp thanh toán Tiền mặt (typepayment = 1)
         try {
-            // 3. Lưu Order
-            $order = \App\Models\Order::create([
-                'code' => $code,
+            DB::transaction(function () use ($request) {
+                // Tạo code Order không trùng
+                do {
+                    $code = 'NMT' . strtoupper(Str::random(8));
+                } while (Order::where('code', $code)->exists());
+
+                // Lưu Order
+                $order = Order::create([
+                    'code' => $code,
+                    'table_id' => null,
+                    'id_user' => session('user_id'),
+                    'address' => $request->address_id,
+                    'id_staff' => null,
+                    'totalprice' => $request->totalprice,
+                    'voucher' => $request->voucher_id,
+                    'totalbill' => $request->totalbill,
+                    'statusorder' => 'Chờ Xác Nhận',
+                    'typepayment' => 1,
+                    'note' => $request->note,
+                    'type' => 1,
+                ]);
+
+                // Lưu OrderDetail
+                foreach ($request->products as $item) {
+                    OrderDetail::create([
+                        'order_id' => $order->id,
+                        'product_id' => $item['id'],
+                        'quantity' => $item['quantity'],
+                        'status' => 'Chờ xử lý',
+                    ]);
+                }
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đặt hàng thành công (Tiền mặt)!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function vnpayReturn(Request $request)
+    {
+        // 1. Đọc và loại bỏ SecureHash trước khi build
+        $data = $request->all();
+        $vnp_SecureHash = $data['vnp_SecureHash'] ?? '';
+        unset($data['vnp_SecureHash'], $data['vnp_SecureHashType']);
+
+        // 2. Sắp xếp và build hashData
+        ksort($data);
+        $hashData = '';
+        foreach ($data as $key => $value) {
+            if ($hashData !== '') {
+                $hashData .= '&';
+            }
+            $hashData .= urlencode($key) . '=' . urlencode($value);
+        }
+
+        $computed = hash_hmac('sha512', $hashData, env('VNPAY_HASH_SECRET'));
+
+
+
+        if ($computed !== $vnp_SecureHash) {
+            return redirect()->route('views.cart')
+                ->with('error', "Xác thực VNPAY thất bại!");
+        }
+
+
+        // 4. Kiểm tra giao dịch thành công
+        if ($request->get('vnp_ResponseCode') !== '00') {
+            return redirect()->route('views.cart')
+                ->with('error', 'Thanh toán VNPAY không thành công: '
+                    . $request->get('vnp_ResponseCode'));
+        }
+
+        // 5. Lấy dữ liệu pending từ session
+        $pending = session('pending_order');
+        if (!$pending) {
+            return redirect()->route('views.cart')
+                ->with('error', 'Không tìm thấy dữ liệu đơn hàng sau khi thanh toán!');
+        }
+
+        // 6. Lưu Order & OrderDetail
+        DB::transaction(function () use ($pending, $request) {
+            $txRef = $request->get('vnp_TxnRef');
+            $order = Order::create([
+                'code' => $txRef,
                 'table_id' => null,
                 'id_user' => session('user_id'),
-                'address' => $request->address_id,
+                'address' => $pending['address_id'],
                 'id_staff' => null,
-                'totalprice' => $request->totalprice,
-                'voucher' => $request->voucher_id,
-                'totalbill' => $request->totalbill,
+                'totalprice' => $pending['totalprice'],
+                'voucher' => $pending['voucher_id'],
+                'totalbill' => $pending['totalbill'],
                 'statusorder' => 'Chờ Xác Nhận',
-                'typepayment' => (int) $request->typepayment,
-                'note' => $request->note,
-                'type' => 1,  // bán mang đi
+                'typepayment' => 2,
+                'note' => $pending['note'],
+                'type' => 1,
             ]);
-
-            // 4. Lưu từng OrderDetail
-            foreach ($request->products as $item) {
-                \App\Models\OrderDetail::create([
+            foreach ($pending['products'] as $item) {
+                OrderDetail::create([
                     'order_id' => $order->id,
-                    'product_id' => $item['id'],        // phải là ['id']
+                    'product_id' => $item['id'],
                     'quantity' => $item['quantity'],
                     'status' => 'Chờ xử lý',
                 ]);
             }
+        });
 
-            // 5. Trả về JSON thành công
-            return response()->json([
-                'success' => true,
-                'message' => 'Đặt hàng thành công!'
-            ]);
-        } catch (\Exception $e) {
-            // 6. Bắt lỗi, trả về JSON lỗi
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
+        // 7. Xóa session và thông báo
+        session()->forget('pending_order');
+        return redirect()->route('views.cart')
+            ->with('success', 'Thanh toán VNPAY thành công!');
     }
+
+
 
     public function toggleFavorite(Request $request)
     {

@@ -288,9 +288,15 @@ data-error="{{ session('error') }}" @endif>
       const data = await res.json();
 
       if (res.ok && data.success) {
+        if (data.redirect) {
+        // nếu có redirect thì qua VNPAY
+        window.location = data.redirect;
+      } else {
+        // tiền mặt
         showPopup(data.message);
         form.reset();
         closePopupComfirm();
+      }
       } else {
         const msg = data.errors 
           ? Object.values(data.errors).flat()[0]
