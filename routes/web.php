@@ -39,6 +39,7 @@ Route::get('/search-food', [HomeController::class, 'searchFood'])->name('food.se
 Route::get('about', [HomeController::class, 'about'])->name('views.about');
 //Menu
 Route::get('menu', [HomeController::class, 'menu'])->name('views.menu');
+
 //Blog
 Route::get('blog', [HomeController::class, 'blog'])->name('views.blog');
 
@@ -50,6 +51,10 @@ Route::post('/booking', [HomeController::class, 'storeBookingTable'])->name('boo
 
 //MenuDetail
 Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->name('views.menudetail');
+//Combodetail
+
+Route::get('/combos/{id}', [HomeController::class, 'combodetail']);
+
 //BlogDetail
 Route::get('blogdetail/{id}/{slug}', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
 Route::get('/ajax-search-blog', [HomeController::class, 'ajaxSearchBlog'])->name('ajax.search.blog');

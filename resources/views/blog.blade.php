@@ -88,7 +88,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="flex justify-center items-center mt-10">
+        <div id="blog-pagination" class="flex justify-center items-center mt-10">
             <nav class="flex gap-2">
                 <button
                     class="w-8 h-8 rounded-full border border-gray-300 text-gray-700 hover:bg-[#e60012] hover:text-white transition"><i
@@ -106,6 +106,43 @@
         </div>
     </div>
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const itemsPerPage = 6;
+  const grid = document.getElementById('blog-grid');
+  const cards = Array.from(grid.children);
+  const pag = document.getElementById('blog-pagination');
+
+  function showPage(page) {
+    cards.forEach((card, idx) => {
+      card.style.display = (idx >= (page-1)*itemsPerPage && idx < page*itemsPerPage) ? '' : 'none';
+    });
+  }
+
+  function renderPagination() {
+    pag.innerHTML = '';
+    const total = Math.ceil(cards.length / itemsPerPage);
+    for(let i=1; i<=total; i++) {
+      const btn = document.createElement('button');
+      btn.innerText = i;
+      btn.className = "w-8 h-8 rounded-full border mx-1 " + 
+                      (i===1 ? "bg-[#e60012] text-white font-bold" : "text-gray-700 border-gray-300") +
+                      " hover:bg-[#e60012] hover:text-white transition";
+      btn.onclick = () => {
+        showPage(i);
+        pag.querySelectorAll('button').forEach(b=>b.classList.remove('bg-[#e60012]','text-white','font-bold'));
+        btn.classList.add('bg-[#e60012]','text-white','font-bold');
+        window.scrollTo({top: grid.offsetTop-80, behavior:'smooth'}); // cuộn lên đầu grid
+      }
+      pag.appendChild(btn);
+    }
+  }
+
+  showPage(1);
+  renderPagination();
+});
+</script>
+
 @include('layouts.user.footer')
 
 </html>
