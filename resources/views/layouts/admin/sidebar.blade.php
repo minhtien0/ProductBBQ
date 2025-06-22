@@ -3,6 +3,7 @@
         <!-- Header -->
         <!-- Sidebar Items -->
         <div class="space-y-1">
+            @if (session('staff_role') === 'Quản Lí')
             <!-- Dashboard -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer  hover:bg-gray-300 hover:bg-gradient-to-r hover:from-gray-300 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
@@ -15,7 +16,8 @@
                     </div>
                 </div>
             </div>
-            <!-- Câu hỏi -->
+
+            <!-- Nhân Viên -->
             <div class="py-2 px-3 rounded-md text-gray-700 cursor-pointer  hover:bg-gray-300 hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200"
               >
                 <div class="flex items-center justify-between">
@@ -30,7 +32,7 @@
             </div>
             
 
-            <!-- Thống Báo -->
+            <!-- Khách Hàng -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -93,6 +95,8 @@
                     </div>
                 </div>
             </div>  
+
+            <!-- Đánh Giá -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -103,6 +107,8 @@
                 </div>
             </div>
 
+
+            <!-- Voucher -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -114,7 +120,7 @@
                 </div>
             </div>
 
-            <!-- QL Khách hàng -->
+            <!-- Tin Tức -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -125,6 +131,7 @@
                 </div>
             </div>
 
+            <!-- Bàn -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -135,6 +142,7 @@
                 </div>
             </div>
 
+            <!-- Trợ Giúp -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -145,7 +153,7 @@
                 </div>
             </div>
 
-            <!-- QL Quản trị -->
+            <!-- Booking -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -156,6 +164,8 @@
                 </div>
             </div>
 
+
+            <!-- Loại Thanh toán -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -166,7 +176,7 @@
                 </div>
             </div>
 
-            <!-- Sliders -->
+            <!-- Thông báo -->
             <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
@@ -177,7 +187,8 @@
                 </div>
             </div>
 
-             <div
+            <!-- Thông tin -->
+            <div
                 class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('admin.info') }}">
@@ -186,6 +197,29 @@
                     </a>
                 </div>
             </div>
+            @elseif (session('staff_role') === 'Thu Ngân')
+                 <div
+                    class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+                    <div class="flex items-center space-x-2">
+                        <a href="{{ route('admin.cashier') }}">
+                            <i class="fa-solid fa-comments w-4 h-4 text-gray-500 mr-2"></i>
+                            <span class="text-sm">Quản Lí Doanh Thu</span>
+                        </a>
+                    </div>
+                </div>
+
+
+                <!-- Đon hàng -->
+                <div
+                    class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
+                    <div class="flex items-center space-x-2">
+                        <a href="{{ route('admin.order') }}">
+                            <i class="fa-solid fa-shopping-cart w-4 h-4 text-gray-500 mr-2"></i>
+                            <span class="text-sm">Quản Lí Đơn Hàng</span>
+                        </a>
+                    </div>
+                </div>
+             @endif
         </div>
     </div>
 

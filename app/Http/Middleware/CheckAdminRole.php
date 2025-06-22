@@ -15,9 +15,13 @@ class CheckAdminRole
 
         // Kiểm tra quyền
         $role = session('staff_role'); // Giả sử bạn đã lưu 'role' trong session khi đăng nhập
-        if ($role !== 'Quản Lí') {
+        if ($role !== 'Quản Lí' && $role !== 'Nhân Viên' && $role !== 'Thu Ngân' && $role !== 'Đầu Bếp') {
             abort(403, 'Bạn không có quyền truy cập trang quản trị.');
         }
+
+        /* if ($role == 'Thu Ngân') {
+           return redirect('/admin/cashier')->withErrors(['success' => 'Đăng nhập thành công.']);
+        } */
 
         return $next($request);
     }

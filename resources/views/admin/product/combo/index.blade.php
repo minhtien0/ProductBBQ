@@ -239,7 +239,7 @@
                             <th class="py-1 px-2 text-left text-sm">Mã</th>
                             <th class="py-1 px-2 text-left text-sm">Tên Combo</th>
                             <th class="py-1 px-2 text-left text-sm">Giá</th>
-                            <th class="py-1 px-2 text-left text-sm">Ghi Chú</th>
+                            <th class="py-1 px-2 text-left text-sm">Thời Gian</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -270,7 +270,7 @@
                                     <span class="text-gray-600">{{ $combo->name }}</span>
                                 </td>
                                 <td class="py-1 px-2 border-t border-gray-200 text-gray-700"> {{ $combo->price }}(đ)</td>
-                                <td class="py-1 px-2 border-t border-gray-200 text-gray-700"> {{ $combo->note }}</td>
+                                <td class="py-1 px-2 border-t border-gray-200 text-gray-700"> {{ $combo->created_at }}</td>
                             </tr>
                         @endforeach
                     </tbody>
