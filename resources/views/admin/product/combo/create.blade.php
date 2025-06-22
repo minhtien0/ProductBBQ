@@ -255,6 +255,23 @@
 </style>
 
 <script>
+    $(document).ready(function() {
+        if (document.getElementById('note')) {
+            CKEDITOR.replace('note', {
+                height: 180,
+                removePlugins: 'elementspath',
+                resize_enabled: false,
+                toolbar: [
+                    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
+                    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Blockquote' ] },
+                    { name: 'links', items: [ 'Link', 'Unlink' ] },
+                    { name: 'insert', items: [ 'Image', 'Table' ] },
+                    { name: 'styles', items: [ 'Format' ] },
+                    { name: 'tools', items: [ 'Maximize' ] }
+                ]
+            });
+        }
+    });
 // Xem trước ảnh
 function previewImage(event) {
     const input = event.target;

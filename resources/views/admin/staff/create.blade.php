@@ -20,7 +20,7 @@
                         <option value="Quản Lí" {{ old('role') == 'Quản Lí' ? 'selected' : '' }}>Quản Lí</option>
                         <option value="Nhân Viên" {{ old('role') == 'Nhân Viên' ? 'selected' : '' }}>Nhân Viên</option>
                         <option value="Đầu Bếp" {{ old('role') == 'Đầu Bếp' ? 'selected' : '' }}>Đầu Bếp</option>
-                        <option value="Tạp Vụ" {{ old('role') == 'Thu Ngân' ? 'selected' : '' }}>Tạp Vụ</option>
+                        <option value="Thu Ngân" {{ old('role') == 'Thu Ngân' ? 'selected' : '' }}>Thu Ngân</option>
                     </select>
                 </div>
             </div>

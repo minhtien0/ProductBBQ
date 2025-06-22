@@ -149,7 +149,7 @@ class StaffController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'fullname' => 'required|string|max:255',
-            'role' => 'required|in:Quản Lí,Nhân Viên,Đầu Bếp,Tạp Vụ',
+            'role' => 'required|in:Quản Lí,Nhân Viên,Đầu Bếp,Thu Ngân',
             'date_of_birth' => 'required|date',
             'gender' => 'required|in:Nam,Nữ,Khác',
             'SDT' => 'required|string|max:20',
