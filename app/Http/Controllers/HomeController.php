@@ -32,6 +32,7 @@ class HomeController extends Controller
     //
     public function index()
     {
+        $combos = DB::table('food_combos')->get();
         $allFoods = Food::with('menus')->get();
         $favIds = Cart::where('user_id', session('user_id'))
             ->where('type', 'Yêu Thích')
@@ -39,7 +40,7 @@ class HomeController extends Controller
             ->toArray();
 
         //dd(session('role'));
-        return view('index', compact('allFoods', 'favIds'));
+        return view('index', compact('allFoods', 'favIds','combos'));
     }
     public function searchFood(Request $request)
     {
@@ -79,12 +80,35 @@ class HomeController extends Controller
 
         return view('about', compact('countStaff', 'countUser', 'countRate'), ['newBlogs' => $newBlogs]);
     }
-    public function menu()
+    public function menu(Request $request)
     {
-        $menus=Menu::all();
-        $foods = Food::with('menus')->get();
-        return view('menu',compact('menus','foods'));
+        $menus = Menu::all();
+        $category = $request->input('category');
+        $search = $request->input('search');
+
+        $query = Food::query();
+
+        if ($category && $category != 'all') {
+            $menuId = intval(str_replace('menu-', '', $category));
+            $query->where('type', $menuId);
+        }
+        if ($search) {
+            $chars = preg_split('//u', $search, null, PREG_SPLIT_NO_EMPTY); // tách từng ký tự
+
+            $query->where(function ($q) use ($chars) {
+                foreach ($chars as $char) {
+                    $q->orWhere('name', 'like', "%{$char}%")
+                        ->orWhere('description', 'like', "%{$char}%");
+                }
+            });
+        }
+
+
+        $foods = $query->paginate(8)->withQueryString();
+
+        return view('menu', compact('menus', 'foods', 'category', 'search'));
     }
+
     public function blog()
     {
         $blogs = Blog::join('staffs', 'blog.id_staff', '=', 'staffs.id')
@@ -327,8 +351,8 @@ class HomeController extends Controller
     public function cancelOrder(Request $request, $id)
     {
         $order = Order::where('id', $id)
-                      ->where('id_user', session('user_id'))   // đảm bảo là đơn của chính user
-                      ->firstOrFail();
+            ->where('id_user', session('user_id'))   // đảm bảo là đơn của chính user
+            ->firstOrFail();
 
         if ($order->statusorder !== 'Chờ Xác Nhận') {
             return response()->json([
@@ -351,23 +375,23 @@ class HomeController extends Controller
     {
         // Validate input
         $data = $request->validate([
-            'rating'   => 'required|integer|min:1|max:5',
-            'review'   => 'required|string|max:1000',
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|max:255',
-            'food_id'  => 'nullable|integer|exists:foods,id',
-            'blog_id'  => 'nullable|integer|exists:blogs,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'required|string|max:1000',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'food_id' => 'nullable|integer|exists:foods,id',
+            'blog_id' => 'nullable|integer|exists:blogs,id',
             // nếu cần validate hình ảnh thì thêm rule 'images.*' => 'image|max:2048'
         ]);
 
         // Tạo record mới
         $rate = new Rate();
-        $rate->user_id  = session('user_id') ;         
-        $rate->food_id  = $data['food_id']  ?? null;
-        $rate->blog_id  = null;
-        $rate->rate     = $data['rating'];
-        $rate->content  = $data['review'];
-        $rate->time     = now();
+        $rate->user_id = session('user_id');
+        $rate->food_id = $data['food_id'] ?? null;
+        $rate->blog_id = null;
+        $rate->rate = $data['rating'];
+        $rate->content = $data['review'];
+        $rate->time = now();
         $rate->save();
 
         return response()->json([
@@ -1210,6 +1234,23 @@ class HomeController extends Controller
             'status' => 'success',
             'message' => 'Email đã được xác nhận thành công! Bạn có thể đăng nhập ngay.'
         ]);
+    }
+    public function combodetail($id)
+    {
+        // Lấy thông tin combo
+        $combo = DB::table('food_combos')->where('id', $id)->first();
+
+        // Lấy danh sách món ăn thuộc combo này
+        $foods = DB::table('detail_combos')
+            ->join('foods', 'detail_combos.food_id', '=', 'foods.id')
+            ->where('detail_combos.combo_id', $id)
+            ->select('foods.*')
+            ->get();
+
+        // Lấy danh sách các combo khác (sidebar bán chạy)
+        $hotCombos = DB::table('food_combos')->limit(3)->get();
+
+        return view('combodetail', compact('combo', 'foods', 'hotCombos'));
     }
 
 

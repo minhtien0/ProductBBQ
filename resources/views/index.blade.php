@@ -979,222 +979,53 @@
 
 
     <!-- Menu Sale -->
-    <div class="offer-section bg-gray-light">
-        <div class="offer-wrapper">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-                <div>
-                    <span style="color:rgb(230 0 18); font-weight:bold; font-size:18px;">Khuyến Mãi Hằng Ngày</span>
-                    <h2 class="text-back-g" style="font-size:1.4rem; font-weight:900; margin:10px 0 0 0; ">Giảm giá lên
-                        đến 75% cho ngày này</h2>
-                </div>
-                <div class="swiper-buttons">
-                    <button class="swiper-button-prev">&#8592;</button>
-                    <button class="swiper-button-next">&#8594;</button>
-                </div>
-            </div>
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <!-- Card 1 -->
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/danhmuc1/combogiadinh.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">40%<br>Off</span>
-                        </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Beef
-                            Masala</h3>
-                        <p style="color:#888;font-size:0.93rem;">Combo Dành cho gia đình</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                    <!-- Card 2 -->
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/danhmuc1/suon.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">55%<br>Off</span>
-                        </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                            Makhani</h3>
-                        <p style="color:#888;font-size:0.93rem;">Sườn.</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/danhmuc1/suon6mon.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">55%<br>Off</span>
-                        </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                            Makhani</h3>
-                        <p style="color:#888;font-size:0.93rem;">Sườn 6 món</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/danhmuc1/suontang.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">55%<br>Off</span>
-                        </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                            Makhani</h3>
-                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                            aspernatur aut odit aut.</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/danhmuc1/suonxe.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">55%<br>Off</span>
-                        </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                            Makhani</h3>
-                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                            aspernatur aut odit aut.</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/combo/1.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">55%<br>Off</span>
-                        </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                            Makhani</h3>
-                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                            aspernatur aut odit aut.</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/combo/3.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">55%<br>Off</span>
-                        </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                            Makhani</h3>
-                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                            aspernatur aut odit aut.</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/combo/4.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">55%<br>Off</span>
-                        </div>
-                        <h3 style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                            Makhani</h3>
-                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                            aspernatur aut odit aut.</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div style="position:relative;">
-                            <img src="img/combo/3.jpg"
-                                style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
-                            <span class="product-img-badge">55%<br>Off</span>
-                        </div>
-                        <h3 id="booking" style="color:#262465;font-weight:900;margin:12px 0 6px 0;font-size:1.1rem;">Dal
-                            Makhani</h3>
-                        <p style="color:#888;font-size:0.93rem;">Enim ipsam volutpat in quia voluptas sit
-                            aspernatur aut odit aut.</p>
-                        <div style="display:flex;gap:8px;margin-top:10px;">
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-shopping-basket"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-heart"></i></span>
-                            <span
-                                style="background:#ff8000;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;"><i
-                                    class="fa fa-eye"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="offer-section bg-gray-200 py-8">
+  <div class="container mx-auto px-3">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <span class="text-red-600 font-bold text-lg">Khuyến Mãi Hằng Ngày</span>
+        <h2 class="text-gray-900 font-extrabold text-xl mt-2">Giảm giá lên đến 75% cho ngày này</h2>
+      </div>
+      <div class="swiper-buttons hidden md:flex gap-2">
+        <button class="swiper-button-prev text-2xl px-2">&#8592;</button>
+        <button class="swiper-button-next text-2xl px-2">&#8594;</button>
+      </div>
     </div>
+    <!-- Swiper -->
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        @foreach($combos as $combo)
+        <div class="swiper-slide">
+          <a href="{{ url('combos/'.$combo->id) }}">
+            <div class="bg-white rounded-xl shadow p-3 w-64 mx-auto hover:scale-105 transition-transform duration-200">
+              <div class="relative">
+                <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/'.$combo->image) }}"
+                  class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">
+                <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-md font-bold shadow">-{{ rand(20, 60) }}% Off</span>
+              </div>
+              <h3 class="text-blue-900 font-extrabold mt-3 mb-1 text-base truncate">{{ $combo->name }}</h3>
+              <p class="text-gray-600 text-sm mb-2 truncate">{{ $combo->note }}</p>
+              <div class="flex items-center justify-between">
+                <span class="text-red-600 font-bold text-lg">{{ number_format($combo->price, 0, ',', '.') }}₫</span>
+                <span class="flex gap-1">
+                  <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-shopping-basket"></i></span>
+                  <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-heart"></i></span>
+                  <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-eye"></i></span>
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+        @endforeach
+      </div>
+      <!-- Nút trên mobile -->
+      <div class="flex md:hidden gap-2 justify-end mt-3">
+        <button class="swiper-button-prev bg-gray-300 px-2 rounded">&larr;</button>
+        <button class="swiper-button-next bg-gray-300 px-2 rounded">&rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
     <!--Booking -->
