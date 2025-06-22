@@ -51,6 +51,8 @@ Route::post('/booking', [HomeController::class, 'storeBookingTable'])->name('boo
 
 //MenuDetail
 Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->name('views.menudetail');
+Route::get('/ajax-search-food', [HomeController::class, 'ajaxSearch'])->name('ajax.search.food');
+
 //Combodetail
 
 Route::get('/combos/{id}', [HomeController::class, 'combodetail']);
