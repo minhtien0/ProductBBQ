@@ -45,9 +45,6 @@ class HomeController extends Controller
         $countRate = Rate::count();
         //dd(session('role'));
         return view('index', compact('allFoods', 'favIds', 'combos','countStaff','countUser','countRate'));
-
-
-
     }
     public function searchFood(Request $request)
     {
@@ -70,10 +67,131 @@ class HomeController extends Controller
         return response()->json(['results' => $results]);
     }
 
-    public function order()
-    {
-        return view('qrorder');
+    public function order($id)
+{
+    $menus = Menu::all();
+
+    // Lấy danh sách combo_id được order tại bàn $id
+    $comboIds = DB::table('order_combos')
+        ->join('orders', 'order_combos.order_id', '=', 'orders.id')
+        ->where('orders.table_id', $id)
+        ->select('order_combos.combo_id')
+        ->distinct()
+        ->pluck('combo_id');
+
+    // Lấy thông tin FoodCombo và danh sách Food bằng truy vấn thô
+    $comboData = [];
+    if ($comboIds->isNotEmpty()) {
+        $results = DB::table('food_combos')
+            ->leftJoin('detail_combos', 'food_combos.id', '=', 'detail_combos.combo_id')
+            ->leftJoin('foods', 'detail_combos.food_id', '=', 'foods.id')
+            ->whereIn('food_combos.id', $comboIds)
+            ->select(
+                'food_combos.id',
+                'food_combos.name',
+                'foods.id as food_id',
+                'foods.name as food_name',
+                'foods.price as food_price',
+                'foods.image as food_image'
+            )
+            ->get();
+
+        // Tạo mảng kết hợp tên combo và danh sách food
+        $comboData = $results->groupBy('id')->map(function ($group) {
+            $comboName = $group->first()->name;
+            $foodNames = $group->pluck('food_name')->filter()->unique()->values()->toArray();
+            $foodIds = $group->pluck('food_id')->filter()->unique()->values()->toArray();
+            $foodPrices = $group->pluck('food_price')->filter()->unique()->values()->toArray();
+            $foodImages = $group->pluck('food_image')->filter()->unique()->values()->toArray();
+
+            return [
+                'id' => $group->first()->id,
+                'name' => $comboName,
+                'foods' => array_map(function ($name, $id, $price, $image) {
+                    return [
+                        'id' => $id,
+                        'name' => $name,
+                        'price' => $price,
+                        'image' => $image ?: 'img/default-food.jpg'
+                    ];
+                }, $foodNames, $foodIds, $foodPrices, $foodImages)
+            ];
+        })->values()->all();
     }
+
+    // Tách thành 2 biến riêng biệt (nếu cần)
+    $comboNames = array_column($comboData, 'name');
+    $foodLists = array_column($comboData, 'foods');
+
+    return view('qrorder', compact('menus', 'comboData', 'comboNames', 'foodLists'));
+}
+
+    public function getProductsByCategory($categoryId)
+{
+    // Lấy danh sách món ăn thuộc danh mục được chọn
+    $foods = DB::table('foods')
+        ->where('type', $categoryId)
+        ->select('id', 'name', 'price', 'image')
+        ->get();
+
+    // Lấy danh sách combo có ít nhất một món ăn thuộc danh mục được chọn
+    $combos = [];
+    $comboIds = DB::table('detail_combos')
+        ->join('foods', 'detail_combos.food_id', '=', 'foods.id')
+        ->where('foods.type', $categoryId)
+        ->select('detail_combos.combo_id')
+        ->distinct()
+        ->pluck('combo_id');
+
+    if ($comboIds->isNotEmpty()) {
+        $results = DB::table('food_combos')
+            ->leftJoin('detail_combos', 'food_combos.id', '=', 'detail_combos.combo_id')
+            ->leftJoin('foods', 'detail_combos.food_id', '=', 'foods.id')
+            ->whereIn('food_combos.id', $comboIds)
+            ->select(
+                'food_combos.id',
+                'food_combos.name',
+                'food_combos.price as combo_price',
+                'food_combos.image as combo_image',
+                'foods.id as food_id',
+                'foods.name as food_name',
+                'foods.price as food_price',
+                'foods.image as food_image'
+            )
+            ->get();
+
+        $combos = $results->groupBy('id')->map(function ($group) {
+            $comboName = $group->first()->name;
+            $comboPrice = $group->first()->combo_price;
+            $comboImage = $group->first()->combo_image ?: 'img/default-combo.jpg';
+            $foodNames = $group->pluck('food_name')->filter()->unique()->values()->toArray();
+            $foodIds = $group->pluck('food_id')->filter()->unique()->values()->toArray();
+            $foodPrices = $group->pluck('food_price')->filter()->unique()->values()->toArray();
+            $foodImages = $group->pluck('food_image')->filter()->unique()->values()->toArray();
+
+            return [
+                'id' => $group->first()->id,
+                'name' => $comboName,
+                'price' => $comboPrice,
+                'image' => $comboImage,
+                'detailCombos' => array_map(function ($name, $id, $price, $image) {
+                    return [
+                        'food_id' => $id,
+                        'food_name' => $name,
+                        'food_price' => $price,
+                        'food_image' => $image ?: 'img/default-food.jpg'
+                    ];
+                }, $foodNames, $foodIds, $foodPrices, $foodImages)
+            ];
+        })->values()->all();
+    }
+
+    // Trả về dữ liệu JSON
+    return response()->json([
+        'foods' => $foods,
+        'combos' => $combos
+    ]);
+}
     public function about()
     {
         $newBlogs = Blog::join('staffs', 'staffs.id', '=', 'blog.id_staff')
@@ -1275,7 +1393,7 @@ class HomeController extends Controller
             ->join('foods', 'foods.id', '=', 'detail_combos.food_id')
             ->where('food_combos.id', $id)
             ->select(DB::raw('SUM(foods.price) as total_price'), 'food_combos.*')
-            ->groupBy('food_combos.id','food_combos.codecombo','food_combos.name','food_combos.price','food_combos.note','food_combos.created_at','food_combos.image','food_combos.updated_at')
+            ->groupBy('food_combos.id', 'food_combos.codecombo', 'food_combos.name', 'food_combos.price', 'food_combos.note', 'food_combos.created_at', 'food_combos.image', 'food_combos.updated_at')
             ->first();
 
         // Lấy danh sách món ăn thuộc combo này
@@ -1286,8 +1404,8 @@ class HomeController extends Controller
             ->get();
 
         // Lấy danh sách các combo khác (sidebar bán chạy)
-        $hotCombos = FoodCombo::where('id','!=',$id)
-        ->get();
+        $hotCombos = FoodCombo::where('id', '!=', $id)
+            ->get();
 
         return view('combodetail', compact('combo', 'foods', 'hotCombos'));
     }
