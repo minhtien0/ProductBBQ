@@ -90,7 +90,7 @@
         <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Thông Tin</h1>
         <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
           <i class="fa fa-home text-white"></i>
-          <a href="{{ route('views.index') }}"><span class="text-white">Home</span></a>
+          <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
           <span class="text-white">–</span>
           <span class="text-[#ff8000]">Thông Tin</span>
         </div>

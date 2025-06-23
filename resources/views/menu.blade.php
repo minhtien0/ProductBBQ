@@ -31,6 +31,19 @@
             },
         };
     </script>
+    <style>
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            /* Giới hạn 3 dòng */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.5rem;
+            max-height: 4.5rem;
+            /* 1.5rem x 3 dòng */
+        }
+    </style>
 </head>
 
 <body class="bg-gray-light text-[#22223b] font-mont">
@@ -83,8 +96,8 @@
                         <button data-cat="{{ $menuCat }}"
                             onclick="window.location.href='{{ route('views.menu', array_merge(request()->except(['category', 'page']), ['category' => $menuCat, 'page' => 1])) }}'"
                             class="category-tab
-                                            {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
-                                            px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
+                                                                                            {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
+                                                                                            px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
                             {{-- icon --}}
                             @if(stripos($menu->name, 'BBQ') !== false)
                                 <i class="fas fa-star mr-2"></i>
@@ -111,7 +124,7 @@
             <div class="bg-white rounded-2xl shadow-lg p-6">
                 <div class="flex flex-col lg:flex-row gap-4">
                     <!-- Search Input -->
-                    <form method="GET" action="{{ route('views.menu') }}" class="flex-1 relative flex">
+                    <form id="ajax-search-form" class="flex-1 relative flex" onsubmit="return false;">
                         <input type="text" name="search" id="search-input" value="{{ request('search') }}"
                             placeholder="Tìm kiếm món ăn yêu thích..."
                             class="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-main-red focus:outline-none transition-colors text-gray-700 placeholder-gray-400">
@@ -206,12 +219,11 @@
         <div id="products-container" class="mb-8">
             <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach ($foods as $food)
-                    <div class="flex flex-col h-full max-w-[450px] min-w-[260px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
-                        style="height:550px;" data-category="menu-{{ $food->type }}" data-price="{{ $food->price }}"
-                        data-name="{{ $food->name }}">
-                        <div class="relative overflow-hidden" style="height:200px;">
+                    <div class="food-item flex flex-col h-full max-w-[500px] min-w-[300px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
+                        style="height:620px;">
+                        <div class="relative overflow-hidden" style="height:240px;">
                             <img src="{{ asset('img/' . $food->image) }}" alt="{{ $food->name }}"
-                                class="w-full h-44 object-cover border-b border-gray-100" />
+                                class="w-full h-56 object-cover border-b border-gray-100" />
                             <div class="absolute top-3 left-3 z-10">
                                 <span class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
                                     {{ optional($menus->firstWhere('id', $food->type))->name ?? '' }}
@@ -224,25 +236,25 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="p-4 flex flex-col flex-1 mt-[-1.5rem]">
-                            <h3 class="font-bold text-lg text-gray-800 mb-2"
-                                style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                        <div class="p-6 flex flex-col flex-1 mt-[-1.5rem]">
+                            <h3 class="font-bold text-lg text-gray-800 mb-2 line-clamp-2"
+                                style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                 {{ $food->name }}
                             </h3>
-                            <p class="text-gray-600 text-sm mt-4"
-                                style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+                            <p class="text-gray-600 text-sm mt-4 line-clamp-2"
+                                style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                 {!! $food->description !!}
                             </p>
-                            <div class="flex items-center mb-3 min-h-[28px]">
-                                <div class="flex text-yellow-400 text-sm">
-                                    @for($i = 0; $i < 4; $i++) <i class="fas fa-star"></i> @endfor
-                                    <i class="fas fa-star-half-alt"></i>
+                            <div class="flex flex-col justify-end min-h-[70px] mb-2">
+                                <div class="flex items-center min-h-[28px]">
+                                    <div class="flex text-yellow-400 text-sm">
+                                        @for($i = 0; $i < 4; $i++) <i class="fas fa-star"></i> @endfor
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="ml-2 text-gray-500 text-sm">(4.5)</span>
+                                    <span class="ml-2 text-gray-400 text-sm">• 124 đánh giá</span>
                                 </div>
-                                <span class="ml-2 text-gray-500 text-sm">(4.5)</span>
-                                <span class="ml-2 text-gray-400 text-sm">• 124 đánh giá</span>
-                            </div>
-                            <div class="flex items-center justify-between mb-2 min-h-[30px]">
-                                <span class="text-2xl font-bold text-main-red">
+                                <span class="text-2xl font-bold text-main-red mt-1">
                                     {{ number_format($food->price, 0, ',', '.') }}đ
                                 </span>
                             </div>
@@ -258,6 +270,7 @@
                             </div>
                         </div>
                     </div>
+
                 @endforeach
 
             </div>
@@ -270,39 +283,39 @@
             </div>
 
             <!-- No Results -->
-           <!--  <div id="no-results" class="hidden text-center py-16">
+            <div id="no-results" class="hidden text-center py-16">
                 <div class="text-6xl text-gray-300 mb-4">
                     <i class="fas fa-search"></i>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-600 mb-2">Không tìm thấy món ăn phù hợp</h3>
                 <p class="text-gray-500">Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
             </div>
-        </div> -->
+        </div>
 
         <!-- Enhanced Pagination -->
 
         <nav class="flex items-center gap-2 justify-center mt-4">
-    {{-- Nút Previous --}}
-    <a href="{{ $foods->previousPageUrl() ?: '#' }}"
-       class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 {{ $foods->onFirstPage() ? 'opacity-50 pointer-events-none' : '' }}">
-        <i class="fas fa-chevron-left"></i>
-    </a>
+            {{-- Nút Previous --}}
+            <a href="{{ $foods->previousPageUrl() ?: '#' }}"
+                class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 {{ $foods->onFirstPage() ? 'opacity-50 pointer-events-none' : '' }}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
 
-    {{-- Các số trang --}}
-    @for ($i = 1; $i <= $foods->lastPage(); $i++)
-        <a href="{{ $foods->url($i) }}"
-           class="px-3 py-2 rounded-lg 
-                  {{ $i == $foods->currentPage() ? 'bg-main-red text-white font-semibold' : 'bg-gray-100 hover:bg-gray-200' }}">
-            {{ $i }}
-        </a>
-    @endfor
+            {{-- Các số trang --}}
+            @for ($i = 1; $i <= $foods->lastPage(); $i++)
+                <a href="{{ $foods->url($i) }}"
+                    class="px-3 py-2 rounded-lg 
+                                                                  {{ $i == $foods->currentPage() ? 'bg-main-red text-white font-semibold' : 'bg-gray-100 hover:bg-gray-200' }}">
+                    {{ $i }}
+                </a>
+            @endfor
 
-    {{-- Nút Next --}}
-    <a href="{{ $foods->nextPageUrl() ?: '#' }}"
-       class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 {{ $foods->currentPage() == $foods->lastPage() ? 'opacity-50 pointer-events-none' : '' }}">
-        <i class="fas fa-chevron-right"></i>
-    </a>
-</nav>
+            {{-- Nút Next --}}
+            <a href="{{ $foods->nextPageUrl() ?: '#' }}"
+                class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 {{ $foods->currentPage() == $foods->lastPage() ? 'opacity-50 pointer-events-none' : '' }}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </nav>
 
     </div>
 
@@ -348,10 +361,10 @@
 
 
             // **Xử lý tìm kiếm**
-            searchInput.addEventListener('input', function () {
+            /* searchInput.addEventListener('input', function () {
                 const searchTerm = this.value.toLowerCase();
                 filterItems(currentCategory, searchTerm);
-            });
+            }); */
 
             // **Xử lý lọc theo giá**
             priceFilter.addEventListener('change', function () {
@@ -479,10 +492,97 @@
             filterItems();
         });
         //tim kiem
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('search-input');
+            const productsGrid = document.getElementById('products-grid');
+
+            searchInput.addEventListener('input', function () {
+                const keyword = this.value.trim();
+                if (!keyword) {
+                    fetch(`/ajax-search-menu?category=${encodeURIComponent(category)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            renderSearchResults(data.results);
+                        });
+                    return;
+                }
+
+                const category = document.querySelector('input[name="category"]')?.value || 'all';
+
+                // ✅ đoạn này Laravel mới render nếu nằm trong blade
+                fetch(`{{ route('food.menu.search') }}?term=${encodeURIComponent(keyword)}&category=${encodeURIComponent(category)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.results && data.results.length > 0) {
+                            const html = data.results.map(food => `
+            <div class="food-item flex flex-col h-full max-w-[450px] min-w-[260px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
+                style="height:550px;" data-category="menu-${food.type}" data-price="${food.price}" data-name="${food.name}">
+                <div class="relative overflow-hidden" style="height:200px;">
+                    <img src="${food.image}" alt="${food.name}"
+                        class="w-full h-44 object-cover border-b border-gray-100" />
+                    <div class="absolute top-3 left-3 z-10">
+                        <span class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
+                            ${food.menu_name ?? ''}
+                        </span>
+                    </div>
+                    <div class="absolute top-3 right-3 z-10">
+                        <button class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-1 mt-[-1.5rem]">
+                    <h3 class="font-bold text-lg text-gray-800 mb-2"
+                        style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                        ${food.name}
+                    </h3>
+                    <p class="text-gray-600 text-sm mt-4"
+                        style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+                        ${food.description}
+                    </p>
+                    <div class="flex items-center mb-3 min-h-[28px]">
+                        <div class="flex text-yellow-400 text-sm">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="ml-2 text-gray-500 text-sm">(4.5)</span>
+                        <span class="ml-2 text-gray-400 text-sm">• 124 đánh giá</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-2 min-h-[30px]">
+                        <span class="text-2xl font-bold text-main-red">
+                            ${new Intl.NumberFormat('vi-VN').format(food.price)}đ
+                        </span>
+                    </div>
+                    <div class="mt-auto flex gap-2">
+                        <button class="flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]">
+                            <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ
+                        </button>
+                        <button class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+                            productsGrid.innerHTML = html;
+                            document.getElementById('results-count').textContent = `Hiển thị ${data.results.length} món ăn`;
+                        } else {
+                            productsGrid.innerHTML = `<div class="col-span-full text-center text-gray-500 py-12 text-lg">Không tìm thấy món ăn nào phù hợp.</div>`;
+                            document.getElementById('results-count').textContent = `Hiển thị 0 món ăn`;
+                        }
+                    })
+                    .catch(() => {
+                        productsGrid.innerHTML = `<div class="col-span-full text-center text-red-500 py-12 text-lg">Có lỗi xảy ra, vui lòng thử lại.</div>`;
+                    });
+            });
+        });
+
+
 
     </script>
 
     <!-- Footer -->
     @include('layouts.user.footer')
 </body>
+
 </html>
