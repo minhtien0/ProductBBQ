@@ -19,6 +19,8 @@ use App\Http\Controllers\StaffController\Dashboard;
 use App\Http\Controllers\AdminController\Product\CategoryController;
 use App\Http\Controllers\AdminController\Product\ComboController;
 use App\Http\Controllers\AdminController\Product\ProductController;
+//Thu ngân
+use App\Http\Controllers\AdminController\Cashier\CashierController;
 
 //Đăng nhập
 Route::match(['get', 'post'], '/login', [HomeController::class, 'login'])->name('login');
@@ -55,14 +57,14 @@ Route::get('/ajax-search-food', [HomeController::class, 'ajaxSearch'])->name('aj
 
 //Combodetail
 
-Route::get('/combos/{id}', [HomeController::class, 'combodetail']);
+Route::get('/combos/{id}', [HomeController::class, 'combodetail'])->name('views.combodetail');
 
 //BlogDetail
 Route::get('blogdetail/{id}/{slug}', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
 Route::get('/ajax-search-blog', [HomeController::class, 'ajaxSearchBlog'])->name('ajax.search.blog');
 
 //UserDetail
-Route::get('userdetail', [HomeController::class, 'userdetail'])->middleware([ \App\Http\Middleware\CheckLoggedIn::class])->name('views.userdetail');
+Route::get('userdetail', [HomeController::class, 'userdetail'])->middleware([\App\Http\Middleware\CheckLoggedIn::class])->name('views.userdetail');
 Route::post('/user/update-profile', [HomeController::class, 'updateProfile'])->name('user.update-profile');
 Route::post('/user/add-address', [HomeController::class, 'addAddress'])->name('user.add-address');
 Route::delete('/user/deleteAddress/{id}', [HomeController::class, 'deleteAddress'])->name('user.destroyAddress');
@@ -73,28 +75,27 @@ Route::get('/order-detail/{id}', [HomeController::class, 'ajaxDetailOrder'])->na
 
 
 //Cart
-Route::get('/cart', [HomeController::class, 'cart']) ->middleware([\App\Http\Middleware\CheckLoggedIn::class])->name('views.cart');
+Route::get('/cart', [HomeController::class, 'cart'])->middleware([\App\Http\Middleware\CheckLoggedIn::class])->name('views.cart');
 Route::post('/cart', [HomeController::class, 'storeCart'])->name('cart.add');
 Route::post('/favorite', [HomeController::class, 'toggleFavorite'])->name('favorite.toggle');
 Route::patch('/cart/{id}', [HomeController::class, 'updateQuantityCart'])->name('cart.updateQuantity');
 Route::delete('/cart/{id}', [HomeController::class, 'destroyCart'])->name('cart.destroy');
 Route::post('/order/add', [HomeController::class, 'storeOrder'])->name('order.store');
 // vnpay return
-Route::get('/vnpay/return', [HomeController::class,'vnpayReturn'])->name('vnpay.return');
+Route::get('/vnpay/return', [HomeController::class, 'vnpayReturn'])->name('vnpay.return');
 // Hủy đơn hàng của chính user
-Route::patch('/orders/{order}/cancel', [HomeController::class, 'cancelOrder'])->name('orders.cancel'); 
+Route::patch('/orders/{order}/cancel', [HomeController::class, 'cancelOrder'])->name('orders.cancel');
 //Đánh giá đơn hàng
 Route::post('/reviews', [HomeController::class, 'rateOrder'])->name('reviews.store');
 
 
 
 
-//huydong test layout quản lí bàn
-Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.deskmanage');
+
 
 
 //Group Admin
-Route::prefix('admin')->middleware([ \App\Http\Middleware\CheckAdminRole::class])->group(function () {
+Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])->group(function () {
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');
@@ -177,18 +178,22 @@ Route::prefix('admin')->middleware([ \App\Http\Middleware\CheckAdminRole::class]
         Route::post('{order}/status', [OrderController::class, 'updateStatusBringBack'])->name('admin.order.updateStatusBringBack');
         //Tại Quán
         Route::get('/onsite', [OrderController::class, 'onSite'])->name('admin.order.onsite');
-        
+
+    });
+
+    //huydong test layout quản lí bàn
+    Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.deskmanage');
+
+    //Quyền Thu Ngân
+    Route::prefix('/cashier')->group(function () {
+        Route::get('/', [CashierController::class, 'index'])->name('admin.cashier');
     });
 
 });
 
 
 
-//Group Nhân Viên Staff
-Route::prefix('staff')->middleware([\App\Http\Middleware\Locale::class])->group(function () {
-    Route::get('/index', [Dashboard::class, 'index'])->name('staff.dashboard');
 
-});
 
 
 

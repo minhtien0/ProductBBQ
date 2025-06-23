@@ -158,32 +158,44 @@
                                     <i class="fa-solid fa-tachometer-alt text-red-500 w-4"></i>
                                     <span>Dashboard tổng quan</span>
                                 </a>
-                                <a href="{{ route('staff.dashboard') }}"
+                                <a href=""
                                     class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                     <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
                                     <span>Quyền Nhân Viên</span>
                                 </a>
-                                 <a href="{{ route('staff.dashboard') }}"
+                                 <a href="{{ route('admin.cashier') }}"
                                     class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                     <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
                                     <span>Quyền Thu Ngân</span>
+                                </a>
+                                <a href="{{ route('views.deskmanage') }}"
+                                    class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                    <i class="fa-solid fa-bell-concierge text-red-500 w-4"></i>
+                                    
+                                    <span>Quản Lí Order</span>
                                 </a>
                             @elseif (session('staff_role') === 'Nhân viên')
                                 {{-- Chỉ hiển thị với Nhân viên --}}
-                                <a href="{{ route('staff.dashboard') }}"
+                                <a href="{{ route('views.deskmanage') }}"
                                     class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
-                                    <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
-                                    <span>Quyền Nhân Viên</span>
+                                    <i class="fa-solid fa-bell-concierge text-red-500 w-4"></i>
+                                    <span>Quản Lí Order</span>
                                 </a>
                              @elseif (session('staff_role') === 'Thu Ngân')
                                 {{-- Chỉ hiển thị với Nhân viên --}}
-                                <a href="{{ route('staff.dashboard') }}"
+                                <a href="{{ route('admin.cashier') }}"
                                     class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
                                     <i class="fa-solid fa-chalkboard-teacher text-red-500 w-4"></i>
                                     <span>Quyền Thu Ngân</span>
                                 </a>
+                                <a href="{{ route('views.deskmanage') }}"
+                                    class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                    <i class="fa-solid fa-bell-concierge text-red-500 w-4"></i>
+                                    
+                                    <span>Quản Lí Order</span>
+                                </a>
                             @endif
-
+                            
                             {{-- Đăng xuất (ai cũng có thể thấy) --}}
                             <a href="{{ route('logout') }}"
                                 class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">

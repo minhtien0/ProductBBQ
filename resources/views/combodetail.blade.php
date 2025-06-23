@@ -38,7 +38,7 @@
         <!-- Banner -->
         <div class="relative w-full">
             <!-- Background image (thay src thành ảnh của bạn nếu cần) -->
-            <img src="img/banner1.jpg" alt="Menu" class="w-full h-[260px] md:h-[360px] object-cover">
+            <img src="{{ asset('img/banner1.jpg') }}" alt="Menu" class="w-full h-[260px] md:h-[360px] object-cover">
             <!-- Overlay -->
             <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
             <!-- Content -->
@@ -54,94 +54,212 @@
         </div>
 
     <div class="py-6 min-h-screen">
-    <div class="container mx-auto px-2 flex flex-col lg:flex-row gap-6">
-        <!-- Sidebar (bạn có thể thay dữ liệu tĩnh hoặc sau này truyền từ controller) -->
-        <aside class="w-full lg:w-1/4 flex-shrink-0">
-        <div class="bg-white rounded-xl shadow p-4 mb-6">
-            <h3 class="font-bold text-red-600 mb-3 text-lg">SẢN PHẨM</h3>
-            <ul class="space-y-2 text-sm">
-            <li><a href="#" class="hover:text-red-600">THỊT BÒ MỸ NHẬP KHẨU</a></li>
-            <li><a href="#" class="hover:text-red-600">SET NƯỚNG - LẨU</a></li>
-            </ul>
-        </div>
-        <div class="bg-white rounded-xl shadow p-4">
-            <h3 class="font-bold text-red-600 mb-3 text-lg">DANH BÁN CHẠY</h3>
-            <ul class="space-y-3">
-            <li class="flex gap-2">
-                <img src="img/combo/1.jpg" class="w-16 h-16 object-cover rounded-lg border">
-                <div>
-                <a href="#" class="font-semibold hover:text-red-600 block text-sm">Combo Gỗ Sồi Mỹ</a>
-                <div class="text-red-500 text-xs font-bold">148,000₫</div>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1">
+                <!-- Danh mục sản phẩm -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <h3 class="font-bold text-red-600 mb-4 text-lg flex items-center">
+                        <i class="fas fa-list-ul mr-2"></i>
+                        DANH MỤC SẢN PHẨM
+                    </h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors">
+                            <i class="fas fa-meat mr-2"></i>
+                            THỊT BÒ MỸ NHẬP KHẨU
+                        </a></li>
+                        <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors">
+                            <i class="fas fa-fire mr-2"></i>
+                            SET NƯỚNG - LẨU
+                        </a></li>
+                    </ul>
                 </div>
-            </li>
-            </ul>
-        </div>
-        </aside>
 
-        <!-- Main content -->
-        <main class="flex-1">
-        <!-- Combo Info -->
-        <div class="bg-white rounded-xl shadow p-4 flex flex-col md:flex-row gap-6">
-            <div class="flex-1">
-            <img id="main-image" src="{{ asset('img/'.$combo->image) }}" alt="{{ $combo->name }}" class="w-full h-60 md:h-80 object-cover rounded-xl mb-4 shadow-lg transition-all duration-300">
-            <!-- Nếu có nhiều hình combo thì thêm ảnh nhỏ phía dưới ở đây -->
-            </div>
-            <div class="flex-1 flex flex-col justify-between">
-            <div>
-                <h1 class="text-xl md:text-2xl font-bold text-red-700 mb-2">{{ $combo->name }}</h1>
-                <div class="text-lg font-semibold mb-1">Giá bán: <span class="text-red-600 text-xl">{{ number_format($combo->price,0,',','.') }}₫</span></div>
-                <div class="mb-2">
-                <span class="inline-block px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs font-semibold">Còn hàng</span>
+                <!-- Sản phẩm bán chạy -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <h3 class="font-bold text-red-600 mb-4 text-lg flex items-center">
+                        <i class="fas fa-star mr-2"></i>
+                        BÁN CHẠY NHẤT
+                    </h3>
+                    <div class="space-y-4">
+                        @foreach ($hotCombos as $hotCombo)
+                        
+                       
+                        <div class="flex gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors bg-gray-400">
+                            <img src="{{ asset('img/combo/'. $hotCombo->image) }}" class="w-12 h-12 object-cover rounded-lg border">
+                            <div class="flex-1">
+                                <a href="#" class="font-semibold hover:text-red-600 block text-sm mb-1">{{  $hotCombo->name }}</a>
+                                <div class="text-red-500 font-bold text-sm">{{  $hotCombo->price}}₫</div>
+                            </div>
+                        </div>
+                         @endforeach
+                    </div>
                 </div>
-                <div class="mb-4">
-                <button id="add-to-cart" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-5 rounded-xl shadow inline-block">Thêm vào giỏ hàng</button>
-                </div>
-                <ul class="text-gray-700 text-sm mb-4">
-                <li><b>Mã sản phẩm:</b> {{ $combo->codecombo }}</li>
-                <li><b>Ghi chú:</b> {{ $combo->note }}</li>
-                </ul>
-            </div>
-            </div>
-        </div>
 
-        <!-- Thông tin sản phẩm và danh sách món trong combo -->
-        <div class="bg-white rounded-xl shadow p-4 mt-6">
-            <h2 class="text-lg font-bold text-red-600 mb-2">THÔNG TIN SẢN PHẨM</h2>
-            <div class="mb-3 text-gray-800">
-            {{ $combo->note }}
-            </div>
-            <h3 class="text-base font-semibold mb-2">Danh sách món trong combo:</h3>
-            <ul class="list-disc pl-6">
-            @foreach($foods as $food)
-                <li>
-                <span class="font-bold">{{ $food->name }}</span>
-                @if(isset($food->price)) - <span class="text-sm text-gray-600">{{ number_format($food->price, 0, ',', '.') }}₫</span> @endif
-                </li>
-            @endforeach
-            </ul>
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="font-bold text-red-600 mb-4 text-lg flex items-center">
+                        <i class="fas fa-star mr-2"></i>
+                        Combo Tương Tự
+                    </h3>
+                    <div class="space-y-4">
+                        @foreach ($hotCombos as $hotCombo)
+                        
+                       
+                        <div class="flex gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors bg-gray-400">
+                            <img src="{{ asset('img/combo/'. $hotCombo->image) }}" class="w-12 h-12 object-cover rounded-lg border">
+                            <div class="flex-1">
+                                <a href="{{ route('views.combodetail',$hotCombo->id) }}" class="font-semibold hover:text-red-600 block text-sm mb-1">{{  $hotCombo->name }}</a>
+                                <div class="text-red-500 font-bold text-sm">{{  $hotCombo->price}}₫</div>
+                            </div>
+                        </div>
+                         @endforeach
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main content -->
+            <main class="lg:col-span-3">
+                <!-- Hero Section - Thông tin chính của combo -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+                        <!-- Hình ảnh sản phẩm -->
+                        <div class="relative">
+                            <div class="absolute top-4 left-4 z-10">
+                                <span class="product-badge text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                    <i class="fas fa-fire mr-1"></i>
+                                    {{  $combo->codecombo}}
+                                </span>
+                            </div>
+                            <img id="main-image" src="{{ asset('img/combo/'. $combo->image) }}" alt="Combo Name" 
+                                 class="w-full h-80 object-cover rounded-xl shadow-lg">
+                        </div>
+
+                        <!-- Thông tin sản phẩm -->
+                        <div class="flex flex-col justify-between">
+                            <div>
+                                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-3">{{  $combo->name }}</h1>
+                                
+                                <!-- Giá và thông tin cơ bản -->
+                                <div class="price-highlight rounded-xl  mb-4">
+                                    <div class="flex items-center ">
+                                        <span class="text-gray-700 font-semibold mr-3">Giá combo:</span>
+                                        <span class="text-2xl font-bold text-red-600">{{  $combo->price}}₫</span>
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1">
+                                        <i class="fas fa-tag mr-1"></i>
+                                        Tiết kiệm {{ number_format($combo->total_price - $combo->price, 0, ',', '.') }}₫ so với mua lẻ
+                                    </div>
+                                </div>
+
+                                <!-- Thông tin chi tiết -->
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-barcode text-gray-500 w-5 mr-3"></i>
+                                        <span class="text-gray-600">Mã sản phẩm:</span>
+                                        <span class="font-semibold ml-2">{{  $combo->codecombo}}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-users text-gray-500 w-5 mr-3"></i>
+                                        <span class="text-gray-600">Phù hợp cho:</span>
+                                        <span class="font-semibold ml-2">4-6 người</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-clock text-gray-500 w-5 mr-3"></i>
+                                        <span class="text-gray-600">Thời gian chuẩn bị:</span>
+                                        <span class="font-semibold ml-2">15-20 phút</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Call to action -->
+                            <div class="space-y-3">
+                                <button class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-300 flex items-center justify-center">
+                                    <i class="fas fa-cart-plus mr-2"></i>
+                                    THÊM VÀO GIỎ HÀNG
+                                </button>
+                                <button class="w-full border-2 border-red-600 text-red-600 hover:bg-red-50 font-semibold py-3 px-6 rounded-xl transition-colors duration-300 flex items-center justify-center">
+                                    <i class="fas fa-phone mr-2"></i>
+                                    GỌI ĐẶT HÀNG: 0123.456.789
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mô tả combo -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-red-600 mb-4 flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        MÔ TẢ COMBO
+                    </h2>
+                    <div class="text-gray-700 leading-relaxed">
+                        {!! $combo->note !!}
+                    </div>
+                </div>
+
+                <!-- Danh sách món ăn trong combo -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-red-600 mb-6 flex items-center">
+                        <i class="fas fa-utensils mr-2"></i>
+                        DANH SÁCH MÓN ĂN TRONG COMBO
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach ($foods as $food)
+                        
+                        
+                        <div class="combo-card border border-gray-200 rounded-xl p-4 hover:border-red-300">
+                            <div class="flex items-center gap-4">
+                                
+                                <img src="{{ asset('img/'.$food->image) }}" alt="Thịt bò nướng" class="w-20 h-20 object-cover rounded-lg">
+                                <div class="flex-1">
+                                    <a href="{{ route('views.menudetail',[$food->id,$food->slug]) }}">
+                                    <h3 class="font-bold text-gray-800 mb-1">{{ $food->name }}</h3>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-red-600 font-semibold">{{ $food->price }}₫</span>
+                                        
+                                    </div>
+                                    </a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Tổng giá trị -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">Tổng giá trị nếu mua lẻ:</span>
+                            <span class="font-semibold text-gray-800 line-through">{{ $combo->total_price }}</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-red-600 font-semibold">
+                                Giá combo (tiết kiệm {{ number_format($combo->total_price - $combo->price, 0, ',', '.') }}₫):
+                            </span>
+                            <span class="text-2xl font-bold text-red-600">{{ $combo->price }}₫</span>
+                        </div>
+                        <div class="text-center mt-3">
+                            @php
+                                $percent = 0;
+                                if ($combo->total_price > 0) {
+                                    $percent = (($combo->total_price - $combo->price) / $combo->total_price) * 100;
+                                }
+                            @endphp
+
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-percentage mr-1"></i>
+                                Tiết kiệm {{ number_format($percent, 1) }}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        <!-- Bình luận Facebook -->
-        <div class="bg-white rounded-xl shadow p-4 mt-6">
-            <h2 class="text-lg font-bold text-red-600 mb-2">Ý KIẾN KHÁCH HÀNG</h2>
-            <div>
-            <div id="fb-comments">
-                <div class="fb-comments" data-href="{{ Request::url() }}" data-width="100%" data-numposts="5"></div>
-            </div>
-            </div>
-        </div>
-        </main>
     </div>
-    </div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v16.0"></script>
-    <script>
-    // Toast thông báo thêm vào giỏ hàng
-    const addToCartBtn = document.getElementById('add-to-cart');
-    if(addToCartBtn){
-        addToCartBtn.addEventListener('click', function(){
-        alert('Đã thêm vào giỏ hàng!');
-        });
-    }
-    </script>
+
     </body>
     @include('layouts.user.footer')
     </html>

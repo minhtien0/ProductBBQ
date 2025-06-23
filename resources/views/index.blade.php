@@ -996,8 +996,9 @@
       <div class="swiper-wrapper">
         @foreach($combos as $combo)
         <div class="swiper-slide">
-          <a href="{{ url('combos/'.$combo->id) }}">
-            <div class="bg-white rounded-xl shadow p-3  w-64 md:w-64 lg:w-96 mx-auto mb-2 hover:scale-105 transition-transform duration-200">
+          <a href="{{ route('views.combodetail',$combo->id) }}">
+            <div class="bg-white rounded-xl shadow p-3 w-64 mx-auto hover:scale-105 transition-transform duration-200">
+
               <div class="relative">
                <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/combo/'.$combo->image) }}"
      class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">
@@ -1157,43 +1158,66 @@
         </div>
 
         <!-- Counter Section -->
-        <div class="counter-section">
-            <div class="counter-wrap">
-                <div class="counter-item">
-                    <div class="counter-circle">
-                        <div class="counter-num">85,000 +</div>
-                        <div class="counter-icon"><i class="fa fa-users"></i></div>
-                    </div>
-                    <div class="counter-label">Dịch vụ khách hàng</div>
-                </div>
-                <div class="counter-item">
-                    <div class="counter-circle">
-                        <div class="counter-num">120 +</div>
-                        <div class="counter-icon"><i class="fa fa-hat-chef"></i></div>
-                    </div>
-                    <div class="counter-label">Kinh nghiệp đầu bếp</div>
-                </div>
-                <div class="counter-item">
-                    <div class="counter-circle">
-                        <div class="counter-num">72,000 +</div>
-                        <div class="counter-icon"><i class="fa fa-face-smile"></i></div>
-                    </div>
-                    <div class="counter-label">Thái độ khách hàng</div>
-                </div>
-                <div class="counter-item">
-                    <div class="counter-circle">
-                        <div class="counter-num">30 +</div>
-                        <div class="counter-icon"><i class="fa fa-trophy"></i></div>
-                    </div>
-                    <div class="counter-label">Chứng Nhận</div>
-                </div>
-            </div>
+          <section class="py-10 bg-cover bg-center relative" style="background-image:url('img/logo2.jpg');">
+    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+    <div class="relative max-w-5xl mx-auto flex flex-wrap justify-between items-center gap-3 z-10 px-2">
+      <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
+        <div
+          class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countUser }}">0</span><span
+            class="font-bold text-white text-2xl md:text-3xl">+</span>
         </div>
+        <div class="text-white text-xs mt-2">Khách Hàng</div>
+      </div>
+      <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
+        <div
+          class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countStaff }}">0</span><span
+            class="font-bold text-white text-2xl md:text-3xl">+</span>
+        </div>
+        <div class="text-white text-xs mt-2">Nhân Viên</div>
+      </div>
+      <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
+        <div
+          class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countRate }}">0</span><span
+            class="font-bold text-white text-2xl md:text-3xl">+</span>
+        </div>
+        <div class="text-white text-xs mt-2">Đánh Giá</div>
+      </div>
+      <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
+        <div
+          class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
+          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="5">2</span><span
+            class="font-bold text-white text-2xl md:text-3xl ml-2"> Yoe</span>
+        </div>
+        <div class="text-white text-xs mt-2">Kinh Nghiệm</div>
+      </div>
+    </div>
+  </section>
     </section>
 
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script>
+        // COUNTER EFFECT
+    function animateCounter(el) {
+      const to = +el.dataset.to;
+      let current = 0, inc = Math.ceil(to / 50);
+      function update() {
+        current += inc;
+        if (current >= to) {
+          el.textContent = to.toLocaleString();
+        } else {
+          el.textContent = current.toLocaleString();
+          requestAnimationFrame(update);
+        }
+      }
+      update();
+    }
+    document.querySelectorAll('.counter').forEach(el => animateCounter(el));
+    </script>
     <script>
         // Sale slider
         var swiperSale = new Swiper('.mySwiper', {

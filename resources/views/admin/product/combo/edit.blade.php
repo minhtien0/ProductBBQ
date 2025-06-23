@@ -308,6 +308,23 @@
 </style>
 
 <script>
+    $(document).ready(function() {
+        if (document.getElementById('note')) {
+            CKEDITOR.replace('note', {
+                height: 180,
+                removePlugins: 'elementspath',
+                resize_enabled: false,
+                toolbar: [
+                    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
+                    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Blockquote' ] },
+                    { name: 'links', items: [ 'Link', 'Unlink' ] },
+                    { name: 'insert', items: [ 'Image', 'Table' ] },
+                    { name: 'styles', items: [ 'Format' ] },
+                    { name: 'tools', items: [ 'Maximize' ] }
+                ]
+            });
+        }
+    });
     function previewImage(event) {
         const input = event.target;
         const preview = document.getElementById('preview-img');
@@ -319,6 +336,8 @@
             }
             reader.readAsDataURL(input.files[0]);
         }
+        
+        
     }
 
     $(document).ready(function() {
@@ -467,6 +486,7 @@
         // Khởi tạo lần đầu
         updateSelectedFoods();
     });
+    
 </script>
 
 @endsection
