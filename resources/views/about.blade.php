@@ -122,25 +122,25 @@
       <!-- Right: Nội dung -->
       <div class="flex-1 pt-24 lg:pt-0">
         <div class="flex items-center gap-2 mb-3">
-          <span class="text-[#fff] text-2xl font-extrabold italic" style="font-family:Montserrat,sans-serif;">THÔNG TIN
+          <span class=" text-2xl font-extrabold italic" style="font-family:Montserrat,sans-serif;">THÔNG TIN
             VỀ LỬA BÉ HOY</span>
           <img src="https://cdn-icons-png.flaticon.com/128/3792/3792085.png" class="w-10 h-7" alt="" />
         </div>
         <h2 class="text-[#C20000] font-extrabold text-3xl md:text-5xl mb-3" style="font-family:Montserrat,sans-serif;">
           Trải nghiệm BBQ đích thực</h2>
-        <p class="text-[#fff] text-lg mb-8" style="font-family:Poppins,sans-serif;">
+        <p class="text-lg mb-8 ml-2" style="font-family:Poppins,sans-serif;">
           LỬA BÉ HOY là nơi hội tụ tinh hoa BBQ, mang đến những món nướng đậm đà hương vị từ thịt bò thượng hạng, sườn
           heo mật ong, và hải sản tươi sống. Với hơn 10 năm kinh nghiệm, chúng tôi cam kết phục vụ thực khách bằng ngọn
           lửa đam mê và nguyên liệu chất lượng cao.
         </p>
         <!-- Features List -->
         <div class="flex flex-col gap-8">
-          <div class="flex items-start gap-5">
+          <div class="flex items-start gap-5 ml-2">
             <img src="img/bbq2.png" class="w-16 h-16" alt="">
             <div>
               <div class="text-[#C20000] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">
                 Thành phần cao cấp</div>
-              <div class="text-[#fff] text-base" style="font-family:Poppins,sans-serif;">
+              <div class=" text-base" style="font-family:Poppins,sans-serif;">
                 Chúng tôi chỉ sử dụng thịt bò Wagyu, gà hữu cơ, và rau củ theo mùa để đảm bảo chất lượng vượt trội cho
                 từng món nướng.
               </div>
@@ -151,7 +151,7 @@
             <div>
               <div class="text-[#C20000] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">Trải nghiệm
                 nướng trực tiếp</div>
-              <div class="text-[#fff] text-base" style="font-family:Poppins,sans-serif;">
+              <div class=" text-base" style="font-family:Poppins,sans-serif;">
                 Thưởng thức BBQ ngay tại bàn với đầu bếp nướng trực tiếp, mang đến sự tươi mới và ấm cúng.
               </div>
             </div>
@@ -161,7 +161,7 @@
             <div>
               <div class="text-[#C20000] font-extrabold text-2xl" style="font-family:Montserrat,sans-serif;">
                 Nước sốt BBQ tùy chỉnh</div>
-              <div class="text-[#fff] text-base" style="font-family:Poppins,sans-serif;">
+              <div class=" text-base" style="font-family:Poppins,sans-serif;">
                 Tận hưởng các loại sốt BBQ độc quyền như sốt cay ớt, sốt ngọt dứa, và sốt tỏi rang tự pha chế.
               </div>
             </div>
@@ -224,10 +224,10 @@
             </svg>
           </div>
           <div>
-            <div class="text-white text-3xl font-extrabold mb-1" style="font-family:Montserrat,sans-serif;">Thành tựu
+            <div class="text-white text-3xl font-extrabold mb-1" style="font-family:Montserrat,sans-serif;">Tương lai
             </div>
             <div class="text-white text-lg" style="font-family:Poppins,sans-serif;">
-              Đạt 100.000 khách hàng hài lòng và mở rộng 5 chi nhánh mới vào năm 2027.
+              Đạt lượng khách hàng hài lòng nhiều hơn và mở rộng 5 chi nhánh mới vào năm 2027.
             </div>
           </div>
         </div>
@@ -263,14 +263,14 @@
   <section class="max-w-7xl mx-auto px-4 py-16 flex flex-col lg:flex-row gap-10 items-start">
     <!-- LEFT: Text + Service Cards -->
     <div class="flex-1">
-      <div class="mb-2 text-lg font-bold text-[#ff8200] flex items-center gap-2">
+      <div class="mb-2 text-lg font-bold text-[#ff8200] flex items-center gap-2 ">
         <span>Why Choose Us</span>
         <span class="text-xl">🌱</span>
       </div>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-[#292953] mb-3">
-        Tại sao LỬA BÉ HOY lại nổi bật</h2>
-      <p class="mb-7 text-gray-600 max-w-xl">
-        LỬA BÉ HOY cam kết mang đến hương vị BBQ đích thực với sự tận tâm trong từng món nướng. Từ nguyên liệu tươi ngon
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-[#292953] mb-3 ">
+        Tại sao LUA BE HOY lại nổi bật</h2>
+      <p class="mb-7 text-gray-600 max-w-xl ">
+        LUA BE HOY cam kết mang đến hương vị BBQ đích thực với sự tận tâm trong từng món nướng. Từ nguyên liệu tươi ngon
         đến kỹ thuật nướng độc đáo, chúng tôi tạo nên trải nghiệm ẩm thực khó quên.
       </p>
       <!-- Service Cards -->
@@ -278,7 +278,7 @@
         <!-- Card 1 -->
         <div class="flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
           <div
-            class="flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
+            class=" mt-[30px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke-width="2" stroke-linecap="round"
@@ -294,7 +294,7 @@
         <!-- Card 2 -->
         <div class="flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
           <div
-            class="flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
+            class="mt-[30px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-9 7v4m4-4v4" stroke-width="2" stroke-linecap="round"
@@ -308,9 +308,9 @@
           </div>
         </div>
         <!-- Card 3 -->
-        <div class="flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
+        <div class=" flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
           <div
-            class="flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
+            class="mt-[30px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path d="M13 16h-1v-4h-1m2 4v2m-2-2v2M6 6h.01M18 6h.01M12 6h.01" stroke-width="2" stroke-linecap="round"
@@ -326,7 +326,7 @@
         <!-- Card 4 -->
         <div class="flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
           <div
-            class="flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
+            class="mt-[30px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path d="M17 20h5v-2a2 2 0 00-2-2h-3v-2a2 2 0 00-2-2h-2a2 2 0 00-2 2v2h-3a2 2 0 00-2 2v2h5"
