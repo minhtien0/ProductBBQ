@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\BookingTable;
 use App\Models\Company;
+use App\Models\FoodCombo;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use App\Models\Staff;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Sum;
 
 class HomeController extends Controller
 {
@@ -38,9 +40,11 @@ class HomeController extends Controller
             ->where('type', 'Yêu Thích')
             ->pluck('food_id')
             ->toArray();
-
+        $countStaff = Staff::count();
+        $countUser = User::count();
+        $countRate = Rate::count();
         //dd(session('role'));
-        return view('index', compact('allFoods', 'favIds', 'combos'));
+        return view('index', compact('allFoods', 'favIds', 'combos','countStaff','countUser','countRate'));
     }
     public function searchFood(Request $request)
     {
@@ -1263,7 +1267,13 @@ class HomeController extends Controller
     public function combodetail($id)
     {
         // Lấy thông tin combo
-        $combo = DB::table('food_combos')->where('id', $id)->first();
+        $combo = DB::table('food_combos')
+            ->join('detail_combos', 'detail_combos.combo_id', '=', 'food_combos.id')
+            ->join('foods', 'foods.id', '=', 'detail_combos.food_id')
+            ->where('food_combos.id', $id)
+            ->select(DB::raw('SUM(foods.price) as total_price'), 'food_combos.*')
+            ->groupBy('food_combos.id','food_combos.codecombo','food_combos.name','food_combos.price','food_combos.note','food_combos.created_at','food_combos.image','food_combos.updated_at')
+            ->first();
 
         // Lấy danh sách món ăn thuộc combo này
         $foods = DB::table('detail_combos')
@@ -1273,7 +1283,8 @@ class HomeController extends Controller
             ->get();
 
         // Lấy danh sách các combo khác (sidebar bán chạy)
-        $hotCombos = DB::table('food_combos')->limit(3)->get();
+        $hotCombos = FoodCombo::where('id','!=',$id)
+        ->get();
 
         return view('combodetail', compact('combo', 'foods', 'hotCombos'));
     }
