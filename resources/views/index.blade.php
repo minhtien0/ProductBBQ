@@ -998,6 +998,10 @@
         <div class="swiper-slide">
           <a href="{{ route('views.combodetail',$combo->id) }}">
             <div class="bg-white rounded-xl shadow p-3 w-64 mx-auto hover:scale-105 transition-transform duration-200">
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8c7377769ea4291cba937214af67cc7ef42e791b
               <div class="relative">
                <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/combo/'.$combo->image) }}"
      class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">

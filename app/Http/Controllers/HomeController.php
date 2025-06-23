@@ -44,7 +44,7 @@ class HomeController extends Controller
         $countUser = User::count();
         $countRate = Rate::count();
         //dd(session('role'));
-        return view('index', compact('allFoods', 'favIds', 'combos', 'countStaff', 'countUser', 'countRate'));
+        return view('index', compact('allFoods', 'favIds', 'combos','countStaff','countUser','countRate'));
     }
     public function searchFood(Request $request)
     {
