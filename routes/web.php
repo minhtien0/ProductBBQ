@@ -33,7 +33,8 @@ Route::post('/register', [HomeController::class, 'register'])->name('register');
 // Xử lý xác nhận email
 Route::get('/verify-email/{token}', [HomeController::class, 'verifyEmail'])->name('verify.email');
 //Order
-Route::get('order', [HomeController::class, 'order'])->name('views.qrorder');
+Route::get('order/{id}', [HomeController::class, 'order'])->name('views.qrorder');
+Route::get('/get-products-by-category/{categoryId}', [HomeController::class, 'getProductsByCategory']);
 //Home
 Route::get('/', [HomeController::class, 'index'])->name('views.index');
 Route::get('/search-food', [HomeController::class, 'searchFood'])->name('food.search');
