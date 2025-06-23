@@ -997,17 +997,13 @@
         @foreach($combos as $combo)
         <div class="swiper-slide">
           <a href="{{ route('views.combodetail',$combo->id) }}">
-            <div class="bg-white rounded-xl shadow p-3 w-64 mx-auto hover:scale-105 transition-transform duration-200">
-<<<<<<< HEAD
-
-=======
->>>>>>> 8c7377769ea4291cba937214af67cc7ef42e791b
-              <div class="relative">
+            <div class="bg-white rounded-xl shadow p-3 w-80 mx-auto hover:scale-105 transition-transform duration-200">
+              <div  class="relative">
                <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/combo/'.$combo->image) }}"
      class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">
                 <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-md font-bold shadow">-{{ rand(20, 60) }}% Off</span>
               </div>
-              <h3 class="text-blue-900 font-extrabold mt-3 mb-1 text-base truncate">{{ $combo->name }}</h3>
+              <h3 id="booking" class="text-blue-900 font-extrabold mt-3 mb-1 text-base truncate">{{ $combo->name }}</h3>
               <p class="text-gray-600 text-sm mb-2 truncate">{{ $combo->note }}</p>
               <div class="flex items-center justify-between">
                 <span class="text-red-600 font-bold text-lg">{{ number_format($combo->price, 0, ',', '.') }}₫</span>
@@ -1015,7 +1011,7 @@
                   <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-shopping-basket"></i></span>
                   <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-heart"></i></span>
                   <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-eye"></i></span>
-                </span>
+                </span >
               </div>
             </div>
           </a>
@@ -1029,7 +1025,7 @@
 
     <!--Booking -->
     <section>
-        <div class="booking-section">
+        <div  class="booking-section">
             <img class="booking-img" src="img/logo2.jpg" alt="Restaurant" />
             <div class="booking-form-bg">
                 <form class="booking-form" method="POST" action="{{ route('booking.store') }}">

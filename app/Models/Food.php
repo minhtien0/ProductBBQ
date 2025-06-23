@@ -28,7 +28,7 @@ class Food extends Model
     // Mối quan hệ với bảng Menu
     public function menus()
     {
-        return $this->belongsTo(Menu::class, 'type');
+        return $this->belongsTo(Menu::class, 'type','id'); 
     }
 
      // Mối quan hệ nhiều-nhiều với bảng FoodCombo

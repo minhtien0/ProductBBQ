@@ -37,6 +37,7 @@ Route::get('order/{id}', [HomeController::class, 'order'])->name('views.qrorder'
 Route::get('/get-products-by-category/{categoryId}', [HomeController::class, 'getProductsByCategory']);
 //Home
 Route::get('/', [HomeController::class, 'index'])->name('views.index');
+//Tìm kiếm món ăn ở trang chủ
 Route::get('/search-food', [HomeController::class, 'searchFood'])->name('food.search');
 //About
 Route::get('about', [HomeController::class, 'about'])->name('views.about');
@@ -54,15 +55,16 @@ Route::post('/booking', [HomeController::class, 'storeBookingTable'])->name('boo
 
 //MenuDetail
 Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->name('views.menudetail');
-Route::get('/ajax-search-food', [HomeController::class, 'ajaxSearch'])->name('ajax.search.food');
+//Tìm Kiếm món ăn ở thực đơn
+Route::get('/search-menu', [HomeController::class, 'ajaxSearchMenu'])->name('food.menu.search');
 
 //Combodetail
-
 Route::get('/combos/{id}', [HomeController::class, 'combodetail'])->name('views.combodetail');
 
 //BlogDetail
 Route::get('blogdetail/{id}/{slug}', [HomeController::class, 'blogdetail'])->name('views.blogdetail');
 Route::get('/ajax-search-blog', [HomeController::class, 'ajaxSearchBlog'])->name('ajax.search.blog');
+
 
 //UserDetail
 Route::get('userdetail', [HomeController::class, 'userdetail'])->middleware([\App\Http\Middleware\CheckLoggedIn::class])->name('views.userdetail');
