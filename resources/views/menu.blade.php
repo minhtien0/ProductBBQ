@@ -83,8 +83,8 @@
                         <button data-cat="{{ $menuCat }}"
                             onclick="window.location.href='{{ route('views.menu', array_merge(request()->except(['category', 'page']), ['category' => $menuCat, 'page' => 1])) }}'"
                             class="category-tab
-                                    {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
-                                    px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
+                                            {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
+                                            px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
                             {{-- icon --}}
                             @if(stripos($menu->name, 'BBQ') !== false)
                                 <i class="fas fa-star mr-2"></i>
@@ -270,28 +270,40 @@
             </div>
 
             <!-- No Results -->
-            <div id="no-results" class="hidden text-center py-16">
+           <!--  <div id="no-results" class="hidden text-center py-16">
                 <div class="text-6xl text-gray-300 mb-4">
                     <i class="fas fa-search"></i>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-600 mb-2">Không tìm thấy món ăn phù hợp</h3>
                 <p class="text-gray-500">Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
             </div>
-        </div>
+        </div> -->
 
         <!-- Enhanced Pagination -->
 
-        <nav class="flex items-center gap-2 justify-center">
-            <a href="{{ $foods->previousPageUrl() ?: '#' }}" ...>
-                <i class="fas fa-chevron-left"></i>
-            </a>
-            <span class="px-4 py-2 rounded-lg bg-main-red text-white font-semibold">
-                {{ $foods->currentPage() }}
-            </span>
-            <a href="{{ $foods->nextPageUrl() ?: '#' }}" ...>
-                <i class="fas fa-chevron-right"></i>
-            </a>
-        </nav>
+        <nav class="flex items-center gap-2 justify-center mt-4">
+    {{-- Nút Previous --}}
+    <a href="{{ $foods->previousPageUrl() ?: '#' }}"
+       class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 {{ $foods->onFirstPage() ? 'opacity-50 pointer-events-none' : '' }}">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+
+    {{-- Các số trang --}}
+    @for ($i = 1; $i <= $foods->lastPage(); $i++)
+        <a href="{{ $foods->url($i) }}"
+           class="px-3 py-2 rounded-lg 
+                  {{ $i == $foods->currentPage() ? 'bg-main-red text-white font-semibold' : 'bg-gray-100 hover:bg-gray-200' }}">
+            {{ $i }}
+        </a>
+    @endfor
+
+    {{-- Nút Next --}}
+    <a href="{{ $foods->nextPageUrl() ?: '#' }}"
+       class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 {{ $foods->currentPage() == $foods->lastPage() ? 'opacity-50 pointer-events-none' : '' }}">
+        <i class="fas fa-chevron-right"></i>
+    </a>
+</nav>
+
     </div>
 
 
@@ -466,10 +478,11 @@
             // Khởi tạo với tất cả món ăn
             filterItems();
         });
+        //tim kiem
+
     </script>
 
     <!-- Footer -->
     @include('layouts.user.footer')
 </body>
-
 </html>

@@ -112,6 +112,31 @@ class HomeController extends Controller
 
         return view('menu', compact('menus', 'foods', 'category', 'search'));
     }
+    public function ajaxSearch(Request $request)
+    {
+        $query = $request->get('q');
+        // Lọc theo tên món ăn (tuỳ cột của bạn)
+        $foods = Food::where('name', 'like', "%$query%")->get();
+
+        if ($foods->isEmpty()) {
+            return response()->json([
+                'html' => '<div id="no-result" class="text-red-500 py-8 text-center font-bold">Không tìm thấy món nào!</div>'
+            ]);
+        }
+
+        // Render các card món ăn ra chuỗi HTML (đơn giản hoá ví dụ)
+        $html = '';
+        foreach ($foods as $food) {
+            $html .= '
+        <div class="food-item bg-white rounded-xl shadow p-4 mb-3">
+            <div class="font-bold">' . $food->name . '</div>
+            <div class="text-gray-600">' . $food->description . '</div>
+            <div class="text-red-500 font-bold">' . number_format($food->price, 0, ',', '.') . '₫</div>
+        </div>';
+        }
+
+        return response()->json(['html' => $html]);
+    }
 
     public function blog()
     {

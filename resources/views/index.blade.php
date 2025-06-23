@@ -999,8 +999,8 @@
           <a href="{{ route('views.combodetail',$combo->id) }}">
             <div class="bg-white rounded-xl shadow p-3 w-64 mx-auto hover:scale-105 transition-transform duration-200">
               <div class="relative">
-                <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/'.$combo->image) }}"
-                  class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">
+               <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/combo/'.$combo->image) }}"
+     class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">
                 <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-md font-bold shadow">-{{ rand(20, 60) }}% Off</span>
               </div>
               <h3 class="text-blue-900 font-extrabold mt-3 mb-1 text-base truncate">{{ $combo->name }}</h3>
@@ -1017,11 +1017,6 @@
           </a>
         </div>
         @endforeach
-      </div>
-      <!-- Nút trên mobile -->
-      <div class="flex md:hidden gap-2 justify-end mt-3">
-        <button class="swiper-button-prev bg-gray-300 px-2 rounded">&larr;</button>
-        <button class="swiper-button-next bg-gray-300 px-2 rounded">&rarr;</button>
       </div>
     </div>
   </div>
