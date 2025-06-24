@@ -11,7 +11,7 @@ use App\Http\Controllers\AdminController\Staff\StaffController;
 use App\Http\Controllers\AdminController\Blog;
 use App\Http\Controllers\AdminController\VoucherController;
 use App\Http\Controllers\AdminController\HelpController;
-use App\Http\Controllers\AdminController\BookTable;
+use App\Http\Controllers\AdminController\BookTableController;
 use App\Http\Controllers\AdminController\CompanyController;
 use App\Http\Controllers\AdminController\OrderController;
 use App\Http\Controllers\StaffController\Dashboard;
@@ -91,15 +91,8 @@ Route::patch('/orders/{order}/cancel', [HomeController::class, 'cancelOrder'])->
 //Đánh giá đơn hàng
 Route::post('/reviews', [HomeController::class, 'rateOrder'])->name('reviews.store');
 
-
-
-
-
-
-
 //Group Admin
 Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])->group(function () {
-    Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');
     Route::prefix('voucher')->group(function () {
@@ -114,7 +107,9 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
     Route::get('/help/reply/{id}', [HelpController::class, 'showReplyForm'])->name('help.replyForm');
     Route::post('/help/reply/{id}', [HelpController::class, 'sendReply'])->name('help.sendReply');
 
-    Route::get('/booktable', [BookTable::class, 'index'])->name('admin.booktable');
+    //Đặt bàn
+    Route::get('/booktable', [BookTableController::class, 'index'])->name('admin.booktable');
+    Route::get('/booktable/detail', [BookTableController::class, 'detail'])->name('admin.booktable');
     //thông tin công ty
     Route::get('/info', [CompanyController::class, 'index'])->name('admin.info');
     Route::post('/info/update/{id}', [CompanyController::class, 'update'])->name('admin.info.update');
@@ -153,6 +148,11 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::delete('/delete', [ProductController::class, 'delete'])->name('admin.product.delete');
         //Menu
         Route::get('/category', [CategoryController::class, 'index'])->name('admin.product.category.index');
+         Route::get('/category/create', [CategoryController::class, 'create'])->name('admin.menu.create');
+        Route::post('/category/add', [CategoryController::class, 'add'])->name('admin.menu.add');
+         Route::delete('/category/delete', [CategoryController::class, 'delete'])->name('admin.menu.delete');
+        Route::get('/category/edit/{id}', [CategoryController::class, 'edit'])->name('admin.menu.edit');
+        Route::post('/category/update/{id}', [CategoryController::class, 'update'])->name('admin.menu.update');
         //Combo
         Route::get('/combo', [ComboController::class, 'index'])->name('admin.product.combo.index');
         Route::get('/food-combo/add', [ComboController::class, 'showAddForm'])->name('admin.product.food_combo.addForm');

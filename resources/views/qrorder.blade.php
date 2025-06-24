@@ -178,7 +178,11 @@
                                 <i class="fa-solid fa-utensils"></i> <br>{{ $menu->name }}
                             </button>
                         @endforeach
-                        <!-- Xóa nút trùng lặp bên ngoài vòng lặp nếu không cần thiết -->
+                        <button
+                            class="combo-view-btn min-w-[160px] block p-2 mb-1 bg-amber-500 rounded text-center text-xs sm:text-sm text-white hover:bg-amber-600 transition-colors"
+                            style="margin-left:8px" data-combo="1">
+                            <i class="fa-solid fa-layer-group"></i><br>Xem các Combo đã gọi
+                        </button>
                     </div>
                 </div>
 
@@ -219,6 +223,10 @@
 
     </div>
     <script>
+    window.comboData = @json($comboData ?? []);
+</script>
+
+    <script>
         $(document).ready(function () {
             // Dữ liệu combo ban đầu từ PHP
             var initialComboData = <?php echo json_encode($comboData); ?> || [];
@@ -236,7 +244,7 @@
                         data.foods.forEach(function (food) {
                             html += `
                         <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="${categoryId}">
-                            <img src="${food.image || 'img/default-food.jpg'}" alt="${food.name}" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                            <img src="{{ asset('img/${food.image }') }}" alt="${food.name}" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
                             <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">${food.name}</h3>
                             <p class="text-[10px] sm:text-xs text-gray-light">${food.price} VNĐ</p>
                             <div class="flex items-center justify-center gap-2 mt-2 mb-2">
@@ -249,46 +257,7 @@
                     `;
                         });
 
-                        // Hiển thị các combo từ AJAX
-                        data.combos.forEach(function (combo) {
-                            var foodList = combo.detailCombos.map(detail => `<li>${detail.food_name}</li>`).join('');
-                            html += `
-                        <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="${categoryId}">
-                            <img src="${combo.image}" alt="${combo.name}" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
-                            <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">${combo.name} (Combo)</h3>
-                            <p class="text-[10px] sm:text-xs text-gray-light">${combo.price} VNĐ</p>
-                            <ul class="text-[10px] text-gray-light">${foodList}</ul>
-                            <div class="flex items-center justify-center gap-2 mt-2 mb-2">
-                                <button onclick="changeQty(this, -1)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" type="button">-</button>
-                                <input type="number" value="1" min="1" class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold" readonly>
-                                <button onclick="changeQty(this, 1)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" type="button">+</button>
-                            </div>
-                            <button onclick="addToCartWithQty(this, '${combo.name}', ${combo.price}, '${combo.image}')" class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
-                        </div>
-                    `;
-                        });
-
-                        // Thêm các combo đã order ban đầu (nếu thuộc danh mục)
-                        initialComboData.forEach(function (combo) {
-                            if (combo.foods.some(food => data.foods.some(f => f.name === food.name))) {
-                                var foodList = combo.foods.map(food => `<li>${food.name}</li>`).join('');
-                                html += `
-                            <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center ordered" data-category="${categoryId}">
-                                <img src="${combo.foods[0].image || 'img/default-combo.jpg'}" alt="${combo.name}" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
-                                <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">${combo.name} (Combo - Đã Order)</h3>
-                                <p class="text-[10px] sm:text-xs text-gray-light">Giá: (Tính riêng)</p>
-                                <ul class="text-[10px] text-gray-light">${foodList}</ul>
-                                <div class="flex items-center justify-center gap-2 mt-2 mb-2">
-                                    <button onclick="changeQty(this, -1)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" type="button">-</button>
-                                    <input type="number" value="1" min="1" class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold" readonly>
-                                    <button onclick="changeQty(this, 1)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" type="button">+</button>
-                                </div>
-                                <button onclick="addToCartWithQty(this, '${combo.name}', ${combo.foods.reduce((sum, f) => sum + f.price, 0)}, '${combo.foods[0].image || 'img/default-combo.jpg'}')" class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm Lại</button>
-                            </div>
-                        `;
-                            }
-                        });
-
+                       
                         // Cập nhật phần sản phẩm
                         $('.flex.flex-wrap.sm\\:flex-wrap.gap-1.sm\\:gap-2').html(html);
                     },
@@ -305,6 +274,30 @@
                     $('.category-btn').first().trigger('click');
                 }
             });
+
+            $('.combo-view-btn').on('click', function () {
+    let html = '';
+    (window.comboData || []).forEach(function(combo) {
+        // Duyệt từng món của combo
+        combo.foods.forEach(function(food) {
+            html += `
+                <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="combo-${combo.id}">
+                    <img src="{{ asset('img/${food.image}') }}" alt="${food.name}" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+                    <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">${food.name} <span class="text-amber-400">(Combo: ${combo.name})</span></h3>
+                    <p class="text-[10px] sm:text-xs text-gray-light">${food.price} VNĐ</p>
+                    <div class="flex items-center justify-center gap-2 mt-2 mb-2">
+                        <button onclick="changeQty(this, -1)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" type="button">-</button>
+                        <input type="number" value="1" min="1" class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold" readonly>
+                        <button onclick="changeQty(this, 1)" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" type="button">+</button>
+                    </div>
+                    <button onclick="addToCartWithQty(this, '${food.name}', ${food.price}, '${food.image || 'img/default-food.jpg'}')" class="bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thêm</button>
+                </div>
+            `;
+        });
+    });
+    $('.flex.flex-wrap.sm\\:flex-wrap.gap-1.sm\\:gap-2').html(html);
+});
+
         });
     </script>
 
@@ -368,7 +361,7 @@
                 cartItem.className = 'cart-item flex items-center justify-between m-1.5 md:m-1 bg-gray-darker p-1.5 rounded';
                 cartItem.innerHTML = `
                 <div class="flex items-center gap-2">
-                    <img src="${item.image}" alt="${item.name}" class="w-10 h-10 object-cover rounded shadow mr-2 aspect-square">
+                    <img src="{{ asset('img/${item.image}') }}" alt="${item.name}" class="w-10 h-10 object-cover rounded shadow mr-2 aspect-square">
                     <div>
                         <span class="block text-xs text-white font-semibold">${item.name}</span>
                         <span class="block text-xs text-gray-400">${item.price.toLocaleString()} VNĐ</span>

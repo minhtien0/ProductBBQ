@@ -3,7 +3,7 @@
 <form action="{{ route('admin.voucher.add') }}" method="POST" class="flex w-full">
     @csrf
      {{-- Show lỗi validate --}}
-    <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm p-6 mt-3">
+    <div class="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
         <h1 class="text-lg font-bold text-gray-800 mb-6">Thêm Voucher Mới</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
