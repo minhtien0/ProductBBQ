@@ -60,7 +60,7 @@ class VoucherController extends Controller
             'value.required' => 'Vui lòng nhập giá trị voucher.',
             'value.numeric' => 'Giá trị phải là số.',
             'value.min' => 'Giá trị không được nhỏ hơn 0.',
-            'value.max' => 'Giá trị không được lớn hơn 100.',
+            'value.max' => 'Giá trị không được lớn hơn 1000000.',
             'time_start.required' => 'Vui lòng chọn ngày bắt đầu.',
             'time_end.required' => 'Vui lòng chọn ngày kết thúc.',
             'time_end.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
