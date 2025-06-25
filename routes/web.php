@@ -109,7 +109,11 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
 
     //Đặt bàn
     Route::get('/booktable', [BookTableController::class, 'index'])->name('admin.booktable');
-    Route::get('/booktable/detail', [BookTableController::class, 'detail'])->name('admin.booktable');
+    Route::get('/booktable/detail/{id}', [BookTableController::class, 'detail'])->name('admin.booktable.detail');
+    Route::post('/admin/booking/{id}/confirm', [BookTableController::class, 'confirmBooking'])->name('admin.booking.confirm');
+    Route::post('/admin/booking/{id}/change-table', [BookTableController::class, 'changeTable'])->name('admin.booking.changeTable');
+    Route::post('/admin/booking/{id}/cancel', [BookTableController::class, 'cancelBooking'])->name('admin.booking.cancel');
+
     //thông tin công ty
     Route::get('/info', [CompanyController::class, 'index'])->name('admin.info');
     Route::post('/info/update/{id}', [CompanyController::class, 'update'])->name('admin.info.update');

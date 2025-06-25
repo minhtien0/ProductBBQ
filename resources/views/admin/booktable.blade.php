@@ -244,7 +244,7 @@
                                 </td>
                                 <td class="p-4">
                                     <div class="flex gap-2">
-                                        <a href="">
+                                        <a :href="'{{ route('admin.booktable.detail', '') }}' + '/' + info.id">
                                             <button class="w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-lg flex items-center justify-center transition-colors duration-200" title="Xem chi tiết">
                                                 <i class="fas fa-eye text-xs"></i>
                                             </button>

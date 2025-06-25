@@ -88,27 +88,31 @@
         }
     </style>
 
-    <body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    
     <div class="container mx-auto p-6" x-data="bookingDetailManager()">
         <!-- Header with Back Button -->
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4">
-                <button @click="goBack()" 
+                <a href="{{ route('admin.booktable') }}">
+                <button
                         class="w-12 h-12 bg-white hover:bg-gray-50 rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105">
                     <i class="fas fa-arrow-left text-gray-600"></i>
                 </button>
+                </a>
                 <div>
                     <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
                         <i class="fas fa-receipt text-blue-600"></i>
                         Chi tiết đặt bàn
-                        <span class="text-2xl text-blue-600" x-text="'#' + booking.id"></span>
+                        <span class="text-2xl text-blue-600">#{{ $details->id }}</span>
                     </h1>
                     <p class="text-gray-600 mt-1">Thông tin chi tiết về đơn đặt bàn</p>
                 </div>
             </div>
             
         </div>
-
+<form action="{{ route('admin.booking.confirm', $details->id_booking) }}" method="POST">
+    @csrf
         <!-- Main Content Grid -->
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
             <!-- Left Column - Main Info -->
@@ -120,30 +124,36 @@
                             <i class="fas fa-user-circle text-blue-600"></i>
                             Thông tin khách hàng
                         </h2>
-                        <span :class="{
-                            'status-pending': booking.status === 'Chờ xác nhận',
-                            'status-confirmed': booking.status === 'Đã xác nhận',
-                            'status-cancelled': booking.status === 'Đã hủy'
-                        }" class="px-4 py-2 rounded-full text-white text-sm font-medium">
-                            <span x-text="booking.status"></span>
-                        </span>
+                            @if($details->status === 'Chờ xác nhận')
+                                <span class="bg-yellow-500 text-black px-4 py-2 rounded-full text-sm font-medium">
+                                    {{ $details->status }}
+                                </span>
+                            @elseif($details->status === 'Đã xác nhận')
+                                <span class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                                    {{ $details->status }}
+                                </span>
+                            @elseif($details->status === 'Đã hủy')
+                                <span class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                                    {{ $details->status }}
+                                </span>
+                            @endif
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Customer Avatar & Basic Info -->
                         <div class="flex items-start gap-4">
                             <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                                <span x-text="booking.nameuser.charAt(0).toUpperCase()"></span>
+                                <span >User</span>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-gray-900" x-text="booking.nameuser"></h3>
+                                <h3 class="text-lg font-semibold text-gray-900" >{{ $details->nameuser }}</h3>
                                 <p class="text-gray-600 flex items-center gap-2 mt-1">
                                     <i class="fas fa-envelope text-blue-500"></i>
-                                    <span x-text="booking.email"></span>
+                                    <span >{{ $details->email }}</span>
                                 </p>
                                 <p class="text-gray-600 flex items-center gap-2 mt-1">
                                     <i class="fas fa-phone text-green-500"></i>
-                                    <span x-text="booking.sdt"></span>
+                                    <span >{{ $details->sdt }}</span>
                                 </p>
                             </div>
                         </div>
@@ -155,14 +165,24 @@
                                     <i class="fas fa-users text-purple-500"></i>
                                     Số lượng khách
                                 </span>
-                                <span class="font-semibold text-gray-900" x-text="booking.quantitypeople + ' người'"></span>
+                                <span class="font-semibold text-gray-900">{{ $details->quantitypeople }} người</span>
                             </div>
                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                 <span class="text-gray-600 flex items-center gap-2">
                                     <i class="fas fa-table text-amber-500"></i>
-                                    Số bàn
+                                    Số bàn hiện tại: {{ $details->name_table ?? 'chưa có' }}
                                 </span>
-                                <span class="font-semibold text-gray-900" x-text="booking.table_id || 'Chưa chọn'"></span>
+                                <span class="font-semibold text-gray-900">
+                                    <select name="table_id" class="ml-2 px-2 py-1 border rounded" >
+                                        <option value="">Chọn</option>
+                                        @foreach($listTable as $table)
+                                            <option value="{{ $table->id }}"
+                                                >
+                                                {{ $table->number }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                            </span>
                             </div>
                         </div>
                     </div>
@@ -185,7 +205,7 @@
                                     </div>
                                     <h3 class="font-semibold text-gray-800">Thời gian đặt bàn</h3>
                                 </div>
-                                <p class="text-2xl font-bold text-gray-900" x-text="formatDateTime(booking.time_booking)"></p>
+                                <p class="text-lg font-bold text-gray-900">{{ \Carbon\Carbon::parse($details->time_booking)->format('d/m/Y H:i') }}</p>
                                 <p class="text-sm text-gray-500 mt-1">Thời gian dự kiến</p>
                             </div>
 
@@ -201,7 +221,7 @@
                                     </div>
                                     <h3 class="font-semibold text-gray-800">Thời gian tạo</h3>
                                 </div>
-                                <p class="text-lg font-bold text-gray-900" x-text="formatDateTime(booking.created_at)"></p>
+                                <p class="text-lg font-bold text-gray-900" >{{ \Carbon\Carbon::parse($details->time_order)->format('d/m/Y H:i') }}</p>
                                 <p class="text-sm text-gray-500 mt-1">Đơn được tạo</p>
                             </div>
                         </div>
@@ -219,26 +239,13 @@
                         <div class="priority-medium p-4 rounded-lg">
                             <div class="flex items-center gap-2 mb-2">
                                 <i class="fas fa-utensils text-amber-600"></i>
-                                <span class="font-medium text-amber-800">Yêu cầu về món ăn</span>
+                                <span class="font-medium text-amber-800">Yêu cầu</span>
                             </div>
-                            <p class="text-amber-700">Không cay, ít dầu mỡ, có món chay</p>
-                        </div>
-                        
-                        <div class="priority-low p-4 rounded-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-birthday-cake text-green-600"></i>
-                                <span class="font-medium text-green-800">Dịp đặc biệt</span>
-                            </div>
-                            <p class="text-green-700">Sinh nhật bạn gái - cần bánh kem và nến</p>
-                        </div>
-                        
-                        <div class="priority-high p-4 rounded-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-wheelchair text-red-600"></i>
-                                <span class="font-medium text-red-800">Yêu cầu khác</span>
-                            </div>
-                            <p class="text-red-700">Cần bàn thuận tiện cho người khuyết tật</p>
-                        </div>
+                            <textarea
+                                class="w-full bg-amber-50 border border-amber-300 text-amber-800 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                                rows="4"
+                            >{{ $details->notes ?? 'Chưa có ghi chú' }}</textarea>
+                        </div>   
                     </div>
                 </div>
             </div>
@@ -254,32 +261,29 @@
                     </h3>
                     
                     <div class="space-y-3">
-                        <button @click="confirmBooking()" 
-                                x-show="booking.status === 'Chờ xác nhận'"
-                                class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
+                        @if( $details->status =='Chờ xác nhận')
+                        
+                        <button class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
                             <i class="fas fa-check"></i>
                             Xác nhận đặt bàn
                         </button>
                         
-                        <button @click="assignTable()" 
-                                x-show="!booking.table_id && booking.status === 'Đã xác nhận'"
-                                class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
+                        @elseif($details->status == 'Đã xác nhận')
+                        <button class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
                             <i class="fas fa-table"></i>
-                            Chọn bàn
+                            Cập Nhật
                         </button>
-                        
-                        <button @click="cancelBooking()" 
-                                x-show="booking.status !== 'Đã hủy'"
-                                class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
+                        @endif
+                        <button class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
                             <i class="fas fa-times"></i>
                             Hủy đặt bàn
                         </button>
                         
-                        <button @click="editBooking()" 
+                        <!-- <button @click="editBooking()" 
                                 class="w-full bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
                             <i class="fas fa-edit"></i>
                             Chỉnh sửa
-                        </button>
+                        </button> -->
                     </div>
                 </div>
 
@@ -312,38 +316,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- Floating Action Button -->
-        <div class="floating-action">
-            <button @click="showQuickActions = !showQuickActions" 
-                    class="w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-110">
-                <i class="fas fa-plus" :class="{'fa-rotate-45': showQuickActions}"></i>
-            </button>
-            
-            <!-- Quick Action Menu -->
-            <div x-show="showQuickActions" 
-                 x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0 scale-95 translate-y-4"
-                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                 x-transition:leave="transition ease-in duration-150"
-                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                 x-transition:leave-end="opacity-0 scale-95 translate-y-4"
-                 class="absolute bottom-16 right-0 space-y-3">
-                
-                <button class="w-12 h-12 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
-                    <i class="fas fa-phone"></i>
-                </button>
-                
-                <button class="w-12 h-12 bg-purple-500 hover:bg-purple-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
-                    <i class="fas fa-envelope"></i>
-                </button>
-                
-                <button class="w-12 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
-                    <i class="fas fa-edit"></i>
-                </button>
-            </div>
-        </div>
-
+</form>
         <!-- Notification Toast -->
         <div x-show="notification.show" 
              x-transition:enter="transition ease-out duration-300"
@@ -360,8 +333,8 @@
             </div>
         </div>
     </div>
-
-    <script>
+</body>
+<script>
         function bookingDetailManager() {
             return {
                 showQuickActions: false,
@@ -370,43 +343,6 @@
                     message: '',
                     type: 'success'
                 },
-                booking: {
-                    id: 1,
-                    nameuser: 'Nguyễn Minh Tiến',
-                    sdt: '0373214547',
-                    email: 'admin@gmail.com',
-                    quantitypeople: 3,
-                    time_booking: '2025-06-19 13:00:00',
-                    table_id: null,
-                    time_order: '2025-06-18 16:14:54',
-                    status: 'Chờ xác nhận',
-                    created_at: '2025-06-18 16:14:54',
-                    updated_at: '2025-06-18 16:14:54'
-                },
-                activities: [
-                    {
-                        title: 'Đặt bàn được tạo',
-                        description: 'Khách hàng đã tạo đơn đặt bàn mới',
-                        time: '18/06/2025 16:14',
-                        icon: 'fas fa-plus',
-                        color: 'bg-blue-500'
-                    },
-                    {
-                        title: 'Chờ xác nhận',
-                        description: 'Đơn đặt bàn đang chờ nhân viên xác nhận',
-                        time: '18/06/2025 16:15',
-                        icon: 'fas fa-clock',
-                        color: 'bg-yellow-500'
-                    },
-                    {
-                        title: 'Nhân viên xem đơn',
-                        description: 'Nhân viên đã xem chi tiết đơn đặt bàn',
-                        time: '18/06/2025 16:30',
-                        icon: 'fas fa-eye',
-                        color: 'bg-purple-500'
-                    }
-                ],
-
                 formatDateTime(dateTimeString) {
                     if (!dateTimeString) return 'Chưa có';
                     const date = new Date(dateTimeString);
@@ -418,59 +354,13 @@
                         minute: '2-digit'
                     });
                 },
-
                 getBookingDuration() {
                     const created = new Date(this.booking.created_at);
                     const booking = new Date(this.booking.time_booking);
                     const diffHours = Math.round((booking - created) / (1000 * 60 * 60));
                     return diffHours > 24 ? Math.round(diffHours / 24) + ' ngày' : diffHours + ' giờ';
-                },
-
-                goBack() {
-                    this.showNotification('Quay lại danh sách đặt bàn', 'success');
-                    // window.history.back();
-                },
-
-                confirmBooking() {
-                    this.booking.status = 'Đã xác nhận';
-                    this.activities.unshift({
-                        title: 'Đặt bàn được xác nhận',
-                        description: 'Nhân viên đã xác nhận đơn đặt bàn',
-                        time: new Date().toLocaleString('vi-VN'),
-                        icon: 'fas fa-check',
-                        color: 'bg-green-500'
-                    });
-                    this.showNotification('Đã xác nhận đặt bàn thành công!', 'success');
-                },
-
-                cancelBooking() {
-                    if (confirm('Bạn có chắc chắn muốn hủy đặt bàn này?')) {
-                        this.booking.status = 'Đã hủy';
-                        this.activities.unshift({
-                            title: 'Đặt bàn bị hủy',
-                            description: 'Đơn đặt bàn đã được hủy',
-                            time: new Date().toLocaleString('vi-VN'),
-                            icon: 'fas fa-times',
-                            color: 'bg-red-500'
-                        });
-                        this.showNotification('Đã hủy đặt bàn!', 'success');
-                    }
-                },
-
-                assignTable() {
-    const tableNumber = prompt('Chọn số bàn cho khách hàng:');
-    if (tableNumber) {
-        this.booking.table_id = tableNumber;
-        this.activities.unshift({
-            title: 'Chọn bàn',
-            description: `Đã chọn bàn số ${tableNumber} cho khách hàng`,
-            time: new Date().toLocaleString('vi-VN'),
-            icon: 'fas fa-table',
-            color: 'bg-blue-500'
-        });
-        this.showNotification('Đã chọn bàn thành công!', 'success');
-    }
+                },          
 }}
-        }
+        
 </script>
 @endsection

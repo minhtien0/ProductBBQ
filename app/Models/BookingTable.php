@@ -16,6 +16,7 @@ class BookingTable extends Model
         'quantitypeople',
         'time_booking',
         'table_id',
+        'notes',
         'time_order',
         'status',
     ];

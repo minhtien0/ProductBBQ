@@ -561,12 +561,12 @@ data-error="{{ session('error') }}" @endif>
                             <div class="text-xs text-gray-500 font-bold">Đang Thực Hiện</div>
                         </div>
                         <div class="h-1 w-8 bg-gray-300"></div>
-                        <div class="flex flex-col items-center flex-1" data-step="Đang Gia Hàng">
+                        <div class="flex flex-col items-center flex-1" data-step="Đang Giao Hàng">
                             <div
                                 class="border-2 border-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mb-1">
                                 <i class="fa fa-truck"></i>
                             </div>
-                            <div class="text-xs text-gray-500 font-bold">Đang Gia Hàng</div>
+                            <div class="text-xs text-gray-500 font-bold">Đang Giao Hàng</div>
                         </div>
                         <div class="h-1 w-8 bg-gray-300"></div>
                         <div class="flex flex-col items-center flex-1" data-step="Hoàn Thành">
@@ -1015,7 +1015,7 @@ data-error="{{ session('error') }}" @endif>
                     'Chờ Xác Nhận',
                     'Đã Xác Nhận',
                     'Đang Thực Hiện',
-                    'Đang Gia Hàng',
+                    'Đang Giao Hàng',
                     'Hoàn Thành'
                 ];
                 const idx = steps.indexOf(currentStatus);
