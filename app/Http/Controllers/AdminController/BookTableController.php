@@ -113,7 +113,4 @@ public function cancelBooking(Request $request, $id)
 
     return back()->with('success', 'Hủy đặt bàn thành công!');
 }
-
-
-
 }

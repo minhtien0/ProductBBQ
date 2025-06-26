@@ -148,6 +148,7 @@
         /* Booking */
         .booking-section {
             display: flex;
+            max-height: auto;
             max-width: 1365px;
             margin: 40px auto;
             border-radius: 18px;
@@ -170,11 +171,12 @@
 
 
         .booking-img {
+
             flex: 1.1;
             min-width: 240px;
             background: #ddd;
             object-fit: cover;
-            height: 490px;
+            height: auto;
         }
 
         .booking-form-bg {
@@ -803,7 +805,6 @@
             scrollbar-width: none;
         }
     </style>
-
 </head>
 @include('layouts.user.header')
 
@@ -830,14 +831,15 @@
                     <input id="hero-search-input" type="text" placeholder="Tìm..." autocomplete="off"
                         class="flex-1 bg-transparent text-gray-900 px-5 py-3 rounded-l-full outline-none border-none placeholder-gray-400 text-lg">
                     <button type="submit"
-                        class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium text-lg">Tìm Kiếm</button>
+                        class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium text-lg">Tìm
+                        Kiếm</button>
                 </form>
 
                 <!-- Popup kết quả -->
                 <div id="search-dropdown"
-          class="hidden absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-2xl shadow-lg max-h-80 overflow-y-auto z-50 text-base sm:text-base">
-          <!-- Kết quả AJAX sẽ hiện ở đây -->
-        </div>
+                    class="hidden absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-2xl shadow-lg max-h-80 overflow-y-auto z-50 text-base sm:text-base">
+                    <!-- Kết quả AJAX sẽ hiện ở đây -->
+                </div>
             </div>
             <!-- Right image circle + sale -->
             <div class="relative mt-10 md:mt-0 md:ml-8 flex-shrink-0 flex items-center justify-center">
@@ -888,15 +890,16 @@
                             <div class="menu-card-price">{{ $allFood->price }} VNĐ<span class="old">$90.00</span></div>
                             <div class="menu-card-footer">
                                 <button type="button"
-                                    class="add-to-cart px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
-                                    data-food-id="{{ $allFood->id }}">
-                                    Thêm Vào Giỏ Hàng
+                                    class="add-to-cart flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold text-sm transition focus:outline-none shadow"
+                                    data-food-id="{{ $allFood->id }}" aria-label="Thêm vào giỏ hàng">
+                                    <i class="fa fa-cart-plus"></i>
+                                    Thêm vào giỏ
                                 </button>
-                                <button type="button"
-                                    class="favorite-btn icon-btn {{ in_array($allFood->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
-                                    data-food-id="{{ $allFood->id }}">
+                                <button type="button" class="favorite-btn flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#e60012] transition
+                        {{ in_array($allFood->id, $favIds) ? 'bg-[#e60012] text-white' : 'bg-white text-[#e60012]' }}"
+                                    data-food-id="{{ $allFood->id }}" aria-label="Yêu thích">
                                     <i
-                                        class="{{ in_array($allFood->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }}"></i>
+                                        class="{{ in_array($allFood->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
                                 </button>
                                 <button class="icon-btn"><a
                                         href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}"><i
@@ -980,52 +983,64 @@
 
     <!-- Menu Sale -->
     <div class="offer-section bg-gray-200 py-8">
-  <div class="container mx-auto px-3">
-    <div class="flex items-center justify-between mb-5">
-      <div>
-        <span class="text-red-600 font-bold text-lg">Khuyến Mãi Hằng Ngày</span>
-        <h2 class="text-gray-900 font-extrabold text-xl mt-2">Giảm giá lên đến 75% cho ngày này</h2>
-      </div>
-      <div class="swiper-buttons hidden md:flex gap-2">
-        <button class="swiper-button-prev text-2xl px-2">&#8592;</button>
-        <button class="swiper-button-next text-2xl px-2">&#8594;</button>
-      </div>
-    </div>
-    <!-- Swiper -->
-    <div class="swiper mySwiper">
-      <div class="swiper-wrapper">
-        @foreach($combos as $combo)
-        <div class="swiper-slide">
-          <a href="{{ route('views.combodetail',$combo->id) }}">
-            <div class="bg-white rounded-xl shadow p-3 w-80 mx-auto hover:scale-105 transition-transform duration-200">
-              <div  class="relative">
-               <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/combo/'.$combo->image) }}"
-     class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">
-                <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-md font-bold shadow">-{{ rand(20, 60) }}% Off</span>
-              </div>
-              <h3 id="booking" class="text-blue-900 font-extrabold mt-3 mb-1 text-base truncate">{{ $combo->name }}</h3>
-              <p class="text-gray-600 text-sm mb-2 truncate">{{ $combo->note }}</p>
-              <div class="flex items-center justify-between">
-                <span class="text-red-600 font-bold text-lg">{{ number_format($combo->price, 0, ',', '.') }}₫</span>
-                <span class="flex gap-1">
-                  <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-shopping-basket"></i></span>
-                  <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-heart"></i></span>
-                  <span class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i class="fa fa-eye"></i></span>
-                </span >
-              </div>
+        <div class="container mx-auto px-3">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <span class="text-red-600 font-bold text-lg">Khuyến Mãi Hằng Ngày</span>
+                    <h2 class="text-gray-900 font-extrabold text-xl mt-2">Giảm giá lên đến 75% cho ngày này</h2>
+                </div>
+                <div class="swiper-buttons hidden md:flex gap-2">
+                    <button class="swiper-button-prev text-2xl px-2">&#8592;</button>
+                    <button class="swiper-button-next text-2xl px-2">&#8594;</button>
+                </div>
             </div>
-          </a>
+            <!-- Swiper -->
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    @foreach($combos as $combo)
+                        <div class="swiper-slide">
+                            <a href="{{ route('views.combodetail', $combo->id) }}">
+                                <div
+                                    class="bg-white rounded-xl shadow p-3 w-80 mx-auto hover:scale-105 transition-transform duration-200">
+                                    <div class="relative">
+                                        <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/combo/' . $combo->image) }}"
+                                            class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">
+                                        <span
+                                            class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-md font-bold shadow">-{{ rand(20, 60) }}%
+                                            Off</span>
+                                    </div>
+                                    <h3 id="booking" class="text-blue-900 font-extrabold mt-3 mb-1 text-base truncate">
+                                        {{ $combo->name }}
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-2 truncate">{{ $combo->note }}</p>
+                                    <div class="flex items-center justify-between">
+                                        <span
+                                            class="text-red-600 font-bold text-lg">{{ number_format($combo->price, 0, ',', '.') }}₫</span>
+                                        <span class="flex gap-1">
+                                            <span
+                                                class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i
+                                                    class="fa fa-shopping-basket"></i></span>
+                                            <span
+                                                class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i
+                                                    class="fa fa-heart"></i></span>
+                                            <span
+                                                class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i
+                                                    class="fa fa-eye"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
-        @endforeach
-      </div>
     </div>
-  </div>
-</div>
 
 
     <!--Booking -->
     <section>
-        <div  class="booking-section">
+        <div class="booking-section">
             <img class="booking-img" src="img/logo2.jpg" alt="Restaurant" />
             <div class="booking-form-bg">
                 <form class="booking-form" method="POST" action="{{ route('booking.store') }}">
@@ -1157,43 +1172,46 @@
         </div>
 
         <!-- Counter Section -->
-          <section class="py-10 bg-cover bg-center relative" style="background-image:url('img/logo2.jpg');">
-    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
-    <div class="relative max-w-5xl mx-auto flex flex-wrap justify-between items-center gap-3 z-10 px-2">
-      <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
-        <div
-          class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countUser }}">0</span><span
-            class="font-bold text-white text-2xl md:text-3xl">+</span>
-        </div>
-        <div class="text-white text-xs mt-2">Khách Hàng</div>
-      </div>
-      <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
-        <div
-          class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countStaff }}">0</span><span
-            class="font-bold text-white text-2xl md:text-3xl">+</span>
-        </div>
-        <div class="text-white text-xs mt-2">Nhân Viên</div>
-      </div>
-      <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
-        <div
-          class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="{{ $countRate }}">0</span><span
-            class="font-bold text-white text-2xl md:text-3xl">+</span>
-        </div>
-        <div class="text-white text-xs mt-2">Đánh Giá</div>
-      </div>
-      <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
-        <div
-          class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
-          <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="5">2</span><span
-            class="font-bold text-white text-2xl md:text-3xl ml-2"> Yoe</span>
-        </div>
-        <div class="text-white text-xs mt-2">Kinh Nghiệm</div>
-      </div>
-    </div>
-  </section>
+        <section class="py-10 bg-cover bg-center relative" style="background-image:url('img/logo2.jpg');">
+            <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+            <div class="relative max-w-5xl mx-auto flex flex-wrap justify-between items-center gap-3 z-10 px-2">
+                <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
+                    <div
+                        class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
+                        <span class="counter font-bold text-white text-2xl md:text-3xl"
+                            data-to="{{ $countUser }}">0</span><span
+                            class="font-bold text-white text-2xl md:text-3xl">+</span>
+                    </div>
+                    <div class="text-white text-xs mt-2">Khách Hàng</div>
+                </div>
+                <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
+                    <div
+                        class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
+                        <span class="counter font-bold text-white text-2xl md:text-3xl"
+                            data-to="{{ $countStaff }}">0</span><span
+                            class="font-bold text-white text-2xl md:text-3xl">+</span>
+                    </div>
+                    <div class="text-white text-xs mt-2">Nhân Viên</div>
+                </div>
+                <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
+                    <div
+                        class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
+                        <span class="counter font-bold text-white text-2xl md:text-3xl"
+                            data-to="{{ $countRate }}">0</span><span
+                            class="font-bold text-white text-2xl md:text-3xl">+</span>
+                    </div>
+                    <div class="text-white text-xs mt-2">Đánh Giá</div>
+                </div>
+                <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">
+                    <div
+                        class="counter-circle w-28 h-28 flex items-center justify-center rounded-full bg-white bg-opacity-10 mb-2 border-4 border-orange-400">
+                        <span class="counter font-bold text-white text-2xl md:text-3xl" data-to="5">2</span><span
+                            class="font-bold text-white text-2xl md:text-3xl ml-2"> Yoe</span>
+                    </div>
+                    <div class="text-white text-xs mt-2">Kinh Nghiệm</div>
+                </div>
+            </div>
+        </section>
     </section>
 
 
@@ -1201,21 +1219,21 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
         // COUNTER EFFECT
-    function animateCounter(el) {
-      const to = +el.dataset.to;
-      let current = 0, inc = Math.ceil(to / 50);
-      function update() {
-        current += inc;
-        if (current >= to) {
-          el.textContent = to.toLocaleString();
-        } else {
-          el.textContent = current.toLocaleString();
-          requestAnimationFrame(update);
+        function animateCounter(el) {
+            const to = +el.dataset.to;
+            let current = 0, inc = Math.ceil(to / 50);
+            function update() {
+                current += inc;
+                if (current >= to) {
+                    el.textContent = to.toLocaleString();
+                } else {
+                    el.textContent = current.toLocaleString();
+                    requestAnimationFrame(update);
+                }
+            }
+            update();
         }
-      }
-      update();
-    }
-    document.querySelectorAll('.counter').forEach(el => animateCounter(el));
+        document.querySelectorAll('.counter').forEach(el => animateCounter(el));
     </script>
     <script>
         // Sale slider
@@ -1299,9 +1317,9 @@
         });
         // tìm kiếm
         $(document).ready(function () {
-    function renderResults(data) {
-        if (data.results && data.results.length) {
-            let html = data.results.map(food => `
+            function renderResults(data) {
+                if (data.results && data.results.length) {
+                    let html = data.results.map(food => `
                 <div class="flex items-center gap-4 px-4 py-3 hover:bg-gray-100 cursor-pointer border-b last:border-b-0" onclick="window.location='/menudetail/${food.id}/${food.slug ?? ''}'">
                     <img src="${food.image}" class="w-14 h-14 rounded-lg object-cover border" alt="">
                     <div>
@@ -1311,47 +1329,79 @@
                     </div>
                 </div>
             `).join('');
-            $('#search-dropdown').html(html).removeClass('hidden');
-        } else {
-            $('#search-dropdown').html(`<div class="px-6 py-4 text-gray-500 text-center">Không tìm thấy món ăn nào.</div>`).removeClass('hidden');
-        }
-    }
-
-    // Khi gõ search (keyup)
-    $('#hero-search-input').on('input', function () {
-        let keyword = $(this).val().trim();
-        if (!keyword) {
-            $('#search-dropdown').addClass('hidden').html('');
-            return;
-        }
-        $.ajax({
-            url: "{{ route('food.search') }}",
-            data: { term: keyword },
-            dataType: 'json',
-            success: renderResults,
-            error: function () {
-                $('#search-dropdown').html(`<div class="px-6 py-4 text-red-600 text-center">Có lỗi xảy ra, thử lại!</div>`).removeClass('hidden');
+                    $('#search-dropdown').html(html).removeClass('hidden');
+                } else {
+                    $('#search-dropdown').html(`<div class="px-6 py-4 text-gray-500 text-center">Không tìm thấy món ăn nào.</div>`).removeClass('hidden');
+                }
             }
+
+            // Khi gõ search (keyup)
+            $('#hero-search-input').on('input', function () {
+                let keyword = $(this).val().trim();
+                if (!keyword) {
+                    $('#search-dropdown').addClass('hidden').html('');
+                    return;
+                }
+                $.ajax({
+                    url: "{{ route('food.search') }}",
+                    data: { term: keyword },
+                    dataType: 'json',
+                    success: renderResults,
+                    error: function () {
+                        $('#search-dropdown').html(`<div class="px-6 py-4 text-red-600 text-center">Có lỗi xảy ra, thử lại!</div>`).removeClass('hidden');
+                    }
+                });
+            });
+
+            // Submit form cũng trigger search (giữ lại)
+            $('#hero-search-form').on('submit', function (e) {
+                e.preventDefault();
+                $('#hero-search-input').trigger('input');
+            });
+
+            // Ẩn dropdown khi click ra ngoài hoặc xóa input
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('#hero-search-input, #search-dropdown').length) {
+                    $('#search-dropdown').addClass('hidden');
+                }
+            });
+            // Ẩn dropdown khi clear input
+            $('#hero-search-input').on('blur', function () {
+                setTimeout(() => $('#search-dropdown').addClass('hidden'), 200);
+            });
         });
-    });
 
-    // Submit form cũng trigger search (giữ lại)
-    $('#hero-search-form').on('submit', function(e) {
-        e.preventDefault();
-        $('#hero-search-input').trigger('input');
-    });
-
-    // Ẩn dropdown khi click ra ngoài hoặc xóa input
-    $(document).on('click', function(e) {
-        if (!$(e.target).closest('#hero-search-input, #search-dropdown').length) {
-            $('#search-dropdown').addClass('hidden');
-        }
-    });
-    // Ẩn dropdown khi clear input
-    $('#hero-search-input').on('blur', function() {
-        setTimeout(() => $('#search-dropdown').addClass('hidden'), 200);
-    });
-});
+        //thêm giỏ hàng
+        $(document).ready(function () {
+            // Lắng nghe click vào nút Thêm Vào Giỏ Hàng
+            $('.menu-section').on('click', '.add-to-cart', function () {
+                var foodId = $(this).data('food-id');
+                var btn = $(this);
+                btn.prop('disabled', true);
+                $.ajax({
+                    url: "{{ route('cart.add') }}", // Đường dẫn route Laravel thêm vào giỏ hàng
+                    method: "POST",
+                    data: {
+                        food_id: foodId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            // Có thể hiện thông báo popup hoặc toast
+                            alert("Đã thêm vào giỏ hàng!");
+                        } else {
+                            alert(response.message || "Có lỗi khi thêm vào giỏ hàng!");
+                        }
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra, thử lại sau!");
+                    },
+                    complete: function () {
+                        btn.prop('disabled', false);
+                    }
+                });
+            });
+        });
     </script>
 </body>
 @include('layouts.user.footer')

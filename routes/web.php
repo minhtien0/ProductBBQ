@@ -43,6 +43,10 @@ Route::get('/search-food', [HomeController::class, 'searchFood'])->name('food.se
 Route::get('about', [HomeController::class, 'about'])->name('views.about');
 //Menu
 Route::get('menu', [HomeController::class, 'menu'])->name('views.menu');
+//MenuDetail
+Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->name('views.menudetail');
+//Tìm Kiếm món ăn ở thực đơn
+Route::get('/search-menu', [HomeController::class, 'ajaxSearchMenu'])->name('food.menu.search');
 
 //Blog
 Route::get('blog', [HomeController::class, 'blog'])->name('views.blog');
@@ -53,10 +57,7 @@ Route::post('/contact/add', [HomeController::class, 'addContact'])->name('help.a
 //BookingTable
 Route::post('/booking', [HomeController::class, 'storeBookingTable'])->name('booking.store');
 
-//MenuDetail
-Route::get('menudetail/{id}/{slug}', [HomeController::class, 'menudetail'])->name('views.menudetail');
-//Tìm Kiếm món ăn ở thực đơn
-Route::get('/search-menu', [HomeController::class, 'ajaxSearchMenu'])->name('food.menu.search');
+
 
 //Combodetail
 Route::get('/combos/{id}', [HomeController::class, 'combodetail'])->name('views.combodetail');

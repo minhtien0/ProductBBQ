@@ -205,6 +205,7 @@ class HomeController extends Controller
 
         return view('about', compact('countStaff', 'countUser', 'countRate'), ['newBlogs' => $newBlogs]);
     }
+    //dong ne
     public function menu(Request $request)
     {
         $menus = Menu::all();
@@ -230,41 +231,44 @@ class HomeController extends Controller
         $foods = $query->paginate(8)->withQueryString();
 
         return view('menu', compact('menus', 'foods', 'category', 'search'));
-    }public function ajaxSearchMenu(Request $request)
-{
-    $term = $request->input('term');
-    $category = $request->input('category');
 
-    $query = \App\Models\Food::query();
 
-    if ($term) {
-        $query->where(function ($q) use ($term) {
-            $q->where('name', 'like', "%{$term}%")
-              ->orWhere('description', 'like', "%{$term}%");
+    }
+    public function ajaxSearchMenu(Request $request)
+    {
+        $term = $request->input('term');
+        $category = $request->input('category');
+
+        $query = \App\Models\Food::query();
+
+        if ($term) {
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', "%{$term}%")
+                    ->orWhere('description', 'like', "%{$term}%");
+            });
+        }
+
+        if ($category && $category !== 'all') {
+            $catId = intval(str_replace('menu-', '', $category));
+            $query->where('type', $catId);
+        }
+
+        $foods = $query->with('menus')->limit(20)->get();
+
+        $results = $foods->map(function ($food) {
+            return [
+                'id' => $food->id,
+                'name' => $food->name,
+                'price' => $food->price,
+                'image' => asset('img/' . $food->image),
+                'description' => strip_tags($food->description),
+                'menu_name' => optional($food->menus)->name ?? 'Danh mục',
+                'type' => $food->type,
+            ];
         });
+
+        return response()->json(['results' => $results]);
     }
-
-    if ($category && $category !== 'all') {
-        $catId = intval(str_replace('menu-', '', $category));
-        $query->where('type', $catId);
-    }
-
-    $foods = $query->with('menus')->limit(20)->get();
-
-    $results = $foods->map(function ($food) {
-        return [
-            'id' => $food->id,
-            'name' => $food->name,
-            'price' => $food->price,
-            'image' => asset('img/' . $food->image),
-            'description' => strip_tags($food->description),
-            'menu_name' => optional($food->menus)->name ?? 'Danh mục',
-            'type' => $food->type,
-        ];
-    });
-
-    return response()->json(['results' => $results]);
-}
 
 
 
