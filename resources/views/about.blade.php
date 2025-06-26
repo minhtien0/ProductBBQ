@@ -234,28 +234,28 @@
       </div>
       <!-- Slide quảng cáo -->
       <div class="relative w-full max-w-3xl mx-auto my-8 pt-[65px] pr-10">
-        <div class="swiper mySwiper h-[500px] lg:h-[545px] w-full rounded-lg shadow-lg overflow-hidden flex-1">
-          <div class="swiper-wrapper">
-            <!-- Slide 1 -->
-            <div class="swiper-slide relative aspect-[16/7] sm:aspect-[16/6] md:aspect-[16/5]">
-              <img src="img/banner1.jpg" class="w-full h-full object-cover" alt="Slide 1">
+  <div class="swiper mySwiper h-[500px] lg:h-[545px] w-full rounded-lg shadow-lg overflow-hidden flex-1">
+    <div class="swiper-wrapper">
+      @foreach($hotCombos as $combo)
+        <div class="swiper-slide relative aspect-[16/7] sm:aspect-[16/6] md:aspect-[16/5] flex flex-col items-center justify-center bg-white">
+          <a href="{{ route('combodetail', $combo->id) }}" class="block w-full h-full">
+            <img src="{{ asset('img/combo/' . $combo->image) }}"
+                 class="w-full h-full object-cover transition-transform hover:scale-105 duration-300 rounded-lg"
+                 alt="{{ $combo->name }}" />
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-orange-500/90 px-4 py-1 rounded-xl text-white font-bold text-lg shadow-lg mt-4 text-center">
+              {{ $combo->name }}
             </div>
-            <!-- Slide 2 -->
-            <div class="swiper-slide relative aspect-[16/7] sm:aspect-[16/6] md:aspect-[16/5]">
-              <img src="img/banner2.jpg" class="w-full h-full object-cover" alt="Slide 2">
-            </div>
-            <!-- Slide 3 -->
-            <div class="swiper-slide relative aspect-[16/7] sm:aspect-[16/6] md:aspect-[16/5]">
-              <img src="img/logo2.jpg" class="w-full h-full object-cover" alt="Slide 3">
-            </div>
-          </div>
-          <!-- Nút điều hướng -->
-          <div class="swiper-button-next text-white hidden"></div>
-          <div class="swiper-button-prev text-white hidden"></div>
-          <!-- Pagination -->
-          <div class="swiper-pagination !bottom-2 hidden    "></div>
+          </a>
         </div>
-      </div>
+      @endforeach
+    </div>
+    <!-- Swiper controls -->
+    <div class="swiper-pagination !bottom-2 hidden"></div>
+    <div class="swiper-button-next text-white hidden"></div>
+    <div class="swiper-button-prev text-white hidden"></div>
+  </div>
+</div>
+
 
 
     </div>

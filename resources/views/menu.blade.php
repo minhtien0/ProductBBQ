@@ -213,10 +213,10 @@
                             </div>
                         </div>
                         <div class="p-6 flex flex-col flex-1 mt-[-1.5rem]">
-                            <h3 class="font-bold text-lg text-gray-800 mb-2 line-clamp-2"
+                            <a href="{{ route('views.menudetail', [$food->id, $food->slug]) }}" ><h3  class="font-bold text-lg text-gray-800 mb-2 line-clamp-2"
                                 style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                 {{ $food->name }}
-                            </h3>
+                            </h3></a>
                             <p class="text-gray-600 text-sm mt-4 line-clamp-2"
                                 style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                 {!! $food->description !!}
@@ -236,7 +236,7 @@
                                 </div>
                                 <div class="mt-auto flex gap-2">
                                     <button type="button"
-                                        class="btn-add-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
+                                        class="add-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
                                         data-id="{{ $food->id }}" data-quantity="1">
                                         <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ
                                     </button>
@@ -627,6 +627,46 @@
             // ------- INIT: filter/sort cho lần đầu -------
             reapplyFilterSortAndEvents();
         });
+        $(document).ready(function() {
+    $.ajaxSetup({
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+    });
+
+    $(document).on('click', '.btn-add-cart', function(e) {
+        e.preventDefault();
+        let food_id = $(this).data('id');
+        let quantity = $(this).data('quantity') || 1;
+        var btn = $(this);
+        btn.prop('disabled', true);
+        $.ajax({
+            url: '/cart',
+            type: 'POST',
+            data: {
+                food_id: food_id,
+                quantity: quantity,
+            },
+            success: function(res) {
+                if(res.success) {
+                    alert(res.message || 'Đã thêm vào giỏ hàng!');
+                } else {
+                    alert(res.message || 'Có lỗi xảy ra!');
+                }
+            },
+            error: function(xhr) {
+                if(xhr.status === 401) {
+                    alert('Bạn cần đăng nhập!');
+                    window.location.href = "/login";
+                } else {
+                    let res = xhr.responseJSON;
+                    alert((res && res.message) ? res.message : "Lỗi không xác định!");
+                }
+            },
+            complete: function() {
+                btn.prop('disabled', false);
+            }
+        });
+    });
+});
     </script>
 
     <!-- Footer -->

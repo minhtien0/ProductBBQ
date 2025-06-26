@@ -61,6 +61,8 @@ Route::post('/booking', [HomeController::class, 'storeBookingTable'])->name('boo
 
 //Combodetail
 Route::get('/combos/{id}', [HomeController::class, 'combodetail'])->name('views.combodetail');
+Route::get('/combodetail/{id}', [HomeController::class, 'combodetail'])->name('combodetail');
+
 
 //BlogDetail
 Route::get('blogdetail/{id}/{slug}', [HomeController::class, 'blogdetail'])->name('views.blogdetail');

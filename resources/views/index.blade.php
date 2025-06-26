@@ -849,10 +849,7 @@
                     <img src="img/logo2.jpg" alt="Pasta" class="w-full h-full object-cover">
                 </div>
                 <!-- Sale badge -->
-                <span
-                    class="absolute -top-4 -left-4 bg-red-600 text-white font-bold text-xs px-4 py-2 rounded-full z-10 shadow-md">
-                    35%<br>off
-                </span>
+                
             </div>
         </div>
     </div>
@@ -984,10 +981,10 @@
     <!-- Menu Sale -->
     <div class="offer-section bg-gray-200 py-8">
         <div class="container mx-auto px-3">
-            <div class="flex items-center justify-between mb-5">
+            <div class="flex items-center justify-between mb-5 ml-16">
                 <div>
-                    <span class="text-red-600 font-bold text-lg">Khuyến Mãi Hằng Ngày</span>
-                    <h2 class="text-gray-900 font-extrabold text-xl mt-2">Giảm giá lên đến 75% cho ngày này</h2>
+                    <span class="text-red-600 font-bold text-lg">Combo Đặc Biệt Trong Ngày</span>
+                    <h2 class="text-gray-900 font-extrabold text-xl mt-2">Không Thử Là Tiếc!</h2>
                 </div>
                 <div class="swiper-buttons hidden md:flex gap-2">
                     <button class="swiper-button-prev text-2xl px-2">&#8592;</button>

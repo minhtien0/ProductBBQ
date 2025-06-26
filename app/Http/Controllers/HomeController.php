@@ -194,6 +194,7 @@ class HomeController extends Controller
     }
     public function about()
     {
+
         $newBlogs = Blog::join('staffs', 'staffs.id', '=', 'blog.id_staff')
             ->where('blog.created_at', '>=', Carbon::now()->subDays(30))
             ->orderBy('blog.created_at', 'desc')
@@ -202,8 +203,11 @@ class HomeController extends Controller
         $countStaff = Staff::count();
         $countUser = User::count();
         $countRate = Rate::count();
+        //ảnh cho sile combo
+        $hotCombos = FoodCombo::take(10)->get();
 
-        return view('about', compact('countStaff', 'countUser', 'countRate'), ['newBlogs' => $newBlogs]);
+
+        return view('about', compact('countStaff', 'countUser', 'countRate','hotCombos'), ['newBlogs' => $newBlogs]);
     }
     //dong ne
     public function menu(Request $request)
@@ -418,7 +422,12 @@ class HomeController extends Controller
             ->select('rates.*', 'users.*')
             ->get();
         //dd($detailImages);
-        return view('menudetail', compact('foods', 'detailImages', 'rates'));
+         $suggestFoods = Food::where('type', $foods->type)
+        ->where('id', '!=', $id)
+        ->limit(8)
+        ->get();
+
+       return view('menudetail', compact('foods', 'detailImages', 'rates','suggestFoods'));
     }
     public function blogdetail($id, $slug)
     {
