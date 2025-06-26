@@ -221,11 +221,10 @@
                 <div class="footer-col">
                     <h3>Liên Kết</h3>
                     <ul class="footer-link-list">
-                        <li><a href="#">Trang Chủ</a></li>
-                        <li><a href="#">Giới Thiệu</a></li>
-                        <li><a href="#">Liên Hệ</a></li>
-                        <li><a href="#">Dịch Vụ</a></li>
-                        <li><a href="#">Tin Tức</a></li>
+                        <li><a href="{{ route('views.index') }}">Trang Chủ</a></li>
+                        <li><a href="{{ route('views.about') }}">Giới Thiệu</a></li>
+                        <li><a href="{{ route('views.contact') }}">Liên Hệ</a></li>
+                        <li><a href="{{ route('views.blog') }}">Tin Tức</a></li>
                     </ul>
                 </div>
                 <!-- Help Link -->
@@ -243,9 +242,9 @@
                 <div class="footer-col">
                     <h3>Liên hệ với chúng tôi</h3>
                     <div class="footer-contact">
-                        <div><i class="fa fa-phone"></i> +44 (0) 20 9994 7740</div>
-                        <div><i class="fa fa-envelope"></i> themefaxbd@gmail.com</div>
-                        <div><i class="fa fa-location-dot"></i> Blackwell Street, Dry Creek, Alaska</div>
+                        <div><i class="fa fa-phone"></i>+84909056789</div>
+                        <div><i class="fa fa-envelope"></i> luabehoy@gmail.com</div>
+                        <div><i class="fa fa-location-dot"></i>65 Huỳnh Thúc Kháng, P.Bến Nghé, Q.1, Tp.HCM</div>
                     </div>
                 </div>
             </div>
