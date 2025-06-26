@@ -324,7 +324,6 @@ class HomeController extends Controller
             'quantitypeople.min' => 'Phải có ít nhất 1 người.',
             'quantitypeople.max' => 'Tối đa 20 người.',
         ]);
-
         if ($validator->fails()) {
             // Trả về lỗi cho AJAX
             return response()->json([

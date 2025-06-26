@@ -2,10 +2,8 @@
 @section('content')
 <div x-data="editCompanyModal()">
     <div class="w-full bg-white">
-        <div class="px-5 py-3">
+        <div class="px-3 py-3">
             <!-- Action buttons -->
-            <div class="flex justify-between mb-4">
-            </div>
             <!-- Table -->
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white border-collapse">
@@ -41,7 +39,7 @@
                                     </a>
                                 </td>
                                 <td class="py-1 px-2 border-t border-gray-200 text-gray-700"><a
-                                        href="{{ route('user.detail') }}">{{ $company->address }}</a></td>
+                                        href="">{{ $company->address }}</a></td>
                                 <td class="py-1 px-2 border-t border-gray-200">
                                     <span class="text-gray-600">{{ $company->sdt }}</span>
                                 </td>
