@@ -24,6 +24,8 @@ class Order extends Model
         'status',
         'note',
         'type',
+        'transaction_no',
+        'transaction_date', 
         'created_at',
         'updated_at',
     ];
