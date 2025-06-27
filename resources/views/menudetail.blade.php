@@ -76,7 +76,6 @@
               class="text-xs bg-orange-100 text-orange-500 rounded px-2 py-0.5 font-semibold">{{ $foods->menus->name }}</span>
           </div>
           <p class="text-gray-600 mb-4">{!!  $foods->description !!}</p>
-
           <!-- Quantity & Button -->
           <div class="flex items-center gap-3 mb-3">
             <label class="font-semibold text-gray-700">Số Lượng:</label>
@@ -168,6 +167,7 @@
 
     </div>
   </div>
+
 
   <!-- Popup overlay -->
   <div id="custom-popup-overlay"
@@ -313,128 +313,38 @@ function showPopup(message) {
 </script>
 
 
-  <!-- PHẦN 2: Related BBQ Items -->
-  <div class="bg-dark-light max-w-6xl mx-auto py-8  ">
-    <h3 class="text-xl font-bold mb-4 text-gray-800">Món Nướng Gợi Ý</h3>
-    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-      <!-- Card 1 -->
+
+=======
+<!-- PHẦN 2: Related BBQ Items -->
+<div class="bg-dark-light max-w-6xl mx-auto py-8">
+  <h3 class="text-xl font-bold mb-4 text-gray-800">Món Ngon Gợi Ý</h3>
+  <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+    @forelse($suggestFoods as $item)
       <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <img src="{{ asset('img/' . $item->image) }}" class="rounded-lg w-full h-32 object-cover mb-3" />
         <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+         <a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}"> <span  class="font-bold text-gray-800">{{ $item->name }}</span></a>
         </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">
+          ⭐⭐⭐⭐⭐
+        </div>
+        <div class="text-sm font-bold text-orange-600 mb-2">
+          {{ number_format($item->price, 0, ',', '.') }}đ
+        </div>
         <div class="flex gap-2">
-          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-            Giỏ</button>
+          <button 
+            class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600 btn-add-cart"
+            data-id="{{ $item->id }}"
+            data-quantity="1"
+          >Thêm Giỏ</button>
           <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
         </div>
       </div>
-      <!-- Card 2 -->
-      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="img/combo/3.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-gray-800">Gà Xiên Que Nướng</span>
-          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">-10%</span>
-        </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐☆</div>
-        <div class="text-sm font-bold text-orange-600 mb-2">$90.000</div>
-        <div class="flex gap-2">
-          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-            Giỏ</button>
-          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-        </div>
-      </div>
-      <!-- Card 3 -->
-      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="img/combo/1.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-gray-800">Ba Chỉ Bò Mỹ Nướng</span>
-          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Best Seller</span>
-        </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-        <div class="text-sm font-bold text-orange-600 mb-2">$220.000</div>
-        <div class="flex gap-2">
-          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-            Giỏ</button>
-          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-        </div>
-      </div>
-      <!-- Card 4 -->
-      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="img/combo/4.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-gray-800">Combo Nướng Đặc Biệt</span>
-          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Combo</span>
-        </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-        <div class="text-sm font-bold text-orange-600 mb-2">$450.000</div>
-        <div class="flex gap-2">
-          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-            Giỏ</button>
-          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-        </div>
-      </div>
-      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-        </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-        <div class="flex gap-2">
-          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-            Giỏ</button>
-          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-        </div>
-      </div>
-      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-        </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-        <div class="flex gap-2">
-          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-            Giỏ</button>
-          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-        </div>
-      </div>
-      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-        </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-        <div class="flex gap-2">
-          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-            Giỏ</button>
-          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-        </div>
-      </div>
-      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-        </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-        <div class="flex gap-2">
-          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-            Giỏ</button>
-          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-        </div>
-      </div>
-    </div>
+    @empty
+      <div class="col-span-4 text-center text-gray-500 py-8">Không có món gợi ý!</div>
+    @endforelse
   </div>
+</div>
   <script>
     // Chỉ giữ JS chuyển tab, bỏ toàn bộ phần renderReview bằng JS
 
