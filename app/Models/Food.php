@@ -43,8 +43,8 @@ class Food extends Model
         return $this->hasMany(OrderDetail::class, 'product_id');
     }
 
-     public function favorites()
-    {
-        return $this->hasMany(Favorite::class, 'food_id');
-    }
+    public function rates()
+{
+    return $this->hasMany(Rate::class, 'food_id');
+}
 }

@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LUA BE HOY</title>
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -43,12 +44,12 @@
     <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
     <!-- Content -->
     <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
-      <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Blog Detail</h1>
+      <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Chi Tiết Tin Tức</h1>
       <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
         <i class="fa fa-home text-white"></i>
-        <a href="{{ route('views.index') }}"><span class="text-white">Home</span></a>
+        <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
         <span class="text-white">–</span>
-        <span class="text-[#ff8000]">BBQ Blog Detail</span>
+        <span class="text-[#ff8000]">BBQ Chi Tiết Tin Tức</span>
       </div>
     </div>
   </div>
@@ -62,7 +63,7 @@
         <img src="{{ asset('img/blog/' . $blog->image) }}" class="rounded-xl w-full h-56 object-cover mb-4" />
         <div class="flex items-center text-xs text-gray-500 gap-4 mb-3">
           <span><i class="fa fa-user mr-1"></i> {{ $blog->fullname }}</span>
-          <span><i class="fa fa-comment mr-1"></i> 5 Bình luận</span>
+          <span><i class="fa fa-comment mr-1"></i>{{ $countComment }} Bình luận</span>
           <span><i class="fa fa-calendar mr-1"></i>
             {{ \Carbon\Carbon::parse($blog->time_blog)->format(format: 'd/m/Y') }}</span>
         </div>
@@ -72,20 +73,19 @@
       <!-- COMMENTS BLOCK -->
       <div class="bg-white rounded-xl shadow-md p-6 mb-7">
         <div>
-          <div class="font-bold mb-5 text-gray-800 text-base">03 Bình luận</div>
+          <div class="font-bold mb-5 text-gray-800 text-base">{{ $countComment }} Bình luận</div>
           <!-- Bình luận -->
           @foreach ($commentBlogs as $commentBlog)
-        <div class="flex items-start gap-3 mb-6">
-        <img src="{{ asset('img/' . $commentBlog->avatar_comment) }}" class="w-12 h-12 rounded-full object-cover" />
-        <div class="flex-1">
-          <div class="font-semibold text-gray-700">{{ $commentBlog->name_comment }}</div>
-          <div class="text-xs text-gray-400 mb-1">
-          {{ \Carbon\Carbon::parse($blog->time_comment)->format(format: 'd/m/Y') }}</div>
-          <div class="text-gray-600 text-sm mb-1">{{ $commentBlog->content_comment }}</div>
-          <button class="text-orange-500 text-xs font-bold hover:underline">Trả lời</button>
-        </div>
-        </div>
-      @endforeach
+            <div class="flex items-start gap-3 mb-6">
+            <img src="{{ asset('img/' . $commentBlog->avatar_comment) }}" class="w-12 h-12 rounded-full object-cover" />
+            <div class="flex-1">
+              <div class="font-semibold text-gray-700">{{ $commentBlog->name_comment }}</div>
+              <div class="text-xs text-gray-400 mb-1">
+              {{ \Carbon\Carbon::parse($blog->time_comment)->format(format: 'd/m/Y') }}</div>
+              <div class="text-gray-600 text-sm mb-1">{{ $commentBlog->content_comment }}</div>
+            </div>
+            </div>
+          @endforeach
           <!-- Phân trang ảo -->
           <div class="flex gap-1 justify-center mt-5">
             <button
@@ -101,22 +101,24 @@
           </div>
         </div>
         <!-- Form bình luận -->
-        <form class="mt-10 bg-orange-50 rounded-xl p-5">
+        <form id="comment-form" action="{{ route('comment.blog', $blog->id_blog) }}" method="POST" class="mt-10 bg-orange-50 rounded-xl p-5">
+          @csrf
           <div class="font-bold mb-2 text-gray-800">Để lại bình luận</div>
-          <textarea placeholder="Nội dung bình luận"
+          <textarea name="content" placeholder="Nội dung bình luận"
             class="border border-gray-300 rounded px-3 py-2 w-full text-sm min-h-[70px] outline-orange-400"
             required></textarea>
           @if(session('user_logged_in'))
-            <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-bold">
-            Gửi bình luận
+            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-bold mt-2">
+              Gửi bình luận
             </button>
           @else
-          <p class="text-red-500 text-s">P/S: Vui lòng đăng nhập để được bình luận.</p>
-            <button class="bg-gray-400 text-white px-6 py-2 rounded font-bold cursor-not-allowed" disabled>
-            Gửi bình luận
+            <p class="text-red-500 text-s">P/S: Vui lòng đăng nhập để được bình luận.</p>
+            <button class="bg-gray-400 text-white px-6 py-2 rounded font-bold mt-2 cursor-not-allowed" disabled>
+              Gửi bình luận
             </button>
           @endif
-        </form>
+      </form>
+      <div id="comment-result" class="text-green-600 text-sm mt-2"></div>
       </div>
     </div>
     <!-- SIDEBAR -->
@@ -174,6 +176,39 @@ $(document).ready(function () {
     const $input = $('#sidebar-blog-search-input');
     const $dropdown = $('#sidebar-blog-search-dropdown');
     const delay = 200;
+    const form = document.getElementById('comment-form');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const content = form.querySelector('textarea[name="content"]').value;
+      const action = form.action;
+      const token = document.querySelector('meta[name="csrf-token"]').content;
+
+      fetch(action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': token,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ content })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          form.reset();
+          document.getElementById('comment-result').textContent = data.message;
+          // Optionally: Tự động thêm bình luận vừa gửi vào dưới
+          // location.reload(); // hoặc tự động fetch bình luận mới
+        } else {
+          document.getElementById('comment-result').textContent = data.message;
+        }
+      })
+      .catch(() => {
+        document.getElementById('comment-result').textContent = "Có lỗi xảy ra!";
+      });
+    });
+  }
 
     $input.on('input', function () {
         clearTimeout(typingTimer);

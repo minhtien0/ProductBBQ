@@ -90,6 +90,9 @@ Route::get('/vnpay/return', [HomeController::class, 'vnpayReturn'])->name('vnpay
 Route::patch('/orders/{order}/cancel', [HomeController::class, 'cancelOrder'])->name('orders.cancel');
 //Đánh giá đơn hàng
 Route::post('/reviews', [HomeController::class, 'rateOrder'])->name('reviews.store');
+//Đánh giá bài viết
+Route::post('/blog/{id}/comment', [HomeController::class, 'addCommentBlog'])->name('comment.blog');
+
 
 //Group Admin
 Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])->group(function () {

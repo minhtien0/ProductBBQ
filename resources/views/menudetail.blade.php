@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LUA BE HOY</title>
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -30,402 +32,428 @@
   </script>
 </head>
 @include('layouts.user.header')
-<body class="font-mont bg-gray-light">
-<div class="relative w-full">
 
-  <!-- Background image (thay src thành ảnh của bạn nếu cần) -->
-  <img src="{{ asset('img/banner1.jpg') }}" alt="Menu Detail" class="w-full h-[260px] md:h-[360px] object-cover">
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
-  <!-- Content -->
-  <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
-    <h1 class="text-white font-extrabold text-4xl md:text-5xl mb-4">Chi Tiết Sản Phẩm</h1>
-    <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
-      <i class="fa fa-home text-white"></i>
-      <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
-      <span class="text-white">–</span>
-      <span class="text-[#ff8000]">BBQ Menu Detail</span>
+<body class="font-mont bg-gray-light">
+  <div class="relative w-full">
+
+    <!-- Background image (thay src thành ảnh của bạn nếu cần) -->
+    <img src="{{ asset('img/banner1.jpg') }}" alt="Menu Detail" class="w-full h-[260px] md:h-[360px] object-cover">
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
+    <!-- Content -->
+    <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
+      <h1 class="text-white font-extrabold text-4xl md:text-5xl mb-4">Chi Tiết Sản Phẩm</h1>
+      <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
+        <i class="fa fa-home text-white"></i>
+        <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
+        <span class="text-white">–</span>
+        <span class="text-[#ff8000]">BBQ Menu Detail</span>
+      </div>
     </div>
   </div>
-</div>
-<!-- PHẦN 1: BBQ Menu Detail -->
-<div class="bg-gray-light from-red-100 via-red to-white min-h-[220px] py-8 px-4 ">
-  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8 -mt-4 relative z-10">
-    <div class="flex flex-col md:flex-row gap-8">
-      <!-- Ảnh lớn và thumbnail -->
-      <div class="md:w-1/3 flex flex-col">
-        <img id="main-img" src="{{ asset('img/' . $foods->image) }}"
-          class="rounded-lg w-full h-[220px] object-cover mb-4 border-2 border-orange-400" />
-        <div class="flex gap-2">
-          @foreach ($detailImages as $detailImage)
-          <img onclick="document.getElementById('main-img').src=this.src" src="{{ asset('img/details/food/'.$detailImage->img) }}"
-            class="w-14 h-14 rounded-lg object-cover border-2 border-orange-200 cursor-pointer hover:border-orange-500 transition" />
-          @endforeach
+  <!-- PHẦN 1: BBQ Menu Detail -->
+  <div class="bg-gray-light from-red-100 via-red to-white min-h-[220px] py-8 px-4 ">
+    <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8 -mt-4 relative z-10">
+      <div class="flex flex-col md:flex-row gap-8">
+        <!-- Ảnh lớn và thumbnail -->
+        <div class="md:w-1/3 flex flex-col">
+          <img id="main-img" src="{{ asset('img/' . $foods->image) }}"
+            class="rounded-lg w-full h-[220px] object-cover mb-4 border-2 border-orange-400" />
+          <div class="flex gap-2">
+            @foreach ($detailImages as $detailImage)
+        <img onclick="document.getElementById('main-img').src=this.src"
+          src="{{ asset('img/details/food/' . $detailImage->img) }}"
+          class="w-14 h-14 rounded-lg object-cover border-2 border-orange-200 cursor-pointer hover:border-orange-500 transition" />
+      @endforeach
+          </div>
         </div>
-      </div>
-      <!-- Chi tiết món ăn -->
-      <div class="md:w-2/3">
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ $foods->name }}</h2>
-        <div class="flex items-center gap-3 mb-2">
-          <span class="text-xl font-bold text-orange-600">{{ $foods->price }} VNĐ</span>
-          <span class="text-xs bg-orange-100 text-orange-500 rounded px-2 py-0.5 font-semibold">{{ $foods->menus->name }}</span>
-        </div>
-        <p class="text-gray-600 mb-4">{!!  $foods->description !!}</p>
+        <!-- Chi tiết món ăn -->
+        <div class="md:w-2/3">
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ $foods->name }}</h2>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xl font-bold text-orange-600">{{ $foods->price }} VNĐ</span>
+            <span
+              class="text-xs bg-orange-100 text-orange-500 rounded px-2 py-0.5 font-semibold">{{ $foods->menus->name }}</span>
+          </div>
+          <p class="text-gray-600 mb-4">{!!  $foods->description !!}</p>
 
-        <!-- Lựa chọn size -->
-        <div class="mb-3">
-          <label class="block font-semibold mb-1 text-gray-700">Chọn Phần:</label>
-          <div class="flex gap-4">
-            <label class="flex items-center gap-1">
-              <input type="radio" name="size" class="accent-orange-500" checked> Nhỏ
-            </label>
-            <label class="flex items-center gap-1">
-              <input type="radio" name="size" class="accent-orange-500"> Vừa
-            </label>
-            <label class="flex items-center gap-1">
-              <input type="radio" name="size" class="accent-orange-500"> Lớn
-            </label>
+          <!-- Quantity & Button -->
+          <div class="flex items-center gap-3 mb-3">
+            <label class="font-semibold text-gray-700">Số Lượng:</label>
+            <input type="number" min="1" max="20" value="1" class="w-16 border rounded px-2 py-1 text-center" id="food-quantity">
+            <span class="text-lg font-bold text-orange-700" id="total-price">{{ $foods->price }} VNĐ</span>
+          </div>
+          <div class="flex gap-3 mt-4">
+            <button type="button"
+              class="add-to-cart bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-bold shadow"
+              data-food-id="{{ $foods->id }}"
+              data-food-price="{{ $foods->price }}">Thêm
+              Vào
+              Giỏ</button>
+            <button type="button"
+              class="bg-orange-100 text-orange-700 px-5 py-2 rounded-lg font-bold border border-orange-400 favorite-btn icon-btn {{ in_array($foods->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
+              data-food-id="{{ $foods->id }}">
+              <i class="{{ in_array($foods->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }}"></i> Yêu
+              Thích</button>
           </div>
         </div>
-        <!-- Lựa chọn thêm -->
-        <div class="mb-3">
-          <label class="block font-semibold mb-1 text-gray-700">Chọn Thêm:</label>
-          <div class="flex gap-4 flex-wrap">
-            <label class="flex items-center gap-1">
-              <input type="checkbox" class="accent-orange-500"> Phô Mai Nướng
-            </label>
-            <label class="flex items-center gap-1">
-              <input type="checkbox" class="accent-orange-500"> Xúc Xích Nướng
-            </label>
-            <label class="flex items-center gap-1">
-              <input type="checkbox" class="accent-orange-500"> Thêm Rau Củ
-            </label>
+      </div>
+      <!-- Tab mô tả / review -->
+      <div class="mt-8 bg-white rounded shadow p-4">
+        <!-- Tabs -->
+        <div class="flex border-b">
+          <button id="descTabBtn"
+            class="px-4 py-2 text-sm border-b-2 border-orange-500 text-orange-600 font-bold focus:outline-none">Ghi
+            Chú</button>
+          <button id="reviewTabBtn"
+            class="px-4 py-2 text-sm text-gray-600 border-b-2 border-transparent focus:outline-none">Đánh Giá</button>
+        </div>
+        <div class="pt-4">
+          <!-- Description Tab Content -->
+          <div id="descTabContent" class="w-full h-auto">
+            <p class="text-gray-700 mb-3">
+              {!!$foods->note !!}
+            </p>
           </div>
-        </div>
-        <!-- Quantity & Button -->
-        <div class="flex items-center gap-3 mb-3">
-          <label class="font-semibold text-gray-700">Số Lượng:</label>
-          <input type="number" min="1" value="1" class="w-16 border rounded px-2 py-1 text-center">
-          <span class="text-lg font-bold text-orange-700">$250.000</span>
-        </div>
-        <div class="flex gap-3 mt-4">
-          <button class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-bold shadow">Thêm Vào
-            Giỏ</button>
-          <button class="bg-orange-100 text-orange-700 px-5 py-2 rounded-lg font-bold border border-orange-400">Yêu
-            Thích</button>
-        </div>
-      </div>
-    </div>
-    <!-- Tab mô tả / review -->
-    <div class="mt-8 bg-white rounded shadow p-4">
-      <!-- Tabs -->
-      <div class="flex border-b">
-        <button id="descTabBtn"
-          class="px-4 py-2 text-sm border-b-2 border-orange-500 text-orange-600 font-bold focus:outline-none">Ghi Chú</button>
-        <button id="reviewTabBtn"
-          class="px-4 py-2 text-sm text-gray-600 border-b-2 border-transparent focus:outline-none">Đánh Giá</button>
-      </div>
-      <div class="pt-4">
-        <!-- Description Tab Content -->
-        <div id="descTabContent" class="w-full h-auto">
-          <p class="text-gray-700 mb-3">
-            {!!$foods->note !!}
-          </p>
-        </div>
-        <!-- Reviews Tab Content -->
-        <div id="reviewTabContent" class="hidden flex flex-col md:flex-row gap-4">
-          <!-- Danh sách đánh giá (trái) -->
-          <div class="flex-1">
-            <div class="font-semibold mb-2 text-gray-800 text-sm">04 Đánh Giá</div>
-            <div id="reviewList" class="space-y-3"></div>
-            <!-- Pagination -->
-            <div class="flex justify-center items-center gap-1 mt-4">
-              <button id="prevPageBtn"
-                class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 bg-white hover:bg-orange-50">&lt;</button>
-              <div id="paginationBtns" class="flex gap-1"></div>
-              <button id="nextPageBtn"
-                class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 bg-white hover:bg-orange-50">&gt;</button>
+          <!-- Reviews Tab Content -->
+          <div id="reviewTabContent" class="hidden flex flex-col md:flex-row gap-4">
+            <!-- Danh sách đánh giá (trái) -->
+            <div class="flex-1">
+              <div class="font-semibold mb-2 text-gray-800 text-sm">{{  $countRates }} Đánh Giá</div>
+              <div id="reviewList" class="space-y-3">
+                @foreach($rates as $rate)
+              <div class="flex gap-3 items-start bg-[#f8f8f8] rounded-lg p-3">
+                <img src="{{ asset('img/' . $rate->user->avatar) }}"
+                class="w-12 h-12 rounded-full object-cover border border-gray-200" />
+                <div>
+                <div class="flex gap-2 items-center mb-1">
+                  <span class="font-bold text-sm text-gray-800">{{$rate->user->fullname }}</span>
+                  <span class="text-xs text-gray-400">
+                  {{ \Carbon\Carbon::parse($rate->time)->format('d/m/Y H:i') }}</span>
+                </div>
+                <div class="flex gap-1 text-xs mb-1">
+                  @for ($i = 1; $i <= 5; $i++)
+              <i
+              class="fa-star {{ $i <= $rate->rate ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-400' }}"></i>
+            @endfor
+                  <span class="ml-1 text-gray-500">({{ $rate->rate }}/5)</span>
+                </div>
+                @if($rate->images->isNotEmpty())
+              <div class="flex gap-2 flex-wrap mb-2">
+                @foreach($rate->images as $img)
+              <img src="{{ asset('img/rate/' . $img->img) }}"
+              class="w-16 h-16 object-cover rounded cursor-pointer border" />
+            @endforeach
+              </div>
+            @endif
+                <div class="text-xs text-gray-600">{{ $rate->content }}</div>
+                </div>
+              </div>
+        @endforeach
+              </div>
+              <!-- Pagination -->
+              <div class="flex justify-center items-center gap-1 mt-4">
+                <button id="prevPageBtn"
+                  class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 bg-white hover:bg-orange-50">&lt;</button>
+                <div id="paginationBtns" class="flex gap-1"></div>
+                <button id="nextPageBtn"
+                  class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 bg-white hover:bg-orange-50">&gt;</button>
+              </div>
             </div>
           </div>
-          <!-- Form gửi đánh giá (phải) -->
-          <div class="w-full md:w-[320px] bg-[#f6fbf7] rounded-lg p-4">
-            <div class="font-semibold mb-2 text-gray-800">Viết Đánh Giá</div>
-            <form id="reviewForm" class="space-y-2">
-              <label class="block text-sm">Chọn số sao:
-                <span id="ratingStars" class="ml-2">
-                  <!-- Star icons ở đây -->
-                </span>
-              </label>
-              <input type="text" id="reviewName" class="w-full border px-2 py-1 rounded text-sm" placeholder="Name"
-                required>
-              <input type="email" id="reviewEmail" class="w-full border px-2 py-1 rounded text-sm" placeholder="Email"
-                required>
-              <textarea id="reviewText" class="w-full border px-2 py-1 rounded text-sm" placeholder="Write your review"
-                rows="3" required></textarea>
-              <button type="submit"
-                class="w-full bg-orange-500 text-white font-bold py-2 rounded hover:bg-orange-600 transition">Đánh Giá</button>
-            </form>
+        </div>
+      </div>
+      <!-- FontAwesome for icons (bắt buộc) -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    </div>
+  </div>
+
+  <!-- Popup overlay -->
+  <div id="custom-popup-overlay"
+    class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
+    <!-- Container chính -->
+    <div id="custom-popup"
+      class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-info-circle text-white"></i>
+            <span class="text-white font-semibold text-lg">Thông báo</span>
           </div>
+          <button id="popup-close-btn"
+            class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       </div>
-    </div>
-    <!-- FontAwesome for icons (bắt buộc) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+      <!-- Nội dung -->
+      <div class="px-6 py-8 text-center">
+        <div
+          class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa-solid fa-info text-blue-600 text-2xl"></i>
+        </div>
+        <div id="custom-popup-message" class="text-gray-800 text-base font-semibold mb-6">
+          <!-- Nội dung message sẽ được show ở đây -->
+        </div>
+        <button id="popup-ok-btn"
+          class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+          Đóng
+        </button>
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- PHẦN 2: Related BBQ Items -->
-<div class="bg-dark-light max-w-6xl mx-auto py-8  ">
-  <h3 class="text-xl font-bold mb-4 text-gray-800">Món Nướng Gợi Ý</h3>
-  <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-    <!-- Card 1 -->
-    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-      </div>
-      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-      <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-          Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-      </div>
-    </div>
-    <!-- Card 2 -->
-    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="img/combo/3.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold text-gray-800">Gà Xiên Que Nướng</span>
-        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">-10%</span>
-      </div>
-      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐☆</div>
-      <div class="text-sm font-bold text-orange-600 mb-2">$90.000</div>
-      <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-          Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-      </div>
-    </div>
-    <!-- Card 3 -->
-    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="img/combo/1.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold text-gray-800">Ba Chỉ Bò Mỹ Nướng</span>
-        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Best Seller</span>
-      </div>
-      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-      <div class="text-sm font-bold text-orange-600 mb-2">$220.000</div>
-      <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-          Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-      </div>
-    </div>
-    <!-- Card 4 -->
-    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="img/combo/4.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold text-gray-800">Combo Nướng Đặc Biệt</span>
-        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Combo</span>
-      </div>
-      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-      <div class="text-sm font-bold text-orange-600 mb-2">$450.000</div>
-      <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-          Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-      </div>
-    </div>
-    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-      </div>
-      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-      <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-          Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-      </div>
-    </div>
-    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-      </div>
-      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-      <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-          Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-      </div>
-    </div>
-    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-      </div>
-      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-      <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-          Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-      </div>
-    </div>
-    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
-        <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
-      </div>
-      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
-      <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
-      <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
-          Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-      </div>
-    </div>
 
-  </div>
-</div>
-</body>
 <script>
-  const reviews = [
-    {
-      avatar: "https://randomuser.me/api/portraits/women/1.jpg",
-      name: "Michel Holder",
-      date: "26 Oct 2023",
-      rating: 4,
-      text: "Sure there isn't anything embarrassing hidden in the middle of text. All generators on the Internet tend to repeat predefined chunks."
-    },
-    {
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-      name: "Salina Khan",
-      date: "23 Oct 2023",
-      rating: 5,
-      text: "All generators on the Internet tend to repeat predefined chunks."
-    },
-    {
-      avatar: "https://randomuser.me/api/portraits/women/65.jpg",
-      name: "Mouna Sthesia",
-      date: "20 Oct 2023",
-      rating: 4,
-      text: "Sure there isn't anything embarrassing hidden in the middle of text."
-    },
-    {
-      avatar: "https://randomuser.me/api/portraits/men/76.jpg",
-      name: "Marjan Janifar",
-      date: "19 Oct 2023",
-      rating: 4,
-      text: "Sure there isn't anything embarrassing hidden in the middle of text."
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Tổng tiền khi đổi số lượng ---
+  const price = Number(document.querySelector('.add-to-cart').dataset.foodPrice);
+  const quantityInput = document.getElementById('food-quantity');
+  const totalPriceSpan = document.getElementById('total-price');
+  quantityInput.addEventListener('input', function () {
+  if (this.value > 20) {
+    this.value = 20;
+    updateTotalPrice();
+    showPopup('Bạn chỉ có thể mua tối đa 20 phần/lần.');
+  } else if (this.value < 1) {
+    this.value = 1;
+    updateTotalPrice();
+  } else {
+    updateTotalPrice();
+  }
+});
+
+  function updateTotalPrice() {
+    const qty = Number(quantityInput.value) || 1;
+    totalPriceSpan.textContent = (price * qty).toLocaleString('vi-VN') + ' VNĐ';
+  }
+  if (quantityInput && totalPriceSpan) {
+    quantityInput.addEventListener('input', updateTotalPrice);
+    updateTotalPrice();
+  }
+
+  // --- Thêm vào giỏ hàng với số lượng thực tế ---
+  document.querySelector('.add-to-cart').addEventListener('click', async function () {
+    const foodId = this.dataset.foodId;
+    const quantity = Number(quantityInput.value) || 1;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    try {
+      const res = await fetch("{{ route('cart.add') }}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ food_id: foodId, quantity: quantity })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showPopup(data.message || "Đã thêm vào giỏ hàng!");
+      } else {
+        showPopup(data.message || data.error || "Có lỗi xảy ra");
+      }
+    } catch (err) {
+      showPopup("Lỗi kết nối");
     }
-    // Thêm review tùy ý...
-  ];
+  });
 
-  let currentPage = 1;
-  const perPage = 1;
-
-  function renderStars(rating) {
-    let stars = '';
-    for (let i = 1; i <= 5; ++i)
-      stars += `<i class="fa-star ${i <= rating ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-400'}"></i>`;
-    return stars;
-  }
-
-  function renderReviews() {
-    const start = (currentPage - 1) * perPage;
-    const current = reviews.slice(start, start + perPage);
-    document.getElementById('reviewList').innerHTML = current.map(r =>
-      `
-      @foreach($rates as $rate)
-      <div class="flex gap-3 items-start bg-[#f8f8f8] rounded-lg p-3">
-      <img src="{{ asset('img/'.$rate->avatar) }}" class="w-12 h-12 rounded-full object-cover border border-gray-200" />
-      <div>
-        <div class="flex gap-2 items-center mb-1">
-          <span class="font-bold text-sm text-gray-800">{{$rate->fullname }}</span>
-          <span class="text-xs text-gray-400">{{$rate->time }}</span>
-        </div>
-        <div class="flex gap-1 text-xs mb-1">${renderStars({{$rate->rate }})}
-          <span class="ml-1 text-gray-500">({{$rate->rate }}/5)</span>
-        </div>
-        <div class="text-xs text-gray-600">{{$rate->content }}</div>
-      </div>
-    </div>
-    @endforeach
-    `
-    ).join('');
-    // Pagination
-    const pageCount = Math.ceil(reviews.length / perPage);
-    let pagBtns = '';
-    for (let i = 1; i <= pageCount; ++i)
-      pagBtns += `<button class="w-8 h-8 rounded-full ${i === currentPage ? 'bg-orange-500 text-white' : 'border border-gray-300 text-gray-600 bg-white hover:bg-orange-50'}" onclick="goToPage(${i})">${i}</button>`;
-    document.getElementById('paginationBtns').innerHTML = pagBtns;
-    document.getElementById('prevPageBtn').disabled = currentPage === 1;
-    document.getElementById('nextPageBtn').disabled = currentPage === pageCount;
-  }
-  window.goToPage = function (i) { currentPage = i; renderReviews(); };
-
-  document.getElementById('prevPageBtn').onclick = () => { if (currentPage > 1) { currentPage--; renderReviews(); } };
-  document.getElementById('nextPageBtn').onclick = () => { const pageCount = Math.ceil(reviews.length / perPage); if (currentPage < pageCount) { currentPage++; renderReviews(); } };
-
-  // Tab switch
-  document.getElementById('descTabBtn').onclick = function () {
-    this.classList.add("border-orange-500", "text-orange-600", "font-bold");
-    document.getElementById('reviewTabBtn').classList.remove("border-orange-500", "text-orange-600", "font-bold");
-    document.getElementById('descTabContent').classList.remove("hidden");
-    document.getElementById('reviewTabContent').classList.add("hidden");
-  };
-  document.getElementById('reviewTabBtn').onclick = function () {
-    this.classList.add("border-orange-500", "text-orange-600", "font-bold");
-    document.getElementById('descTabBtn').classList.remove("border-orange-500", "text-orange-600", "font-bold");
-    document.getElementById('descTabContent').classList.add("hidden");
-    document.getElementById('reviewTabContent').classList.remove("hidden");
-    renderReviews();
-  };
-
-  // Đánh giá: chọn sao
-  let formRating = 5;
-  function renderFormStars() {
-    let stars = '';
-    for (let i = 1; i <= 5; ++i) {
-      stars += `<i class="fa-star ${i <= formRating ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-400'} cursor-pointer" onclick="selectFormStar(${i})"></i>`;
+  // --- Yêu thích: Toggle đúng trạng thái cho sản phẩm hiện tại ---
+  document.querySelector('.favorite-btn').addEventListener('click', async function () {
+    const foodId = this.dataset.foodId;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    try {
+      const res = await fetch("{{ route('favorite.toggle') }}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ food_id: foodId })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        // Cập nhật icon & màu
+        if (data.favorited) {
+          this.innerHTML = '<i class="fa-solid fa-heart"></i> Yêu Thích';
+          this.classList.add('text-red-500');
+          this.classList.remove('text-gray-500');
+        } else {
+          this.innerHTML = '<i class="fa-regular fa-heart"></i> Yêu Thích';
+          this.classList.remove('text-red-500');
+          this.classList.add('text-gray-500');
+        }
+        showPopup(data.message || "Cập nhật yêu thích thành công");
+      } else {
+        showPopup(data.message || "Có lỗi xảy ra");
+      }
+    } catch (err) {
+      showPopup("Lỗi kết nối");
     }
-    document.getElementById('ratingStars').innerHTML = stars;
-  }
-  window.selectFormStar = function (i) { formRating = i; renderFormStars(); }
-  renderFormStars();
-
-  // Submit review
-  document.getElementById('reviewForm').onsubmit = function (e) {
-    e.preventDefault();
-    // Đơn giản: random avatar
-    const avatars = [
-      "https://randomuser.me/api/portraits/men/31.jpg", "https://randomuser.me/api/portraits/women/67.jpg",
-      "https://randomuser.me/api/portraits/men/11.jpg", "https://randomuser.me/api/portraits/women/21.jpg"];
-    reviews.unshift({
-      avatar: avatars[Math.floor(Math.random() * avatars.length)],
-      name: document.getElementById('reviewName').value,
-      date: new Date().toLocaleDateString('en-GB'),
-      rating: formRating,
-      text: document.getElementById('reviewText').value
-    });
-    this.reset(); formRating = 5; renderFormStars();
-    currentPage = 1;
-    renderReviews();
-    alert("Gửi đánh giá thành công!");
-  };
+  });
+   const overlay = document.getElementById('custom-popup-overlay');
+    document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+    document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+    overlay.onclick = function(e) {
+        if (e.target === overlay) overlay.classList.add('hidden');
+    };
+});
+function showPopup(message) {
+    document.getElementById('custom-popup-message').textContent = message;
+    document.getElementById('custom-popup-overlay').classList.remove('hidden');
+}
 </script>
 
+
+  <!-- PHẦN 2: Related BBQ Items -->
+  <div class="bg-dark-light max-w-6xl mx-auto py-8  ">
+    <h3 class="text-xl font-bold mb-4 text-gray-800">Món Nướng Gợi Ý</h3>
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+      <!-- Card 1 -->
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+        </div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+        <div class="flex gap-2">
+          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
+            Giỏ</button>
+          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+        <img src="img/combo/3.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-gray-800">Gà Xiên Que Nướng</span>
+          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">-10%</span>
+        </div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐☆</div>
+        <div class="text-sm font-bold text-orange-600 mb-2">$90.000</div>
+        <div class="flex gap-2">
+          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
+            Giỏ</button>
+          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+        <img src="img/combo/1.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-gray-800">Ba Chỉ Bò Mỹ Nướng</span>
+          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Best Seller</span>
+        </div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+        <div class="text-sm font-bold text-orange-600 mb-2">$220.000</div>
+        <div class="flex gap-2">
+          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
+            Giỏ</button>
+          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+        <img src="img/combo/4.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-gray-800">Combo Nướng Đặc Biệt</span>
+          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Combo</span>
+        </div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+        <div class="text-sm font-bold text-orange-600 mb-2">$450.000</div>
+        <div class="flex gap-2">
+          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
+            Giỏ</button>
+          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+        </div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+        <div class="flex gap-2">
+          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
+            Giỏ</button>
+          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+        </div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+        <div class="flex gap-2">
+          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
+            Giỏ</button>
+          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+        </div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+        <div class="flex gap-2">
+          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
+            Giỏ</button>
+          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+        <img src="img/danhmuc1/combogiadinh.jpg" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-gray-800">Sườn Nướng Mật Ong</span>
+          <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">Hot</span>
+        </div>
+        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">⭐⭐⭐⭐⭐</div>
+        <div class="text-sm font-bold text-orange-600 mb-2">$180.000</div>
+        <div class="flex gap-2">
+          <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600">Thêm
+            Giỏ</button>
+          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Chỉ giữ JS chuyển tab, bỏ toàn bộ phần renderReview bằng JS
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById('descTabBtn').onclick = function () {
+        this.classList.add("border-orange-500", "text-orange-600", "font-bold");
+        document.getElementById('reviewTabBtn').classList.remove("border-orange-500", "text-orange-600", "font-bold");
+        document.getElementById('descTabContent').classList.remove("hidden");
+        document.getElementById('reviewTabContent').classList.add("hidden");
+      };
+      document.getElementById('reviewTabBtn').onclick = function () {
+        this.classList.add("border-orange-500", "text-orange-600", "font-bold");
+        document.getElementById('descTabBtn').classList.remove("border-orange-500", "text-orange-600", "font-bold");
+        document.getElementById('descTabContent').classList.add("hidden");
+        document.getElementById('reviewTabContent').classList.remove("hidden");
+      };
+    });
+  </script>
+</body>
 @include('layouts.user.footer')
 
 </html>

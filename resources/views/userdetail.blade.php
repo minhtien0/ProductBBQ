@@ -313,7 +313,7 @@ data-error="{{ session('error') }}" @endif>
                                         </span>
                                         <span>
 
-                                            <button type="button" class="btn-show-edit-address  text-orange-500"
+                                            <button type="button" id="btn-show-edit-address" class="btn-show-edit-address  text-orange-500"
                                                 data-id="{{ $addressAlls->id }}" data-name="{{ $addressAlls->name }}"
                                                 data-sdt="{{ $addressAlls->sdt }}"
                                                 data-house_number="{{ $addressAlls->house_number }}"
@@ -383,7 +383,7 @@ data-error="{{ session('error') }}" @endif>
                                     <input type="radio" name="default" value="1" class="mr-1" {{ old('default', '1') == '1' ? 'checked' : '' }} onclick="setDefaultRadio(this.value)"> Nhà
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="default" value="0" class="mr-1" {{ old('default', '0') == '0' ? 'checked' : '' }} onclick="setDefaultRadio(this.value)"> KhácThông
+                                    <input type="radio" name="default" value="0" class="mr-1" {{ old('default', '0') == '0' ? 'checked' : '' }} onclick="setDefaultRadio(this.value)"> Khác
                                 </label>
                             </div>
                             <div class="flex gap-3">
@@ -582,9 +582,7 @@ data-error="{{ session('error') }}" @endif>
                         <div>
                             <div class="text-xs text-gray-700 font-semibold mb-1">Đơn Hàng:</div>
                             <div class="text-sm text-gray-700">
-                                Nguyễn Minh Tiến <br>
-                                7232 Broadway Suite 308, Jackson Heights, 11372, NY, United States<br>
-                                +84-987-430-510
+                                
                             </div>
                         </div>
                         <div class="text-sm text-gray-600 mt-2 md:mt-0">
@@ -603,49 +601,10 @@ data-error="{{ session('error') }}" @endif>
                                     <th class="px-2 py-1 border">Giá</th>
                                     <th class="px-2 py-1 border">Số Lượng</th>
                                     <th class="px-2 py-1 border">Tổng Tiền</th>
+                                    <th class="px-2 py-1 border">Đánh Giá</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="bg-white">
-                                    <td class="px-2 py-1 border text-center">01</td>
-                                    <td class="px-2 py-1 border">
-                                        Hyderabadi Biryani<br><span class="text-xs text-gray-400">Small<br>Coca
-                                            Cola</span>
-                                    </td>
-                                    <td class="px-2 py-1 border text-right">$120</td>
-                                    <td class="px-2 py-1 border text-center">2</td>
-                                    <td class="px-2 py-1 border text-right">$240</td>
-                                </tr>
-                                <tr class="bg-white">
-                                    <td class="px-2 py-1 border text-center">01</td>
-                                    <td class="px-2 py-1 border">
-                                        Hyderabadi Biryani<br><span class="text-xs text-gray-400">Small<br>Coca
-                                            Cola</span>
-                                    </td>
-                                    <td class="px-2 py-1 border text-right">$120</td>
-                                    <td class="px-2 py-1 border text-center">2</td>
-                                    <td class="px-2 py-1 border text-right">$240</td>
-                                </tr>
-                                <tr class="bg-white">
-                                    <td class="px-2 py-1 border text-center">01</td>
-                                    <td class="px-2 py-1 border">
-                                        Hyderabadi Biryani<br><span class="text-xs text-gray-400">Small<br>Coca
-                                            Cola</span>
-                                    </td>
-                                    <td class="px-2 py-1 border text-right">$120</td>
-                                    <td class="px-2 py-1 border text-center">2</td>
-                                    <td class="px-2 py-1 border text-right">$240</td>
-                                </tr>
-                                <tr class="bg-white">
-                                    <td class="px-2 py-1 border text-center">01</td>
-                                    <td class="px-2 py-1 border">
-                                        Hyderabadi Biryani<br><span class="text-xs text-gray-400">Small<br>Coca
-                                            Cola</span>
-                                    </td>
-                                    <td class="px-2 py-1 border text-right">$120</td>
-                                    <td class="px-2 py-1 border text-center">2</td>
-                                    <td class="px-2 py-1 border text-right">$240</td>
-                                </tr>
                                 <tr class="bg-white">
                                     <td class="px-2 py-1 border text-center">01</td>
                                     <td class="px-2 py-1 border">
@@ -701,8 +660,10 @@ data-error="{{ session('error') }}" @endif>
                         <div class="px-6 py-4 border-b">
                             <h2 class="text-xl font-bold">Viết Đánh Giá</h2>
                         </div>
-                        <form id="form-review" class="px-6 py-4 space-y-4">
+                        <form id="form-review" action="{{ route('reviews.store') }}" method="POST" enctype="multipart/form-data" class="px-6 py-4 space-y-4">
+                            @CSRF
                             <!-- Chọn sao -->
+                             <input type="hidden" name="order_id" id="review-order-id" value="">
                             <div>
                                 <label class="block font-medium mb-2">Chọn số sao:</label>
                                 <div id="star-container" class="flex space-x-1 text-yellow-400 cursor-pointer">
@@ -715,21 +676,18 @@ data-error="{{ session('error') }}" @endif>
                                 <input type="hidden" name="rating" id="rating-value" value="0">
                             </div>
 
+                            <div>
+                                <label class="block font-medium mb-2">Chọn sản phẩm để đánh giá:</label>
+                                <select name="food_id" id="select-review-product" class="w-full border rounded px-3 py-2" required>
+                                    <!-- JS sẽ render -->
+                                </select>
+                            </div>
+
                             <!-- Thêm hình -->
                             <div>
                                 <label class="block font-medium mb-2">Thêm hình (tối đa 4):</label>
                                 <input type="file" id="review-images" accept="image/*" multiple class="block w-full" />
                                 <div id="preview-container" class="mt-2 grid grid-cols-4 gap-2"></div>
-                            </div>
-
-                            <!-- Name / Email / Review -->
-                            <div>
-                                <input type="text" name="name" placeholder="Name"
-                                    class="w-full border rounded px-3 py-2" required>
-                            </div>
-                            <div>
-                                <input type="email" name="email" placeholder="Email"
-                                    class="w-full border rounded px-3 py-2" required>
                             </div>
                             <div>
                                 <textarea name="review" rows="4" placeholder="Write your review"
@@ -891,6 +849,36 @@ data-error="{{ session('error') }}" @endif>
         </div>
     </div>
 
+    <!-- Sửa địa chỉ -->
+    <script>
+        document.querySelectorAll('.btn-show-edit-address').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    // 1. Đưa view list đi, hiển thị view edit
+    document.getElementById('address-list-view').classList.add('hidden');
+    document.getElementById('address-edit-view').classList.remove('hidden');
+    // 2. Điền data vào form edit
+    document.getElementById('edit_address_id').value       = btn.dataset.id;
+    document.querySelector('#address-edit-view input[name="name"]').value         = btn.dataset.name;
+    document.querySelector('#address-edit-view input[name="sdt"]').value          = btn.dataset.sdt;
+    document.querySelector('#address-edit-view input[name="house_number"]').value = btn.dataset.house_number;
+    document.querySelector('#address-edit-view input[name="ward"]').value         = btn.dataset.ward;
+    document.querySelector('#address-edit-view input[name="district"]').value     = btn.dataset.district;
+    document.querySelector('#address-edit-view input[name="city"]').value         = btn.dataset.city;
+    document.querySelector('#address-edit-view textarea[name="note"]').value      = btn.dataset.note;
+    // radio default
+    const def = btn.dataset.default;
+    document.querySelector(`#address-edit-view input[name="default"][value="${def}"]`).checked = true;
+  });
+});
+
+// Hủy chỉnh sửa
+document.getElementById('btn-cancel-edit-address').addEventListener('click', e => {
+  e.preventDefault();
+  document.getElementById('address-edit-view').classList.add('hidden');
+  document.getElementById('address-list-view').classList.remove('hidden');
+});
+    </script>
 
     <!-- Thêm giỏ hàng -->
     <script>
@@ -1131,7 +1119,18 @@ data-error="{{ session('error') }}" @endif>
                 function renderInvoiceDetail(data) {
                     const o = data.order;
                     const ds = data.details;
-
+                    currentOrderId = o.id;
+                    const selectProduct = document.getElementById('select-review-product');
+                    const unrated = data.unrated_details || [];
+                    if (selectProduct) {
+                        selectProduct.innerHTML = unrated.length > 0
+                            ? unrated.map(item => 
+                                `<option value="${item.product_id}">
+                                    ${item.food_name} (${item.quantity} x ${Number(item.food_price).toLocaleString()}đ)
+                                </option>`
+                            ).join('')
+                            : '<option disabled>Đã đánh giá hết các sản phẩm!</option>';
+                    }
                     // Khách & header
                     document.querySelector('#invoice-detail .text-sm.text-gray-700').innerHTML =
                         `${o.customer_name}<br>${o.house_number}, ${o.ward}, ${o.district}, ${o.city}<br>${o.sdt}`;
@@ -1142,9 +1141,12 @@ data-error="{{ session('error') }}" @endif>
 
                     // Table body
                     let html = '', sum = 0, qty = 0;
+                    const unratedIds = (data.unrated_details || []).map(item => item.product_id);
+                    
                     ds.forEach((it, i) => {
                         const line = it.food_price * it.quantity;
                         sum += line; qty += it.quantity;
+                        const reviewStatus = unratedIds.includes(it.product_id) ? '-' : 'Rated';
                         html += `
           <tr>
             <td class="px-2 py-1 border text-center">${String(i + 1).padStart(2, '0')}</td>
@@ -1152,6 +1154,7 @@ data-error="{{ session('error') }}" @endif>
             <td class="px-2 py-1 border text-right">${it.food_price.toLocaleString()}đ</td>
             <td class="px-2 py-1 border text-center">${it.quantity}</td>
             <td class="px-2 py-1 border text-right">${line.toLocaleString()}đ</td>
+            <td class="px-2 py-1 border text-right">${reviewStatus}</td>
           </tr>`;
                     });
                     document.querySelector('#invoice-detail tbody').innerHTML = html;
@@ -1234,7 +1237,22 @@ data-error="{{ session('error') }}" @endif>
                 const previewBox = document.getElementById('preview-container');
                 let filesArr = [];
 
-                openReview?.addEventListener('click', () => modal.classList.remove('hidden'));
+                openReview?.addEventListener('click', () => {
+                    modal.classList.remove('hidden');
+                    // Gán order_id vào input ẩn
+                    document.getElementById('review-order-id').value = currentOrderId || '';
+                    ratingInput.value = 5;
+                    starsEls.forEach(s => {
+                    const v = +s.dataset.value;
+                    if (v <= 5) {
+                        s.classList.add('fa-solid');
+                        s.classList.remove('fa-regular');
+                    } else {
+                        s.classList.add('fa-regular');
+                        s.classList.remove('fa-solid');
+                    }
+                    });
+                });
                 closeReview?.addEventListener('click', () => {
                     // 1. Ẩn modal
                     modal.classList.add('hidden');
@@ -1298,6 +1316,9 @@ data-error="{{ session('error') }}" @endif>
                     e.preventDefault();
                     const form = e.target;
                     const fd = new FormData(form);
+                    console.log("food_id gửi lên thực tế:", fd.get('food_id'));
+                    fd.set('food_id', parseInt(fd.get('food_id')));
+                    console.log("food_id gửi lên:", fd.get('food_id'));
                     filesArr.forEach(f => fd.append('images[]', f));
                     try {
                         const res = await fetch(form.action || location.href, {
@@ -1317,7 +1338,7 @@ data-error="{{ session('error') }}" @endif>
                             showAlert('error', j.message || 'Gửi đánh giá thất bại');
                         }
                     } catch {
-                        showAlert('error', 'Lỗi kết nối server');
+                        showAlert('error', 'Đánh giá thất bại');
                     }
                 });
 

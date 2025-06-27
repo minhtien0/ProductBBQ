@@ -42,4 +42,9 @@ class Rate extends Model
     {
         return $this->belongsTo(Blog::class, 'blog_id');
     }
+
+    public function images()
+    {
+        return $this->hasMany(Image::class, 'id_rate'); 
+    }
 }

@@ -892,6 +892,7 @@
                                     data-food-id="{{ $allFood->id }}">
                                     Thêm Vào Giỏ Hàng
                                 </button>
+                                
                                 <button type="button"
                                     class="favorite-btn icon-btn {{ in_array($allFood->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
                                     data-food-id="{{ $allFood->id }}">
@@ -976,6 +977,130 @@
 
         </div>
     </section>
+<!-- Popup overlay -->
+<div id="custom-popup-overlay"
+     class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
+  <!-- Container chính -->
+  <div id="custom-popup"
+       class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-info-circle text-white"></i>
+          <span class="text-white font-semibold text-lg">Thông báo</span>
+        </div>
+        <button id="popup-close-btn"
+                class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Nội dung -->
+    <div class="px-6 py-8 text-center">
+      <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fa-solid fa-info text-blue-600 text-2xl"></i>
+      </div>
+      <div id="custom-popup-message" class="text-gray-800 text-base font-semibold mb-6">
+        <!-- Nội dung message sẽ được show ở đây -->
+      </div>
+      <button id="popup-ok-btn"
+              class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+        Đóng
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Add to cart
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            const foodId = this.dataset.foodId;
+            try {
+                const res = await fetch("{{ route('cart.add') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({ food_id: foodId, quantity: 1 })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showPopup(data.message);
+                } else {
+                    showPopup(data.message || data.error || 'Có lỗi xảy ra');
+                }
+            } catch (err) {
+                showPopup('Lỗi kết nối');
+            }
+        });
+    });
+
+    // Favorite toggle
+    document.querySelectorAll('.favorite-btn').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            const foodId = this.dataset.foodId;
+            try {
+                const res = await fetch("{{ route('favorite.toggle') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({ food_id: foodId })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    // Cập nhật icon & màu
+                    if (data.favorited) {
+                        this.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                        this.classList.add('text-red-500');
+                        this.classList.remove('text-gray-500');
+                    } else {
+                        this.innerHTML = '<i class="fa-regular fa-heart"></i>';
+                        this.classList.remove('text-red-500');
+                        this.classList.add('text-gray-500');
+                    }
+                    showPopup(data.message);
+                } else {
+                    showPopup(data.message || 'Có lỗi xảy ra');
+                }
+            } catch (err) {
+                showPopup('Lỗi kết nối');
+            }
+        });
+    });
+
+    // Popup script
+    const overlay = document.getElementById('custom-popup-overlay');
+    document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+    document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+    overlay.onclick = function(e) {
+        if (e.target === overlay) overlay.classList.add('hidden');
+    };
+});
+
+// Global showPopup function
+function showPopup(message) {
+    document.getElementById('custom-popup-message').textContent = message;
+    document.getElementById('custom-popup-overlay').classList.remove('hidden');
+}
+</script>
+
 
 
     <!-- Menu Sale -->
