@@ -233,6 +233,9 @@
                     </table>
                 </div>
             </form>
+            <div class="mt-4">
+                {{ $blogs->links() }}
+            </div>
         </div>
     </div>
      <x-notification-popup />

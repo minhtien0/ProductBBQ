@@ -849,7 +849,7 @@
                     <img src="img/logo2.jpg" alt="Pasta" class="w-full h-full object-cover">
                 </div>
                 <!-- Sale badge -->
-                
+
             </div>
         </div>
     </div>
@@ -884,7 +884,10 @@
                                 <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                                 <span>24</span>
                             </div>
-                            <div class="menu-card-price">{{ $allFood->price }} VNĐ<span class="old">$90.00</span></div>
+                            <div class="menu-card-price">
+                                {{ number_format($allFood->price, 0, ',', '.') }}đ
+                                <span class="old"></span>
+                            </div>
                             <div class="menu-card-footer">
                                 <button type="button"
                                     class="add-to-cart flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold text-sm transition focus:outline-none shadow"
@@ -892,11 +895,9 @@
                                     <i class="fa fa-cart-plus"></i>
                                     Thêm vào giỏ
                                 </button>
-                                
                                 <button type="button"
                                     class="favorite-btn icon-btn {{ in_array($allFood->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
                                     data-food-id="{{ $allFood->id }}">
-
                                     <i
                                         class="{{ in_array($allFood->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
                                 </button>
@@ -1135,7 +1136,6 @@ function showPopup(message) {
                                     <h3 id="booking" class="text-blue-900 font-extrabold mt-3 mb-1 text-base truncate">
                                         {{ $combo->name }}
                                     </h3>
-                                    <p class="text-gray-600 text-sm mb-2 truncate">{{ $combo->note }}</p>
                                     <div class="flex items-center justify-between">
                                         <span
                                             class="text-red-600 font-bold text-lg">{{ number_format($combo->price, 0, ',', '.') }}₫</span>
@@ -1439,6 +1439,9 @@ function showPopup(message) {
             });
         });
         // tìm kiếm
+        function formatPriceVND(number) {
+            return number.toLocaleString('vi-VN') + 'đ';
+        }
         $(document).ready(function () {
             function renderResults(data) {
                 if (data.results && data.results.length) {
@@ -1447,7 +1450,9 @@ function showPopup(message) {
                     <img src="${food.image}" class="w-14 h-14 rounded-lg object-cover border" alt="">
                     <div>
                         <div class="font-bold text-[#e60012] text-base mb-1">${food.text}</div>
-                        <div class="text-gray-800 text-sm mb-1">Giá: <b>${food.price} VNĐ</b></div>
+                        <div class="text-gray-800 text-sm mb-1">
+                Giá: <b>${(food.price / 1).toLocaleString('vi-VN')}đ</b>
+            </div>
                         <div class="text-gray-600 text-xs">${food.desc ?? ''}</div>
                     </div>
                 </div>

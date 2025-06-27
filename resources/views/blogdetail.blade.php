@@ -44,12 +44,12 @@
     <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
     <!-- Content -->
     <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
-      <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Chi Tiết Tin Tức</h1>
+      <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Tin Tức</h1>
       <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
         <i class="fa fa-home text-white"></i>
         <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
         <span class="text-white">–</span>
-        <span class="text-[#ff8000]">BBQ Chi Tiết Tin Tức</span>
+        <span class="text-[#ff8000]">Chi Tiết Tin Tức</span>
       </div>
     </div>
   </div>
