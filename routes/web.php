@@ -191,7 +191,7 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::post('{order}/status', [OrderController::class, 'updateStatusBringBack'])->name('admin.order.updateStatusBringBack');
         //Tại Quán
         Route::get('/onsite', [OrderController::class, 'onSite'])->name('admin.order.onsite');
-
+        Route::post('{order}/refund', [OrderController::class, 'refund'])->name('admin.order.refund');
     });
 
     //huydong test layout quản lí bàn

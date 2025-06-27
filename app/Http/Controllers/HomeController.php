@@ -428,15 +428,15 @@ class HomeController extends Controller
         $countRates = $rates->count();
         //dd($detailImages);
         $suggestFoods = Food::where('id', '!=', $foods->id)
-    ->where(function ($query) use ($foods) {
-        $query->whereBetween('price', [
-                max(0, $foods->price - 30000),
-                $foods->price + 30000
-            ])
-            ->orWhere('type', $foods->type);
-    })
-    ->limit(8)
-    ->get();
+            ->where(function ($query) use ($foods) {
+                $query->whereBetween('price', [
+                    max(0, $foods->price - 30000),
+                    $foods->price + 30000
+                ])
+                    ->orWhere('type', $foods->type);
+            })
+            ->limit(8)
+            ->get();
 
         return view('menudetail', compact('foods', 'detailImages', 'rates', 'suggestFoods', 'countRates', 'favIds'));
 
@@ -1087,45 +1087,38 @@ class HomeController extends Controller
     public function vnpayReturn(Request $request)
     {
         // 1. Đọc và loại bỏ SecureHash trước khi build
-        $data = $request->all();
-        $vnp_SecureHash = $data['vnp_SecureHash'] ?? '';
-        unset($data['vnp_SecureHash'], $data['vnp_SecureHashType']);
+        $data = $request->query();
+    $vnpSecureHash = $data['vnp_SecureHash'] ?? '';
+    unset($data['vnp_SecureHash'], $data['vnp_SecureHashType']);
 
-        // 2. Sắp xếp và build hashData
-        ksort($data);
-        $hashData = '';
-        foreach ($data as $key => $value) {
-            if ($hashData !== '') {
-                $hashData .= '&';
-            }
-            $hashData .= urlencode($key) . '=' . urlencode($value);
-        }
+    ksort($data);
+    $hashData = '';
+    foreach ($data as $key => $value) {
+        $hashData .= "{$key}={$value}&";
+    }
+    $hashData = rtrim($hashData, '&');
 
-        $computed = hash_hmac('sha512', $hashData, env('VNPAY_HASH_SECRET'));
-
-
-
-        if ($computed !== $vnp_SecureHash) {
-            return redirect()->route('views.cart')
-                ->with('error', "Xác thực VNPAY thất bại!");
-        }
-
-
-        // 4. Kiểm tra giao dịch thành công
+    $computed = hash_hmac('sha512', $hashData, env('VNPAY_HASH_SECRET'));
+    if ($computed !== $vnpSecureHash) {
+        return redirect()->route('views.cart')
+            ->with('error', 'Xác thực VNPAY thất bại!');
+    }
+        // 3. Kiểm tra giao dịch thành công
         if ($request->get('vnp_ResponseCode') !== '00') {
             return redirect()->route('views.cart')
                 ->with('error', 'Thanh toán VNPAY không thành công: '
                     . $request->get('vnp_ResponseCode'));
         }
 
-        // 5. Lấy dữ liệu pending từ session
+
+        // 4. Lấy dữ liệu pending từ session
         $pending = session('pending_order');
         if (!$pending) {
             return redirect()->route('views.cart')
                 ->with('error', 'Không tìm thấy dữ liệu đơn hàng sau khi thanh toán!');
         }
 
-        // 6. Lưu Order & OrderDetail
+        // 5. Lưu Order & OrderDetail
         DB::transaction(function () use ($pending, $request) {
             $txRef = $request->get('vnp_TxnRef');
             $order = Order::create([
@@ -1141,6 +1134,8 @@ class HomeController extends Controller
                 'typepayment' => 2,
                 'note' => $pending['note'],
                 'type' => 1,
+                'transaction_no' => $request->get('vnp_TransactionNo'),
+                'transaction_date' => $request->get('vnp_PayDate'),
             ]);
             foreach ($pending['products'] as $item) {
                 OrderDetail::create([

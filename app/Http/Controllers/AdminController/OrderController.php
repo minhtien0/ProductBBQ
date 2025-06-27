@@ -6,9 +6,12 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\AdminController\DB;
+use GuzzleHttp\Client;
+use Illuminate\Support\Str;
 
 
 class OrderController extends Controller
@@ -95,15 +98,158 @@ class OrderController extends Controller
     public function updateStatusBringBack(Request $request, $id)
     {
         $request->validate([
-            'statusorder' => 'required|in:Chờ Xác Nhận,Đang Thực Hiện,Đang Giao Hàng,Hoàn Thành',
+            'statusorder' => 'required|in:Chờ Xác Nhận,Đang Thực Hiện,Đang Giao Hàng,Hoàn Thành,Đã Hủy',
         ]);
 
         $order = Order::findOrFail($id);
         $order->statusorder = $request->statusorder;
         $order->save();
 
-        return back()->with('success','Cập nhật trạng thái thành công!');
+        return back()->with('success', 'Cập nhật trạng thái thành công!');
     }
+
+public function queryTransaction(string $txnRef, Request $request)
+    {
+        $url     = env('VNPAY_API_URL');
+        $tmn     = env('VNPAY_TMN_CODE');
+        $secret  = env('VNPAY_HASH_SECRET');
+
+        $order           = Order::where('code', $txnRef)->firstOrFail();
+        $transactionNo   = $order->transaction_no;
+        $transactionDate = $order->transaction_date;
+
+        // Đảm bảo transactionDate 14 ký tự
+        if (strlen($transactionDate) != 14) {
+            $transactionDate = Carbon::parse($transactionDate)->format('YmdHis');
+        }
+
+        $data = [
+            'vnp_Version'        => '2.1.0',
+            'vnp_Command'        => 'querydr',
+            'vnp_TmnCode'        => $tmn,
+            'vnp_TxnRef'         => $txnRef,
+            'vnp_RequestId'      => Str::upper(Str::random(16)),
+            'vnp_OrderInfo'      => "Query giao dịch {$txnRef}",
+            'vnp_TransactionNo'  => $transactionNo,
+            'vnp_TransactionDate'=> $transactionDate,
+            'vnp_CreateDate'     => date('YmdHis'),
+            'vnp_IpAddr'         => $request->ip(),
+        ];
+
+        // Sinh rawHash
+        ksort($data);
+        $rawHash = '';
+        foreach ($data as $k => $v) {
+            $rawHash .= "{$k}={$v}&";
+        }
+        $rawHash = rtrim($rawHash, '&');
+
+        // Gắn chữ ký
+        $data['vnp_SecureHashType'] = 'SHA512';
+        $data['vnp_SecureHash']     = hash_hmac('sha512', $rawHash, $secret);
+
+        // Gửi JSON
+        $client   = new Client();
+        $response = $client->post($url, [
+            'json'    => $data,
+            'headers' => ['Content-Type' => 'application/json'],
+        ]);
+
+        return json_decode($response->getBody(), true);
+    }
+
+    /**
+     * Hoàn tiền (Refund)
+     */
+    public function refund(Request $request, Order $order)
+    {
+        $transactionNo   = $order->transaction_no;
+        $transactionDate = $order->transaction_date;
+
+        if (!$transactionNo || !$transactionDate) {
+            return back()->with('error', 'Thiếu thông tin giao dịch gốc để hoàn tiền.');
+        }
+
+        // Đảm bảo transactionDate 14 ký tự
+         if (strlen($order->transaction_date) != 14) {
+        $transactionDate = Carbon::parse($order->transaction_date)
+                              ->format('YmdHis');
+    } else {
+        $transactionDate = $order->transaction_date;
+    }
+
+    $requestId    = date('YmdHis') . Str::upper(Str::random(6));
+    $createBy     = session('staff_id') ?? 'admin';
+    $createDate   = date('YmdHis');
+    $amount       = $order->totalbill * 100;
+    $ip           = $request->ip();
+    $txnRef       = $order->code;
+    $txnNo        = $order->transaction_no;
+    $version      = '2.1.0';
+    $command      = 'refund';
+    $tmnCode      = env('VNPAY_TMN_CODE');
+    $txnType      = '02';
+    $orderInfo    = "Hoàn tiền đơn {$txnRef}";
+    $secret       = env('VNPAY_HASH_SECRET');
+
+    // 2. Build raw data theo spec (thứ tự + dấu '|')
+    $rawData = implode('|', [
+        $requestId,
+        $version,
+        $command,
+        $tmnCode,
+        $txnType,
+        $txnRef,
+        $amount,
+        $txnNo,
+        $transactionDate,
+        $createBy,
+        $createDate,
+        $ip,
+        $orderInfo,
+    ]);
+
+    // 3. Tính chữ ký
+    $secureHash = hash_hmac('sha512', $rawData, $secret);
+
+    // 4. Gửi request JSON
+    $payload = [
+        'vnp_RequestId'       => $requestId,
+        'vnp_Version'         => $version,
+        'vnp_Command'         => $command,
+        'vnp_TmnCode'         => $tmnCode,
+        'vnp_TransactionType' => $txnType,
+        'vnp_TxnRef'          => $txnRef,
+        'vnp_Amount'          => $amount,
+        'vnp_TransactionNo'   => $txnNo,
+        'vnp_TransactionDate' => $transactionDate,
+        'vnp_CreateBy'        => $createBy,
+        'vnp_CreateDate'      => $createDate,
+        'vnp_IpAddr'          => $ip,
+        'vnp_OrderInfo'       => $orderInfo,
+        'vnp_SecureHash'      => $secureHash,
+    ];
+
+    $client   = new Client();
+    $response = $client->post(env('VNPAY_API_URL'), [
+        'json'    => $payload,
+        'headers' => ['Content-Type' => 'application/json'],
+    ]);
+    $result = json_decode($response->getBody(), true);
+
+    \Log::info('VNPAY Refund:', [
+        'response_code' => $result['vnp_ResponseCode'] ?? null,
+        'message'       => $result['vnp_Message'] ?? null,  
+    ]);
+
+    if (($result['vnp_ResponseCode'] ?? '') === '00') {
+        $order->update(['statusorder' => 'Hoàn Tiền']);
+        return back()->with('success', 'Hoàn tiền thành công!');
+    }
+
+    return back()->with('error', 'Hoàn tiền thất bại: ' . ($result['vnp_Message'] ?? 'Unknown'));
+}
+
 
     //Controller Xử Lí Tại Quán
     public function onSite()

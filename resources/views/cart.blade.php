@@ -148,7 +148,7 @@ data-error="{{ session('error') }}" @endif>
           </div>
           <hr>
           <div class="flex justify-between text-sm mb-2 mt-2">
-            <span>Phí Vẫn Chuyển:</span> <span id="delivery">10</span>
+            <span>Phí Vẫn Chuyển:</span> <span id="delivery">30000</span>
           </div>
           <hr>
           <div class="flex justify-between text-base font-bold mb-3 mt-2">
