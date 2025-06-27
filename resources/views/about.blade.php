@@ -278,7 +278,7 @@
         <!-- Card 1 -->
         <div class="flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
           <div
-            class=" mt-[30px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
+            class=" mt-[13px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke-width="2" stroke-linecap="round"
@@ -294,7 +294,7 @@
         <!-- Card 2 -->
         <div class="flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
           <div
-            class="mt-[30px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
+            class="mt-[13px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-9 7v4m4-4v4" stroke-width="2" stroke-linecap="round"
@@ -310,7 +310,7 @@
         <!-- Card 3 -->
         <div class=" flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
           <div
-            class="mt-[30px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
+            class="mt-[13px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path d="M13 16h-1v-4h-1m2 4v2m-2-2v2M6 6h.01M18 6h.01M12 6h.01" stroke-width="2" stroke-linecap="round"
@@ -326,7 +326,7 @@
         <!-- Card 4 -->
         <div class="flex items-start gap-4 bg-[#f3f2fa] rounded-xl p-4">
           <div
-            class="mt-[30px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl">
+            class="mt-[13px] flex-shrink-0 w-12 h-12 rounded-full bg-[#ff8200] flex items-center justify-center text-white text-2xl pb-2 pr-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path d="M17 20h5v-2a2 2 0 00-2-2h-3v-2a2 2 0 00-2-2h-2a2 2 0 00-2 2v2h-3a2 2 0 00-2 2v2h5"
@@ -418,14 +418,12 @@
           <!-- Blog  -->
           @foreach ($newBlogs as $newBlog)
         <div class="swiper-slide">
-        <div class="bg-white rounded-2xl shadow p-3 h-[370px] relative flex flex-col">
+        <div class="bg-white rounded-2xl shadow p-3 h-[300px] relative flex flex-col">
           <a href="{{ route('views.blogdetail', [$newBlog->id_blog, $newBlog->slug]) }}">
           <img src="{{ asset('img/blog/' . $newBlog->image) }}" class="w-full h-40 object-cover rounded-lg mb-2"
             alt="">
           </a>
           <div class="flex items-center gap-2 mb-2">
-          <img src="{{ asset('img/' . $newBlog->avata) }}" class="w-7 h-7 rounded-full border-2 border-white"
-            alt="">
           <span class="text-xs text-gray-600 font-semibold">{{ $newBlog->fullname }}</span>
           </div>
           <div class="text-base font-bold mb-1">{{ $newBlog->title }}</div>

@@ -42,12 +42,12 @@
     <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
     <!-- Content -->
     <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
-      <h1 class="text-white font-extrabold text-4xl md:text-5xl mb-4">Chi Tiết Sản Phẩm</h1>
+      <h1 class="text-white font-extrabold text-4xl md:text-5xl mb-4">Chi Tiết Thực Đơn</h1>
       <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
         <i class="fa fa-home text-white"></i>
         <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
         <span class="text-white">–</span>
-        <span class="text-[#ff8000]">BBQ Menu Detail</span>
+        <span class="text-[#ff8000]">Chi Tiết Món </span>
       </div>
     </div>
   </div>
@@ -71,7 +71,10 @@
         <div class="md:w-2/3">
           <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ $foods->name }}</h2>
           <div class="flex items-center gap-3 mb-2">
-            <span class="text-xl font-bold text-orange-600">{{ $foods->price }} VNĐ</span>
+            <span class="text-xl font-bold text-orange-600">
+              {{ number_format($foods->price, 0, ',', '.') }}đ
+            </span>
+
             <span
               class="text-xs bg-orange-100 text-orange-500 rounded px-2 py-0.5 font-semibold">{{ $foods->menus->name }}</span>
           </div>
@@ -79,14 +82,16 @@
           <!-- Quantity & Button -->
           <div class="flex items-center gap-3 mb-3">
             <label class="font-semibold text-gray-700">Số Lượng:</label>
-            <input type="number" min="1" max="20" value="1" class="w-16 border rounded px-2 py-1 text-center" id="food-quantity">
-            <span class="text-lg font-bold text-orange-700" id="total-price">{{ $foods->price }} VNĐ</span>
+            <input type="number" min="1" max="20" value="1" class="w-16 border rounded px-2 py-1 text-center"
+              id="food-quantity">
+            <span class="text-lg font-bold text-orange-700" id="total-price">
+              {{ number_format($foods->price, 0, ',', '.') }}đ
+            </span>
           </div>
           <div class="flex gap-3 mt-4">
             <button type="button"
               class="add-to-cart bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-bold shadow"
-              data-food-id="{{ $foods->id }}"
-              data-food-price="{{ $foods->price }}">Thêm
+              data-food-id="{{ $foods->id }}" data-food-price="{{ $foods->price }}">Thêm
               Vào
               Giỏ</button>
             <button type="button"
@@ -209,139 +214,137 @@
   </div>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  // --- Tổng tiền khi đổi số lượng ---
-  const price = Number(document.querySelector('.add-to-cart').dataset.foodPrice);
-  const quantityInput = document.getElementById('food-quantity');
-  const totalPriceSpan = document.getElementById('total-price');
-  quantityInput.addEventListener('input', function () {
-  if (this.value > 20) {
-    this.value = 20;
-    updateTotalPrice();
-    showPopup('Bạn chỉ có thể mua tối đa 20 phần/lần.');
-  } else if (this.value < 1) {
-    this.value = 1;
-    updateTotalPrice();
-  } else {
-    updateTotalPrice();
-  }
-});
-
-  function updateTotalPrice() {
-    const qty = Number(quantityInput.value) || 1;
-    totalPriceSpan.textContent = (price * qty).toLocaleString('vi-VN') + ' VNĐ';
-  }
-  if (quantityInput && totalPriceSpan) {
-    quantityInput.addEventListener('input', updateTotalPrice);
-    updateTotalPrice();
-  }
-
-  // --- Thêm vào giỏ hàng với số lượng thực tế ---
-  document.querySelector('.add-to-cart').addEventListener('click', async function () {
-    const foodId = this.dataset.foodId;
-    const quantity = Number(quantityInput.value) || 1;
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    try {
-      const res = await fetch("{{ route('cart.add') }}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: JSON.stringify({ food_id: foodId, quantity: quantity })
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        showPopup(data.message || "Đã thêm vào giỏ hàng!");
-      } else {
-        showPopup(data.message || data.error || "Có lỗi xảy ra");
-      }
-    } catch (err) {
-      showPopup("Lỗi kết nối");
-    }
-  });
-
-  // --- Yêu thích: Toggle đúng trạng thái cho sản phẩm hiện tại ---
-  document.querySelector('.favorite-btn').addEventListener('click', async function () {
-    const foodId = this.dataset.foodId;
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    try {
-      const res = await fetch("{{ route('favorite.toggle') }}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: JSON.stringify({ food_id: foodId })
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        // Cập nhật icon & màu
-        if (data.favorited) {
-          this.innerHTML = '<i class="fa-solid fa-heart"></i> Yêu Thích';
-          this.classList.add('text-red-500');
-          this.classList.remove('text-gray-500');
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // --- Tổng tiền khi đổi số lượng ---
+      const price = Number(document.querySelector('.add-to-cart').dataset.foodPrice);
+      const quantityInput = document.getElementById('food-quantity');
+      const totalPriceSpan = document.getElementById('total-price');
+      quantityInput.addEventListener('input', function () {
+        if (this.value > 20) {
+          this.value = 20;
+          updateTotalPrice();
+          showPopup('Bạn chỉ có thể mua tối đa 20 phần/lần.');
+        } else if (this.value < 1) {
+          this.value = 1;
+          updateTotalPrice();
         } else {
-          this.innerHTML = '<i class="fa-regular fa-heart"></i> Yêu Thích';
-          this.classList.remove('text-red-500');
-          this.classList.add('text-gray-500');
+          updateTotalPrice();
         }
-        showPopup(data.message || "Cập nhật yêu thích thành công");
-      } else {
-        showPopup(data.message || "Có lỗi xảy ra");
-      }
-    } catch (err) {
-      showPopup("Lỗi kết nối");
-    }
-  });
-   const overlay = document.getElementById('custom-popup-overlay');
-    document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
-    document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
-    overlay.onclick = function(e) {
-        if (e.target === overlay) overlay.classList.add('hidden');
-    };
-});
-function showPopup(message) {
-    document.getElementById('custom-popup-message').textContent = message;
-    document.getElementById('custom-popup-overlay').classList.remove('hidden');
-}
-</script>
+      });
 
-<!-- PHẦN 2: Related BBQ Items -->
-<div class="bg-dark-light max-w-6xl mx-auto py-8">
-  <h3 class="text-xl font-bold mb-4 text-gray-800">Món Ngon Gợi Ý</h3>
-  <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-    @forelse($suggestFoods as $item)
+      function updateTotalPrice() {
+        const qty = Number(quantityInput.value) || 1;
+        totalPriceSpan.textContent = (price * qty).toLocaleString('vi-VN') + ' VNĐ';
+      }
+      if (quantityInput && totalPriceSpan) {
+        quantityInput.addEventListener('input', updateTotalPrice);
+        updateTotalPrice();
+      }
+
+      // --- Thêm vào giỏ hàng với số lượng thực tế ---
+      document.querySelector('.add-to-cart').addEventListener('click', async function () {
+        const foodId = this.dataset.foodId;
+        const quantity = Number(quantityInput.value) || 1;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        try {
+          const res = await fetch("{{ route('cart.add') }}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ food_id: foodId, quantity: quantity })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showPopup(data.message || "Đã thêm vào giỏ hàng!");
+          } else {
+            showPopup(data.message || data.error || "Có lỗi xảy ra");
+          }
+        } catch (err) {
+          showPopup("Lỗi kết nối");
+        }
+      });
+
+      // --- Yêu thích: Toggle đúng trạng thái cho sản phẩm hiện tại ---
+      document.querySelector('.favorite-btn').addEventListener('click', async function () {
+        const foodId = this.dataset.foodId;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        try {
+          const res = await fetch("{{ route('favorite.toggle') }}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ food_id: foodId })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            // Cập nhật icon & màu
+            if (data.favorited) {
+              this.innerHTML = '<i class="fa-solid fa-heart"></i> Yêu Thích';
+              this.classList.add('text-red-500');
+              this.classList.remove('text-gray-500');
+            } else {
+              this.innerHTML = '<i class="fa-regular fa-heart"></i> Yêu Thích';
+              this.classList.remove('text-red-500');
+              this.classList.add('text-gray-500');
+            }
+            showPopup(data.message || "Cập nhật yêu thích thành công");
+          } else {
+            showPopup(data.message || "Có lỗi xảy ra");
+          }
+        } catch (err) {
+          showPopup("Lỗi kết nối");
+        }
+      });
+      const overlay = document.getElementById('custom-popup-overlay');
+      document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+      document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+      overlay.onclick = function (e) {
+        if (e.target === overlay) overlay.classList.add('hidden');
+      };
+    });
+    function showPopup(message) {
+      document.getElementById('custom-popup-message').textContent = message;
+      document.getElementById('custom-popup-overlay').classList.remove('hidden');
+    }
+  </script>
+
+  <!-- PHẦN 2: Related BBQ Items -->
+  <div class="bg-dark-light max-w-6xl mx-auto py-8">
+    <h3 class="text-xl font-bold mb-4 text-gray-800">Món Ngon Gợi Ý</h3>
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+      @forelse($suggestFoods as $item)
       <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-        <img src="{{ asset('img/' . $item->image) }}" class="rounded-lg w-full h-32 object-cover mb-3" />
-        <div class="flex items-center justify-between mb-1">
-         <a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}"> <span  class="font-bold text-gray-800">{{ $item->name }}</span></a>
-        </div>
-        <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">
-          ⭐⭐⭐⭐⭐
-        </div>
-        <div class="text-sm font-bold text-orange-600 mb-2">
-          {{ number_format($item->price, 0, ',', '.') }}đ
-        </div>
-        <div class="flex gap-2">
-          <button 
-            class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600 btn-add-cart"
-            data-id="{{ $item->id }}"
-            data-quantity="1"
-          >Thêm Giỏ</button>
-          <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
-        </div>
+      <img src="{{ asset('img/' . $item->image) }}" class="rounded-lg w-full h-32 object-cover mb-3" />
+      <div class="flex items-center justify-between mb-1">
+        <a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}"> <span
+          class="font-bold text-gray-800">{{ $item->name }}</span></a>
+      </div>
+      <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">
+        ⭐⭐⭐⭐⭐
+      </div>
+      <div class="text-sm font-bold text-orange-600 mb-2">
+        {{ number_format($item->price, 0, ',', '.') }}đ
+      </div>
+      <div class="flex gap-2">
+        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600 btn-add-cart"
+        data-id="{{ $item->id }}" data-quantity="1">Thêm Giỏ</button>
+        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+      </div>
       </div>
     @empty
       <div class="col-span-4 text-center text-gray-500 py-8">Không có món gợi ý!</div>
     @endforelse
+    </div>
   </div>
-</div>
   <script>
     // Chỉ giữ JS chuyển tab, bỏ toàn bộ phần renderReview bằng JS
 

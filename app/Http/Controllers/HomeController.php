@@ -428,15 +428,15 @@ class HomeController extends Controller
         $countRates = $rates->count();
         //dd($detailImages);
         $suggestFoods = Food::where('id', '!=', $foods->id)
-    ->where(function ($query) use ($foods) {
-        $query->whereBetween('price', [
-                max(0, $foods->price - 30000),
-                $foods->price + 30000
-            ])
-            ->orWhere('type', $foods->type);
-    })
-    ->limit(8)
-    ->get();
+            ->where(function ($query) use ($foods) {
+                $query->whereBetween('price', [
+                    max(0, $foods->price - 30000),
+                    $foods->price + 30000
+                ])
+                    ->orWhere('type', $foods->type);
+            })
+            ->limit(8)
+            ->get();
 
         return view('menudetail', compact('foods', 'detailImages', 'rates', 'suggestFoods', 'countRates', 'favIds'));
 
@@ -490,7 +490,7 @@ class HomeController extends Controller
         return back()->with('success', 'Bình luận đã được gửi thành công!');
     }
     //Trang chi tiết người dùng
-    public function userdetail()
+    public function userdetail(Request $request)
     {
         $address = Address::where('user_id', session('user_id'))
             ->where('default', 1)
@@ -503,6 +503,7 @@ class HomeController extends Controller
             ->where('carts.type', '=', 'Yêu Thích')
             ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
             ->get();
+        
         $myReviews = Rate::join('foods', 'rates.food_id', '=', 'foods.id')
             ->join('menus', 'foods.type', '=', 'menus.id')
             ->join('users', 'users.id', '=', 'rates.user_id')
@@ -522,9 +523,11 @@ class HomeController extends Controller
                 'orders.code as order_code', // Lấy code của đơn hàng, tránh trùng code với food/user
                 'orders.created_at as time_order'
             )
+
             ->orderBy('time_order', 'desc')
-            ->get()
+            ->get(5)
             ->groupBy('order_id');
+
         //dd($myOrderLists);
         return view('userdetail', compact('address', 'addressAll', 'foodFavorites', 'myReviews', 'myOrderLists'));
     }

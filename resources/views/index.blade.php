@@ -875,9 +875,11 @@
                 @foreach ($allFoods as $allFood)
                     <div class="menu-card" data-type="{{ $allFood->menus->name }}">
                         <img src="{{ asset('img/' . $allFood->image) }}" alt="">
-                        <span class="menu-badge">{{ $allFood->menus->name }}</span>
+                         <span class="menu-badge">{{ $allFood->menus->name }}</span>
                         <div class="menu-card-content">
+                             <a href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}">
                             <div class="menu-card-title">{{ $allFood->name }}</div>
+                             </a>
                             <div class="menu-card-rating">
                                 <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                     class="fa-solid fa-star"></i>
@@ -1295,7 +1297,7 @@ function showPopup(message) {
         </div>
 
         <!-- Counter Section -->
-        <section class="py-10 bg-cover bg-center relative" style="background-image:url('img/logo2.jpg');">
+        <section class="py-10 bg-cover bg-center relative " style="background-image:url('img/logo2.jpg');">
             <div class="absolute inset-0 bg-black bg-opacity-60"></div>
             <div class="relative max-w-5xl mx-auto flex flex-wrap justify-between items-center gap-3 z-10 px-2">
                 <div class="flex-1 min-w-[160px] flex flex-col items-center py-6">

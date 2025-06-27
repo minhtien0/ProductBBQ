@@ -313,7 +313,8 @@ data-error="{{ session('error') }}" @endif>
                                         </span>
                                         <span>
 
-                                            <button type="button" id="btn-show-edit-address" class="btn-show-edit-address  text-orange-500"
+                                            <button type="button" id="btn-show-edit-address"
+                                                class="btn-show-edit-address  text-orange-500"
                                                 data-id="{{ $addressAlls->id }}" data-name="{{ $addressAlls->name }}"
                                                 data-sdt="{{ $addressAlls->sdt }}"
                                                 data-house_number="{{ $addressAlls->house_number }}"
@@ -498,9 +499,9 @@ data-error="{{ session('error') }}" @endif>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($myOrderLists as $orderId => $items)
+                                @forelse($myOrderLists as $orderId => $items)
                                     @php
-                                        $firstItem = $items->first(); // Lấy 1 item trong nhóm (chứa thông tin đơn hàng)
+                                        $firstItem = $items->first();
                                     @endphp
                                     <tr>
                                         <td class="px-4 py-2">#{{ $firstItem->order_code }}</td>
@@ -510,7 +511,9 @@ data-error="{{ session('error') }}" @endif>
                                                 {{ $firstItem->statusorder }}
                                             </span>
                                         </td>
-                                        <td class="px-4 py-2 text-right">{{ $firstItem->totalprice }} VNĐ</td>
+                                        <td class="px-4 py-2 text-right">
+                                            {{ number_format($firstItem->totalprice, 0, ',', '.') }}đ
+                                        </td>
                                         <td class="px-4 py-2 text-center">
                                             <button
                                                 class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs view-detail-btn"
@@ -519,15 +522,20 @@ data-error="{{ session('error') }}" @endif>
                                             </button>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-gray-500 py-4">Chưa có đơn hàng</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- Invoice Detail (ẩn mặc định) -->
-                <div class="tab-content hidden" id="invoice-detail" data-order-status="{{ $firstItem->statusorder }}"
-                    data-order-id="{{ $firstItem->id_order }}">
+                <div class="tab-content hidden" id="invoice-detail"
+                    data-order-status="{{ $firstItem->statusorder ?? '' }}"
+                    data-order-id="{{ $firstItem->id_order ?? 0 }}">
                     <div class="flex items-center gap-2 mb-2">
                         <button id="go-back-btn"
                             class="bg-orange-100 hover:bg-orange-200 text-orange-500 px-4 py-1.5 rounded-full text-sm font-bold flex items-center">
@@ -582,7 +590,7 @@ data-error="{{ session('error') }}" @endif>
                         <div>
                             <div class="text-xs text-gray-700 font-semibold mb-1">Đơn Hàng:</div>
                             <div class="text-sm text-gray-700">
-                                
+
                             </div>
                         </div>
                         <div class="text-sm text-gray-600 mt-2 md:mt-0">
@@ -660,10 +668,11 @@ data-error="{{ session('error') }}" @endif>
                         <div class="px-6 py-4 border-b">
                             <h2 class="text-xl font-bold">Viết Đánh Giá</h2>
                         </div>
-                        <form id="form-review" action="{{ route('reviews.store') }}" method="POST" enctype="multipart/form-data" class="px-6 py-4 space-y-4">
+                        <form id="form-review" action="{{ route('reviews.store') }}" method="POST"
+                            enctype="multipart/form-data" class="px-6 py-4 space-y-4">
                             @CSRF
                             <!-- Chọn sao -->
-                             <input type="hidden" name="order_id" id="review-order-id" value="">
+                            <input type="hidden" name="order_id" id="review-order-id" value="">
                             <div>
                                 <label class="block font-medium mb-2">Chọn số sao:</label>
                                 <div id="star-container" class="flex space-x-1 text-yellow-400 cursor-pointer">
@@ -678,7 +687,8 @@ data-error="{{ session('error') }}" @endif>
 
                             <div>
                                 <label class="block font-medium mb-2">Chọn sản phẩm để đánh giá:</label>
-                                <select name="food_id" id="select-review-product" class="w-full border rounded px-3 py-2" required>
+                                <select name="food_id" id="select-review-product"
+                                    class="w-full border rounded px-3 py-2" required>
                                     <!-- JS sẽ render -->
                                 </select>
                             </div>
@@ -717,15 +727,18 @@ data-error="{{ session('error') }}" @endif>
                                         src="{{ asset('img/' . $foodFavorite->image) }}"></a>
                                 <a href="{{ route('views.menudetail', [$foodFavorite->id, $foodFavorite->slug]) }}">
                                     <div class="text-base font-semibold text-gray-800 text-center mb-1">
-                                        {{ $foodFavorite->name }}</div>
+                                        {{ $foodFavorite->name }}
+                                    </div>
                                 </a>
                                 <div class="flex items-center text-yellow-400 mb-1 text-xs">
                                     <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
                                         class="fa fa-star-half-alt"></i><i class="fa-regular fa-star"></i>
                                     <span class="ml-1 text-gray-600">(24)</span>
                                 </div>
-                                <div class="mb-2 text-orange-500 font-bold">{{number_format($foodFavorite->price) }} <span
-                                        class="text-gray-400 line-through text-xs">$90.00</span></div>
+                                <div class="mb-2 text-orange-500 font-bold">
+                                    {{ number_format($foodFavorite->price, 0, ',', '.') }}đ
+                                </div>
+
                                 <button type="button" class="add-to-cart bg-orange-500 text-white px-4 py-1 rounded mt-auto"
                                     data-food-id="{{ $foodFavorite->id }}">Thêm Giỏ Hàng</button>
                             </div>
@@ -852,32 +865,32 @@ data-error="{{ session('error') }}" @endif>
     <!-- Sửa địa chỉ -->
     <script>
         document.querySelectorAll('.btn-show-edit-address').forEach(btn => {
-  btn.addEventListener('click', e => {
-    e.preventDefault();
-    // 1. Đưa view list đi, hiển thị view edit
-    document.getElementById('address-list-view').classList.add('hidden');
-    document.getElementById('address-edit-view').classList.remove('hidden');
-    // 2. Điền data vào form edit
-    document.getElementById('edit_address_id').value       = btn.dataset.id;
-    document.querySelector('#address-edit-view input[name="name"]').value         = btn.dataset.name;
-    document.querySelector('#address-edit-view input[name="sdt"]').value          = btn.dataset.sdt;
-    document.querySelector('#address-edit-view input[name="house_number"]').value = btn.dataset.house_number;
-    document.querySelector('#address-edit-view input[name="ward"]').value         = btn.dataset.ward;
-    document.querySelector('#address-edit-view input[name="district"]').value     = btn.dataset.district;
-    document.querySelector('#address-edit-view input[name="city"]').value         = btn.dataset.city;
-    document.querySelector('#address-edit-view textarea[name="note"]').value      = btn.dataset.note;
-    // radio default
-    const def = btn.dataset.default;
-    document.querySelector(`#address-edit-view input[name="default"][value="${def}"]`).checked = true;
-  });
-});
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                // 1. Đưa view list đi, hiển thị view edit
+                document.getElementById('address-list-view').classList.add('hidden');
+                document.getElementById('address-edit-view').classList.remove('hidden');
+                // 2. Điền data vào form edit
+                document.getElementById('edit_address_id').value = btn.dataset.id;
+                document.querySelector('#address-edit-view input[name="name"]').value = btn.dataset.name;
+                document.querySelector('#address-edit-view input[name="sdt"]').value = btn.dataset.sdt;
+                document.querySelector('#address-edit-view input[name="house_number"]').value = btn.dataset.house_number;
+                document.querySelector('#address-edit-view input[name="ward"]').value = btn.dataset.ward;
+                document.querySelector('#address-edit-view input[name="district"]').value = btn.dataset.district;
+                document.querySelector('#address-edit-view input[name="city"]').value = btn.dataset.city;
+                document.querySelector('#address-edit-view textarea[name="note"]').value = btn.dataset.note;
+                // radio default
+                const def = btn.dataset.default;
+                document.querySelector(`#address-edit-view input[name="default"][value="${def}"]`).checked = true;
+            });
+        });
 
-// Hủy chỉnh sửa
-document.getElementById('btn-cancel-edit-address').addEventListener('click', e => {
-  e.preventDefault();
-  document.getElementById('address-edit-view').classList.add('hidden');
-  document.getElementById('address-list-view').classList.remove('hidden');
-});
+        // Hủy chỉnh sửa
+        document.getElementById('btn-cancel-edit-address').addEventListener('click', e => {
+            e.preventDefault();
+            document.getElementById('address-edit-view').classList.add('hidden');
+            document.getElementById('address-list-view').classList.remove('hidden');
+        });
     </script>
 
     <!-- Thêm giỏ hàng -->
@@ -1124,7 +1137,7 @@ document.getElementById('btn-cancel-edit-address').addEventListener('click', e =
                     const unrated = data.unrated_details || [];
                     if (selectProduct) {
                         selectProduct.innerHTML = unrated.length > 0
-                            ? unrated.map(item => 
+                            ? unrated.map(item =>
                                 `<option value="${item.product_id}">
                                     ${item.food_name} (${item.quantity} x ${Number(item.food_price).toLocaleString()}đ)
                                 </option>`
@@ -1142,7 +1155,7 @@ document.getElementById('btn-cancel-edit-address').addEventListener('click', e =
                     // Table body
                     let html = '', sum = 0, qty = 0;
                     const unratedIds = (data.unrated_details || []).map(item => item.product_id);
-                    
+
                     ds.forEach((it, i) => {
                         const line = it.food_price * it.quantity;
                         sum += line; qty += it.quantity;
@@ -1151,7 +1164,7 @@ document.getElementById('btn-cancel-edit-address').addEventListener('click', e =
           <tr>
             <td class="px-2 py-1 border text-center">${String(i + 1).padStart(2, '0')}</td>
             <td class="px-2 py-1 border">${it.food_name}</td>
-            <td class="px-2 py-1 border text-right">${it.food_price.toLocaleString()}đ</td>
+            <td class="px-2 py-1 border text-right">${Number(it.food_price).toLocaleString('vi-VN', { maximumFractionDigits: 0 })}đ</td>
             <td class="px-2 py-1 border text-center">${it.quantity}</td>
             <td class="px-2 py-1 border text-right">${line.toLocaleString()}đ</td>
             <td class="px-2 py-1 border text-right">${reviewStatus}</td>
@@ -1243,14 +1256,14 @@ document.getElementById('btn-cancel-edit-address').addEventListener('click', e =
                     document.getElementById('review-order-id').value = currentOrderId || '';
                     ratingInput.value = 5;
                     starsEls.forEach(s => {
-                    const v = +s.dataset.value;
-                    if (v <= 5) {
-                        s.classList.add('fa-solid');
-                        s.classList.remove('fa-regular');
-                    } else {
-                        s.classList.add('fa-regular');
-                        s.classList.remove('fa-solid');
-                    }
+                        const v = +s.dataset.value;
+                        if (v <= 5) {
+                            s.classList.add('fa-solid');
+                            s.classList.remove('fa-regular');
+                        } else {
+                            s.classList.add('fa-regular');
+                            s.classList.remove('fa-solid');
+                        }
                     });
                 });
                 closeReview?.addEventListener('click', () => {

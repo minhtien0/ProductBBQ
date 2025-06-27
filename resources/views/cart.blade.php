@@ -122,17 +122,19 @@ data-error="{{ session('error') }}" @endif>
 
     <!-- Cart summary & form -->
     <div class="max-w-6xl mx-auto mt-6 px-2 flex flex-col lg:flex-row gap-6">
-      <div class="w-full lg:w-1/3">
-        <img src="{{ asset('img/banner2.jpg') }}" alt="Cart Food"
+      <div class="w-full lg:w-1/2">
+        <img src="{{ asset('img/giphy.webp') }}" alt="Cart Food"
+          class="w-full h-48 md:h-60 object-cover rounded shadow" />
+           <img src="{{ asset('img/penguin-pudgy.gif') }}" alt="Cart Food"
           class="w-full h-48 md:h-60 object-cover rounded shadow" />
       </div>
 
       <div class="w-full lg:w-2/3">
         <div class="bg-orange-50 rounded shadow px-5 py-4">
           <!-- Danh sách sản phẩm đã chọn -->
-          <div id="selected-products-detail" class="mb-2"></div>
+          <div id="selected-products-detail" class="mb-2 max-h-48 overflow-y-auto"></div>
           <!-- Hidden inputs để gửi danh sách sản phẩm -->
-          <div id="selected-products-hidden"></div>
+          <div id="selected-products-hidden" class="mb-2"></div>
           <hr>
           <div class="flex justify-between text-base font-bold mb-3 mt-2">
             <span>Tổng Tiền Món Ăn:</span> <span id="total"></span>
