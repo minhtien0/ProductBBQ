@@ -208,7 +208,7 @@ class HomeController extends Controller
         $hotCombos = FoodCombo::take(10)->get();
 
 
-        return view('about', compact('countStaff', 'countUser', 'countRate','hotCombos'), ['newBlogs' => $newBlogs]);
+        return view('about', compact('countStaff', 'countUser', 'countRate', 'hotCombos'), ['newBlogs' => $newBlogs]);
     }
     //dong ne
     public function menu(Request $request)
@@ -237,7 +237,7 @@ class HomeController extends Controller
 
         return view('menu', compact('menus', 'foods', 'category', 'search'));
     }
-  
+
     public function ajaxSearchMenu(Request $request)
     {
         $term = $request->input('term');
@@ -427,11 +427,18 @@ class HomeController extends Controller
 
         $countRates = $rates->count();
         //dd($detailImages);
-         $suggestFoods = Food::where('type', $foods->type)
-        ->where('id', '!=', $id)
-        ->limit(8)
-        ->get();
-       return view('menudetail', compact('foods', 'detailImages', 'rates','suggestFoods','countRates', 'favIds'));
+        $suggestFoods = Food::where('id', '!=', $foods->id)
+    ->where(function ($query) use ($foods) {
+        $query->whereBetween('price', [
+                max(0, $foods->price - 30000),
+                $foods->price + 30000
+            ])
+            ->orWhere('type', $foods->type);
+    })
+    ->limit(8)
+    ->get();
+
+        return view('menudetail', compact('foods', 'detailImages', 'rates', 'suggestFoods', 'countRates', 'favIds'));
 
     }
     public function blogdetail($id, $slug)
@@ -450,8 +457,8 @@ class HomeController extends Controller
             ->where('blog.id', '=', $id)
             ->select('rates.time as time_comment', 'users.fullname as name_comment', 'users.avatar as avatar_comment', 'rates.content as content_comment')
             ->get();
-        $countComment=$commentBlogs->count();
-        return view('blogdetail', compact('blog', 'allTags', 'newBlogs', 'commentBlogs','countComment'));
+        $countComment = $commentBlogs->count();
+        return view('blogdetail', compact('blog', 'allTags', 'newBlogs', 'commentBlogs', 'countComment'));
     }
 
     public function addCommentBlog(Request $request, $id)

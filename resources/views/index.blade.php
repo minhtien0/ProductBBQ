@@ -1493,38 +1493,6 @@ function showPopup(message) {
                 setTimeout(() => $('#search-dropdown').addClass('hidden'), 200);
             });
         });
-
-        //thêm giỏ hàng
-        $(document).ready(function () {
-            // Lắng nghe click vào nút Thêm Vào Giỏ Hàng
-            $('.menu-section').on('click', '.add-to-cart', function () {
-                var foodId = $(this).data('food-id');
-                var btn = $(this);
-                btn.prop('disabled', true);
-                $.ajax({
-                    url: "{{ route('cart.add') }}", // Đường dẫn route Laravel thêm vào giỏ hàng
-                    method: "POST",
-                    data: {
-                        food_id: foodId,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function (response) {
-                        if (response.status === 'success') {
-                            // Có thể hiện thông báo popup hoặc toast
-                            alert("Đã thêm vào giỏ hàng!");
-                        } else {
-                            alert(response.message || "Có lỗi khi thêm vào giỏ hàng!");
-                        }
-                    },
-                    error: function () {
-                        alert("Có lỗi xảy ra, thử lại sau!");
-                    },
-                    complete: function () {
-                        btn.prop('disabled', false);
-                    }
-                });
-            });
-        });
     </script>
 </body>
 @include('layouts.user.footer')
