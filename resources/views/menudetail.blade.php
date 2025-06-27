@@ -312,9 +312,6 @@ function showPopup(message) {
 }
 </script>
 
-
-
-=======
 <!-- PHẦN 2: Related BBQ Items -->
 <div class="bg-dark-light max-w-6xl mx-auto py-8">
   <h3 class="text-xl font-bold mb-4 text-gray-800">Món Ngon Gợi Ý</h3>
