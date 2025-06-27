@@ -94,8 +94,8 @@
                         @endphp
                         <button data-cat="{{ $menuCat }}"
                             class="category-tab
-                                            {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
-                                            px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
+                                                    {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
+                                                    px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
                             {{-- icon --}}
                             @if(stripos($menu->name, 'BBQ') !== false)
                                 <i class="fas fa-star mr-2"></i>
@@ -192,11 +192,10 @@
                 @foreach ($foods as $food)
                     <div class="food-item flex flex-col h-full max-w-[500px] min-w-[300px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
                         style="height:620px;" data-category="menu-{{ $food->type }}" data-price="{{ $food->price }}"
-                        data-name="{{ strtolower($food->name) }}" {{-- Nếu có các filter đặc biệt --}}
-                        @if(isset($food->popular) && $food->popular) data-popular="true" @endif @if(isset($food->new) && $food->new) data-new="true" @endif @if(isset($food->discount) && $food->discount)
-                        data-discount="true" @endif @if(isset($food->vegetarian) && $food->vegetarian)
-                        data-vegetarian="true" @endif>
-                        <!-- Các nội dung bên trong giữ nguyên -->
+                        data-name="{{ strtolower($food->name) }}" @if(isset($food->popular) && $food->popular)
+                        data-popular="true" @endif @if(isset($food->new) && $food->new) data-new="true" @endif
+                        @if(isset($food->discount) && $food->discount) data-discount="true" @endif
+                        @if(isset($food->vegetarian) && $food->vegetarian) data-vegetarian="true" @endif>
                         <div class="relative overflow-hidden" style="height:240px;">
                             <img src="{{ asset('img/' . $food->image) }}" alt="{{ $food->name }}"
                                 class="w-full h-56 object-cover border-b border-gray-100" />
@@ -212,17 +211,22 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="p-6 flex flex-col flex-1 mt-[-1.5rem]">
-                            <a href="{{ route('views.menudetail', [$food->id, $food->slug]) }}" ><h3  class="font-bold text-lg text-gray-800 mb-2 line-clamp-2"
-                                style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                                {{ $food->name }}
-                            </h3></a>
+                        <!-- PHẦN CHỈNH SỬA: -->
+                        <div class="flex flex-col flex-1 p-6">
+                            <a href="{{ route('views.menudetail', [$food->id, $food->slug]) }}">
+                                <h3 class="font-bold text-lg text-gray-800 mb-2 line-clamp-2"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ $food->name }}
+                                </h3>
+                            </a>
                             <p class="text-gray-600 text-sm mt-4 line-clamp-2"
                                 style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                 {!! $food->description !!}
                             </p>
-                            <div class="flex flex-col justify-end min-h-[70px] mb-2">
-                                <div class="flex items-center min-h-[28px]">
+                            <!-- spacer tự động đẩy đánh giá + nút xuống đáy -->
+                            <div class="flex-1"></div>
+                            <div class="flex flex-col">
+                                <div class="flex items-center min-h-[28px] mb-2">
                                     <div class="flex text-yellow-400 text-sm">
                                         @for($i = 0; $i < 4; $i++) <i class="fas fa-star"></i> @endfor
                                         <i class="fas fa-star-half-alt"></i>
@@ -230,28 +234,26 @@
                                     <span class="ml-2 text-gray-500 text-sm">(4.5)</span>
                                     <span class="ml-2 text-gray-400 text-sm">• 124 đánh giá</span>
                                 </div>
-                                <span class="text-2xl font-bold text-main-red mt-1">
+                                <span class="text-2xl font-bold text-main-red mb-2">
                                     {{ number_format($food->price, 0, ',', '.') }}đ
-                                    </span>
-                                </div>
-                                <div class="mt-auto flex gap-2">
+                                </span>
+                                <div class="flex gap-2">
                                     <button type="button"
                                         class="add-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
                                         data-id="{{ $food->id }}" data-quantity="1">
-                                        <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ
+                                        <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ Hàng
                                     </button>
-
                                     <button
                                         class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
-                                    <i class="fas fa-share-alt"></i>
-                                </button>
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                        <!-- HẾT PHẦN CHỈNH SỬA -->
                     </div>
                 @endforeach
-
             </div>
-
 
             <!-- Loading State -->
             <div id="loading" class="hidden text-center py-8">
@@ -269,6 +271,7 @@
             </div>
         </div>
 
+
         <!-- Enhanced Pagination -->
 
         <nav class="flex items-center gap-2 justify-center mt-4">
@@ -282,7 +285,7 @@
             @for ($i = 1; $i <= $foods->lastPage(); $i++)
                 <a href="{{ $foods->url($i) }}"
                     class="px-3 py-2 rounded-lg 
-                                                                                                          {{ $i == $foods->currentPage() ? 'bg-main-red text-white font-semibold' : 'bg-gray-100 hover:bg-gray-200' }}">
+                                                                                                                  {{ $i == $foods->currentPage() ? 'bg-main-red text-white font-semibold' : 'bg-gray-100 hover:bg-gray-200' }}">
                     {{ $i }}
                 </a>
             @endfor
@@ -627,46 +630,46 @@
             // ------- INIT: filter/sort cho lần đầu -------
             reapplyFilterSortAndEvents();
         });
-        $(document).ready(function() {
-    $.ajaxSetup({
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
-    });
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+            });
 
-    $(document).on('click', '.btn-add-cart', function(e) {
-        e.preventDefault();
-        let food_id = $(this).data('id');
-        let quantity = $(this).data('quantity') || 1;
-        var btn = $(this);
-        btn.prop('disabled', true);
-        $.ajax({
-            url: '/cart',
-            type: 'POST',
-            data: {
-                food_id: food_id,
-                quantity: quantity,
-            },
-            success: function(res) {
-                if(res.success) {
-                    alert(res.message || 'Đã thêm vào giỏ hàng!');
-                } else {
-                    alert(res.message || 'Có lỗi xảy ra!');
-                }
-            },
-            error: function(xhr) {
-                if(xhr.status === 401) {
-                    alert('Bạn cần đăng nhập!');
-                    window.location.href = "/login";
-                } else {
-                    let res = xhr.responseJSON;
-                    alert((res && res.message) ? res.message : "Lỗi không xác định!");
-                }
-            },
-            complete: function() {
-                btn.prop('disabled', false);
-            }
+            $(document).on('click', '.btn-add-cart', function (e) {
+                e.preventDefault();
+                let food_id = $(this).data('id');
+                let quantity = $(this).data('quantity') || 1;
+                var btn = $(this);
+                btn.prop('disabled', true);
+                $.ajax({
+                    url: '/cart',
+                    type: 'POST',
+                    data: {
+                        food_id: food_id,
+                        quantity: quantity,
+                    },
+                    success: function (res) {
+                        if (res.success) {
+                            alert(res.message || 'Đã thêm vào giỏ hàng!');
+                        } else {
+                            alert(res.message || 'Có lỗi xảy ra!');
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 401) {
+                            alert('Bạn cần đăng nhập!');
+                            window.location.href = "/login";
+                        } else {
+                            let res = xhr.responseJSON;
+                            alert((res && res.message) ? res.message : "Lỗi không xác định!");
+                        }
+                    },
+                    complete: function () {
+                        btn.prop('disabled', false);
+                    }
+                });
+            });
         });
-    });
-});
     </script>
 
     <!-- Footer -->

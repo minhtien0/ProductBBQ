@@ -6,7 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController\HomeAdminController;
 use App\Http\Controllers\AdminController\UserController;
 use App\Http\Controllers\AdminController\BlogController;
-use App\Http\Controllers\AdminController\Rate;
+use App\Http\Controllers\AdminController\RateController;
 use App\Http\Controllers\AdminController\Staff\StaffController;
 use App\Http\Controllers\AdminController\Blog;
 use App\Http\Controllers\AdminController\VoucherController;
@@ -93,11 +93,14 @@ Route::get('/vnpay/return', [HomeController::class, 'vnpayReturn'])->name('vnpay
 Route::patch('/orders/{order}/cancel', [HomeController::class, 'cancelOrder'])->name('orders.cancel');
 //Đánh giá đơn hàng
 Route::post('/reviews', [HomeController::class, 'rateOrder'])->name('reviews.store');
+//Đánh giá bài viết
+Route::post('/blog/{id}/comment', [HomeController::class, 'addCommentBlog'])->name('comment.blog');
+
 
 //Group Admin
 Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])->group(function () {
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/rate', [Rate::class, 'index'])->name('admin.rate');
+    Route::get('/rate', [RateController::class, 'index'])->name('admin.rate');
     Route::prefix('voucher')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('admin.voucher');
         Route::get('/create', [VoucherController::class, 'create'])->name('admin.voucher.create');
