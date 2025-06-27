@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Sum;
 
 class HomeController extends Controller
@@ -235,9 +236,8 @@ class HomeController extends Controller
         $foods = $query->paginate(8)->withQueryString();
 
         return view('menu', compact('menus', 'foods', 'category', 'search'));
-
-
     }
+  
     public function ajaxSearchMenu(Request $request)
     {
         $term = $request->input('term');
@@ -258,7 +258,6 @@ class HomeController extends Controller
         }
 
         $foods = $query->with('menus')->limit(20)->get();
-
         $results = $foods->map(function ($food) {
             return [
                 'id' => $food->id,
@@ -417,17 +416,23 @@ class HomeController extends Controller
     {
         $foods = Food::with('menus')->where('id', '=', $id)->first();
         $detailImages = Image::where('id_food', '=', $id)->get();
-        $rates = Rate::join('users', 'rates.user_id', '=', 'users.id')
-            ->where('food_id', '=', $id)
-            ->select('rates.*', 'users.*')
+        $favIds = Cart::where('user_id', session('user_id'))
+            ->where('type', 'Yêu Thích')
+            ->pluck('food_id')
+            ->toArray();
+        $rates = Rate::with(['user', 'images'])
+            ->where('food_id', $id)
+            ->orderBy('created_at', 'desc')
             ->get();
+
+        $countRates = $rates->count();
         //dd($detailImages);
          $suggestFoods = Food::where('type', $foods->type)
         ->where('id', '!=', $id)
         ->limit(8)
         ->get();
+       return view('menudetail', compact('foods', 'detailImages', 'rates','suggestFoods','countRates', 'favIds'));
 
-       return view('menudetail', compact('foods', 'detailImages', 'rates','suggestFoods'));
     }
     public function blogdetail($id, $slug)
     {
@@ -445,8 +450,37 @@ class HomeController extends Controller
             ->where('blog.id', '=', $id)
             ->select('rates.time as time_comment', 'users.fullname as name_comment', 'users.avatar as avatar_comment', 'rates.content as content_comment')
             ->get();
-        //dd($commentBlogs);
-        return view('blogdetail', compact('blog', 'allTags', 'newBlogs', 'commentBlogs'));
+        $countComment=$commentBlogs->count();
+        return view('blogdetail', compact('blog', 'allTags', 'newBlogs', 'commentBlogs','countComment'));
+    }
+
+    public function addCommentBlog(Request $request, $id)
+    {
+        $request->validate([
+            'content' => 'required|string|min:1|max:500',
+        ]);
+
+        if (!session('user_logged_in')) {
+            return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập để bình luận.'], 401);
+        }
+
+        $userId = session('user_id');
+        Rate::create([
+            'user_id' => $userId,
+            'blog_id' => $id,
+            'content' => $request->content,
+            'time' => now(), // Nếu cột time là bắt buộc
+            // Nếu bảng rates bắt buộc có các trường khác thì thêm luôn
+            'rate' => null,     // Nếu là rate cho sản phẩm mới đúng, còn không thì mặc định 0
+            'food_id' => null,
+            'order_id' => 0,
+        ]);
+
+        // Nếu dùng AJAX
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Bình luận đã được gửi thành công!']);
+        }
+        return back()->with('success', 'Bình luận đã được gửi thành công!');
     }
     //Trang chi tiết người dùng
     public function userdetail()
@@ -509,12 +543,27 @@ class HomeController extends Controller
         $voucher = \App\Models\Voucher::where('id', $order->voucher ?? 0)->first();
         $voucherPrice = $voucher ? $voucher->value : 0;
 
+
+        $userId = session('user_id');
+        $ratedProductIds = \App\Models\Rate::where('order_id', $orderId)
+            ->where('user_id', $userId)
+            ->pluck('food_id')   // hoặc product_id nếu cột tên vậy
+            ->toArray();
+
+        // Chỉ lấy những sản phẩm chưa đánh giá
+        $unratedDetails = $orderDetails->filter(function ($item) use ($ratedProductIds) {
+            // chú ý: $item->product_id hoặc $item->food_id (tuỳ bảng bạn đặt tên)
+            return !in_array($item->product_id, $ratedProductIds);
+        })->values(); // values() để reset key về 0,1,2,...
+
         return response()->json([
             'status' => 'success',
             'order' => $order,
             'details' => $orderDetails,
             'discount' => $voucherPrice,
-            'shipping' => 10, // tuỳ bạn cứng code phí ship
+            'shipping' => 30000,
+            // trả về sản phẩm chưa đánh giá:
+            'unrated_details' => $unratedDetails
         ]);
     }
 
@@ -545,25 +594,45 @@ class HomeController extends Controller
     public function rateOrder(Request $request)
     {
         // Validate input
-        $data = $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'review' => 'required|string|max:1000',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'food_id' => 'nullable|integer|exists:foods,id',
-            'blog_id' => 'nullable|integer|exists:blogs,id',
-            // nếu cần validate hình ảnh thì thêm rule 'images.*' => 'image|max:2048'
-        ]);
+        try {
+            $data = $request->validate([
+                'rating' => 'required|integer|min:1|max:5',
+                'review' => 'required|string|max:1000',
+                'food_id' => 'required|integer|exists:foods,id',
+                'blog_id' => 'nullable|integer|exists:blogs,id',
+                'order_id' => 'required|integer',
+                'images.*' => 'nullable|image|max:2048',
+            ]);
+        } catch (ValidationException $e) {
+
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors(),
+            ], 422);
+        }
 
         // Tạo record mới
         $rate = new Rate();
         $rate->user_id = session('user_id');
-        $rate->food_id = $data['food_id'] ?? null;
+        $rate->food_id = $data['food_id'];
+        $rate->order_id = $data['order_id'];
         $rate->blog_id = null;
         $rate->rate = $data['rating'];
         $rate->content = $data['review'];
         $rate->time = now();
         $rate->save();
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imgFile) {
+                $fileName = time() . '_' . Str::random(5) . '_' . $imgFile->getClientOriginalName();
+                $path = $imgFile->move(public_path('img/rate'), $fileName); // lưu vào storage/app/public/rate_images
+                $image = new Image();
+                $image->id_rate = $rate->id;
+                $image->img = $fileName;
+                $image->created_at = now();
+                $image->save();
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -827,7 +896,7 @@ class HomeController extends Controller
     {
         $data = $request->validate([
             'food_id' => 'required|exists:foods,id',
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1|max:20',
         ]);
 
         if (empty(session('user_id'))) {
@@ -870,6 +939,7 @@ class HomeController extends Controller
         return back()->with('success', 'Đã thêm vào giỏ hàng!');
     }
 
+    //Thanh Toán
     public function storeOrder(Request $request)
     {
         // 1. Validate dữ liệu
@@ -887,7 +957,7 @@ class HomeController extends Controller
             'address_id.required' => 'Bạn phải chọn địa chỉ.',
             'address_id.exists' => 'Địa chỉ không tồn tại.',
             'totalprice.required' => 'Thiếu tổng tiền món.',
-            'totalprice.min' => 'Tổng tiền phải lớn hơn 0.',
+            'totalprice.min' => 'Vui lòng chọn ít nhất 1 món ăn.',
             'totalbill.required' => 'Thiếu tổng tiền thanh toán.',
             'totalbill.min' => 'Tổng tiền thanh toán phải lớn hơn 0.',
             'typepayment.required' => 'Bạn phải chọn phương thức thanh toán.',
@@ -1082,7 +1152,7 @@ class HomeController extends Controller
     }
 
 
-
+    //Thêm giỏ hàng
     public function toggleFavorite(Request $request)
     {
         $data = $request->validate([
