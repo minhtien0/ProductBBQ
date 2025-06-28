@@ -504,6 +504,7 @@ class HomeController extends Controller
             ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
             ->get();
 
+
         $myReviews = Rate::join('foods', 'rates.food_id', '=', 'foods.id')
             ->join('menus', 'foods.type', '=', 'menus.id')
             ->join('users', 'users.id', '=', 'rates.user_id')
@@ -531,6 +532,7 @@ class HomeController extends Controller
         //dd($myOrderLists);
         return view('userdetail', compact('address', 'addressAll', 'foodFavorites', 'myReviews', 'myOrderLists'));
     }
+    
 
     //Trang Chi Tiết Đơn Hàng
     public function ajaxDetailOrder($orderId)
@@ -1132,7 +1134,7 @@ class HomeController extends Controller
                 'totalbill' => $pending['totalbill'],
                 'statusorder' => 'Chờ Xác Nhận',
                 'typepayment' => 2,
-                'type'=>1,
+                'type' => 1,
                 'note' => $pending['note'],
                 'transaction_no' => $request->get('vnp_TransactionNo'),
                 'transaction_date' => $request->get('vnp_PayDate'),
