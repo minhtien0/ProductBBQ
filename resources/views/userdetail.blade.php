@@ -498,12 +498,10 @@ data-error="{{ session('error') }}" @endif>
                                     <th class="px-4 py-2">Hành Động</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="order-table-body">
                                 @forelse($myOrderLists as $orderId => $items)
-                                    @php
-                                        $firstItem = $items->first();
-                                    @endphp
-                                    <tr>
+                                    @php $firstItem = $items->first(); @endphp
+                                    <tr class="order-row">
                                         <td class="px-4 py-2">#{{ $firstItem->order_code }}</td>
                                         <td class="px-4 py-2">{{ $firstItem->time_order }}</td>
                                         <td class="px-4 py-2">
@@ -528,6 +526,52 @@ data-error="{{ session('error') }}" @endif>
                                     </tr>
                                 @endforelse
                             </tbody>
+                        </table>
+                        <!-- PHÂN TRANG -->
+                        <div id="order-pagination" class="flex justify-center items-center gap-2 mt-4"></div>
+                        <script>
+
+                            document.addEventListener("DOMContentLoaded", () => {
+                                const rows = document.querySelectorAll('#order-table-body .order-row');
+                                const pagination = document.getElementById('order-pagination');
+                                const itemsPerPage = 6; // số dòng mỗi trang
+                                let currentPage = 1;
+
+                                function showPage(page) {
+                                    const start = (page - 1) * itemsPerPage;
+                                    const end = start + itemsPerPage;
+                                    rows.forEach((row, idx) => {
+                                        row.style.display = (idx >= start && idx < end) ? '' : 'none';
+                                    });
+                                }
+
+                                function renderPagination() {
+                                    pagination.innerHTML = '';
+                                    const totalPages = Math.ceil(rows.length / itemsPerPage);
+                                    if (totalPages <= 1) return;
+                                    for (let i = 1; i <= totalPages; i++) {
+                                        const btn = document.createElement('button');
+                                        btn.textContent = i;
+                                        btn.className = 'w-8 h-8 border rounded ' +
+                                            (i === currentPage ? 'bg-[#e60012] text-white font-bold' : 'text-gray-700 border-gray-300') +
+                                            ' hover:bg-[#e60012] hover:text-white transition';
+                                        btn.addEventListener('click', () => {
+                                            currentPage = i;
+                                            showPage(currentPage);
+                                            renderPagination();
+                                        });
+                                        pagination.appendChild(btn);
+                                    }
+                                }
+
+                                // Chỉ chạy nếu có đơn hàng
+                                if (rows.length > 0) {
+                                    showPage(currentPage);
+                                    renderPagination();
+                                }
+                            });
+
+                        </script>
                         </table>
                     </div>
                 </div>
@@ -718,54 +762,79 @@ data-error="{{ session('error') }}" @endif>
                 <!-- Wishlist -->
                 <div class="tab-content hidden" id="tab-wishlist">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Yêu Thích</h2>
-
-                    <div class="grid md:grid-cols-3 gap-4">
-                        <!-- Example product -->
+                    <div class="grid md:grid-cols-3 gap-4" id="wishlist-list">
                         @foreach ($foodFavorites as $foodFavorite)
-                            <div class="bg-white rounded shadow p-3 flex flex-col items-center">
-                                <a href="{{ route('views.menudetail', [$foodFavorite->id, $foodFavorite->slug]) }}"><img
-                                        src="{{ asset('img/' . $foodFavorite->image) }}"></a>
+                            <div class="bg-white rounded shadow p-3 flex flex-col items-center wishlist-row">
+                                <a href="{{ route('views.menudetail', [$foodFavorite->id, $foodFavorite->slug]) }}">
+                                    <img src="{{ asset('img/' . $foodFavorite->image) }}">
+                                </a>
                                 <a href="{{ route('views.menudetail', [$foodFavorite->id, $foodFavorite->slug]) }}">
                                     <div class="text-base font-semibold text-gray-800 text-center mb-1">
                                         {{ $foodFavorite->name }}
                                     </div>
                                 </a>
                                 <div class="flex items-center text-yellow-400 mb-1 text-xs">
-                                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                        class="fa fa-star-half-alt"></i><i class="fa-regular fa-star"></i>
+                                    <i class="fa fa-star"></i><i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i>
+                                    <i class="fa-regular fa-star"></i>
                                     <span class="ml-1 text-gray-600">(24)</span>
                                 </div>
                                 <div class="mb-2 text-orange-500 font-bold">
                                     {{ number_format($foodFavorite->price, 0, ',', '.') }}đ
                                 </div>
-
                                 <button type="button" class="add-to-cart bg-orange-500 text-white px-4 py-1 rounded mt-auto"
                                     data-food-id="{{ $foodFavorite->id }}">Thêm Giỏ Hàng</button>
                             </div>
                         @endforeach
-                        <!-- Repeat products as needed -->
                     </div>
-
-                    <!-- Pagination -->
-                    <div class="flex justify-center items-center gap-2 mt-4">
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">&lt;</button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">1</button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-orange-500 text-orange-500 bg-orange-50 font-bold">2</button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">3</button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">&gt;</button>
-                    </div>
+                    <div id="wishlist-pagination" class="flex justify-center items-center gap-2 mt-4"></div>
                 </div>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+    const wishlistRows = document.querySelectorAll("#wishlist-list .wishlist-row");
+    const wishlistPagination = document.getElementById("wishlist-pagination");
+    const wishlistPerPage = 3; // Giảm xuống 2 để test nếu ít sản phẩm!
+    let wishlistPage = 1;
+
+    function showWishlistPage(page) {
+        const start = (page - 1) * wishlistPerPage;
+        const end = start + wishlistPerPage;
+        wishlistRows.forEach((row, idx) => {
+            row.style.display = (idx >= start && idx < end) ? "" : "none";
+        });
+    }
+
+    function renderWishlistPagination() {
+        wishlistPagination.innerHTML = "";
+        const totalPages = Math.ceil(wishlistRows.length / wishlistPerPage);
+        if (totalPages <= 1) return;
+
+        
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            btn.className = "w-8 h-8 ...";
+            btn.onclick = () => { wishlistPage = i; showWishlistPage(wishlistPage); renderWishlistPagination(); };
+            wishlistPagination.appendChild(btn);
+        }
+
+        
+    }
+
+    if (wishlistRows.length > 0) {
+        showWishlistPage(wishlistPage);
+        renderWishlistPagination();
+    }
+});
+                </script>
                 <!-- Review -->
                 <div class="tab-content hidden" id="tab-review">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Đánh Giá</h2>
-                    <div class="space-y-6">
+                    <div class="space-y-6" id="review-list">
                         @foreach ($myReviews as $myReview)
-                            <div class="flex gap-4 bg-white rounded shadow p-4 items-center">
+                            <div class="flex gap-4 bg-white rounded shadow p-4 items-center review-row">
                                 <img src="{{ asset('img/' . $myReview->image) }}"
                                     class="rounded-full w-14 h-14 object-cover" />
                                 <div class="flex-1">
@@ -793,8 +862,6 @@ data-error="{{ session('error') }}" @endif>
                                             <i class="fa-regular fa-star text-yellow-500"></i>
                                         @endfor
 
-                                        {{-- Hiển thị số điểm nếu cần --}}
-                                        <span class="ml-2 text-sm text-gray-600"></span>
                                         <span class="ml-1 text-gray-600">(120)</span>
                                     </div>
                                     <div class="text-sm text-gray-600">{!! $myReview->description !!}</div>
@@ -805,22 +872,52 @@ data-error="{{ session('error') }}" @endif>
                                 </div>
                             </div>
                         @endforeach
-                        <!-- More reviews ... -->
                     </div>
-                    <!-- Pagination -->
-                    <div class="flex justify-center items-center gap-2 mt-4">
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">&lt;</button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">1</button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-orange-500 text-orange-500 bg-orange-50 font-bold">2</button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">3</button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">&gt;</button>
-                    </div>
+                    <div id="review-pagination" class="flex justify-center items-center gap-2 mt-4"></div>
                 </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        // --- Phân trang Đánh giá ---
+                        const reviewRows = document.querySelectorAll("#review-list .review-row");
+                        const reviewPagination = document.getElementById("review-pagination");
+                        const reviewsPerPage = 3;
+                        let reviewPage = 1;
+
+                        function showReviewPage(page) {
+                            const start = (page - 1) * reviewsPerPage;
+                            const end = start + reviewsPerPage;
+                            reviewRows.forEach((row, idx) => {
+                                row.style.display = (idx >= start && idx < end) ? "" : "none";
+                            });
+                        }
+
+                        function renderReviewPagination() {
+                            reviewPagination.innerHTML = "";
+                            const totalPages = Math.ceil(reviewRows.length / reviewsPerPage);
+                            if (totalPages <= 1) return;
+
+                            
+
+                            // Các nút số trang
+                            for (let i = 1; i <= totalPages; i++) {
+                                const btn = document.createElement("button");
+                                btn.textContent = i;
+                                btn.className = "w-8 h-8 flex items-center justify-center rounded-full border " +
+                                    (i === reviewPage ? "border-red-500 text-orange-500 bg-red-50 font-bold" : "border-gray-300 text-gray-500 hover:bg-orange-100");
+                                btn.onclick = () => { reviewPage = i; showReviewPage(reviewPage); renderReviewPagination(); };
+                                reviewPagination.appendChild(btn);
+                            }
+
+                            
+                        }
+
+                        if (reviewRows.length > 0) {
+                            showReviewPage(reviewPage);
+                            renderReviewPagination();
+                        }
+                    });
+                </script>
+
                 <!-- Change Password -->
                 <div class="tab-content hidden" id="tab-password">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Đổi Mật Khẩu</h2>
