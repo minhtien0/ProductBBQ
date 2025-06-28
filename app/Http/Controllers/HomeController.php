@@ -503,7 +503,7 @@ class HomeController extends Controller
             ->where('carts.type', '=', 'Yêu Thích')
             ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
             ->get();
-        
+
         $myReviews = Rate::join('foods', 'rates.food_id', '=', 'foods.id')
             ->join('menus', 'foods.type', '=', 'menus.id')
             ->join('users', 'users.id', '=', 'rates.user_id')
@@ -1089,54 +1089,51 @@ class HomeController extends Controller
 
     public function vnpayReturn(Request $request)
     {
-        // 1. Đọc và loại bỏ SecureHash trước khi build
-        $data = $request->query();
-    $vnpSecureHash = $data['vnp_SecureHash'] ?? '';
-    unset($data['vnp_SecureHash'], $data['vnp_SecureHashType']);
+        // Lấy raw query string
+        $rawQuery = $_SERVER['QUERY_STRING'];
+        // Loại bỏ signature params
+        $hashData = preg_replace('/(&?vnp_SecureHashType=[^&]*)/i', '', $rawQuery);
+        $hashData = preg_replace('/(&?vnp_SecureHash=[^&]*)/i', '', $hashData);
+        $hashData = ltrim($hashData, '&');
 
-    ksort($data);
-    $hashData = '';
-    foreach ($data as $key => $value) {
-        $hashData .= "{$key}={$value}&";
-    }
-    $hashData = rtrim($hashData, '&');
+        $computedHash = hash_hmac('sha512', $hashData, env('VNPAY_HASH_SECRET'));
+        $returnedHash = $request->get('vnp_SecureHash', '');
 
-    $computed = hash_hmac('sha512', $hashData, env('VNPAY_HASH_SECRET'));
-    if ($computed !== $vnpSecureHash) {
-        return redirect()->route('views.cart')
-            ->with('error', 'Xác thực VNPAY thất bại!');
-    }
-        // 3. Kiểm tra giao dịch thành công
-        if ($request->get('vnp_ResponseCode') !== '00') {
+        if (strtoupper($computedHash) !== strtoupper($returnedHash)) {
+            \Log::error('VNPAY Return Signature Mismatch', [
+                'expected' => $returnedHash,
+                'computed' => $computedHash,
+                'string' => $hashData,
+            ]);
+
             return redirect()->route('views.cart')
-                ->with('error', 'Thanh toán VNPAY không thành công: '
-                    . $request->get('vnp_ResponseCode'));
+                ->with('error', 'Xác thực VNPAY thất bại!');
         }
 
+        if ($request->get('vnp_ResponseCode') !== '00') {
+            return redirect()->route('views.cart')
+                ->with('error', 'Thanh toán VNPAY không thành công: ' . $request->get('vnp_ResponseCode'));
+        }
 
-        // 4. Lấy dữ liệu pending từ session
         $pending = session('pending_order');
         if (!$pending) {
             return redirect()->route('views.cart')
-                ->with('error', 'Không tìm thấy dữ liệu đơn hàng sau khi thanh toán!');
+                ->with('error', 'Không tìm thấy dữ liệu đơn hàng!');
         }
 
-        // 5. Lưu Order & OrderDetail
         DB::transaction(function () use ($pending, $request) {
             $txRef = $request->get('vnp_TxnRef');
             $order = Order::create([
                 'code' => $txRef,
-                'table_id' => null,
                 'id_user' => session('user_id'),
                 'address' => $pending['address_id'],
-                'id_staff' => null,
                 'totalprice' => $pending['totalprice'],
                 'voucher' => $pending['voucher_id'],
                 'totalbill' => $pending['totalbill'],
                 'statusorder' => 'Chờ Xác Nhận',
                 'typepayment' => 2,
+                'type'=>1,
                 'note' => $pending['note'],
-                'type' => 1,
                 'transaction_no' => $request->get('vnp_TransactionNo'),
                 'transaction_date' => $request->get('vnp_PayDate'),
             ]);
@@ -1145,17 +1142,14 @@ class HomeController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item['id'],
                     'quantity' => $item['quantity'],
-                    'status' => 'Chờ xử lý',
                 ]);
             }
         });
 
-        // 7. Xóa session và thông báo
         session()->forget('pending_order');
         return redirect()->route('views.cart')
             ->with('success', 'Thanh toán VNPAY thành công!');
     }
-
 
     //Thêm giỏ hàng
     public function toggleFavorite(Request $request)
