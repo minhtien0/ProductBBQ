@@ -75,8 +75,6 @@
     <!-- FontAwesome cho icon danh mục -->
     <script src="https://kit.fontawesome.com/75fc7caa04.js" crossorigin="anonymous"></script>
 </head>
-
-
 <body class="bg-dark-bg text-white font-mont">
     <div class="w-full max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-4">
         <!-- Promotion Section -->
