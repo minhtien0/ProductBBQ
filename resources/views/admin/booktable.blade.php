@@ -137,6 +137,12 @@
                                 <i class="fas fa-check"></i>
                                 Đã xác nhận ({{ $countConfirm }})
                             </button>
+
+                            <button @click="currentFilter = 'cancelled'" :class="currentFilter === 'cancelled' ? 'bg-white text-blue-600' : 'bg-blue-500/30 text-white hover:bg-blue-500/50'"
+                                class="px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2">
+                                <i class="fas fa-check"></i>
+                                Đã Hủy ({{ $countCancel }})
+                            </button>
                         </div>
 
                         <!-- Action Buttons -->
@@ -145,20 +151,6 @@
                                 class="bg-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-all duration-200 flex items-center gap-2">
                                 <i class="fas fa-filter"></i>
                                 Bộ lọc
-                            </button>
-
-                            <button @click="confirmSelected()" :disabled="selectedBookings . length === 0"
-                                :class="selectedBookings . length > 0 ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'"
-                                class="text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2">
-                                <i class="fas fa-check"></i>
-                                Xác nhận (<span x-text="selectedBookings.length"></span>)
-                            </button>
-
-                            <button @click="cancelSelected()" :disabled="selectedBookings . length === 0"
-                                :class="selectedBookings . length > 0 ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-400 cursor-not-allowed'"
-                                class="text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2">
-                                <i class="fas fa-times"></i>
-                                Hủy (<span x-text="selectedBookings.length"></span>)
                             </button>
                         </div>
                     </div>
@@ -216,7 +208,7 @@
                                         </p>
                                         <p class="text-gray-600 flex items-center gap-2">
                                             <i class="fas fa-table text-purple-500"></i>
-                                            Bàn <span x-text="info.table"></span>
+                                            <span x-text="info.table.number"></span>
                                         </p>
                                     </div>
                                 </td>
@@ -224,11 +216,11 @@
                                     <div class="space-y-1">
                                         <p class="text-gray-900 flex items-center gap-2">
                                             <i class="fas fa-calendar-alt text-blue-500"></i>
-                                            <span x-text="info.time_booking"></span>
+                                            <span x-text="new Date(info.time_booking).toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'}) + ' ' + new Date(info.time_booking).toLocaleDateString('vi-VN')"></span>
                                         </p>
                                         <p class="text-sm text-gray-500 flex items-center gap-2">
                                             <i class="fas fa-clock text-gray-400"></i>
-                                            Đặt lúc: <span x-text="info.time_order"></span>
+                                            Đặt lúc: <span x-text="new Date(info.time_order).toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'}) + ' ' + new Date(info.time_order).toLocaleDateString('vi-VN')"></span>
                                         </p>
                                     </div>
                                 </td>

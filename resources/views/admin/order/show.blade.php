@@ -8,16 +8,22 @@
                     <div>
                         <h1 class="text-2xl font-bold text-gray-900">Đơn hàng #{{ $order->code }}</h1>
                         <p class="text-sm text-gray-500 mt-1">
-                            {{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y H:i') }}</p>
+                            {{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y H:i') }}
+                        </p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="px-3 py-1 rounded-full text-sm font-medium
-                            @if($order->statusorder == 'Hoàn Thành') bg-green-100 text-green-800
-                            @elseif($order->statusorder == 'Đang Giao Hàng') bg-blue-100 text-blue-800
-                            @elseif($order->statusorder == 'Đang Thực Hiện') bg-yellow-100 text-yellow-800
-                                @else bg-gray-100 text-gray-800
-                            @endif">
-                            {{ $order->statusorder }}
+                        @php
+                            $statusColors = [
+                                'Chờ Xác Nhận' => 'bg-yellow-100 text-yellow-800',
+                                'Đang Giao Hàng' => 'bg-blue-100 text-blue-800',
+                                'Đang Thực Hiện' => 'bg-orange-100 text-orange-800',
+                                'Hoàn Thành' => 'bg-green-100 text-green-800',
+                                'Hoàn Tiền' => 'bg-gray-100 text-green-800',
+                                'Đã Hủy' => 'bg-red-100 text-red-800'
+                            ];
+                        @endphp
+                        <span class="px-3 py-1 rounded-full text-sm font-medium  {{ $statusColors[$order->statusorder] ?? 'bg-gray-100 text-gray-800' }}">
+                        {{ $order->statusorder }}
                         </span>
                     </div>
                 </div>
@@ -120,7 +126,8 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right">
                                             <div class="text-sm font-medium text-gray-900">
-                                                {{ number_format($item->quantity * $item->food_price) }}đ</div>
+                                                {{ number_format($item->quantity * $item->food_price) }}đ
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -153,16 +160,16 @@
                             <span>Tổng cộng:</span>
                             <span class="text-orange-600">{{ number_format($order->totalbill) }}đ</span>
                         </div>
-                    
+
                         @if($order->typepayment == 2 && $order->statusorder == 'Đã Hủy')
-                        <hr class="my-3">
-                              <form action="{{ route('admin.order.refund', $order->id_order) }}" method="POST"
-                                    onsubmit="return confirm('Bạn có chắc muốn hoàn tiền cho đơn #{{ $order->code }}?')">
+                            <hr class="my-3">
+                            <form action="{{ route('admin.order.refund', $order->id_order) }}" method="POST"
+                                onsubmit="return confirm('Bạn có chắc muốn hoàn tiền cho đơn #{{ $order->code }}?')">
                                 @csrf
                                 <!-- <input type="text" name="totalbill" value="{{ $order->totalbill }}" hidden> -->
                                 <button type="submit"
-                                class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-md">
-                                Hoàn Tiền
+                                    class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-md">
+                                    Hoàn Tiền
                                 </button>
                             </form>
                         @endif
@@ -202,10 +209,10 @@
                 </div>
 
                 {{-- Ghi chú --}}
-                @if($order->note)
-                    <div class="bg-amber-50 border border-amber-200 rounded-lg">
+               
+                    <div class="bg-white border border-white rounded-lg">
                         <div class="px-6 py-4">
-                            <h4 class="text-sm font-semibold text-amber-800 mb-2 flex items-center">
+                            <h4 class="text-sm font-semibold text-black-800 mb-2 flex items-center">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
@@ -213,10 +220,12 @@
                                 </svg>
                                 Ghi chú từ khách hàng
                             </h4>
-                            <p class="text-sm text-amber-700">{{ $order->note }}</p>
+                           
+                            <p class="text-sm text-amber-700">{{ $order->note_order ?? 'Không có ghi chú.' }}</p>
+                          
                         </div>
                     </div>
-                @endif
+               
 
                 {{-- Nút quay lại --}}
                 <div class="pt-4">
