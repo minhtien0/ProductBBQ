@@ -323,11 +323,11 @@
     <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
       @forelse($suggestFoods as $item)
       <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <img src="{{ asset('img/' . $item->image) }}" class="rounded-lg w-full h-32 object-cover mb-3" />
+      <a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}">  <img src="{{ asset('img/' . $item->image) }}" class="rounded-lg w-full h-32 object-cover mb-3" />
       <div class="flex items-center justify-between mb-1">
-        <a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}"> <span
-          class="font-bold text-gray-800">{{ $item->name }}</span></a>
-      </div>
+       <span
+          class="font-bold text-gray-800">{{ $item->name }}</span>
+      </div></a>
       <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">
         ⭐⭐⭐⭐⭐
       </div>

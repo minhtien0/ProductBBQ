@@ -197,13 +197,13 @@
                         @if(isset($food->discount) && $food->discount) data-discount="true" @endif
                         @if(isset($food->vegetarian) && $food->vegetarian) data-vegetarian="true" @endif>
                         <div class="relative overflow-hidden" style="height:240px;">
-                            <img src="{{ asset('img/' . $food->image) }}" alt="{{ $food->name }}"
+                          <a href="{{ route('views.menudetail',[$food->id,$food->slug]) }}"> <img src="{{ asset('img/' . $food->image) }}" alt="{{ $food->name }}"
                                 class="w-full h-56 object-cover border-b border-gray-100" />
                             <div class="absolute top-3 left-3 z-10">
                                 <span class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
                                     {{ optional($menus->firstWhere('id', $food->type))->name ?? '' }}
                                 </span>
-                            </div>
+                            </div></a> 
                             <div class="absolute top-3 right-3 z-10">
                                 <button
                                     class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
@@ -274,28 +274,7 @@
 
         <!-- Enhanced Pagination -->
 
-        <nav class="flex items-center gap-2 justify-center mt-4">
-            {{-- Nút Previous --}}
-            <a href="{{ $foods->previousPageUrl() ?: '#' }}"
-                class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 {{ $foods->onFirstPage() ? 'opacity-50 pointer-events-none' : '' }}">
-                <i class="fas fa-chevron-left"></i>
-            </a>
-
-            {{-- Các số trang --}}
-            @for ($i = 1; $i <= $foods->lastPage(); $i++)
-                <a href="{{ $foods->url($i) }}"
-                    class="px-3 py-2 rounded-lg 
-                                                                                                                  {{ $i == $foods->currentPage() ? 'bg-main-red text-white font-semibold' : 'bg-gray-100 hover:bg-gray-200' }}">
-                    {{ $i }}
-                </a>
-            @endfor
-
-            {{-- Nút Next --}}
-            <a href="{{ $foods->nextPageUrl() ?: '#' }}"
-                class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 {{ $foods->currentPage() == $foods->lastPage() ? 'opacity-50 pointer-events-none' : '' }}">
-                <i class="fas fa-chevron-right"></i>
-            </a>
-        </nav>
+        <div id="products-pagination" class="flex items-center gap-2 justify-center mt-4"></div>
 
     </div>
 
@@ -670,7 +649,59 @@
                 });
             });
         });
+       
     </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const grid = document.getElementById("products-grid");
+    const items = grid.querySelectorAll(".food-item");
+    const pagination = document.getElementById("products-pagination");
+    const perPage = 8; // Số sản phẩm mỗi trang (bạn chỉnh số này nếu muốn)
+    let page = 1;
+    const totalPages = Math.ceil(items.length / perPage);
+
+    function showPage(p) {
+        page = p;
+        items.forEach((item, idx) => {
+            item.style.display = (idx >= (page-1)*perPage && idx < page*perPage) ? "" : "none";
+        });
+        renderPagination();
+    }
+
+    function renderPagination() {
+        pagination.innerHTML = "";
+        if (totalPages <= 1) return; // Không cần hiện nếu chỉ có 1 trang
+        // Nút Prev
+        const prev = document.createElement("button");
+        prev.textContent = "<";
+        prev.disabled = page === 1;
+        prev.className = "px-3 py-1 rounded bg-gray-200 mx-1";
+        prev.onclick = () => showPage(page-1);
+        pagination.appendChild(prev);
+        // Các số trang
+        for (let i=1; i<=totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            btn.className = "px-3 py-1 rounded mx-1 " + (i === page ? "bg-main-red text-white" : "bg-gray-100");
+            btn.onclick = () => showPage(i);
+            pagination.appendChild(btn);
+        }
+        // Nút Next
+        const next = document.createElement("button");
+        next.textContent = ">";
+        next.disabled = page === totalPages;
+        next.className = "px-3 py-1 rounded bg-gray-200 mx-1";
+        next.onclick = () => showPage(page+1);
+        pagination.appendChild(next);
+    }
+
+    // Chỉ chạy khi có sản phẩm
+    if(items.length) {
+        showPage(1);
+    }
+});
+</script>
+
 
     <!-- Footer -->
     @include('layouts.user.footer')
