@@ -101,7 +101,7 @@
             </div>
             <div class="flex items-center gap-4">
                 <div class="text-right">
-                    <p class="text-white text-sm font-medium">Nhân viên: Admin</p>
+                    <p class="text-white text-sm font-medium">Nhân viên: {{ session('staff_name') }}</p>
                     <p class="text-slate-300 text-xs" id="current-time"></p>
                 </div>
                 <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
@@ -116,15 +116,10 @@
         <div id="sidebar"
             class="sidebar-expanded bg-slate-800/30 backdrop-blur-lg border-r border-slate-700/50 transition-all duration-300 flex flex-col">
             <div class="p-4 border-b border-slate-700/50">
-                <h2 class="text-white font-semibold text-sm mb-3 flex items-center gap-2">
+                <h2 class="text-white font-semibold text-sm flex items-center gap-2">
                     <i class="fas fa-chair"></i>
                     <span id="sidebar-title">Danh sách bàn</span>
                 </h2>
-                <div class="relative">
-                    <input type="text" placeholder="Tìm bàn..."
-                        class="w-full bg-slate-700/50 text-white placeholder-slate-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                </div>
             </div>
             <div id="table-list" class="flex-1 overflow-y-auto p-3 space-y-2">
                 @foreach($tables as $table)
@@ -219,8 +214,8 @@
             </div>
 
             <!-- Order Items -->
-            <div class="flex-1 overflow-y-auto">
-                <div id="order-items" class="divide-y divide-slate-700/50">
+            <div class="flex-1 overflow-y-auto ">
+                <div id="order-items" class="divide-y divide-slate-700/50 ">
 
                 </div>
                 <div id="empty-order" class="flex flex-col items-center justify-center h-full text-slate-400">
@@ -433,6 +428,13 @@ function renderMenus(menuName) {
             });
         }
     });
+    grid.querySelectorAll('.add-to-order-btn').forEach(btn => {
+        btn.onclick = function () {
+            let productId = this.getAttribute('data-id');
+            let tableId = currentTableId;
+            addOrderItemAjax(tableId, productId); // Gọi AJAX ở đây
+        }
+    });
 }
 
 function renderCombos() {
@@ -472,6 +474,13 @@ function renderCombos() {
                 price: parseInt(this.getAttribute('data-price')) || 0,
                 image: this.getAttribute('data-image')
             });
+        }
+    });
+    grid.querySelectorAll('.add-to-order-btn').forEach(btn => {
+        btn.onclick = function () {
+            let productId = this.getAttribute('data-id');
+            let tableId = currentTableId;
+            addOrderItemAjax(tableId, productId); // Gọi AJAX ở đây
         }
     });
 }
@@ -603,6 +612,99 @@ function updateTime() {
     document.getElementById('current-time').textContent = `${timeString} - ${dateString}`;
     document.getElementById('bill-time').textContent = timeString;
 }
+
+function reloadOrderPanel(tableId) {
+    fetch(`/admin/deskmanage/get-order-items/${tableId}`)
+        .then(res => res.json())
+        .then(data => {
+            renderOrderItems(data.items || []);
+        });
+}
+
+
+//Thêm món
+function addOrderItemAjax(tableId, productId) {
+    fetch('/admin/deskmanage/add-order-item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+        },
+        body: JSON.stringify({
+            table_id: tableId,
+            product_id: productId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            loadTableMenu(tableId); // Load lại panel hóa đơn và menu
+        } else {
+            alert(data.message || 'Thêm món thất bại!');
+        }
+    })
+.catch((err) => {
+    console.error('Ajax error:', err);
+    alert(err.message || 'Có lỗi xảy ra khi thêm món!');
+});
+}
+
+// Tăng/giảm số lượng
+window.updateQuantity = function(orderItemId, delta) {
+    fetch('/admin/deskmanage/update-order-item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+        },
+        body: JSON.stringify({
+            order_item_id: orderItemId,
+            delta: delta
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // Reload lại dữ liệu hóa đơn để hiển thị mới
+            loadTableMenu(currentTableId);
+        } else {
+            alert(data.message || 'Cập nhật số lượng thất bại!');
+        }
+    })
+    .catch((err) => {
+        alert('Có lỗi khi cập nhật số lượng!');
+        console.error(err);
+    });
+}
+
+// Xóa món
+window.deleteOrderItem = function(orderItemId) {
+    if (!confirm('Bạn chắc chắn muốn xóa món này?')) return;
+    fetch('/admin/deskmanage/delete-order-item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+        },
+        body: JSON.stringify({
+            order_item_id: orderItemId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            loadTableMenu(currentTableId);
+        } else {
+            alert(data.message || 'Xóa món thất bại!');
+        }
+    })
+    .catch((err) => {
+        alert('Có lỗi khi xóa món!');
+        console.error(err);
+    });
+}
+
+
 setInterval(updateTime, 1000);
 updateTime();
 </script>

@@ -120,12 +120,12 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
     Route::post('/booking/{id}/change-table', [BookTableController::class, 'changeTable'])->name('admin.booking.changeTable');
     Route::post('/booking/{id}/cancel', [BookTableController::class, 'cancelBooking'])->name('admin.booking.cancel');
     Route::post('/booking/{id}/send-email', [BookTableController::class, 'sendEmail'])->name('admin.booking.sendEmail');
-
+    Route::get('/table', [BookTableController::class, 'selectTable'])->name('admin.table');
+    Route::get('/typepayment', [BookTableController::class, 'selectTypepayment'])->name('admin.selectTypepayment');
 
     //thông tin công ty
     Route::get('/info', [CompanyController::class, 'index'])->name('admin.info');
     Route::post('/info/update/{id}', [CompanyController::class, 'update'])->name('admin.info.update');
-
 
     Route::prefix('/user')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('admin.user.list');
@@ -160,9 +160,9 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::delete('/delete', [ProductController::class, 'delete'])->name('admin.product.delete');
         //Menu
         Route::get('/category', [CategoryController::class, 'index'])->name('admin.product.category.index');
-         Route::get('/category/create', [CategoryController::class, 'create'])->name('admin.menu.create');
+        Route::get('/category/create', [CategoryController::class, 'create'])->name('admin.menu.create');
         Route::post('/category/add', [CategoryController::class, 'add'])->name('admin.menu.add');
-         Route::delete('/category/delete', [CategoryController::class, 'delete'])->name('admin.menu.delete');
+        Route::delete('/category/delete', [CategoryController::class, 'delete'])->name('admin.menu.delete');
         Route::get('/category/edit/{id}', [CategoryController::class, 'edit'])->name('admin.menu.edit');
         Route::post('/category/update/{id}', [CategoryController::class, 'update'])->name('admin.menu.update');
         //Combo
@@ -185,6 +185,7 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
 
     });
 
+    //Đơn hàng
     Route::prefix('/order')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('admin.order');
         //Mang Về
@@ -197,9 +198,17 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
     });
 
     //huydong test layout quản lí bàn
-    Route::get('/deskmanage', [HomeAdminController::class, 'deskmanage'])->name('views.deskmanage');
-    Route::get('/deskmanage/get-table-data/{id}', [HomeAdminController::class, 'getTableData'])->name('getTableData');
-    Route::post('/deskmanage/open-table/{id}', [HomeAdminController::class, 'openTable']);
+    Route::prefix('/deskmanage')->group(function () {
+        Route::get('/', [HomeAdminController::class, 'deskmanage'])->name('views.deskmanage');
+        Route::get('/get-table-data/{id}', [HomeAdminController::class, 'getTableData'])->name('getTableData');
+        Route::post('/open-table/{id}', [HomeAdminController::class, 'openTable']);
+        Route::post('/add-order-item', [HomeAdminController::class, 'addOrderItem'])->name('admin.order.addItem');
+        Route::post('/update-order-item', [HomeAdminController::class, 'updateOrderItem']);
+        Route::post('/delete-order-item', [HomeAdminController::class, 'deleteOrderItem']);
+       
+
+
+    });
     //Quyền Thu Ngân
     Route::prefix('/cashier')->group(function () {
         Route::get('/', [CashierController::class, 'index'])->name('admin.cashier');
