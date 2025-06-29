@@ -50,7 +50,16 @@ class HomeController extends Controller
     public function searchFood(Request $request)
     {
         $q = $request->input('term'); // Select2 sẽ gửi 'term'
-        $foods = \App\Models\Food::where('name', 'like', "%$q%")->limit(10)->get();
+        $keywords = preg_split('/\s+/', trim($q)); // Tách từ, loại khoảng trắng thừa
+
+        $foods = \App\Models\Food::query();
+        foreach ($keywords as $kw) {
+            $foods->where('name', 'REGEXP', '[[:<:]]' . $kw . '[[:>:]]');
+        }
+        $foods = $foods->limit(10)->get();
+
+
+
 
         $results = [];
         foreach ($foods as $food) {
@@ -81,7 +90,7 @@ class HomeController extends Controller
         $comboIds = DB::table('order_combos')
             ->join('orders', 'order_combos.order_id', '=', 'orders.id')
             ->where('orders.table_id', $id)
-            ->select('order_combos.combo_id','')
+            ->select('order_combos.combo_id', '')
             ->distinct()
             ->pluck('combo_id');
 
@@ -239,7 +248,7 @@ class HomeController extends Controller
                 }
             });
         }
-        $foods = $query->paginate(8)->withQueryString();
+        $foods = $query->get();
 
         return view('menu', compact('menus', 'foods', 'category', 'search'));
     }
@@ -347,14 +356,14 @@ class HomeController extends Controller
         $validated = $validator->validated();
         $now = now();
         $orderDateTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['time']);
-             if ($orderDateTime->lessThanOrEqualTo($now)) {
-                if ($orderDateTime->lessThanOrEqualTo($now)) {
-                        return response()->json([
-                            'status' => 'error',
-                            'errors' => ['Thời gian đặt bàn phải lớn hơn thời gian hiện tại.'],
-                        ], 422);
-                    }
-                }
+        if ($orderDateTime->lessThanOrEqualTo($now)) {
+            if ($orderDateTime->lessThanOrEqualTo($now)) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => ['Thời gian đặt bàn phải lớn hơn thời gian hiện tại.'],
+                ], 422);
+            }
+        }
         try {
             $booking = new BookingTable();
             $booking->nameuser = $validated['nameuser'];
@@ -547,7 +556,7 @@ class HomeController extends Controller
         //dd($myOrderLists);
         return view('userdetail', compact('address', 'addressAll', 'foodFavorites', 'myReviews', 'myOrderLists'));
     }
-    
+
 
     //Trang Chi Tiết Đơn Hàng
     public function ajaxDetailOrder($orderId)

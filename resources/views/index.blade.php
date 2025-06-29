@@ -874,10 +874,11 @@
             <div id="menu-grid" class="menu-grid">
                 @foreach ($allFoods as $allFood)
                     <div class="menu-card" data-type="{{ $allFood->menus->name }}">
+                      <a href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}"> 
                         <img src="{{ asset('img/' . $allFood->image) }}" alt="">
                          <span class="menu-badge">{{ $allFood->menus->name }}</span>
                         <div class="menu-card-content">
-                             <a href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}">
+                             
                             <div class="menu-card-title">{{ $allFood->name }}</div>
                              </a>
                             <div class="menu-card-rating">
