@@ -1,6 +1,6 @@
 <?php
 namespace App\Http;
-
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -27,4 +27,9 @@ class Kernel extends HttpKernel
         'check.admin' => \App\Http\Middleware\CheckAdminRole::class,
         'checkLoggedIn' => \App\Http\Middleware\CheckLoggedIn::class,
     ];
+
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->command('orders:auto-cancel')->everyFiveMinutes();
+    }
 }

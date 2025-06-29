@@ -5,7 +5,7 @@
         }
 
         .footer-section {
-            background: linear-gradient(rgba(34, 20, 50, 0.79), rgba(34, 20, 50, 0.79)), url('img/banner1.jpg') center/cover no-repeat;
+            background: linear-gradient(rgba(34, 20, 50, 0.79), rgba(34, 20, 50, 0.79)), url('{{ asset('img/banner1.jpg') }}') center/cover no-repeat;
             padding: 38px 0 0 0;
         }
 

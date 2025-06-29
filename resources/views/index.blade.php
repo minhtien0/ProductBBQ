@@ -1205,14 +1205,15 @@ function showPopup(message) {
                             <label>Thời Gian</label>
                             <select name="time" required>
                                 <option value="">Chọn Thời Gian</option>
-                                <option value="11:00">11:00 AM</option>
-                                <option value="12:00">12:00 PM</option>
-                                <option value="13:00">1:00 PM</option>
-                                <option value="14:00">2:00 PM</option>
-                                <option value="17:00">5:00 PM</option>
-                                <option value="18:00">6:00 PM</option>
-                                <option value="19:00">7:00 PM</option>
-                                <option value="20:00">8:00 PM</option>
+                                <option value="4:00">11:00 AM</option>
+                                <option value="5:00">12:00 PM</option>
+                                <option value="6:00">1:00 PM</option>
+                                <option value="7:00">2:00 PM</option>
+                                <option value="8:00">5:00 PM</option>
+                                <option value="9:00">6:00 PM</option>
+                                <option value="10:00">7:00 PM</option>
+                                <option value="11:00">8:00 PM</option>
+                                <option value="12:00">8:00 PM</option>
                             </select>
                         </div>
                         <div style="flex:1">

@@ -116,9 +116,11 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
     //Đặt bàn
     Route::get('/booktable', [BookTableController::class, 'index'])->name('admin.booktable');
     Route::get('/booktable/detail/{id}', [BookTableController::class, 'detail'])->name('admin.booktable.detail');
-    Route::post('/admin/booking/{id}/confirm', [BookTableController::class, 'confirmBooking'])->name('admin.booking.confirm');
-    Route::post('/admin/booking/{id}/change-table', [BookTableController::class, 'changeTable'])->name('admin.booking.changeTable');
-    Route::post('/admin/booking/{id}/cancel', [BookTableController::class, 'cancelBooking'])->name('admin.booking.cancel');
+    Route::post('/booking/{id}/confirm', [BookTableController::class, 'confirmBooking'])->name('admin.booking.confirm');
+    Route::post('/booking/{id}/change-table', [BookTableController::class, 'changeTable'])->name('admin.booking.changeTable');
+    Route::post('/booking/{id}/cancel', [BookTableController::class, 'cancelBooking'])->name('admin.booking.cancel');
+    Route::post('/booking/{id}/send-email', [BookTableController::class, 'sendEmail'])->name('admin.booking.sendEmail');
+
 
     //thông tin công ty
     Route::get('/info', [CompanyController::class, 'index'])->name('admin.info');
@@ -195,8 +197,9 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
     });
 
     //huydong test layout quản lí bàn
-    Route::get('/deskmanage', [HomeController::class, 'deskmanage'])->name('views.deskmanage');
-
+    Route::get('/deskmanage', [HomeAdminController::class, 'deskmanage'])->name('views.deskmanage');
+    Route::get('/deskmanage/get-table-data/{id}', [HomeAdminController::class, 'getTableData'])->name('getTableData');
+    Route::post('/deskmanage/open-table/{id}', [HomeAdminController::class, 'openTable']);
     //Quyền Thu Ngân
     Route::prefix('/cashier')->group(function () {
         Route::get('/', [CashierController::class, 'index'])->name('admin.cashier');

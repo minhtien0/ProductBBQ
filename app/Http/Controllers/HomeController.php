@@ -72,13 +72,19 @@ class HomeController extends Controller
     {
         $menus = Menu::all();
 
+        $table = DB::table('tables')->where('id', $id)->first();
+
+        if (!$table || $table->status != 'Đã Mở') {
+            abort(403, 'Bàn chưa được mở, vui lòng đợi nhân viên mở bàn.');
+        }
         // Lấy danh sách combo_id được order tại bàn $id
         $comboIds = DB::table('order_combos')
             ->join('orders', 'order_combos.order_id', '=', 'orders.id')
             ->where('orders.table_id', $id)
-            ->select('order_combos.combo_id')
+            ->select('order_combos.combo_id','')
             ->distinct()
             ->pluck('combo_id');
+
 
         // Lấy thông tin FoodCombo và danh sách Food bằng truy vấn thô
         $comboData = [];
@@ -339,7 +345,16 @@ class HomeController extends Controller
             ], 422);
         }
         $validated = $validator->validated();
-
+        $now = now();
+        $orderDateTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['time']);
+             if ($orderDateTime->lessThanOrEqualTo($now)) {
+                if ($orderDateTime->lessThanOrEqualTo($now)) {
+                        return response()->json([
+                            'status' => 'error',
+                            'errors' => ['Thời gian đặt bàn phải lớn hơn thời gian hiện tại.'],
+                        ], 422);
+                    }
+                }
         try {
             $booking = new BookingTable();
             $booking->nameuser = $validated['nameuser'];
@@ -1255,13 +1270,6 @@ class HomeController extends Controller
             ->get()
             ->sum(fn($c) => $c->quantity * $c->food->price);
     }
-
-    public function deskmanage()
-    {
-        return view('deskmanage');
-    }
-
-
 
 
     public function login(Request $request)
