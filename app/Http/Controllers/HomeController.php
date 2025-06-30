@@ -90,7 +90,7 @@ class HomeController extends Controller
         $comboIds = DB::table('order_combos')
             ->join('orders', 'order_combos.order_id', '=', 'orders.id')
             ->where('orders.table_id', $id)
-            ->select('order_combos.combo_id', '')
+            ->select('order_combos.combo_id',)
             ->distinct()
             ->pluck('combo_id');
 
@@ -1518,6 +1518,5 @@ class HomeController extends Controller
 
         return view('combodetail', compact('combo', 'foods', 'hotCombos'));
     }
-
 
 }

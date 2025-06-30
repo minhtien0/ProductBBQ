@@ -55,8 +55,9 @@
   </div>
 
   <!-- MAIN CONTENT -->
+   <!-- MAIN CONTENT FLEX 2 CỘT -->
   <div class="max-w-6xl mx-auto py-8 px-4 flex flex-col md:flex-row gap-7">
-    <!-- LEFT COLUMN: Blog + Bình luận -->
+    <!-- CỘT TRÁI: Blog và bình luận -->
     <div class="flex-1 flex flex-col">
       <!-- BLOG CARD -->
       <div class="bg-white rounded-xl shadow-md p-6 mb-7">
@@ -64,41 +65,33 @@
         <div class="flex items-center text-xs text-gray-500 gap-4 mb-3">
           <span><i class="fa fa-user mr-1"></i> {{ $blog->fullname }}</span>
           <span><i class="fa fa-comment mr-1"></i>{{ $countComment }} Bình luận</span>
-          <span><i class="fa fa-calendar mr-1"></i>
-            {{ \Carbon\Carbon::parse($blog->time_blog)->format(format: 'd/m/Y') }}</span>
+          <span><i class="fa fa-calendar mr-1"></i>{{ \Carbon\Carbon::parse($blog->time_blog)->format('d/m/Y') }}</span>
         </div>
         <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ $blog->title }}</h1>
         <p>{!! $blog->content !!}</p>
       </div>
-      <!-- COMMENTS BLOCK -->
+
+      <!-- BÌNH LUẬN + PHÂN TRANG JS ẢO -->
       <div class="bg-white rounded-xl shadow-md p-6 mb-7">
         <div>
           <div class="font-bold mb-5 text-gray-800 text-base">{{ $countComment }} Bình luận</div>
-          <!-- Bình luận -->
-          @foreach ($commentBlogs as $commentBlog)
-            <div class="flex items-start gap-3 mb-6">
-            <img src="{{ asset('img/' . $commentBlog->avatar_comment) }}" class="w-12 h-12 rounded-full object-cover" />
-            <div class="flex-1">
-              <div class="font-semibold text-gray-700">{{ $commentBlog->name_comment }}</div>
-              <div class="text-xs text-gray-400 mb-1">
-              {{ \Carbon\Carbon::parse($blog->time_comment)->format(format: 'd/m/Y') }}</div>
-              <div class="text-gray-600 text-sm mb-1">{{ $commentBlog->content_comment }}</div>
-            </div>
-            </div>
-          @endforeach
-          <!-- Phân trang ảo -->
-          <div class="flex gap-1 justify-center mt-5">
-            <button
-              class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">&lt;</button>
-            <button
-              class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">1</button>
-            <button
-              class="w-8 h-8 flex items-center justify-center rounded-full border border-orange-500 text-orange-500 bg-orange-50 font-bold">2</button>
-            <button
-              class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">3</button>
-            <button
-              class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-orange-100">&gt;</button>
+          <!-- Danh sách bình luận (mỗi dòng .comment-row) -->
+          <div id="comments-list">
+            @foreach ($commentBlogs as $commentBlog)
+              <div class="comment-row flex items-start gap-3 mb-6">
+                <img src="{{ asset('img/' . $commentBlog->avatar_comment) }}" class="w-12 h-12 rounded-full object-cover" />
+                <div class="flex-1">
+                  <div class="font-semibold text-gray-700">{{ $commentBlog->name_comment }}</div>
+                  <div class="text-xs text-gray-400 mb-1">
+                    {{ \Carbon\Carbon::parse($commentBlog->time_comment)->format('d/m/Y') }}
+                  </div>
+                  <div class="text-gray-600 text-sm mb-1">{{ $commentBlog->content_comment }}</div>
+                </div>
+              </div>
+            @endforeach
           </div>
+          <!-- Nút phân trang ảo JS -->
+          <div id="comments-pagination" class="flex gap-1 justify-center mt-5"></div>
         </div>
         <!-- Form bình luận -->
         <form id="comment-form" action="{{ route('comment.blog', $blog->id_blog) }}" method="POST" class="mt-10 bg-orange-50 rounded-xl p-5">
@@ -117,42 +110,41 @@
               Gửi bình luận
             </button>
           @endif
-      </form>
-      <div id="comment-result" class="text-green-600 text-sm mt-2"></div>
+        </form>
+        <div id="comment-result" class="text-green-600 text-sm mt-2"></div>
       </div>
     </div>
-    <!-- SIDEBAR -->
+
+    <!-- CỘT PHẢI: SIDEBAR -->
     <div class="w-full md:w-80 flex-shrink-0 space-y-7 mt-7 md:mt-0">
       <div class="sticky top-6 space-y-7">
         <!-- Search -->
         <div class="bg-white rounded-xl shadow p-4 relative">
-  <form id="sidebar-blog-search-form" autocomplete="off" class="flex">
-    <input id="sidebar-blog-search-input" type="text" placeholder="Tìm kiếm bài viết..." 
-      class="flex-1 border border-gray-200 rounded-l-lg px-3 py-2 outline-none text-sm bg-white">
-    <button class="bg-orange-500 text-white px-4 py-2 rounded-r-lg font-semibold text-sm" type="submit">Tìm</button>
-  </form>
-  <!-- Kết quả dropdown -->
-  <div id="sidebar-blog-search-dropdown"
-       class="hidden absolute left-0 right-0 top-12 bg-white border border-gray-200 rounded-xl shadow-lg max-h-96 overflow-y-auto z-50 text-sm">
-    <!-- AJAX results will be inserted here -->
-  </div>
-</div>
+          <form id="sidebar-blog-search-form" autocomplete="off" class="flex">
+            <input id="sidebar-blog-search-input" type="text" placeholder="Tìm kiếm bài viết..." 
+              class="flex-1 border border-gray-200 rounded-l-lg px-3 py-2 outline-none text-sm bg-white">
+            <button class="bg-orange-500 text-white px-4 py-2 rounded-r-lg font-semibold text-sm" type="submit">Tìm</button>
+          </form>
+          <div id="sidebar-blog-search-dropdown"
+               class="hidden absolute left-0 right-0 top-12 bg-white border border-gray-200 rounded-xl shadow-lg max-h-96 overflow-y-auto z-50 text-sm"></div>
+        </div>
         <!-- Latest Post -->
         <div class="bg-white rounded-xl shadow p-4">
           <div class="font-bold mb-3 text-gray-800">Bài Viết Mới</div>
           <ul class="space-y-3">
             @foreach ($newBlogs as $newBlog)
-        <li>
-          <a href="{{ route('views.blogdetail', [$newBlog->id, $newBlog->slug]) }}" class="flex items-start gap-3">
-          <img src="{{ asset('img/blog/' . $newBlog->image) }}" class="w-12 h-12 object-cover rounded" />
-          <div>
-            <div class="text-sm font-semibold">{{$newBlog->title }}</div>
-            <div class="text-xs text-gray-400">
-            {{ \Carbon\Carbon::parse($blog->created_at)->format(format: 'd/m/Y') }}</div>
-          </div>
-          </a>
-        </li>
-      @endforeach
+              <li>
+                <a href="{{ route('views.blogdetail', [$newBlog->id, $newBlog->slug]) }}" class="flex items-start gap-3">
+                  <img src="{{ asset('img/blog/' . $newBlog->image) }}" class="w-12 h-12 object-cover rounded" />
+                  <div>
+                    <div class="text-sm font-semibold">{{$newBlog->title }}</div>
+                    <div class="text-xs text-gray-400">
+                      {{ \Carbon\Carbon::parse($newBlog->created_at)->format('d/m/Y') }}
+                    </div>
+                  </div>
+                </a>
+              </li>
+            @endforeach
           </ul>
         </div>
         <!-- Tags -->
@@ -160,8 +152,8 @@
           <div class="font-bold mb-3 text-gray-800">Tags BBQ</div>
           <div class="flex flex-wrap gap-2">
             @foreach ($allTags as $allTag)
-        <span class="bg-gray-100 px-2 py-0.5 rounded text-sm">{{ $allTag->type }}</span>
-      @endforeach
+              <span class="bg-gray-100 px-2 py-0.5 rounded text-sm">{{ $allTag->type }}</span>
+            @endforeach
           </div>
         </div>
       </div>
@@ -255,6 +247,58 @@ $(document).ready(function () {
     });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const comments = Array.from(document.querySelectorAll('#comments-list .comment-row'));
+  const perPage = 3; // Số comment/trang
+  let currentPage = 1;
+  const pagination = document.getElementById('comments-pagination');
+
+  function showPage(page) {
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    comments.forEach((c, i) => c.style.display = (i >= start && i < end) ? '' : 'none');
+    renderPagination(page);
+  }
+
+  function renderPagination(active) {
+    const totalPages = Math.ceil(comments.length / perPage);
+    pagination.innerHTML = '';
+    if (totalPages <= 1) return;
+    // Prev
+    const prev = document.createElement('button');
+    prev.innerHTML = '&lt;';
+    prev.className = btnClass();
+    prev.disabled = active === 1;
+    prev.onclick = () => showPage(active - 1);
+    pagination.appendChild(prev);
+    // Pages
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = btnClass(i === active);
+      btn.onclick = () => showPage(i);
+      pagination.appendChild(btn);
+    }
+    // Next
+    const next = document.createElement('button');
+    next.innerHTML = '&gt;';
+    next.className = btnClass();
+    next.disabled = active === totalPages;
+    next.onclick = () => showPage(active + 1);
+    pagination.appendChild(next);
+  }
+
+  function btnClass(active) {
+    return "w-8 h-8 flex items-center justify-center rounded-full border " +
+      (active ? "border-orange-500 text-orange-500 bg-orange-50 font-bold" : "border-gray-300 text-gray-500 hover:bg-orange-100");
+  }
+
+  // Khởi tạo ban đầu
+  if (comments.length > 0) showPage(1);
+});
+</script>
+
 
 
 
