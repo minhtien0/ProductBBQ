@@ -792,42 +792,52 @@ data-error="{{ session('error') }}" @endif>
 
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
-    const wishlistRows = document.querySelectorAll("#wishlist-list .wishlist-row");
-    const wishlistPagination = document.getElementById("wishlist-pagination");
-    const wishlistPerPage = 3; // Giảm xuống 2 để test nếu ít sản phẩm!
-    let wishlistPage = 1;
+                        const wishlistRows = document.querySelectorAll("#wishlist-list .wishlist-row");
+                        const wishlistPagination = document.getElementById("wishlist-pagination");
+                        const wishlistPerPage = 3; // Giảm xuống 2 để test nếu ít sản phẩm!
+                        let wishlistPage = 1;
 
-    function showWishlistPage(page) {
-        const start = (page - 1) * wishlistPerPage;
-        const end = start + wishlistPerPage;
-        wishlistRows.forEach((row, idx) => {
-            row.style.display = (idx >= start && idx < end) ? "" : "none";
-        });
-    }
+                        function showWishlistPage(page) {
+                            const start = (page - 1) * wishlistPerPage;
+                            const end = start + wishlistPerPage;
+                            wishlistRows.forEach((row, idx) => {
+                                row.style.display = (idx >= start && idx < end) ? "" : "none";
+                            });
+                        }
 
-    function renderWishlistPagination() {
-        wishlistPagination.innerHTML = "";
-        const totalPages = Math.ceil(wishlistRows.length / wishlistPerPage);
-        if (totalPages <= 1) return;
+                        function renderWishlistPagination() {
+                            wishlistPagination.innerHTML = "";
+                            const totalPages = Math.ceil(wishlistRows.length / wishlistPerPage);
+                            if (totalPages <= 1) return;
 
-        
 
-        for (let i = 1; i <= totalPages; i++) {
-            const btn = document.createElement("button");
-            btn.textContent = i;
-            btn.className = "w-8 h-8 ...";
-            btn.onclick = () => { wishlistPage = i; showWishlistPage(wishlistPage); renderWishlistPagination(); };
-            wishlistPagination.appendChild(btn);
-        }
 
-        
-    }
+                            for (let i = 1; i <= totalPages; i++) {
+                                const btn = document.createElement("button");
+                                btn.textContent = i;
+                                btn.className =
+                                    "w-8 h-8 border rounded " +
+                                    (i === wishlistPage
+                                        ? "bg-[#e60012] text-white font-bold"
+                                        : "text-gray-700 border-gray-300") +
+                                    " hover:bg-[#e60012] hover:text-white transition";
+                                btn.onclick = () => {
+                                    wishlistPage = i;
+                                    showWishlistPage(wishlistPage);
+                                    renderWishlistPagination();
+                                };
+                                wishlistPagination.appendChild(btn);
+                            }
 
-    if (wishlistRows.length > 0) {
-        showWishlistPage(wishlistPage);
-        renderWishlistPagination();
-    }
-});
+
+
+                        }
+
+                        if (wishlistRows.length > 0) {
+                            showWishlistPage(wishlistPage);
+                            renderWishlistPagination();
+                        }
+                    });
                 </script>
                 <!-- Review -->
                 <div class="tab-content hidden" id="tab-review">
@@ -896,19 +906,24 @@ data-error="{{ session('error') }}" @endif>
                             const totalPages = Math.ceil(reviewRows.length / reviewsPerPage);
                             if (totalPages <= 1) return;
 
-                            
+
 
                             // Các nút số trang
                             for (let i = 1; i <= totalPages; i++) {
                                 const btn = document.createElement("button");
                                 btn.textContent = i;
-                                btn.className = "w-8 h-8 flex items-center justify-center rounded-full border " +
-                                    (i === reviewPage ? "border-red-500 text-orange-500 bg-red-50 font-bold" : "border-gray-300 text-gray-500 hover:bg-orange-100");
+                                btn.className =
+                                    "w-8 h-8 flex items-center justify-center border rounded " + // Bỏ 'rounded-full', chỉ 'rounded'
+                                    (i === reviewPage
+                                        ? "bg-[#e60012] text-white font-bold"  // Nền đỏ, chữ trắng, in đậm nếu đang chọn
+                                        : "text-gray-700 border-gray-300") +  // Trang khác: xám, viền xám
+                                    " hover:bg-[#e60012] hover:text-white transition"; // Hover: nền đỏ, chữ trắng, chuyển mượt
                                 btn.onclick = () => { reviewPage = i; showReviewPage(reviewPage); renderReviewPagination(); };
                                 reviewPagination.appendChild(btn);
                             }
 
-                            
+
+
                         }
 
                         if (reviewRows.length > 0) {

@@ -126,15 +126,19 @@
               <div class="font-semibold mb-2 text-gray-800 text-sm">{{  $countRates }} Đánh Giá</div>
               <div id="reviewList" class="space-y-3">
                 @foreach($rates as $rate)
-              <div class="flex gap-3 items-start bg-[#f8f8f8] rounded-lg p-3">
+              <div class="review-row flex gap-3 items-start bg-[#f8f8f8] rounded-lg p-3">
+                <!-- Avatar người đánh giá -->
                 <img src="{{ asset('img/' . $rate->user->avatar) }}"
                 class="w-12 h-12 rounded-full object-cover border border-gray-200" />
                 <div>
+                <!-- Tên và thời gian -->
                 <div class="flex gap-2 items-center mb-1">
-                  <span class="font-bold text-sm text-gray-800">{{$rate->user->fullname }}</span>
+                  <span class="font-bold text-sm text-gray-800">{{ $rate->user->fullname }}</span>
                   <span class="text-xs text-gray-400">
-                  {{ \Carbon\Carbon::parse($rate->time)->format('d/m/Y H:i') }}</span>
+                  {{ \Carbon\Carbon::parse($rate->time)->format('d/m/Y H:i') }}
+                  </span>
                 </div>
+                <!-- Sao đánh giá -->
                 <div class="flex gap-1 text-xs mb-1">
                   @for ($i = 1; $i <= 5; $i++)
               <i
@@ -142,6 +146,7 @@
             @endfor
                   <span class="ml-1 text-gray-500">({{ $rate->rate }}/5)</span>
                 </div>
+                <!-- Ảnh kèm theo (nếu có) -->
                 @if($rate->images->isNotEmpty())
               <div class="flex gap-2 flex-wrap mb-2">
                 @foreach($rate->images as $img)
@@ -150,11 +155,13 @@
             @endforeach
               </div>
             @endif
+                <!-- Nội dung bình luận -->
                 <div class="text-xs text-gray-600">{{ $rate->content }}</div>
                 </div>
               </div>
         @endforeach
               </div>
+
               <!-- Pagination -->
               <div class="flex justify-center items-center gap-1 mt-4">
                 <button id="prevPageBtn"
@@ -163,6 +170,7 @@
                 <button id="nextPageBtn"
                   class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 bg-white hover:bg-orange-50">&gt;</button>
               </div>
+
             </div>
           </div>
         </div>
@@ -323,11 +331,12 @@
     <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
       @forelse($suggestFoods as $item)
       <div class="bg-white rounded-xl shadow p-4 flex flex-col">
-      <a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}">  <img src="{{ asset('img/' . $item->image) }}" class="rounded-lg w-full h-32 object-cover mb-3" />
-      <div class="flex items-center justify-between mb-1">
-       <span
-          class="font-bold text-gray-800">{{ $item->name }}</span>
-      </div></a>
+      <a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}"> <img
+        src="{{ asset('img/' . $item->image) }}" class="rounded-lg w-full h-32 object-cover mb-3" />
+        <div class="flex items-center justify-between mb-1">
+        <span class="font-bold text-gray-800">{{ $item->name }}</span>
+        </div>
+      </a>
       <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">
         ⭐⭐⭐⭐⭐
       </div>
@@ -363,6 +372,62 @@
       };
     });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const reviews = Array.from(document.querySelectorAll('#reviewList .review-row'));
+      const perPage = 2;
+      let currentPage = 1;
+      const paginationBtns = document.getElementById('paginationBtns');
+      const prevPageBtn = document.getElementById('prevPageBtn');
+      const nextPageBtn = document.getElementById('nextPageBtn');
+
+      function showReviewPage(page) {
+        const start = (page - 1) * perPage;
+        const end = start + perPage;
+        reviews.forEach((r, i) => r.style.display = (i >= start && i < end) ? '' : 'none');
+        renderReviewPagination(page);
+        currentPage = page;
+      }
+
+      function renderReviewPagination(active) {
+        const totalPages = Math.ceil(reviews.length / perPage);
+        paginationBtns.innerHTML = '';
+        if (totalPages <= 1) {
+          prevPageBtn.style.display = 'none';
+          nextPageBtn.style.display = 'none';
+          return;
+        }
+        prevPageBtn.style.display = '';
+        nextPageBtn.style.display = '';
+
+        prevPageBtn.disabled = active === 1;
+        nextPageBtn.disabled = active === totalPages;
+
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement('button');
+          btn.textContent = i;
+          btn.className = "w-8 h-8 flex items-center justify-center rounded-full border " +
+            (i === active
+              ? "border-orange-500 text-orange-500 bg-orange-50 font-bold"
+              : "border-gray-300 text-gray-500 hover:bg-orange-100");
+          btn.onclick = () => showReviewPage(i);
+          paginationBtns.appendChild(btn);
+        }
+      }
+
+      prevPageBtn.onclick = () => {
+        if (currentPage > 1) showReviewPage(currentPage - 1);
+      };
+      nextPageBtn.onclick = () => {
+        const totalPages = Math.ceil(reviews.length / perPage);
+        if (currentPage < totalPages) showReviewPage(currentPage + 1);
+      };
+
+      // Init trang đầu tiên
+      if (reviews.length > 0) showReviewPage(1);
+    });
+  </script>
+
 </body>
 @include('layouts.user.footer')
 
