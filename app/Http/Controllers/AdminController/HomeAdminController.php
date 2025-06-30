@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Menu;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class HomeAdminController extends Controller
 {
@@ -85,7 +87,7 @@ public function getTableData($id)
             )
             ->get();
 
-        $comboData = $results->groupBy('id')->map(function ($group) {
+            $comboData = $results->groupBy('id')->map(function ($group) {
             $comboName = $group->first()->name;
             $foodNames = $group->pluck('food_name')->filter()->unique()->values()->toArray();
             $foodIds = $group->pluck('food_id')->filter()->unique()->values()->toArray();
@@ -123,9 +125,99 @@ public function openTable($id)
     if (!$table) {
         return response()->json(['success' => false, 'message' => 'Không tìm thấy bàn!']);
     }
+
+    
     DB::table('tables')->where('id', $id)->update(['status' => 'Đã Mở']);
+    $codeOrder='NMT' . strtoupper(Str::random(8));
+
+    $order = Order::create([
+                    'code' => $codeOrder,
+                    'table_id' => null,
+                    'id_user' => null,
+                    'address' => null,
+                    'id_staff' => session('staff_id'),
+                    'totalprice' => null,
+                    'voucher' => null,
+                    'totalbill' => null,
+                    'statusorder' => 'Đang Thực Hiện',
+                    'typepayment' => null,
+                    'note' => null,
+                    'type' => 0,
+                ]);
     return response()->json(['success' => true]);
 }
+
+public function addOrderItem(Request $request)
+{
+    $request->validate([
+        'table_id' => 'required|integer|exists:tables,id',
+        'product_id' => 'required|integer|exists:foods,id',
+    ]);
+
+    // Tìm order đang mở của bàn này (trạng thái chưa thanh toán)
+    $order = \App\Models\Order::where('table_id', $request->table_id)
+        ->where('statusorder', '=', 'Đang Mở') // hoặc 'Đang phục vụ'
+        ->orderByDesc('id')->first();
+    if (!$order) {
+        // Có thể trả về lỗi hoặc tự tạo order mới tuỳ bạn
+        return response()->json([
+            'success' => false,
+            'message' => 'Chưa có order đang mở cho bàn này!'
+        ], 400);
+    }
+
+    // Kiểm tra món đã tồn tại trong order chưa
+    $detail = \App\Models\OrderDetail::where('order_id', $order->id)
+        ->where('product_id', $request->product_id)
+        ->first();
+
+    if ($detail) {
+        // Nếu có rồi thì cộng quantity lên 1
+        $detail->quantity += 1;
+        $detail->save();
+    } else {
+        // Nếu chưa thì tạo mới
+        $detail = \App\Models\OrderDetail::create([
+            'order_id' => $order->id,
+            'product_id' => $request->product_id,
+            'quantity' => 1,
+            'status','Chờ Thực Hiện',
+            'time' => now()
+        ]);
+    }
+    \Log::info( $order);
+    return response()->json([
+        'success' => true,
+        'message' => 'Thêm món thành công!'
+    ]);
+}
+
+// DeskManageController.php
+
+public function updateOrderItem(Request $request)
+{
+    $request->validate([
+        'order_item_id' => 'required|integer|exists:order_details,id', // id của bảng order_details
+        'delta' => 'required|integer', // +1 hoặc -1
+    ]);
+    $detail = \App\Models\OrderDetail::find($request->order_item_id);
+    $detail->quantity += $request->delta;
+    if ($detail->quantity < 1) $detail->quantity = 1;
+    $detail->save();
+    return response()->json(['success' => true, 'message' => 'Đã cập nhật số lượng', 'quantity' => $detail->quantity]);
+}
+
+public function deleteOrderItem(Request $request)
+{
+    $request->validate([
+        'order_item_id' => 'required|integer|exists:order_details,id',
+    ]);
+    $detail = \App\Models\OrderDetail::find($request->order_item_id);
+    $detail->delete();
+    return response()->json(['success' => true, 'message' => 'Đã xóa món!']);
+}
+
+
 
 
 

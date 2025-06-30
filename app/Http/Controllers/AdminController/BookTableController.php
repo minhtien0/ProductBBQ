@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
 use App\Models\BookingTable;
 use App\Models\Table;
+use App\Models\TypePayment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +25,20 @@ class BookTableController extends Controller
 
         return view('admin.booktable', compact('countAll', 'countPending', 'countConfirm', 'countCancel', 'infos'));
     }
+
+    //Ké admin Table
+    public function selectTable(){
+        $listTables=Table::all();
+        return view('admin.table.index',compact('listTables'));
+    }
+
+    //Ké admin Typepayment
+    public function selectTypepayment(){
+        $listTables=TypePayment::all();
+        return view('admin.typepayment.index',compact('listTables'));
+    }
+
+    
 
     public function detail($id)
 {
@@ -110,8 +125,6 @@ public function changeTable(Request $request, $id)
     if ($oldTableId) {
         Table::where('id', $oldTableId)->update(['status' => 'Trống']);
     }
-    Table::where('id', $request->table_id)->update(['status' => 'Đã đặt']);
-
     return response()->json(['message' => 'Cập nhật thành công!']);
 }
 
