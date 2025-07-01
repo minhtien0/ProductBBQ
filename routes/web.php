@@ -100,7 +100,15 @@ Route::post('/blog/{id}/comment', [HomeController::class, 'addCommentBlog'])->na
 
 //Group Admin
 Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])->group(function () {
+    //Thống kê
     Route::get('/', [HomeAdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/stats/employees', [HomeAdminController::class, 'getTopEmployeesByMonth']);
+    Route::get('/stats/monthly-revenue', [HomeAdminController::class, 'getMonthlyRevenueByYear']);
+    Route::get('/stats/new-customers', [HomeAdminController::class, 'getNewCustomersByYear']);
+    Route::get('/stats/ratings-distribution', [HomeAdminController::class, 'getRatingsByMonth']);
+    Route::get('/stats/top-products', [HomeAdminController::class, 'getTopProductsByMonth']);
+
+
     Route::get('/rate', [RateController::class, 'index'])->name('admin.rate');
     Route::prefix('voucher')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('admin.voucher');
@@ -206,13 +214,16 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::post('/add-order-item', [HomeAdminController::class, 'addOrderItem'])->name('admin.order.addItem');
         Route::post('/update-order-item', [HomeAdminController::class, 'updateOrderItem']);
         Route::post('/delete-order-item', [HomeAdminController::class, 'deleteOrderItem']);
-       
+        Route::get('/get-all-combos', [HomeAdminController::class, 'getAllCombos']);
+        Route::post('/add-combo-to-order', [HomeAdminController::class, 'addComboToOrder']);
 
 
     });
     //Quyền Thu Ngân
     Route::prefix('/cashier')->group(function () {
         Route::get('/', [CashierController::class, 'index'])->name('admin.cashier');
+        Route::get('/filter', [CashierController::class, 'filter'])->name('admin.cashier.filter');
+
     });
 
 });
