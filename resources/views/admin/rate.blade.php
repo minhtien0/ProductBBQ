@@ -54,18 +54,14 @@
                         <div class="hidden lg:flex items-center gap-4 text-sm text-gray-600">
                             <span class="flex items-center gap-1">
                                 <i class="fas fa-star text-yellow-500"></i>
-                                <span>Tổng: 1,234 đánh giá</span>
+                                <span>Tổng: {{ $countRates }} đánh giá</span>
                             </span>
                         </div>
                     </div>
 
                     <!-- Right side - Actions -->
                     <div class="flex items-center gap-2">
-                        <button class="action-btn bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-100 transition-colors">
-                            <i class="fas fa-download text-sm"></i>
-                            <span>Xuất file</span>
-                        </button>
-                        
+                      
                         <button class="action-btn bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-red-100 transition-colors"
                             :class="{'opacity-50 cursor-not-allowed': selectedItems.length === 0}">
                             <i class="fas fa-trash text-sm"></i>
@@ -155,7 +151,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        <!-- Sample Row 1 -->
+                        @foreach($listRates as $rate)
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="p-4">
                                 <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
@@ -166,185 +162,51 @@
                                         NT
                                     </div>
                                     <div>
-                                        <div class="font-medium text-gray-900">Nguyễn Minh Tiến</div>
-                                        <div class="text-sm text-gray-500">tiennguyen@gmail.com</div>
+                                        <div class="font-medium text-gray-900">{{ $rate->user->fullname }}</div>
+                                        <div class="text-sm text-gray-500">{{ $rate->user->email }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="p-4">
                                 <div class="max-w-xs">
                                     <p class="text-gray-900 text-sm leading-relaxed">
-                                        Sản phẩm rất tốt, chất lượng như mô tả. Giao hàng nhanh, đóng gói cẩn thận. Sẽ mua lại lần sau.
+                                       {{ $rate->content }}
                                     </p>
                                 </div>
                             </td>
                             <td class="p-4">
                                 <div class="flex items-center gap-1">
                                     <div class="flex text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <i class="fas fa-star {{ $i <= $rate->rate ? 'text-yellow-400' : 'text-gray-300' }}"></i>
+                                        @endfor
                                     </div>
-                                    <span class="text-sm text-gray-600 ml-1">5.0</span>
+                                    <span class="text-sm text-gray-600 ml-1">{{ $rate->rate }}.0</span>
                                 </div>
                             </td>
                             <td class="p-4">
-                                <span class="text-sm text-gray-900">Laptop Gaming XYZ</span>
+                                <span class="text-sm text-gray-900">{{ $rate->food->name }}</span>
                             </td>
                             <td class="p-4">
-                                <div class="text-sm text-gray-900">15/06/2024</div>
-                                <div class="text-xs text-gray-500">14:30</div>
+                                <div class="text-sm text-gray-900">{{ $rate->time }}</div>
                             </td>
                             <td class="p-4">
                                 <div class="flex gap-1">
-                                    <img src="https://via.placeholder.com/40x40/e5e7eb/6b7280?text=1" alt="Review image" 
+                                    @foreach($rate->images as $img)
+                                    <img src="{{ asset('img/rate/' . $img->img) }}" alt="Review image" 
                                         class="w-8 h-8 rounded object-cover border border-gray-200">
-                                    <img src="https://via.placeholder.com/40x40/e5e7eb/6b7280?text=2" alt="Review image" 
-                                        class="w-8 h-8 rounded object-cover border border-gray-200">
-                                    <div class="w-8 h-8 rounded bg-gray-100 border border-gray-200 flex items-center justify-center text-xs text-gray-500">
-                                        +2
-                                    </div>
+                                    @endforeach
                                 </div>
                             </td>
                             <td class="p-4">
                                 <div class="flex items-center gap-2">
-                                    <button class="text-blue-600 hover:text-blue-800 transition-colors" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="text-green-600 hover:text-green-800 transition-colors" title="Phê duyệt">
-                                        <i class="fas fa-check"></i>
-                                    </button>
                                     <button class="text-red-600 hover:text-red-800 transition-colors" title="Xóa">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
-                        </tr>
-
-                        <!-- Sample Row 2 -->
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="p-4">
-                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-medium">
-                                        LH
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-gray-900">Lê Thị Hoa</div>
-                                        <div class="text-sm text-gray-500">lehoa@gmail.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <div class="max-w-xs">
-                                    <p class="text-gray-900 text-sm leading-relaxed">
-                                        Chất lượng ổn nhưng giao hàng hơi chậm. Sản phẩm đúng như mô tả.
-                                    </p>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-1">
-                                    <div class="flex text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star text-gray-300"></i>
-                                    </div>
-                                    <span class="text-sm text-gray-600 ml-1">4.0</span>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <span class="text-sm text-gray-900">Điện thoại ABC</span>
-                            </td>
-                            <td class="p-4">
-                                <div class="text-sm text-gray-900">14/06/2024</div>
-                                <div class="text-xs text-gray-500">09:15</div>
-                            </td>
-                            <td class="p-4">
-                                <div class="text-sm text-gray-500">Không có</div>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <button class="text-blue-600 hover:text-blue-800 transition-colors" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="text-green-600 hover:text-green-800 transition-colors" title="Phê duyệt">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800 transition-colors" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <!-- Sample Row 3 -->
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="p-4">
-                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white font-medium">
-                                        VD
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-gray-900">Võ Minh Duy</div>
-                                        <div class="text-sm text-gray-500">duyvo@gmail.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <div class="max-w-xs">
-                                    <p class="text-gray-900 text-sm leading-relaxed">
-                                        Sản phẩm không đúng mô tả, chất lượng kém. Rất thất vọng với lần mua hàng này.
-                                    </p>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-1">
-                                    <div class="flex text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star text-gray-300"></i>
-                                        <i class="far fa-star text-gray-300"></i>
-                                        <i class="far fa-star text-gray-300"></i>
-                                    </div>
-                                    <span class="text-sm text-gray-600 ml-1">2.0</span>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <span class="text-sm text-gray-900">Tai nghe DEF</span>
-                            </td>
-                            <td class="p-4">
-                                <div class="text-sm text-gray-900">13/06/2024</div>
-                                <div class="text-xs text-gray-500">16:45</div>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex gap-1">
-                                    <img src="https://via.placeholder.com/40x40/e5e7eb/6b7280?text=1" alt="Review image" 
-                                        class="w-8 h-8 rounded object-cover border border-gray-200">
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <button class="text-blue-600 hover:text-blue-800 transition-colors" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="text-green-600 hover:text-green-800 transition-colors" title="Phê duyệt">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800 transition-colors" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        </tr> 
+                        @endforeach                     
                     </tbody>
                 </table>
             </div>
