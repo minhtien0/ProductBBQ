@@ -94,8 +94,8 @@
                         @endphp
                         <button data-cat="{{ $menuCat }}"
                             class="category-tab
-                                                    {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
-                                                    px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
+                                                                        {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
+                                                                        px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
                             {{-- icon --}}
                             @if(stripos($menu->name, 'BBQ') !== false)
                                 <i class="fas fa-star mr-2"></i>
@@ -197,17 +197,21 @@
                         @if(isset($food->discount) && $food->discount) data-discount="true" @endif
                         @if(isset($food->vegetarian) && $food->vegetarian) data-vegetarian="true" @endif>
                         <div class="relative overflow-hidden" style="height:240px;">
-                          <a href="{{ route('views.menudetail',[$food->id,$food->slug]) }}"> <img src="{{ asset('img/' . $food->image) }}" alt="{{ $food->name }}"
-                                class="w-full h-56 object-cover border-b border-gray-100" />
-                            <div class="absolute top-3 left-3 z-10">
-                                <span class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
-                                    {{ optional($menus->firstWhere('id', $food->type))->name ?? '' }}
-                                </span>
-                            </div></a> 
+                            <a href="{{ route('views.menudetail', [$food->id, $food->slug]) }}"> <img
+                                    src="{{ asset('img/' . $food->image) }}" alt="{{ $food->name }}"
+                                    class="w-full h-56 object-cover border-b border-gray-100" />
+                                <div class="absolute top-3 left-3 z-10">
+                                    <span
+                                        class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
+                                        {{ optional($menus->firstWhere('id', $food->type))->name ?? '' }}
+                                    </span>
+                                </div>
+                            </a>
                             <div class="absolute top-3 right-3 z-10">
-                                <button
-                                    class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
-                                    <i class="fas fa-heart"></i>
+                                <button data-food-id="{{ $food->id }}"
+                                    class=" favorite-btn icon-btn {{ in_array($food->id, $favIds) ? 'text-red-500' : 'text-gray-500' }} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
+                                    <i
+                                        class="{{ in_array($food->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
                                 </button>
                             </div>
                         </div>
@@ -239,13 +243,14 @@
                                 </span>
                                 <div class="flex gap-2">
                                     <button type="button"
-                                        class="add-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
-                                        data-id="{{ $food->id }}" data-quantity="1">
+                                        class="add-to-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
+                                        data-food-id="{{ $food->id }}" data-quantity="1">
                                         <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ Hàng
                                     </button>
                                     <button
                                         class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
-                                        <i class="fa-solid fa-eye"></i>
+                                        <a href="{{ route('views.menudetail', [$food->id, $food->slug]) }}"><i
+                                                class="fa-regular fa-eye"></i></a>
                                     </button>
                                 </div>
                             </div>
@@ -280,7 +285,45 @@
 
 
     </div>
+    <!-- Popup overlay -->
+    <div id="custom-popup-overlay"
+        class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
+        <!-- Container chính -->
+        <div id="custom-popup"
+            class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-info-circle text-white"></i>
+                        <span class="text-white font-semibold text-lg">Thông báo</span>
+                    </div>
+                    <button id="popup-close-btn"
+                        class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
+            <!-- Nội dung -->
+            <div class="px-6 py-8 text-center">
+                <div
+                    class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-info text-blue-600 text-2xl"></i>
+                </div>
+                <div id="custom-popup-message" class="text-gray-800 text-base font-semibold mb-6">
+                    <!-- Nội dung message sẽ được show ở đây -->
+                </div>
+                <button id="popup-ok-btn"
+                    class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // DOM Elements
@@ -313,10 +356,99 @@
                         // Sau khi load xong, chạy filter + sort ngay
                         sortItems();
                         filterItems();
+                        bindAddToCartEvents();
+                        bindFavoriteEvents();
                     });
                 });
             });
+            function bindAddToCartEvents() {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                document.querySelectorAll('.add-to-cart').forEach(btn => {
+                    btn.onclick = async function () {
+                        const foodId = this.dataset.foodId;
+                        try {
+                            const res = await fetch("{{ route('cart.add') }}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken,
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                },
+                                body: JSON.stringify({ food_id: foodId, quantity: 1 })
+                            });
+                            const data = await res.json();
+                            if (res.ok && data.success) {
+                                showPopup(data.message);
+                            } else {
+                                showPopup(data.message || data.error || 'Có lỗi xảy ra');
+                            }
+                        } catch (err) {
+                            showPopup('Lỗi kết nối');
+                        }
+                    };
+                });
+                // Popup script
+                const overlay = document.getElementById('custom-popup-overlay');
+                document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+                document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+                overlay.onclick = function (e) {
+                    if (e.target === overlay) overlay.classList.add('hidden');
+                };
+                function showPopup(message) {
+                    document.getElementById('custom-popup-message').textContent = message;
+                    document.getElementById('custom-popup-overlay').classList.remove('hidden');
+                }
+            }
 
+            function bindFavoriteEvents() {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                document.querySelectorAll('.favorite-btn').forEach(btn => {
+                    btn.onclick = async function () {
+                        const foodId = this.dataset.foodId;
+                        try {
+                            const res = await fetch("{{ route('favorite.toggle') }}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken,
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                },
+                                body: JSON.stringify({ food_id: foodId })
+                            });
+                            const data = await res.json();
+                            if (res.ok && data.success) {
+                                if (data.favorited) {
+                                    this.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                                    this.classList.add('text-red-500');
+                                    this.classList.remove('text-gray-500');
+                                } else {
+                                    this.innerHTML = '<i class="fa-regular fa-heart"></i>';
+                                    this.classList.remove('text-red-500');
+                                    this.classList.add('text-gray-500');
+                                }
+                                showPopup(data.message);
+                            } else {
+                                showPopup(data.message || 'Có lỗi xảy ra');
+                            }
+                        } catch (err) {
+                            showPopup('Lỗi kết nối');
+                        }
+                    };
+                });
+                // Popup script
+                const overlay = document.getElementById('custom-popup-overlay');
+                document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+                document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+                overlay.onclick = function (e) {
+                    if (e.target === overlay) overlay.classList.add('hidden');
+                };
+                function showPopup(message) {
+                    document.getElementById('custom-popup-message').textContent = message;
+                    document.getElementById('custom-popup-overlay').classList.remove('hidden');
+                }
+            }
 
             function fetchFoodsByAjax(callback) {
                 const searchTerm = searchInput.value.trim();
@@ -340,6 +472,7 @@
                     .then(res => res.json())
                     .then(data => {
                         if (data.results && data.results.length > 0) {
+                            console.log(data.results);
                             const html = data.results.map(food => `
                     <div class="food-item flex flex-col h-full max-w-[450px] min-w-[260px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
                         style="height:550px;"
@@ -356,8 +489,9 @@
                                 </span>
                             </div>
                             <div class="absolute top-3 right-3 z-10">
-                                <button class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
-                                    <i class="fas fa-heart"></i>
+                                <button data-food-id="${food.id}"
+                                 class="favorite-btn icon-btn ${food.favorited ? 'text-red-500' : 'text-gray-500'}  w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
+                                <i class="${food.favorited ? 'fa-solid fa-heart' : 'fa-regular fa-heart'} text-lg"></i>
                                 </button>
                             </div>
                         </div>
@@ -383,16 +517,22 @@
                                 </span>
                             </div>
                             <div class="mt-auto flex gap-2">
-                                <button class="flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]">
-                                    <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ
-                                </button>
-                                <button class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
-                                    <i class="fas fa-share-alt"></i>
-                                </button>
+                                <button type="button"
+                                        class="add-to-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
+                                        data-food-id=" ${food.id}" data-quantity="1">
+                                        
+                                        <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ Hàng
+                                    </button>
+                                <button
+                                        class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
+                                        <a href="/menudetail/${food.id}/${food.slug}"><i
+                                                class="fa-regular fa-eye"></i></a>
+                                    </button>
                             </div>
                         </div>
                     </div>
                 `).join('');
+                            console.log({{ $food->id }});
                             productsGrid.innerHTML = html;
                             reapplyFilterSortAndEvents();
                             resultsCount.textContent = `Hiển thị ${data.results.length} món ăn`;
@@ -479,6 +619,9 @@
             function reapplyFilterSortAndEvents() {
                 sortItems();
                 filterItems();
+
+                bindAddToCartEvents();    // <--- Thêm dòng này
+                bindFavoriteEvents();     // <--- Thêm dòng này
                 rebindEventsForNewItems();
             }
 
@@ -536,7 +679,9 @@
                     .then(data => {
                         let html = '';
                         if (data.results && data.results.length > 0) {
+                            console.log(data.results);
                             html = data.results.map(food => `
+                            
                             <div class="food-item flex flex-col h-full max-w-[450px] min-w-[260px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
                                 style="height:550px;"
                                 data-category="menu-${food.type}"
@@ -556,9 +701,11 @@
                                         </span>
                                     </div>
                                     <div class="absolute top-3 right-3 z-10">
-                                        <button class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
-                                            <i class="fas fa-heart"></i>
-                                        </button>
+                                       <button data-food-id="{{ $food->id }}"
+                                    class=" favorite-btn icon-btn {{ in_array($food->id, $favIds) ? 'text-red-500' : 'text-gray-500' }} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
+                                    <i
+                                        class="{{ in_array($food->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
+                                </button>
                                     </div>
                                 </div>
                                 <div class="p-4 flex flex-col flex-1 mt-[-1.5rem]">
@@ -583,12 +730,16 @@
                                         </span>
                                     </div>
                                     <div class="mt-auto flex gap-2">
-                                        <button class="flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]">
-                                            <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ
-                                        </button>
-                                        <button class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
-                                            <i class="fas fa-share-alt"></i>
-                                        </button>
+                                        <button type="button"
+                                        class="add-to-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
+                                        data-food-id="{{ $food->id }}" data-quantity="1">
+                                        <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ Hàng
+                                    </button>
+                                        <button
+                                        class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
+                                        <a href="{{ route('views.menudetail', [$food->id, $food->slug]) }}"><i
+                                                class="fa-regular fa-eye"></i></a>
+                                    </button>
                                     </div>
                                 </div>
                             </div>
@@ -649,58 +800,58 @@
                 });
             });
         });
-       
+
     </script>
     <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const grid = document.getElementById("products-grid");
-    const items = grid.querySelectorAll(".food-item");
-    const pagination = document.getElementById("products-pagination");
-    const perPage = 8; // Số sản phẩm mỗi trang (bạn chỉnh số này nếu muốn)
-    let page = 1;
-    const totalPages = Math.ceil(items.length / perPage);
+        document.addEventListener("DOMContentLoaded", function () {
+            const grid = document.getElementById("products-grid");
+            const items = grid.querySelectorAll(".food-item");
+            const pagination = document.getElementById("products-pagination");
+            const perPage = 8; // Số sản phẩm mỗi trang (bạn chỉnh số này nếu muốn)
+            let page = 1;
+            const totalPages = Math.ceil(items.length / perPage);
 
-    function showPage(p) {
-        page = p;
-        items.forEach((item, idx) => {
-            item.style.display = (idx >= (page-1)*perPage && idx < page*perPage) ? "" : "none";
+            function showPage(p) {
+                page = p;
+                items.forEach((item, idx) => {
+                    item.style.display = (idx >= (page - 1) * perPage && idx < page * perPage) ? "" : "none";
+                });
+                renderPagination();
+            }
+
+            function renderPagination() {
+                pagination.innerHTML = "";
+                if (totalPages <= 1) return; // Không cần hiện nếu chỉ có 1 trang
+                // Nút Prev
+                const prev = document.createElement("button");
+                prev.textContent = "<";
+                prev.disabled = page === 1;
+                prev.className = "px-3 py-1 rounded bg-gray-200 mx-1";
+                prev.onclick = () => showPage(page - 1);
+                pagination.appendChild(prev);
+                // Các số trang
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement("button");
+                    btn.textContent = i;
+                    btn.className = "px-3 py-1 rounded mx-1 " + (i === page ? "bg-main-red text-white" : "bg-gray-100");
+                    btn.onclick = () => showPage(i);
+                    pagination.appendChild(btn);
+                }
+                // Nút Next
+                const next = document.createElement("button");
+                next.textContent = ">";
+                next.disabled = page === totalPages;
+                next.className = "px-3 py-1 rounded bg-gray-200 mx-1";
+                next.onclick = () => showPage(page + 1);
+                pagination.appendChild(next);
+            }
+
+            // Chỉ chạy khi có sản phẩm
+            if (items.length) {
+                showPage(1);
+            }
         });
-        renderPagination();
-    }
-
-    function renderPagination() {
-        pagination.innerHTML = "";
-        if (totalPages <= 1) return; // Không cần hiện nếu chỉ có 1 trang
-        // Nút Prev
-        const prev = document.createElement("button");
-        prev.textContent = "<";
-        prev.disabled = page === 1;
-        prev.className = "px-3 py-1 rounded bg-gray-200 mx-1";
-        prev.onclick = () => showPage(page-1);
-        pagination.appendChild(prev);
-        // Các số trang
-        for (let i=1; i<=totalPages; i++) {
-            const btn = document.createElement("button");
-            btn.textContent = i;
-            btn.className = "px-3 py-1 rounded mx-1 " + (i === page ? "bg-main-red text-white" : "bg-gray-100");
-            btn.onclick = () => showPage(i);
-            pagination.appendChild(btn);
-        }
-        // Nút Next
-        const next = document.createElement("button");
-        next.textContent = ">";
-        next.disabled = page === totalPages;
-        next.className = "px-3 py-1 rounded bg-gray-200 mx-1";
-        next.onclick = () => showPage(page+1);
-        pagination.appendChild(next);
-    }
-
-    // Chỉ chạy khi có sản phẩm
-    if(items.length) {
-        showPage(1);
-    }
-});
-</script>
+    </script>
 
 
     <!-- Footer -->
