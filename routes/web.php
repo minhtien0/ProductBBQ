@@ -26,7 +26,8 @@ use App\Http\Controllers\AdminController\Cashier\CashierController;
 Route::match(['get', 'post'], '/login', [HomeController::class, 'login'])->name('login');
 //Đăng xuất
 Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
-
+//Quên Mật Khẩu
+Route::post('/forgot-password', [HomeController::class, 'sendNewPassword'])->name('password.forgot');
 // Xử lý đăng ký
 Route::post('/register', [HomeController::class, 'register'])->name('register');
 

@@ -90,7 +90,7 @@ class HomeController extends Controller
         $comboIds = DB::table('order_combos')
             ->join('orders', 'order_combos.order_id', '=', 'orders.id')
             ->where('orders.table_id', $id)
-            ->select('order_combos.combo_id',)
+            ->select('order_combos.combo_id', )
 
             ->distinct()
             ->pluck('combo_id');
@@ -232,6 +232,10 @@ class HomeController extends Controller
         $menus = Menu::all();
         $category = $request->input('category');
         $search = $request->input('search');
+        $favIds = Cart::where('user_id', session('user_id'))
+            ->where('type', 'Yêu Thích')
+            ->pluck('food_id')
+            ->toArray();
 
         $query = Food::query();
 
@@ -251,14 +255,17 @@ class HomeController extends Controller
         }
         $foods = $query->get();
 
-        return view('menu', compact('menus', 'foods', 'category', 'search'));
+        return view('menu', compact('menus', 'foods', 'category', 'search', 'favIds'));
     }
 
     public function ajaxSearchMenu(Request $request)
     {
         $term = $request->input('term');
         $category = $request->input('category');
-
+        $favIds = Cart::where('user_id', session('user_id'))
+            ->where('type', 'Yêu Thích')
+            ->pluck('food_id')
+            ->toArray();
         $query = \App\Models\Food::query();
 
         if ($term) {
@@ -274,17 +281,21 @@ class HomeController extends Controller
         }
 
         $foods = $query->with('menus')->limit(20)->get();
-        $results = $foods->map(function ($food) {
+
+        $results = $foods->map(function ($food) use ($favIds) {
             return [
                 'id' => $food->id,
                 'name' => $food->name,
                 'price' => $food->price,
+                'slug' => $food->slug,
                 'image' => asset('img/' . $food->image),
                 'description' => strip_tags($food->description),
                 'menu_name' => optional($food->menus)->name ?? 'Danh mục',
                 'type' => $food->type,
+                'favorited' => in_array($food->id, $favIds),
             ];
         });
+        //dd($results);
 
         return response()->json(['results' => $results]);
     }
@@ -745,9 +756,9 @@ class HomeController extends Controller
 
             // 3.3. Cập nhật lại session để hiển thị ở layout/form
             session([
-                'fullname' => $user->fullname,
-                'email' => $user->email,
-                'sdt' => $user->sdt,
+                'user_name' => $user->fullname,
+                'user_email' => $user->email,
+                'user_sdt' => $user->sdt,
                 // bạn có thể lưu thêm địa chỉ nếu muốn
             ]);
 
@@ -1358,6 +1369,53 @@ class HomeController extends Controller
             ->withErrors(['failed' => 'Tài khoản hoặc mật khẩu không chính xác'])
             ->withInput($request->except('password'));
     }
+    //Quen mật khẩu
+
+    public function sendNewPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        // Kiểm tra email có trong DB không
+        $user = DB::table('users')->where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withInput()->with([
+                'forgot_error' => 'Email không tồn tại trong hệ thống!',
+                'form' => 'forgot'
+            ]);
+        }
+
+        // 1. Sinh mật khẩu mới ngẫu nhiên
+        $newPassword = Str::random(8);
+
+        // 2. Cập nhật mật khẩu đã mã hóa
+        DB::table('users')
+            ->where('email', $request->email)
+            ->update(['password' => Hash::make($newPassword)]);
+
+        // 3. Gửi mail mật khẩu mới
+        try {
+            Mail::raw("Mật khẩu mới của bạn là: $newPassword\nHãy đăng nhập và đổi mật khẩu lại!", function ($msg) use ($request) {
+                $msg->to($request->email)
+                    ->subject('Mật khẩu mới từ hệ thống BBQ LUA BE HOY');
+            });
+
+            // 4. Thông báo thành công
+            return back()->withInput()->with([
+                'forgot_success' => 'Đã gửi mật khẩu mới về gmail của bạn!',
+                'form' => 'forgot'
+            ]);
+        } catch (\Exception $e) {
+            // Gửi mail thất bại
+            return back()->withInput()->with([
+                'forgot_error' => 'Không thể gửi email. Vui lòng thử lại sau!',
+                'form' => 'forgot'
+            ]);
+        }
+    }
+
 
     public function logout(Request $request)
     {
