@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -481,8 +482,8 @@
                         data-name="${food.name.toLowerCase()}"
                     >
                         <div class="relative overflow-hidden" style="height:200px;">
-                            <img src="${food.image}" alt="${food.name}"
-                                class="w-full h-44 object-cover border-b border-gray-100" />
+                           <a href="/menudetail/${food.id}/${food.slug}"> <img src="${food.image}" alt="${food.name}"
+                                class="w-full h-44 object-cover border-b border-gray-100" /></a>
                             <div class="absolute top-3 left-3 z-10">
                                 <span class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
                                     ${food.menu_name ?? ''}
@@ -496,10 +497,10 @@
                             </div>
                         </div>
                         <div class="p-4 flex flex-col flex-1 mt-[-1.5rem]">
-                            <h3 class="font-bold text-lg text-gray-800 mb-2"
+                           <a href="/menudetail/${food.id}/${food.slug}"  <h3 class="font-bold text-lg text-gray-800 mb-2"
                                 style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
                                 ${food.name}
-                            </h3>
+                            </h3> </a>
                             <p class="text-gray-600 text-sm mt-4"
                                 style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
                                 ${food.description}

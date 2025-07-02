@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
   <script>
     tailwind.config = {
       theme: {
@@ -74,9 +75,15 @@
             <span class="text-xl font-bold text-orange-600">
               {{ number_format($foods->price, 0, ',', '.') }}đ
             </span>
-
             <span
-              class="text-xs bg-orange-100 text-orange-500 rounded px-2 py-0.5 font-semibold">{{ $foods->menus->name }}</span>
+              class="text-xs bg-orange-100 text-orange-500 rounded px-2 py-0.5 font-semibold">{{ $foods->menus->name }}
+            </span>
+            <div class="flex items-center">
+              <span class="text-yellow-400 font-semibold text-lg">
+                {{ number_format($averageRate, 1) }}
+              </span>
+              <i class="fa-solid fa-star text-yellow-400 ml-1"></i>
+            </div>
           </div>
           <p class="text-gray-600 mb-4">{!!  $foods->description !!}</p>
           <!-- Quantity & Button -->
@@ -177,10 +184,8 @@
       </div>
       <!-- FontAwesome for icons (bắt buộc) -->
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
     </div>
   </div>
-
 
   <!-- Popup overlay -->
   <div id="custom-popup-overlay"
@@ -327,7 +332,7 @@
 
   <!-- PHẦN 2: Related BBQ Items -->
   <div class="bg-dark-light max-w-6xl mx-auto py-8">
-    <h3 class="text-xl font-bold mb-4 text-gray-800">Món Ngon Gợi Ý</h3>
+    <h3 class="text-xl font-bold mb-4 text-gray-800"> <i class="fa-solid fa-table-list fa-lg"></i> Món Ngon Gợi Ý</h3>
     <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
       @forelse($suggestFoods as $item)
       <div class="bg-white rounded-xl shadow p-4 flex flex-col">
@@ -338,15 +343,25 @@
         </div>
       </a>
       <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">
-        ⭐⭐⭐⭐⭐
+        @php
+      $avg = number_format($item->rates_avg_rate ?? 0, 1);
+      @endphp
+        {{ $avg }} <i class="fa-solid fa-star text-yellow-400"></i>
       </div>
       <div class="text-sm font-bold text-orange-600 mb-2">
         {{ number_format($item->price, 0, ',', '.') }}đ
       </div>
       <div class="flex gap-2">
-        <button class="bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600 btn-add-cart"
-        data-id="{{ $item->id }}" data-quantity="1">Thêm Giỏ</button>
-        <button class="border border-orange-500 text-orange-600 px-2 py-1 rounded font-bold text-sm">❤</button>
+        <button type="button"
+        class="add-to-cart bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600 "
+        data-food-id="{{ $foods->id }}" aria-label="Thêm vào giỏ hàng">
+        <i class="fa fa-cart-plus"></i> Thêm Giỏ Hàng</button>
+        <button data-food-id="{{ $foods->id }}"
+        class=" favorite-btn icon-btn {{ in_array($foods->id, $favIds) ? 'text-red-500' : 'text-gray-500' }} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
+        <i class="{{ in_array($foods->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
+        </button>
+        <button class="icon-btn"><a href="{{ route('views.menudetail', [$foods->id, $foods->slug]) }}"><i
+          class="fa-regular fa-eye"></i></a></button>
       </div>
       </div>
     @empty
@@ -426,6 +441,89 @@
       // Init trang đầu tiên
       if (reviews.length > 0) showReviewPage(1);
     });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+      // Add to cart
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', async function () {
+          const foodId = this.dataset.foodId;
+          try {
+            const res = await fetch("{{ route('cart.add') }}", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+              },
+              body: JSON.stringify({ food_id: foodId, quantity: 1 })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+              showPopup(data.message);
+            } else {
+              showPopup(data.message || data.error || 'Có lỗi xảy ra');
+            }
+          } catch (err) {
+            showPopup('Lỗi kết nối');
+          }
+        });
+      });
+
+      // Favorite toggle
+      document.querySelectorAll('.favorite-btn').forEach(btn => {
+        btn.addEventListener('click', async function () {
+          const foodId = this.dataset.foodId;
+          try {
+            const res = await fetch("{{ route('favorite.toggle') }}", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+              },
+              body: JSON.stringify({ food_id: foodId })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+              // Cập nhật icon & màu
+              if (data.favorited) {
+                this.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                this.classList.add('text-red-500');
+                this.classList.remove('text-gray-500');
+              } else {
+                this.innerHTML = '<i class="fa-regular fa-heart"></i>';
+                this.classList.remove('text-red-500');
+                this.classList.add('text-gray-500');
+              }
+              showPopup(data.message);
+            } else {
+              showPopup(data.message || 'Có lỗi xảy ra');
+            }
+          } catch (err) {
+            showPopup('Lỗi kết nối');
+          }
+        });
+      });
+
+      // Popup script
+      const overlay = document.getElementById('custom-popup-overlay');
+      document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+      document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+      overlay.onclick = function (e) {
+        if (e.target === overlay) overlay.classList.add('hidden');
+      };
+    });
+
+    // Global showPopup function
+    function showPopup(message) {
+      document.getElementById('custom-popup-message').textContent = message;
+      document.getElementById('custom-popup-overlay').classList.remove('hidden');
+    }
   </script>
 
 </body>
