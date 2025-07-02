@@ -272,7 +272,7 @@ class HomeAdminController extends Controller
         if (!$table || $table->status == 'Đã Đóng') {
             return response()->json([
                 'error' => true,
-                'message' => 'Bàn chưa được mở, vui lòng đợi nhân viên mở bàn.',
+                'message' => 'Đã Đóng',
                 'menus' => null,
                 'combos' => null,
                 'items' => null,
@@ -417,7 +417,7 @@ public function addComboToOrder(Request $request)
     if (!$order) {
         return response()->json([
             'success' => false,
-            'message' => 'Bàn hiện không có hóa đơn đang mở.'
+            'message' => 'Vui lòng mở bàn để thực hiện thêm combo'
         ], 404);
     }
 

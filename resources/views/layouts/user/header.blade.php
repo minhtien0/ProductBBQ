@@ -6,11 +6,11 @@
       <div class="flex bg-[#262465] px-10 py-2 rounded-br-3xl rounded-bl-[60px] items-center gap-7">
         <span class="flex items-center text-white text-base gap-2">
           <i class="fa-solid fa-envelope text-lg"></i>
-          examplemail@gmail.com
+          {{ $infos->name }}
         </span>
         <span class="flex items-center text-white text-base gap-2">
           <i class="fa-solid fa-phone text-lg"></i>
-          +96487452145214
+          +{{ $infos->sdt }}
         </span>
       </div>
     </div>
@@ -34,9 +34,6 @@
       <a href="#"
         class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i
           class="fab fa-linkedin-in"></i></a>
-      <a href="#"
-        class="bg-[#e60012] w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white text-lg md:text-xl hover:bg-white hover:text-[#ff8000] transition"><i
-          class="fab fa-behance"></i></a>
     </div>
   </div>
   <!-- Main Header -->
@@ -195,9 +192,6 @@
         <a href="#"
           class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i
             class="fab fa-linkedin-in"></i></a>
-        <a href="#"
-          class="bg-[#ff8000] w-9 h-9 rounded-full flex items-center justify-center text-white text-lg hover:bg-white hover:text-[#ff8000] transition"><i
-            class="fab fa-behance"></i></a>
       </div>
       <div class="mt-auto px-6 pb-8 pt-8 text-sm text-[#262248]">
         <span class="flex items-center gap-2 mb-2">

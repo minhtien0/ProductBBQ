@@ -80,7 +80,7 @@
                                 class="fa fa-arrow-right text-[10px]"></i></a>
                         <div class="flex items-center gap-1 text-gray-400">
                             <i class="fa-regular fa-comment-dots"></i>
-                            <span class="ml-1 text-[#e60012]">120</span>
+                            <span class="ml-1 text-[#e60012]">{{ $blog->total_rates }}</span>
                         </div>
                     </div>
                 </div>

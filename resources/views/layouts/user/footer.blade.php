@@ -213,8 +213,6 @@
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-behance"></i></a>
-                        <a href="#"><i class="fab fa-google-plus-g"></i></a>
                     </div>
                 </div>
                 <!-- Short Link -->
@@ -242,9 +240,9 @@
                 <div class="footer-col">
                     <h3>Liên hệ với chúng tôi</h3>
                     <div class="footer-contact">
-                        <div><i class="fa fa-phone"></i>+84909056789</div>
-                        <div><i class="fa fa-envelope"></i> luabehoy@gmail.com</div>
-                        <div><i class="fa fa-location-dot"></i>65 Huỳnh Thúc Kháng, P.Bến Nghé, Q.1, Tp.HCM</div>
+                        <div><i class="fa fa-phone"></i>{{ $infos->sdt }}</div>
+                        <div><i class="fa fa-envelope"></i> {{ $infos->email }}</div>
+                        <div><i class="fa fa-location-dot"></i>{{ $infos->address }}</div>
                     </div>
                 </div>
             </div>
