@@ -94,8 +94,8 @@
                         @endphp
                         <button data-cat="{{ $menuCat }}"
                             class="category-tab
-                                                                        {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
-                                                                        px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
+                                                                            {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
+                                                                            px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
                             {{-- icon --}}
                             @if(stripos($menu->name, 'BBQ') !== false)
                                 <i class="fas fa-star mr-2"></i>
@@ -230,13 +230,26 @@
                             <!-- spacer tự động đẩy đánh giá + nút xuống đáy -->
                             <div class="flex-1"></div>
                             <div class="flex flex-col">
+                                @php
+                                    $rateInfo = $foodRatings[$food->id] ?? null;
+                                    $avgRate = $rateInfo ? round($rateInfo->avg_rate, 1) : 0;
+                                    $countRate = $rateInfo ? $rateInfo->count_rate : 0;
+                                @endphp
+
                                 <div class="flex items-center min-h-[28px] mb-2">
                                     <div class="flex text-yellow-400 text-sm">
-                                        @for($i = 0; $i < 4; $i++) <i class="fas fa-star"></i> @endfor
-                                        <i class="fas fa-star-half-alt"></i>
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($avgRate >= $i)
+                                                <i class="fas fa-star"></i>
+                                            @elseif ($avgRate >= ($i - 0.5))
+                                                <i class="fas fa-star-half-alt"></i>
+                                            @else
+                                                <i class="far fa-star"></i>
+                                            @endif
+                                        @endfor
                                     </div>
-                                    <span class="ml-2 text-gray-500 text-sm">(4.5)</span>
-                                    <span class="ml-2 text-gray-400 text-sm">• 124 đánh giá</span>
+                                    <span class="ml-2 text-gray-500 text-sm">({{ $avgRate }})</span>
+                                    <span class="ml-2 text-gray-400 text-sm">• {{ $countRate }} đánh giá</span>
                                 </div>
                                 <span class="text-2xl font-bold text-main-red mb-2">
                                     {{ number_format($food->price, 0, ',', '.') }}đ

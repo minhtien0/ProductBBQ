@@ -873,22 +873,31 @@
 
             <div id="menu-grid" class="menu-grid">
                 @foreach ($allFoods as $allFood)
-                    <div class="menu-card" data-type="{{ $allFood->menus->name }}">
-                      <a href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}"> 
-                        <img src="{{ asset('img/' . $allFood->image) }}" alt="">
-                         <span class="menu-badge">{{ $allFood->menus->name }}</span>
-                        <div class="menu-card-content">
-                             
-                            <div class="menu-card-title">{{ $allFood->name }}</div>
-                             </a>
+                        <div class="menu-card" data-type="{{ $allFood->menus->name }}">
+                            <a href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}">
+                                <img src="{{ asset('img/' . $allFood->image) }}" alt="">
+                                <span class="menu-badge">{{ $allFood->menus->name }}</span>
+                                <div class="menu-card-content">
+
+                                    <div class="menu-card-title">{{ $allFood->name }}</div>
+                            </a>
+                            @php
+                                $rating = $foodRatings[$allFood->id] ?? null;
+                                $stars = round($rating->avg_rate ?? 0);
+                                $rateCount = $rating->count_rate ?? 0;
+                            @endphp
                             <div class="menu-card-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                    class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                                <span>24</span>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $stars)
+                                        <i class="fa-solid fa-star text-yellow-400"></i>
+                                    @else
+                                        <i class="fa-regular fa-star text-gray-400"></i>
+                                    @endif
+                                @endfor
+                                <span>{{ $rateCount }}</span>
                             </div>
                             <div class="menu-card-price">
-                                {{ number_format($allFood->price, 0, ',', '.') }}đ
+                                {{ number_format($allFood->price, 0, ',', '.') }} VNĐ
                                 <span class="old"></span>
                             </div>
                             <div class="menu-card-footer">
@@ -911,200 +920,201 @@
                         </div>
                     </div>
                 @endforeach
-            </div>
+        </div>
 
-            <!-- PHÂN TRANG -->
-            <div id="pagination" class="flex justify-center items-center gap-2 mt-6"></div>
+        <!-- PHÂN TRANG -->
+        <div id="pagination" class="flex justify-center items-center gap-2 mt-6"></div>
 
-            <!-- FILTER + PAGINATION SCRIPT -->
-            <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                    const filterButtons = document.querySelectorAll('.filter-btn');
-                    const cards = document.querySelectorAll('.menu-card');
-                    const paginationContainer = document.getElementById('pagination');
-                    const itemsPerPage = 8;
-                    let currentPage = 1;
+        <!-- FILTER + PAGINATION SCRIPT -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                const cards = document.querySelectorAll('.menu-card');
+                const paginationContainer = document.getElementById('pagination');
+                const itemsPerPage = 8;
+                let currentPage = 1;
 
-                    function paginate(cardsArray, page) {
-                        const start = (page - 1) * itemsPerPage;
-                        const end = start + itemsPerPage;
+                function paginate(cardsArray, page) {
+                    const start = (page - 1) * itemsPerPage;
+                    const end = start + itemsPerPage;
 
-                        cards.forEach(card => card.style.display = "none");
-                        cardsArray.forEach((card, index) => {
-                            if (index >= start && index < end) {
-                                card.style.display = "block";
-                            }
-                        });
-                    }
-
-                    function renderPagination(cardsArray) {
-                        paginationContainer.innerHTML = "";
-                        const totalPages = Math.ceil(cardsArray.length / itemsPerPage);
-                        if (totalPages <= 0) return;
-
-                        for (let i = 1; i <= totalPages; i++) {
-                            const btn = document.createElement("button");
-                            btn.textContent = i;
-                            btn.className = `w-8 h-8 border rounded ${i === currentPage ? 'bg-[#e60012] text-white font-bold' : 'text-gray-700 border-gray-300'} hover:bg-[#e60012] hover:text-white transition`;
-                            btn.addEventListener("click", () => {
-                                currentPage = i;
-                                paginate(cardsArray, currentPage);
-                                renderPagination(cardsArray);
-                            });
-                            paginationContainer.appendChild(btn);
+                    cards.forEach(card => card.style.display = "none");
+                    cardsArray.forEach((card, index) => {
+                        if (index >= start && index < end) {
+                            card.style.display = "block";
                         }
-                    }
-
-                    function applyFilter(selectedType) {
-                        const filteredCards = [...cards].filter(card =>
-                            selectedType === 'all' || card.dataset.type.trim().toLowerCase() === selectedType.trim().toLowerCase()
-                        );
-
-                        currentPage = 1;
-                        paginate(filteredCards, currentPage);
-                        renderPagination(filteredCards);
-                    }
-
-                    // Gắn sự kiện click cho filter
-                    filterButtons.forEach(button => {
-                        button.addEventListener('click', () => {
-                            filterButtons.forEach(btn => btn.classList.remove('active'));
-                            button.classList.add('active');
-                            const selectedType = button.dataset.type;
-                            applyFilter(selectedType);
-                        });
                     });
+                }
 
-                    // Khởi động mặc định với "Tất cả"
-                    applyFilter('all');
+                function renderPagination(cardsArray) {
+                    paginationContainer.innerHTML = "";
+                    const totalPages = Math.ceil(cardsArray.length / itemsPerPage);
+                    if (totalPages <= 0) return;
+
+                    for (let i = 1; i <= totalPages; i++) {
+                        const btn = document.createElement("button");
+                        btn.textContent = i;
+                        btn.className = `w-8 h-8 border rounded ${i === currentPage ? 'bg-[#e60012] text-white font-bold' : 'text-gray-700 border-gray-300'} hover:bg-[#e60012] hover:text-white transition`;
+                        btn.addEventListener("click", () => {
+                            currentPage = i;
+                            paginate(cardsArray, currentPage);
+                            renderPagination(cardsArray);
+                        });
+                        paginationContainer.appendChild(btn);
+                    }
+                }
+
+                function applyFilter(selectedType) {
+                    const filteredCards = [...cards].filter(card =>
+                        selectedType === 'all' || card.dataset.type.trim().toLowerCase() === selectedType.trim().toLowerCase()
+                    );
+
+                    currentPage = 1;
+                    paginate(filteredCards, currentPage);
+                    renderPagination(filteredCards);
+                }
+
+                // Gắn sự kiện click cho filter
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        filterButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        const selectedType = button.dataset.type;
+                        applyFilter(selectedType);
+                    });
                 });
-            </script>
+
+                // Khởi động mặc định với "Tất cả"
+                applyFilter('all');
+            });
+        </script>
 
         </div>
     </section>
-<!-- Popup overlay -->
-<div id="custom-popup-overlay"
-     class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
-  <!-- Container chính -->
-  <div id="custom-popup"
-       class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-info-circle text-white"></i>
-          <span class="text-white font-semibold text-lg">Thông báo</span>
+    <!-- Popup overlay -->
+    <div id="custom-popup-overlay"
+        class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
+        <!-- Container chính -->
+        <div id="custom-popup"
+            class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-info-circle text-white"></i>
+                        <span class="text-white font-semibold text-lg">Thông báo</span>
+                    </div>
+                    <button id="popup-close-btn"
+                        class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Nội dung -->
+            <div class="px-6 py-8 text-center">
+                <div
+                    class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-info text-blue-600 text-2xl"></i>
+                </div>
+                <div id="custom-popup-message" class="text-gray-800 text-base font-semibold mb-6">
+                    <!-- Nội dung message sẽ được show ở đây -->
+                </div>
+                <button id="popup-ok-btn"
+                    class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    Đóng
+                </button>
+            </div>
         </div>
-        <button id="popup-close-btn"
-                class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
     </div>
 
-    <!-- Nội dung -->
-    <div class="px-6 py-8 text-center">
-      <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <i class="fa-solid fa-info text-blue-600 text-2xl"></i>
-      </div>
-      <div id="custom-popup-message" class="text-gray-800 text-base font-semibold mb-6">
-        <!-- Nội dung message sẽ được show ở đây -->
-      </div>
-      <button id="popup-ok-btn"
-              class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-        Đóng
-      </button>
-    </div>
-  </div>
-</div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    // Add to cart
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', async function () {
-            const foodId = this.dataset.foodId;
-            try {
-                const res = await fetch("{{ route('cart.add') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                    body: JSON.stringify({ food_id: foodId, quantity: 1 })
-                });
-                const data = await res.json();
-                if (res.ok && data.success) {
-                    showPopup(data.message);
-                } else {
-                    showPopup(data.message || data.error || 'Có lỗi xảy ra');
-                }
-            } catch (err) {
-                showPopup('Lỗi kết nối');
-            }
-        });
-    });
-
-    // Favorite toggle
-    document.querySelectorAll('.favorite-btn').forEach(btn => {
-        btn.addEventListener('click', async function () {
-            const foodId = this.dataset.foodId;
-            try {
-                const res = await fetch("{{ route('favorite.toggle') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                    body: JSON.stringify({ food_id: foodId })
-                });
-                const data = await res.json();
-                if (res.ok && data.success) {
-                    // Cập nhật icon & màu
-                    if (data.favorited) {
-                        this.innerHTML = '<i class="fa-solid fa-heart"></i>';
-                        this.classList.add('text-red-500');
-                        this.classList.remove('text-gray-500');
-                    } else {
-                        this.innerHTML = '<i class="fa-regular fa-heart"></i>';
-                        this.classList.remove('text-red-500');
-                        this.classList.add('text-gray-500');
+            // Add to cart
+            document.querySelectorAll('.add-to-cart').forEach(btn => {
+                btn.addEventListener('click', async function () {
+                    const foodId = this.dataset.foodId;
+                    try {
+                        const res = await fetch("{{ route('cart.add') }}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: JSON.stringify({ food_id: foodId, quantity: 1 })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            showPopup(data.message);
+                        } else {
+                            showPopup(data.message || data.error || 'Có lỗi xảy ra');
+                        }
+                    } catch (err) {
+                        showPopup('Lỗi kết nối');
                     }
-                    showPopup(data.message);
-                } else {
-                    showPopup(data.message || 'Có lỗi xảy ra');
-                }
-            } catch (err) {
-                showPopup('Lỗi kết nối');
-            }
+                });
+            });
+
+            // Favorite toggle
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', async function () {
+                    const foodId = this.dataset.foodId;
+                    try {
+                        const res = await fetch("{{ route('favorite.toggle') }}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: JSON.stringify({ food_id: foodId })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            // Cập nhật icon & màu
+                            if (data.favorited) {
+                                this.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                                this.classList.add('text-red-500');
+                                this.classList.remove('text-gray-500');
+                            } else {
+                                this.innerHTML = '<i class="fa-regular fa-heart"></i>';
+                                this.classList.remove('text-red-500');
+                                this.classList.add('text-gray-500');
+                            }
+                            showPopup(data.message);
+                        } else {
+                            showPopup(data.message || 'Có lỗi xảy ra');
+                        }
+                    } catch (err) {
+                        showPopup('Lỗi kết nối');
+                    }
+                });
+            });
+
+            // Popup script
+            const overlay = document.getElementById('custom-popup-overlay');
+            document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+            document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+            overlay.onclick = function (e) {
+                if (e.target === overlay) overlay.classList.add('hidden');
+            };
         });
-    });
 
-    // Popup script
-    const overlay = document.getElementById('custom-popup-overlay');
-    document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
-    document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
-    overlay.onclick = function(e) {
-        if (e.target === overlay) overlay.classList.add('hidden');
-    };
-});
-
-// Global showPopup function
-function showPopup(message) {
-    document.getElementById('custom-popup-message').textContent = message;
-    document.getElementById('custom-popup-overlay').classList.remove('hidden');
-}
-</script>
+        // Global showPopup function
+        function showPopup(message) {
+            document.getElementById('custom-popup-message').textContent = message;
+            document.getElementById('custom-popup-overlay').classList.remove('hidden');
+        }
+    </script>
 
 
 
@@ -1292,7 +1302,26 @@ function showPopup(message) {
                             </div>
                         </div>
                         <!-- Slide 3 (sample) -->
-
+                        <div class="swiper-slide">
+                            <div class="testi-card">
+                                <div class="testi-avatar-wrap">
+                                    <img src="img/hdong2.jpg" class="testi-avatar" alt="">
+                                </div>
+                                <div style="display:flex;justify-content:center;align-items:center;">
+                                    <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
+                                    <span class="testi-name">Nguyễn Huy Đông</span>
+                                </div>
+                                <div class="testi-pos">NYC USA</div>
+                                <div class="testi-content">
+                                    Đẹp trai, vui tính, ăn nói lưu loát, chiều cao 1m69.5, cân nặng 66kg.
+                                </div>
+                                <div class="testi-stars">
+                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                        class="fa-regular fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

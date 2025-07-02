@@ -29,10 +29,10 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Sum;
+use Illuminate\Support\Facades\View;
 
 class HomeController extends Controller
 {
-    //
     public function index()
     {
         $combos = DB::table('food_combos')->get();
@@ -44,8 +44,21 @@ class HomeController extends Controller
         $countStaff = Staff::count();
         $countUser = User::count();
         $countRate = Rate::count();
+        $foodRatings = DB::table('rates')
+            ->select('food_id', DB::raw('AVG(rate) as avg_rate'), DB::raw('COUNT(*) as count_rate'))
+            ->groupBy('food_id')
+            ->get()
+            ->keyBy('food_id');
         //dd(session('role'));
-        return view('index', compact('allFoods', 'favIds', 'combos', 'countStaff', 'countUser', 'countRate'));
+        return view('index', compact(
+            'allFoods',
+            'favIds',
+            'combos',
+            'countStaff',
+            'countUser',
+            'countRate',
+            'foodRatings',
+        ));
     }
     public function searchFood(Request $request)
     {
@@ -254,8 +267,16 @@ class HomeController extends Controller
             });
         }
         $foods = $query->get();
+        $foodIds = $foods->pluck('id')->toArray();
 
-        return view('menu', compact('menus', 'foods', 'category', 'search', 'favIds'));
+        $foodRatings = \DB::table('rates')
+            ->select('food_id', \DB::raw('AVG(rate) as avg_rate'), \DB::raw('COUNT(*) as count_rate'))
+            ->whereIn('food_id', $foodIds)
+            ->groupBy('food_id')
+            ->get()
+            ->keyBy('food_id');
+
+        return view('menu', compact('menus', 'foods', 'category', 'search', 'favIds','foodRatings'));
     }
 
     public function ajaxSearchMenu(Request $request)
@@ -305,7 +326,45 @@ class HomeController extends Controller
     public function blog()
     {
         $blogs = Blog::join('staffs', 'blog.id_staff', '=', 'staffs.id')
-            ->select('blog.*', 'staffs.*', 'blog.id as id_blog', 'blog.created_at as time_blog', 'staffs.avata as avatar', 'blog.type as type_blog')
+            ->leftJoin('rates', 'blog.id', '=', 'rates.blog_id') // thêm join với bảng rates
+            ->select(
+                'blog.*',
+                'staffs.*',
+                'blog.id as id_blog',
+                'blog.created_at as time_blog',
+                'staffs.avata as avatar',
+                'blog.type as type_blog',
+                DB::raw('COUNT(rates.id) as total_rates') // đếm số lượt đánh giá
+            )
+            ->groupBy(
+                'blog.id',
+                'blog.slug',
+                'staffs.code_nv',
+                'date_of_birth',
+                'blog.title',
+                'blog.content',
+                'blog.id_staff',
+                'blog.created_at',
+                'blog.updated_at',
+                'blog.image',
+                'blog.type',
+                'staffs.id',
+                'staffs.fullname',
+                'staffs.email',
+                'staffs.SDT',
+                'staffs.avata',
+                'staffs.created_at',
+                'staffs.updated_at',
+                'staffs.gender',
+                'staffs.CCCD',
+                'staffs.status',
+                'staffs.address',
+                'staffs.time_work',
+                'staffs.type',
+                'staffs.STK',
+                'staffs.bank',
+                'staffs.role',
+            )
             ->get();
         return view('blog', compact('blogs'));
     }

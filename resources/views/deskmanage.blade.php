@@ -184,7 +184,7 @@
                         <div id="menu-section">
                             <div id="menu-grid"
                                 class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
-                            <div id="combo-section"></div>
+                            <div id="combo-section" ></div>
                         </div>
                     </div>
                 </div>
@@ -296,11 +296,11 @@
             fetch(`/admin/deskmanage/get-table-data/${tableId}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.error && data.message && data.message.includes('chưa được mở')) {
+                    if (data.error && data.message && data.message.includes('Đã Đóng')) {
                         showOpenTableButton(tableId);
-                        renderOrderItems([]);
+                        //renderOrderItems([]);
                         comboList = [];
-                        renderCombos();
+                        renderCombos();                       
                         document.getElementById('bill-id').textContent = '---';
                         return;
                     }
@@ -315,7 +315,7 @@
                     renderCategoryButtons();
                     renderOrderItems(data.items || []);
                     renderCombos();
-
+                    renderOrder();
                 });
         }
 
@@ -483,18 +483,26 @@
                 return;
             }
             comboDiv.innerHTML = comboList.map(combo => `
-        <div class="mb-4">
-            <h4 class="font-bold text-lg text-white mb-2">${combo.name}</h4>
-            <div class="flex flex-wrap gap-2">
+        <div class="mb-6">
+            <h4 class="font-bold text-lg text-white mb-3">${combo.name}</h4>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 ${combo.foods.map(food => `
-                <div class="p-2 bg-slate-700/50 rounded-lg flex flex-col items-center w-28">
-                    <img src="${food.image ? (food.image.startsWith('http') ? food.image : '/img/' + food.image) : '/img/default-food.jpg'}" alt="${food.name}" class="w-16 h-16 object-cover rounded mb-1">
-                    <p class="text-white text-xs text-center">${food.name}</p>
-                    <p class="text-green-400 text-xs mb-1">${food.price}₫</p>
-                    <button class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-1 rounded-lg text-xs font-medium transition-all transform hover:scale-105 add-to-order-btn" data-id="${food.id}" data-name="${food.name}" data-price="${food.price}" data-image="${food.image}">
-                        <i class="fas fa-plus mr-1"></i>Thêm món
-                    </button>
-                </div>
+                    <div class="menu-item-hover bg-slate-700/30 rounded-xl overflow-hidden cursor-pointer transition-all fade-in max-h-[244px]">
+                        <div class="relative">
+                            <img src="${food.image ? (food.image.startsWith('http') ? food.image : '/img/' + food.image) : '/img/default-food.jpg'}"
+                                alt="${food.name}" class="w-full h-32 object-cover">
+                            <div class="absolute top-2 right-2 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                ${food.price ? food.price + '₫' : ''}
+                            </div>
+                        </div>
+                        <div class="p-3 flex flex-col justify-between gap-2 h-[120px]">
+                            <h3 class="text-white font-medium text-sm">${food.name}</h3>
+                            <button class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 add-to-order-btn"
+                                data-id="${food.id}" data-name="${food.name}" data-price="${food.price}" data-image="${food.image}">
+                                <i class="fas fa-plus mr-1"></i>Thêm món
+                            </button>
+                        </div>
+                    </div>
                 `).join('')}
             </div>
         </div>
