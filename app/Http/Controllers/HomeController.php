@@ -521,6 +521,7 @@ class HomeController extends Controller
             ->get();
 
         $countRates = $rates->count();
+        $averageRate = $rates->avg('rate');
         //dd($detailImages);
         $suggestFoods = Food::where('id', '!=', $foods->id)
             ->where(function ($query) use ($foods) {
@@ -530,10 +531,11 @@ class HomeController extends Controller
                 ])
                     ->orWhere('type', $foods->type);
             })
+            ->withAvg('rates', 'rate') 
             ->limit(8)
             ->get();
 
-        return view('menudetail', compact('foods', 'detailImages', 'rates', 'suggestFoods', 'countRates', 'favIds'));
+        return view('menudetail', compact('foods', 'detailImages', 'rates', 'suggestFoods', 'countRates', 'favIds','averageRate'));
 
     }
     public function blogdetail($id, $slug)
