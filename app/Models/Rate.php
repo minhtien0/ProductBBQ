@@ -16,6 +16,7 @@ class Rate extends Model
         'rate',
         'food_id',
         'blog_id',
+        'status',
         'time',
     ];
 

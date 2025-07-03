@@ -58,7 +58,7 @@
                 <div
                     class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('admin.order') }}">
+                        <a href="{{ route('admin.order.onsite') }}">
                             <i class="fa-solid fa-shopping-cart w-4 h-4 text-gray-500 mr-2"></i>
                             <span class="text-sm">Đơn Hàng</span>
                         </a>
@@ -270,7 +270,7 @@
                 <div
                     class="py-2 px-3 rounded-md text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:bg-gray-300 hover:from-gray-100 hover:to-gray-50 hover:scale-105 hover:shadow-sm transition-all duration-200">
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('admin.order') }}">
+                        <a href="{{ route('admin.order.onsite') }}">
                             <i class="fa-solid fa-shopping-cart w-4 h-4 text-gray-500 mr-2"></i>
                             <span class="text-sm">Quản Lí Đơn Hàng</span>
                         </a>

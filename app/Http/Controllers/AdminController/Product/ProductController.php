@@ -81,6 +81,7 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'price' => 'required|numeric|min:0|max:10000000',
             'type' => 'required|exists:menus,id',
+            'quantity' => 'required|integer',
         ], [
             // Thông báo tiếng Việt
             'name.required' => 'Vui lòng nhập tên món ăn.',
@@ -103,6 +104,7 @@ class ProductController extends Controller
 
             'type.required' => 'Vui lòng chọn Menu.',
             'type.exists' => 'Menu đã chọn không tồn tại.',
+            'quantity.required' => 'Vui lòng nhập Số Lượng.',
         ]);
 
         // Nếu có lỗi validate → quay lại form, giữ input, show popup lỗi
@@ -122,6 +124,7 @@ class ProductController extends Controller
             $food->note = $request->note;
             $food->price = $request->price;
             $food->slug = Str::slug($request->name);
+            $food->quantity = $request->quantity;
 
             // Xử lý upload ảnh (nếu có)
             if ($request->hasFile('image')) {
@@ -183,6 +186,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255|unique:foods,name,' . $food->id,
             'description' => 'nullable|string',
             'note' => 'nullable|string',
+            'quantity' => 'nullable|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'price' => 'required|numeric|min:0',
             'type' => 'required|exists:menus,id',
@@ -205,7 +209,7 @@ class ProductController extends Controller
             'price.required' => 'Vui lòng nhập giá tiền.',
             'price.numeric' => 'Giá tiền phải là số.',
             'price.min' => 'Giá tiền phải lớn hơn hoặc bằng 0.',
-
+            'quantity.integer'=>'Số lượng phải là số.',
             'type.required' => 'Vui lòng chọn Menu.',
             'type.exists' => 'Menu đã chọn không tồn tại.',
 
@@ -230,6 +234,7 @@ class ProductController extends Controller
             $food->price = $request->price;
             $food->slug = Str::slug($request->name);
             $food->status = $request->status;
+            $food->quantity = $request->quantity;
 
             // 3. Xử lý upload ảnh mới (nếu có), xóa ảnh cũ nếu có
             if ($request->hasFile('image')) {

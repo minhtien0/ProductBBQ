@@ -98,7 +98,7 @@
             title="Giảm số lượng">
             <i class="fa fa-minus text-lg"></i>
             </button>
-            <span class="qty mx-2 font-semibold">{{ $cart->quantity }}</span>
+            <span class="qty mx-2 font-semibold">{{ $cart->quantity_cart }}</span>
             <button type="button"
             class="btn-inc w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
             title="Tăng số lượng">
@@ -107,7 +107,7 @@
           </div>
           </td>
           <td class="item-total text-left font-semibold total-price">
-          {{ number_format($cart->quantity * $cart->price) }} VNĐ
+          {{ number_format($cart->quantity_cart * $cart->price) }} VNĐ
           </td>
           <td class="px-3 py-2 text-center">
           <button type="button" class="btn-remove text-xl text-orange-500 hover:text-red-600"
@@ -213,7 +213,7 @@
             class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
             <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
               <!-- Header -->
-              <div class="bg-gradient-to-r from-yellow-500 to-teal-600 px-6 py-4">
+              <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
@@ -238,7 +238,7 @@
               <div class="px-6 py-8 text-center">
                 <div
                   class="w-16 h-16 bg-gradient-to-br from-yellow-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
@@ -246,7 +246,7 @@
                 <p id="Message" class="text-gray-700 text-base leading-relaxed mb-8"></p>
                 <div class="flex justify-between space-x-4">
                   <button type="button" onclick="submitOrderForm()"
-                    class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-teal-600 text-white font-semibold rounded-lg hover:from-yellow-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
                     Xác nhận
                   </button>
                   <button type="button" onclick="closePopupComfirm()"

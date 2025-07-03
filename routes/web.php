@@ -108,8 +108,14 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
     Route::get('/stats/ratings-distribution', [HomeAdminController::class, 'getRatingsByMonth']);
     Route::get('/stats/top-products', [HomeAdminController::class, 'getTopProductsByMonth']);
 
-
-    Route::get('/rate', [RateController::class, 'index'])->name('admin.rate');
+    //Đánh Giá
+    Route::prefix('rate')->group(function () {
+        Route::get('/', [RateController::class, 'index'])->name('admin.rate');
+        Route::delete('/delete/{id}', [RateController::class, 'delete'])->name('admin.rate.delete');
+        Route::get('/blog', [RateController::class, 'blog'])->name('admin.rateblog');
+        Route::post('/blog/approve/{id}', [RateController::class, 'approveBlog'])->name('admin.rateblog.approve');
+        Route::delete('/blog/delete/{id}', [RateController::class, 'deleteBlog'])->name('admin.rateblog.delete');
+    });
     Route::prefix('voucher')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('admin.voucher');
         Route::get('/create', [VoucherController::class, 'create'])->name('admin.voucher.create');
