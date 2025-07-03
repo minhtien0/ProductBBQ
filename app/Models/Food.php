@@ -18,6 +18,7 @@ class Food extends Model
         'price',
         'status',
         'slug',
+        'quantity',
     ];
 
     // Định dạng kiểu dữ liệu

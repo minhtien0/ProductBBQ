@@ -90,6 +90,16 @@
                     </select>
                 </div>
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {{-- Tên món --}}
+                <div>
+                    <label for="quantity" class="block text-xs font-medium text-gray-700 mb-1">
+                        Số lượng <span class="text-red-600">*</span>
+                    </label>
+                    <input type="number" id="quantity" name="quantity" value="{{ old('quantity', $food->quantity) }}"
+                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
 
             {{-- Mô tả & Ghi chú (CKEditor) --}}
             <div class="grid grid-cols-1 gap-6 mb-6">

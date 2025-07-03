@@ -72,8 +72,8 @@ class HomeAdminController extends Controller
             'foods.name as food_name',
             'foods.price as food_price',
             'foods.image as food_image',
-            DB::raw('SUM(quantity * foods.price) as total_revenue'),
-            DB::raw('SUM(quantity) as total_quantity')
+            DB::raw('SUM(foods.quantity * foods.price) as total_revenue'),
+            DB::raw('SUM(foods.quantity) as total_quantity')
         )
             ->join('foods', 'order_details.product_id', '=', 'foods.id')
             ->groupBy('product_id', 'foods.name', 'foods.price', 'foods.image')

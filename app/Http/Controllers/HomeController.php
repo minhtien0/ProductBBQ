@@ -266,7 +266,7 @@ class HomeController extends Controller
                 }
             });
         }
-        
+
         $foods = $query->get();
         $foodIds = $foods->pluck('id')->toArray();
 
@@ -292,8 +292,7 @@ class HomeController extends Controller
 
         if ($term) {
             $query->where(function ($q) use ($term) {
-                $q->where('name', 'like', "%{$term}%")
-                    ->orWhere('description', 'like', "%{$term}%");
+                $q->where('name', 'like', "%{$term}%");
             });
         }
 
@@ -301,23 +300,24 @@ class HomeController extends Controller
             $catId = intval(str_replace('menu-', '', $category));
             $query->where('type', $catId);
         }
-         $foods = $query->with('menus')->limit(20)->get();
-
-    // Lấy toàn bộ rating của các món này một lần
-    $foodIds = $foods->pluck('id')->toArray();
-    $foodRatings = \DB::table('rates')
-        ->select('food_id', \DB::raw('AVG(rate) as rate_avg'), \DB::raw('COUNT(*) as rate_count'))
-        ->whereIn('food_id', $foodIds)
-        ->groupBy('food_id')
-        ->get()
-        ->keyBy('food_id');
         $foods = $query->with('menus')->limit(20)->get();
 
-        $results = $foods->map(function ($food) use ($favIds,$foodRatings) {
+        // Lấy toàn bộ rating của các món này một lần
+        $foodIds = $foods->pluck('id')->toArray();
+
+        // Lấy rating
+        $foodRatings = \DB::table('rates')
+            ->select('food_id', \DB::raw('AVG(rate) as rate_avg'), \DB::raw('COUNT(*) as rate_count'))
+            ->whereIn('food_id', $foodIds)
+            ->groupBy('food_id')
+            ->get()
+            ->keyBy('food_id');
+        // dd($foods,$foodIds,$foodRatings);
+        $results = $foods->map(function ($food) use ($favIds, $foodRatings) {
             $rating = $foodRatings[$food->id] ?? null;
             return [
                 'id' => $food->id,
-                'name' => $food->name,  
+                'name' => $food->name,
                 'price' => $food->price,
                 'slug' => $food->slug,
                 'image' => asset('img/' . $food->image),
@@ -326,7 +326,7 @@ class HomeController extends Controller
                 'type' => $food->type,
                 'favorited' => in_array($food->id, $favIds),
                 'rate_avg' => $rating ? round($rating->rate_avg, 1) : 0,
-            'rate_count' => $rating ? (int) $rating->rate_count : 0,
+                'rate_count' => $rating ? (int) $rating->rate_count : 0,
             ];
         });
         //dd($results);
@@ -563,6 +563,7 @@ class HomeController extends Controller
         $commentBlogs = Blog::join('rates', 'blog.id', '=', 'rates.blog_id')
             ->join('users', 'rates.user_id', '=', 'users.id')
             ->where('blog.id', '=', $id)
+            ->where('rates.status', '=', 1)
             ->select('rates.time as time_comment', 'users.fullname as name_comment', 'users.avatar as avatar_comment', 'rates.content as content_comment')
             ->get();
         $countComment = $commentBlogs->count();
@@ -589,11 +590,12 @@ class HomeController extends Controller
             'rate' => null,     // Nếu là rate cho sản phẩm mới đúng, còn không thì mặc định 0
             'food_id' => null,
             'order_id' => 0,
+            'status' => 0,
         ]);
 
         // Nếu dùng AJAX
         if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Bình luận đã được gửi thành công!']);
+            return response()->json(['success' => true, 'message' => 'Bình luận đã được gửi thành công! Vui lòng đợi xét duyệt.']);
         }
         return back()->with('success', 'Bình luận đã được gửi thành công!');
     }
@@ -996,7 +998,7 @@ class HomeController extends Controller
             ->join('menus', 'foods.type', '=', 'menus.id')
             ->where('carts.user_id', '=', session('user_id'))
             ->where('carts.type', '=', 'Giỏ Hàng')
-            ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
+            ->select('carts.*','carts.quantity as quantity_cart', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
             ->get();
 
         $addressUsers = Address::where('user_id', '=', session('user_id'))->get();

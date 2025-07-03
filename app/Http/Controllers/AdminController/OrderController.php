@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AdminController;
 use App\Models\Company;
 use App\Models\Order;
+use App\Models\Food;
 use App\Models\OrderDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
@@ -65,7 +66,7 @@ class OrderController extends Controller
         }
 
         $orders = $query->orderBy('orders.created_at', 'desc')
-            ->paginate(20)
+            ->paginate(5)
             ->appends([
                 'statusorder' => $statusorder,
                 'keyword' => $keyword,
@@ -122,11 +123,42 @@ class OrderController extends Controller
         ]);
 
         $order = Order::findOrFail($id);
-        $order->statusorder = $request->statusorder;
+
+        // Định nghĩa thứ tự trạng thái
+        $statusOrder = [
+            'Chờ Xác Nhận' => 1,
+            'Đang Thực Hiện' => 2,
+            'Đang Giao Hàng' => 3,
+            'Hoàn Thành' => 4,
+            'Đã Hủy' => 5,
+        ];
+
+        $currentStatus = $order->statusorder;
+        $newStatus = $request->statusorder;
+
+        // Nếu trạng thái mới <= trạng thái hiện tại thì không cho phép cập nhật
+        if ($statusOrder[$newStatus] <= $statusOrder[$currentStatus]) {
+            return back()->with('error', 'Không thể chuyển về trạng thái trước hoặc trạng thái hiện tại!');
+        }
+
+        // Nếu chuyển sang "Đang Thực Hiện" thì trừ số lượng sản phẩm
+        if ($newStatus == 'Đang Thực Hiện' && $order->statusorder != 'Đang Thực Hiện') {
+            foreach ($order->details as $item) {
+                $product = Food::find($item->product_id);
+                if ($product->quantity < $item->quantity) {
+                    return back()->with('error', 'Sản phẩm ' . $product->name . ' không đủ hàng!');
+                }
+                $product->quantity -= $item->quantity;
+                $product->save();
+            }
+        }
+
+        $order->statusorder = $newStatus;
         $order->save();
 
         return back()->with('success', 'Cập nhật trạng thái thành công!');
     }
+
 
     public function queryTransaction(string $txnRef, Request $request)
     {

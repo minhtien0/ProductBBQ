@@ -71,8 +71,7 @@
                         <!-- Quick stats -->
                         <div class="hidden lg:flex items-center gap-4 text-sm text-gray-600">
                             <span class="flex items-center gap-1">
-                                <i class="fas fa-star text-yellow-500"></i>
-                                <span>Tổng: {{ $countRates }} đánh giá</span>
+                                <span>Tổng: {{ $countRates }} đánh giá</span><i class="fa-solid fa-comment-dots ml-2 text-blue-400"></i>
                             </span>
                         </div>
                     </div>
@@ -87,62 +86,59 @@
                     x-transition:leave-end="opacity-0 transform -translate-y-2"
                     class="mt-4 pt-4 border-t border-gray-200">
                     
-                    <form method="GET" action="{{ route('admin.rate') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Star Rating Filter -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Số sao</label>
-                        <select name="star" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <form method="GET" action="{{ route('admin.rateblog') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Blog Title Filter (Select2) -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bài viết</label>
+                            <select name="blog_id" id="selectBlog"
+                                class="select2 w-[300px] h-[150px] border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Tất cả bài viết</option>
+                                @foreach($blogs as $blog)
+                                    <option value="{{ $blog->id }}" {{ request('blog_id') == $blog->id ? 'selected' : '' }}>
+                                        {{ $blog->title }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    <div class="ml-5">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Trạng Thái</label>
+                        <select name="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Tất cả</option>
-                            <option value="5" {{ request('star') == '5' ? 'selected' : '' }}>⭐⭐⭐⭐⭐ 5 sao</option>
-                            <option value="4" {{ request('star') == '4' ? 'selected' : '' }}>⭐⭐⭐⭐ 4 sao</option>
-                            <option value="3" {{ request('star') == '3' ? 'selected' : '' }}>⭐⭐⭐ 3 sao</option>
-                            <option value="2" {{ request('star') == '2' ? 'selected' : '' }}>⭐⭐ 2 sao</option>
-                            <option value="1" {{ request('star') == '1' ? 'selected' : '' }}>⭐ 1 sao</option>
+                            <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Chờ xác nhận</option>
+                            <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Đã xác nhận</option>
                         </select>
                     </div>
 
-                    <!-- Product Filter -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Sản phẩm</label>
-                        <select name="food_id" id="selectFood"
-                            class="select2 w-[300px] border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Tất cả sản phẩm</option>
-                            @foreach($foods as $food)
-                                <option value="{{ $food->id }}" {{ request('food_id') == $food->id ? 'selected' : '' }}>{{ $food->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <!-- Date Range -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Từ ngày</label>
+                            <input name="from_date" type="date" value="{{ request('from_date') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Đến ngày</label>
+                            <input name="to_date" type="date" value="{{ request('to_date') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
 
-                    <!-- Date Range -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Từ ngày</label>
-                        <input name="from_date" type="date" value="{{ request('from_date') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Đến ngày</label>
-                        <input name="to_date" type="date" value="{{ request('to_date') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div class="col-span-full flex items-center gap-3 mt-4">
+                        <!-- Filter Actions -->
+                        <div class="col-span-full flex items-center gap-3 mt-4">
                             <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
                                 <i class="fas fa-search text-sm"></i>
                                 <span>Áp dụng lọc</span>
                             </button>
-                            <a href="{{ route('admin.rate') }}" class="text-gray-600 hover:text-gray-800 transition-colors px-6 py-2">
+                            <a href="{{ route('admin.rateblog') }}" class="text-gray-600 hover:text-gray-800 transition-colors px-6 py-2">
                                 <i class="fas fa-redo text-sm"></i>
                                 <span>Đặt lại</span>
                             </a>
                         </div>
-                </form>
-
+                    </form>
                 </div>
             </div>
         </div>
-
-        <script>
+<script>
     $(document).ready(function() {
-        $('#selectFood').select2({
-            placeholder: "Chọn sản phẩm",
+        $('#selectBlog').select2({
+            placeholder: "Chọn bài viết",
             allowClear: true
         });
     });
@@ -153,25 +149,19 @@
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-200">
-                            <th class="w-12 p-4 text-left">
-                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    @change="toggleSelectAll()">
-                            </th>
+                            
                             <th class="p-4 text-left text-sm font-medium text-gray-700">Khách hàng</th>
                             <th class="p-4 text-left text-sm font-medium text-gray-700">Nội dung đánh giá</th>
-                            <th class="p-4 text-left text-sm font-medium text-gray-700">Đánh giá</th>
-                            <th class="p-4 text-left text-sm font-medium text-gray-700">Sản phẩm</th>
+                            <th class="p-4 text-left text-sm font-medium text-gray-700">Bài viết</th>
                             <th class="p-4 text-left text-sm font-medium text-gray-700">Thời gian</th>
-                            <th class="p-4 text-left text-sm font-medium text-gray-700">Hình ảnh</th>
+                            <th class="p-4 text-left text-sm font-medium text-gray-700">Trạng Thái</th>
                             <th class="p-4 text-left text-sm font-medium text-gray-700">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @foreach($listRates as $rate)
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="p-4">
-                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                            </td>
+                            
                             <td class="p-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-medium">
@@ -190,36 +180,36 @@
                                     </p>
                                 </div>
                             </td>
+                            
                             <td class="p-4">
-                                <div class="flex items-center gap-1">
-                                    <div class="flex text-yellow-400">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            <i class="fas fa-star {{ $i <= $rate->rate ? 'text-yellow-400' : 'text-gray-300' }}"></i>
-                                        @endfor
-                                    </div>
-                                    <span class="text-sm text-gray-600 ml-1">{{ $rate->rate }}.0</span>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <span class="text-sm text-gray-900">{{ $rate->food->name }}</span>
+                                <span class="text-sm text-gray-900">{{ $rate->blog->title }}</span>
                             </td>
                             <td class="p-4">
                                 <div class="text-sm text-gray-900">{{ $rate->time }}</div>
                             </td>
                             <td class="p-4">
                                 <div class="flex gap-1">
-                                    @foreach($rate->images as $img)
-                                    <img src="{{ asset('img/rate/' . $img->img) }}" alt="Review image" 
-                                        class="w-8 h-8 rounded object-cover border border-gray-200">
-                                    @endforeach
+                                  @if($rate->status==1) 
+                                  Đã Xác Nhận
+                                  @else()
+                                  Chờ Xác Nhận
+                                  @endif
                                 </div>
                             </td>
-                           <td class="p-4">
+                            <td class="p-4">
                                 <div class="flex items-center gap-2">
                                     <button class="text-red-600 hover:text-red-800 transition-colors" title="Xóa"
-                                        onclick="confirmDelete('{{ $rate->id }}')">
+                                     onclick="confirmDelete('{{ $rate->id }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
+                                     @if($rate->status==1) 
+                                 
+                                  @else()
+                                   <button class="text-green-600 hover:text-green-800 transition-colors" title="Xác nhận"
+                                    onclick="confirmApprove('{{ $rate->id }}')">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </button>
+                                  @endif
                                 </div>
                             </td>
                         </tr> 
@@ -227,59 +217,132 @@
                     </tbody>
                 </table>
             </div>
-<div id="confirmPopup" class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
+            <!-- popup xác nhận -->
+
+            <div id="confirmPopup" class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
+                <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+                    <!-- Header -->
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <h2 class="text-lg font-semibold text-white" id="popupTitle">Thông báo</h2>
+                            </div>
+                            <button onclick="closeConfirmPopup()" class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>     
+                    <!-- Content -->
+                    <div class="px-6 py-8 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <p id="confirmMessage" class="text-gray-700 text-base leading-relaxed mb-8"></p>
+                        <div class="flex gap-3">
+                            <button onclick="closeConfirmPopup()" class="w-1/2 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-all duration-200">
+                                Hủy
+                            </button>
+                            <button id="confirmOkBtn" class="w-1/2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                Đồng ý
+                            </button>
+                        </div>
                     </div>
-                    <h2 class="text-lg font-semibold text-white" id="popupTitle">Xác nhận xóa</h2>
                 </div>
-                <button onclick="closeConfirmPopup()" class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
             </div>
-        </div>     
-        <!-- Content -->
-        <div class="px-6 py-8 text-center">
-            <div class="w-16 h-16 bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </div>
-            <p id="confirmMessage" class="text-gray-700 text-base leading-relaxed mb-8">Bạn có chắc chắn muốn xóa đánh giá này?</p>
-            <div class="flex gap-3">
-                <button onclick="closeConfirmPopup()" class="w-1/2 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-all duration-200">
-                    Hủy
-                </button>
-                <button id="confirmOkBtn" class="w-1/2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                    Xóa
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
+            <script>
+                // callback được gọi khi bấm Đồng ý
+                let onConfirm = null;
 
-           @if($listRates->hasPages())
+                function openConfirmPopup(message, confirmCallback, title = 'Thông báo') {
+                    document.getElementById('confirmMessage').textContent = message;
+                    document.getElementById('popupTitle').textContent = title;
+                    document.getElementById('confirmPopup').classList.remove('hidden');
+                    onConfirm = confirmCallback;
+                }
+
+                function closeConfirmPopup() {
+                    document.getElementById('confirmPopup').classList.add('hidden');
+                    onConfirm = null;
+                }
+
+                // Khi bấm Đồng ý
+                document.getElementById('confirmOkBtn').onclick = function() {
+                    if (typeof onConfirm === 'function') onConfirm();
+                    closeConfirmPopup();
+                }
+            </script>
+
+            <script>
+                function getCsrfToken() {
+                return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            }
+
+            function confirmApprove(rateId) {
+                openConfirmPopup('Bạn có chắc chắn muốn XÁC NHẬN đánh giá này?', function() {
+                    fetch(`/admin/rate/blog/approve/${rateId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': getCsrfToken(),
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            alert('Xóa Đánh Giá Thành Công!');
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Có lỗi xảy ra!');
+                        }
+                    });
+                });
+            }
+
+            function confirmDelete(rateId) {
+                openConfirmPopup('Bạn có chắc chắn muốn XÓA đánh giá này?', function() {
+                    fetch(`/admin/rate/blog/delete/${rateId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': getCsrfToken(),
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Có lỗi xảy ra!');
+                        }
+                    });
+                });
+            }
+            </script>
+           <!-- Laravel Pagination -->
+@if($listRates->hasPages())
     <div class="px-4 py-3 border-t border-gray-200 bg-gray-50">
         <div class="flex items-center justify-between">
             <div class="text-sm text-gray-700">
                 Hiển thị
                 <span class="font-medium">
-                    {{ ($listRates->currentPage() - 1) * $listRates->perPage() + 1 }}
+                    {{ ($listRates->currentPage()-1)*$listRates->perPage() + 1 }}
                 </span>
                 đến
                 <span class="font-medium">
-                    {{ ($listRates->currentPage() - 1) * $listRates->perPage() + $listRates->count() }}
+                    {{ ($listRates->currentPage()-1)*$listRates->perPage() + $listRates->count() }}
                 </span>
                 trong tổng số
                 <span class="font-medium">
@@ -321,56 +384,5 @@
 
         </div>
     </div>
-
-    <script>
-    let onConfirm = null;
-
-    function openConfirmPopup(message, confirmCallback, title = 'Xác nhận xóa') {
-        document.getElementById('confirmMessage').textContent = message;
-        document.getElementById('popupTitle').textContent = title;
-        document.getElementById('confirmPopup').classList.remove('hidden');
-        onConfirm = confirmCallback;
-    }
-
-    function closeConfirmPopup() {
-        document.getElementById('confirmPopup').classList.add('hidden');
-        onConfirm = null;
-    }
-
-    // Khi bấm Đồng ý/Xóa
-    document.getElementById('confirmOkBtn').onclick = function() {
-        if (typeof onConfirm === 'function') onConfirm();
-        closeConfirmPopup();
-    }
-
-    // Lấy CSRF token
-    function getCsrfToken() {
-        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    }
-
-    // Hàm xác nhận xóa
-    function confirmDelete(rateId) {
-        openConfirmPopup('Bạn có chắc chắn muốn XÓA đánh giá này?', function() {
-            fetch(`/admin/rate/delete/${rateId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': getCsrfToken(),
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    alert('Xóa Đánh Giá Thành Công!');
-                    location.reload();
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra!');
-                }
-            });
-        });
-    }
-</script>
-
 </body>
 @endsection
