@@ -878,7 +878,6 @@
                                 <img src="{{ asset('img/' . $allFood->image) }}" alt="">
                                 <span class="menu-badge">{{ $allFood->menus->name }}</span>
                                 <div class="menu-card-content">
-
                                     <div class="menu-card-title">{{ $allFood->name }}</div>
                             </a>
                             @php
