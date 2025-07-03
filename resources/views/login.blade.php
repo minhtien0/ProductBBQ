@@ -154,44 +154,52 @@
             </div>
             {{-- ===== FORGOT PASSWORD FORM (ẩn mặc định) ===== --}}
             <div id="forgotPasswordForm" class="w-full max-w-md hidden">
-    <h2 class="text-xl font-semibold text-center mb-4 text-[#FF3D3D]">Quên Mật Khẩu</h2>
-    <form method="POST" action="{{ route('password.forgot') }}" class="space-y-4">
-        @csrf
-        <input 
-            type="email" 
-            name="email" 
-            placeholder="Nhập email đã đăng ký" 
-            value="{{ old('email') }}"
-            required
-            class="w-full border border-[#4A4A4A] rounded p-2 bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6F61]"
-        >
-        @if (session('forgot_error'))
-            <div class="text-red-400 text-center text-sm mb-2">{{ session('forgot_error') }}</div>
-        @endif
-        @if (session('forgot_success'))
-            <div class="text-green-400 text-center text-sm mb-2">{{ session('forgot_success') }}</div>
-        @endif
+                <h2 class="text-xl font-semibold text-center mb-4 text-[#FF3D3D]">Quên Mật Khẩu</h2>
+                <form id="forgot-password-form" method="POST" action="{{ route('password.forgot') }}" class="space-y-4">
+                    @csrf
+                    {{-- Email --}}
+                    <input type="email" name="email" placeholder="Nhập email đã đăng ký" value="{{ old('email') }}"
+                        required
+                        class="w-full border border-[#4A4A4A] rounded p-2 bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6F61]">
+                    @if (session('forgot_error'))
+                        <div class="text-red-400 text-center text-sm mb-2">{{ session('forgot_error') }}</div>
+                    @endif
+                    @if (session('forgot_success'))
+                        <div class="text-green-400 text-center text-sm mb-2">{{ session('forgot_success') }}</div>
+                    @endif
 
-        <button type="submit"
-            class="w-full bg-[#FF3D3D] text-white rounded p-2 hover:bg-[#FF6F61] transition duration-150"
-        >
-            Gửi yêu cầu lấy lại mật khẩu
-        </button>
+                    <div id="forgot-message"></div>
+                    <button type="submit"
+                        class="w-full bg-[#FF3D3D] text-white rounded p-2 hover:bg-[#FF6F61] transition duration-150">
+                        Gửi yêu cầu lấy lại mật khẩu
+                    </button>
 
-        <div class="text-center text-sm text-[#4A4A4A] mt-4">
-            Đã nhớ mật khẩu? 
-            <a href="javascript:void(0)" onclick="showForm('login')" class="text-[#C71585] hover:underline">
-                Đăng nhập
-            </a>
-        </div>
-    </form>
-</div>
-
+                    {{-- Link quay lại đăng nhập --}}
+                    <div class="text-center text-sm text-[#4A4A4A] mt-4">
+                        Đã nhớ mật khẩu?
+                        <a href="javascript:void(0)" onclick="showForm('login')" class="text-[#C71585] hover:underline">
+                            Đăng nhập
+                        </a>
+                    </div>
+                </form>
+            </div>
 
 
         </div>
     </div>
-
+    <script>
+        function showForm(form) {
+            const login = document.getElementById('loginForm');
+            const reg = document.getElementById('registerForm');
+            const forgot = document.getElementById('forgotPasswordForm');
+            login.classList.add('hidden');
+            reg.classList.add('hidden');
+            forgot.classList.add('hidden');
+            if (form === 'login') login.classList.remove('hidden');
+            if (form === 'register') reg.classList.remove('hidden');
+            if (form === 'forgot') forgot.classList.remove('hidden');
+        }
+    </script>
     <script>
         function toggleForms() {
             const loginForm = document.getElementById('loginForm');
@@ -222,34 +230,44 @@
     </script>
     <!--     quên mật khẩu -->
     <script>
-        function showForm(form) {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const forgotForm = document.getElementById('forgotPasswordForm');
-            loginForm.classList.add('hidden');
-            registerForm.classList.add('hidden');
-            forgotForm.classList.add('hidden');
-
-            if (form === 'login') loginForm.classList.remove('hidden');
-            if (form === 'register') registerForm.classList.remove('hidden');
-            if (form === 'forgot') forgotForm.classList.remove('hidden');
-        }
-
-        // Đổi lại các onclick ở link (login, register, forgot) cho đúng:
-        // - Đăng ký: onclick="showForm('register')"
-        // - Đăng nhập: onclick="showForm('login')"
-        // - Quên mật khẩu: onclick="showForm('forgot')"
-
-        // Nếu có session('form'), show đúng form sau redirect
-        @if (session('form') === 'register')
-            showForm('register');
-        @elseif (session('form') === 'forgot')
-            showForm('forgot');
-        @else
-        showForm('forgot');
-        @endif
-
+        document.addEventListener('DOMContentLoaded', function () {
+            const forgotForm = document.getElementById('forgot-password-form');
+            const forgotMessage = document.getElementById('forgot-message');
+            if (forgotForm) {
+                forgotForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    forgotMessage.innerHTML = '';
+                    const formData = new FormData(forgotForm);
+                    const submitBtn = forgotForm.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true;
+                    fetch(forgotForm.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json',
+                        },
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                forgotMessage.innerHTML = `<div class="text-green-400 text-center text-sm mb-2">${data.message}</div>`;
+                                forgotForm.reset();
+                            } else {
+                                forgotMessage.innerHTML = `<div class="text-red-400 text-center text-sm mb-2">${data.message}</div>`;
+                            }
+                            submitBtn.disabled = false;
+                        })
+                        .catch(error => {
+                            forgotMessage.innerHTML = `<div class="text-red-400 text-center text-sm mb-2">Có lỗi xảy ra. Vui lòng thử lại!</div>`;
+                            submitBtn.disabled = false;
+                        });
+                });
+            }
+        });
     </script>
+
+
 
 </body>
 

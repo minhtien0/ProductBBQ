@@ -95,8 +95,8 @@
                         @endphp
                         <button data-cat="{{ $menuCat }}"
                             class="category-tab
-                                                                            {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
-                                                                            px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
+                                                                                                {{ $isActive ? 'bg-gradient-to-r from-main-red to-red-500 text-white' : 'bg-white text-gray-700 border-2 border-gray-200' }}
+                                                                                                px-6 py-3 rounded-full font-semibold hover:border-main-red hover:text-main-red transition-all duration-300">
                             {{-- icon --}}
                             @if(stripos($menu->name, 'BBQ') !== false)
                                 <i class="fas fa-star mr-2"></i>
@@ -482,6 +482,20 @@
 
                 productsGrid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-12 text-lg">Đang tải...</div>`;
 
+                function renderStars(avgRate) {
+                    let starsHtml = '';
+                    for (let i = 1; i <= 5; i++) {
+                        if (avgRate >= i) {
+                            starsHtml += '<i class="fas fa-star"></i>'; // full
+                        } else if (avgRate >= i - 0.5) {
+                            starsHtml += '<i class="fas fa-star-half-alt"></i>'; // half
+                        } else {
+                            starsHtml += '<i class="far fa-star"></i>'; // empty
+                        }
+                    }
+                    return starsHtml;
+                }
+
                 fetch(url)
                     .then(res => res.json())
                     .then(data => {
@@ -518,13 +532,13 @@
                                 style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
                                 ${food.description}
                             </p>
-                            <div class="flex items-center mb-3 min-h-[28px]">
-                                <div class="flex text-yellow-400 text-sm">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                                </div>
-                                <span class="ml-2 text-gray-500 text-sm">(4.5)</span>
-                                <span class="ml-2 text-gray-400 text-sm">• 124 đánh giá</span>
+                             <div class="flex items-center mb-3 min-h-[28px]">
+                            <div class="flex text-yellow-400 text-sm">
+                                ${renderStars(food.avgRate ?? 0)}
                             </div>
+                            <span class="ml-2 text-gray-500 text-sm">(${food.avgRate ? food.avgRate.toFixed(1) : "0"})</span>
+                            <span class="ml-2 text-gray-400 text-sm">• ${food.$countRate ?? 0} đánh giá</span>
+                        </div>
                             <div class="flex items-center justify-between mb-2 min-h-[30px]">
                                 <span class="text-2xl font-bold text-main-red">
                                     ${new Intl.NumberFormat('vi-VN').format(food.price)}đ
@@ -687,6 +701,21 @@
                     reapplyFilterSortAndEvents();
                     return;
                 }
+                //tính số sao trong js
+                function renderStars(avgRate) {
+                    let starsHtml = '';
+                    for (let i = 1; i <= 5; i++) {
+                        if (avgRate >= i) {
+                            starsHtml += '<i class="fas fa-star"></i>'; // full
+                        } else if (avgRate >= i - 0.5) {
+                            starsHtml += '<i class="fas fa-star-half-alt"></i>'; // half
+                        } else {
+                            starsHtml += '<i class="far fa-star"></i>'; // empty
+                        }
+                    }
+                    return starsHtml;
+                }
+
 
                 fetch(`{{ route('food.menu.search') }}?term=${encodeURIComponent(keyword)}&category=${encodeURIComponent(category)}`)
                     .then(response => response.json())
@@ -732,12 +761,12 @@
                                         ${food.description}
                                     </p>
                                     <div class="flex items-center mb-3 min-h-[28px]">
-                                        <div class="flex text-yellow-400 text-sm">
-                                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                                        </div>
-                                        <span class="ml-2 text-gray-500 text-sm">(4.5)</span>
-                                        <span class="ml-2 text-gray-400 text-sm">• 124 đánh giá</span>
+                                         <div class="flex text-yellow-400 text-sm">
+                                              ${renderStars(food.avgRate ?? 0)}
                                     </div>
+                                             <span class="ml-2 text-gray-500 text-sm">(${food.avgRate ? food.avgRate.toFixed(1) : "0"})</span>
+                                             <span class="ml-2 text-gray-400 text-sm">• ${food.$countRate ?? 0} đánh giá</span>
+                                     </div>
                                     <div class="flex items-center justify-between mb-2 min-h-[30px]">
                                         <span class="text-2xl font-bold text-main-red">
                                             ${new Intl.NumberFormat('vi-VN').format(food.price)}đ

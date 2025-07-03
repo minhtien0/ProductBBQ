@@ -31,11 +31,11 @@
     };
   </script>
   <x-notification-popup />
-    <script src="{{ asset('js/notification.js') }}"></script>
+  <script src="{{ asset('js/notification.js') }}"></script>
 </head>
 
 <body class="font-mont" @if(session('success')) data-success="{{ session('success') }}" @elseif(session('error'))
-data-error="{{ session('error') }}" @endif>
+  data-error="{{ session('error') }}" @endif>
   @include('layouts.user.header')
 
   <div class="relative w-full">
@@ -74,58 +74,62 @@ data-error="{{ session('error') }}" @endif>
           </thead>
           <tbody id="cart-items">
             @foreach ($carts as $cart)
-              <tr data-id="{{ $cart->id_cart }}" data-product-id="{{ $cart->food_id }}" class="border-b hover:bg-orange-50">
-                <td class="px-3 py-2 text-center">
-                  <input type="checkbox" class="cart-checkbox form-checkbox h-4 w-4 text-orange-500"
-                    data-id="{{ $cart->id_cart }}">
-                </td>
-                <td class="px-3 py-2">
-                  <img src="{{ asset('img/' . $cart->image) }}" alt="{{ $cart->name }}"
-                    class="w-16 h-16 object-cover rounded" />
-                </td>
-                <td class="px-3 py-2">
-                  <div class="font-bold text-gray-800">{{ $cart->name }}</div>
-                  <div class="text-xs text-gray-600">{{ $cart->type_menu }}</div>
-                </td>
-                <td class="px-3 py-2 text-left font-semibold price">
-                  {{ number_format($cart->price) }} VNĐ
-                </td>
-                <td class="px-3 py-2">
-                  <div class="flex items-center justify-center gap-2">
-                    <button type="button"
-                      class="btn-dec w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
-                      title="Giảm số lượng">
-                      <i class="fa fa-minus text-lg"></i>
-                    </button>
-                    <span class="qty mx-2 font-semibold">{{ $cart->quantity }}</span>
-                    <button type="button"
-                      class="btn-inc w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
-                      title="Tăng số lượng">
-                      <i class="fa fa-plus text-lg"></i>
-                    </button>
-                  </div>
-                </td>
-                <td class="item-total text-left font-semibold">
-                  {{ number_format($cart->quantity * $cart->price) }} VNĐ
-                </td>
-                <td class="px-3 py-2 text-center">
-                  <button type="button" class="btn-remove text-xl text-orange-500 hover:text-red-600" title="Xóa sản phẩm">
-                    <i class="fa fa-times"></i>
-                  </button>
-                </td>
-              </tr>
-            @endforeach
+        <tr data-id="{{ $cart->id_cart }}" data-product-id="{{ $cart->food_id }} " class="cart-row"
+          data-food-price="{{ $cart->food->price }}" class="border-b hover:bg-orange-50">
+          <td class="px-3 py-2 text-center">
+          <input type="checkbox" class="cart-checkbox form-checkbox h-4 w-4 text-orange-500"
+            data-id="{{ $cart->id_cart }}">
+          </td>
+          <td class="px-3 py-2">
+          <img src="{{ asset('img/' . $cart->image) }}" alt="{{ $cart->name }}"
+            class="w-16 h-16 object-cover rounded" />
+          </td>
+          <td class="px-3 py-2">
+          <div class="font-bold text-gray-800">{{ $cart->name }}</div>
+          <div class="text-xs text-gray-600">{{ $cart->type_menu }}</div>
+          </td>
+          <td class="px-3 py-2 text-left font-semibold price">
+          {{ number_format($cart->price) }} VNĐ
+          </td>
+          <td class="px-3 py-2">
+          <div class="flex items-center justify-center gap-2">
+            <button type="button"
+            class="btn-dec w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
+            title="Giảm số lượng">
+            <i class="fa fa-minus text-lg"></i>
+            </button>
+            <span class="qty mx-2 font-semibold">{{ $cart->quantity }}</span>
+            <button type="button"
+            class="btn-inc w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
+            title="Tăng số lượng">
+            <i class="fa fa-plus text-lg"></i>
+            </button>
+          </div>
+          </td>
+          <td class="item-total text-left font-semibold total-price">
+          {{ number_format($cart->quantity * $cart->price) }} VNĐ
+          </td>
+          <td class="px-3 py-2 text-center">
+          <button type="button" class="btn-remove text-xl text-orange-500 hover:text-red-600"
+            title="Xóa sản phẩm">
+            <i class="fa fa-times"></i>
+          </button>
+          </td>
+        </tr>
+      @endforeach
           </tbody>
         </table>
       </div>
     </div>
+    <!-- gioi han mon dat -->
+
 
     <!-- Cart summary & form -->
     <div class="max-w-6xl mx-auto mt-6 px-2 flex flex-col lg:flex-row gap-6">
       <div class="w-full lg:w-1/2">
         <img src="{{ asset('img/giphy.webp') }}" alt="Cart Food"
           class="w-full h-48 md:h-60 object-cover rounded shadow" />
-           <img src="{{ asset('img/penguin-pudgy.gif') }}" alt="Cart Food"
+        <img src="{{ asset('img/penguin-pudgy.gif') }}" alt="Cart Food"
           class="w-full h-48 md:h-60 object-cover rounded shadow" />
       </div>
 
@@ -162,10 +166,10 @@ data-error="{{ session('error') }}" @endif>
             <select name="voucher_id" id="voucher" class="border rounded p-1">
               <option value="" data-value="0">-- Chọn Voucher --</option>
               @foreach ($vouchers as $voucher)
-                <option value="{{ $voucher->id }}" data-value="{{ $voucher->value }}"> {{ $voucher->code }} -
-                  {{ $voucher->value }}
-                </option>
-              @endforeach
+          <option value="{{ $voucher->id }}" data-value="{{ $voucher->value }}"> {{ $voucher->code }} -
+          {{ $voucher->value }}
+          </option>
+        @endforeach
             </select>
           </div>
           <hr>
@@ -173,10 +177,10 @@ data-error="{{ session('error') }}" @endif>
             <label for="address">Địa Chỉ:</label>
             <select name="address_id" id="address" class="border rounded p-1" required>
               @foreach ($addressUsers as $addressUser)
-                <option value="{{ $addressUser->id }}"> {{ $addressUser->house_number }}, {{ $addressUser->ward }},
-                  {{ $addressUser->district }}, {{ $addressUser->city }}
-                </option>
-              @endforeach
+          <option value="{{ $addressUser->id }}"> {{ $addressUser->house_number }}, {{ $addressUser->ward }},
+          {{ $addressUser->district }}, {{ $addressUser->city }}
+          </option>
+        @endforeach
             </select>
           </div>
           <hr>
@@ -199,8 +203,7 @@ data-error="{{ session('error') }}" @endif>
           </div>
 
           <!-- Nút Thanh Toán: chuyển sang type="button" để mở popup -->
-          <button type="button"
-            onclick="openPopupComfirm('Bạn muốn thanh toán ngay bây giờ?')"
+          <button type="button" onclick="openPopupComfirm('Bạn muốn thanh toán ngay bây giờ?')"
             class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded">
             Thanh Toán
           </button>
@@ -263,7 +266,7 @@ data-error="{{ session('error') }}" @endif>
   @include('layouts.user.footer')
 
   <script>
-   
+
     function openPopupComfirm(message) {
       document.getElementById('Message').textContent = message;
       document.getElementById('PopupComfirm').classList.remove('hidden');
@@ -271,45 +274,45 @@ data-error="{{ session('error') }}" @endif>
     function closePopupComfirm() {
       document.getElementById('PopupComfirm').classList.add('hidden');
     }
-   async function submitOrderForm() {
-     closePopupComfirm();
-    const form = document.getElementById('orderForm');
-    const url  = form.action;
-    const token = document.querySelector('meta[name="csrf-token"]').content;
-    const fd = new FormData(form);
+    async function submitOrderForm() {
+      closePopupComfirm();
+      const form = document.getElementById('orderForm');
+      const url = form.action;
+      const token = document.querySelector('meta[name="csrf-token"]').content;
+      const fd = new FormData(form);
 
-    try {
-      const res  = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Accept': 'application/json'
-        },
-        body: fd
-      });
-      const data = await res.json();
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': token,
+            'Accept': 'application/json'
+          },
+          body: fd
+        });
+        const data = await res.json();
 
-      if (res.ok && data.success) {
-        if (data.redirect) {
-        // nếu có redirect thì qua VNPAY
-        window.location = data.redirect;
-      } else {
-        // tiền mặt
-        showPopup(data.message);
-        form.reset();
-        closePopupComfirm();
+        if (res.ok && data.success) {
+          if (data.redirect) {
+            // nếu có redirect thì qua VNPAY
+            window.location = data.redirect;
+          } else {
+            // tiền mặt
+            showPopup(data.message);
+            form.reset();
+            closePopupComfirm();
+          }
+        } else {
+          const msg = data.errors
+            ? Object.values(data.errors).flat()[0]
+            : data.message || 'Đã có lỗi!';
+          showPopup(msg);
+        }
+      } catch (err) {
+        showPopup('Lỗi kết nối đến server!');
+        console.error(err);
       }
-      } else {
-        const msg = data.errors 
-          ? Object.values(data.errors).flat()[0]
-          : data.message || 'Đã có lỗi!';
-        showPopup(msg);
-      }
-    } catch (err) {
-      showPopup('Lỗi kết nối đến server!');
-      console.error(err);
     }
-  }
 
     document.addEventListener('DOMContentLoaded', () => {
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -334,7 +337,21 @@ data-error="{{ session('error') }}" @endif>
         const rmBtn = e.target.closest('.btn-remove');
         if (!incBtn && !decBtn && !rmBtn) return;
         e.preventDefault();
+
         const tr = e.target.closest('tr[data-id]');
+        const qtySpan = tr.querySelector('.qty');
+        let currentQty = parseInt(qtySpan.textContent);
+
+        // Giới hạn số lượng tăng/giảm
+        if (incBtn && currentQty >= 20) {
+          showPopup("Bạn chỉ có thể đặt tối đa 20 món cho mỗi sản phẩm!");
+          return;
+        }
+        if (decBtn && currentQty <= 1) {
+          showPopup("Số lượng tối thiểu là 1.");
+          return;
+        }
+
         const id = tr.dataset.id;
         const url = rmBtn
           ? `${base}/${id}`
@@ -356,8 +373,12 @@ data-error="{{ session('error') }}" @endif>
           if (rmBtn || data.removed) {
             tr.remove();
           } else {
-            tr.querySelector('.qty').textContent = data.quantity;
+            qtySpan.textContent = data.quantity;
             tr.querySelector('.item-total').textContent = fmt(data.itemTotal);
+            const btnInc = tr.querySelector('.btn-inc');
+            const btnDec = tr.querySelector('.btn-dec');
+            btnInc.disabled = data.quantity >= 20;
+            btnDec.disabled = data.quantity <= 1;
           }
           setTimeout(updateSelectedDetail, 100);
         } catch (err) {
@@ -366,9 +387,21 @@ data-error="{{ session('error') }}" @endif>
         }
       });
 
+
+
       // Checkbox chọn sản phẩm
       const checkAll = document.getElementById('check-all');
       const summary = document.getElementById('selected-products-detail');
+
+      // Ẩn/hiện nút tăng/giảm số lượng ở tất cả dòng khi trang vừa load
+      tbody.querySelectorAll('tr[data-id]').forEach(tr => {
+        const qty = parseInt(tr.querySelector('.qty').textContent);
+        const btnInc = tr.querySelector('.btn-inc');
+        const btnDec = tr.querySelector('.btn-dec');
+        btnInc.disabled = qty >= 20;
+        btnDec.disabled = qty <= 1;
+      });
+
 
       function parseCartRow(tr) {
         return {
@@ -467,6 +500,7 @@ data-error="{{ session('error') }}" @endif>
     });
   </script>
 
-  
+
 </body>
+
 </html>
