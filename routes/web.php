@@ -216,6 +216,12 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::post('/delete-order-item', [HomeAdminController::class, 'deleteOrderItem']);
         Route::get('/get-all-combos', [HomeAdminController::class, 'getAllCombos']);
         Route::post('/add-combo-to-order', [HomeAdminController::class, 'addComboToOrder']);
+        // Route POST để client gửi dữ liệu và lấy link xác nhận QR
+        Route::post('/create-qr-order', [HomeAdminController::class, 'createQrOrder'])->name('create.qr.order');
+        // Route GET: khi user quét QR, truy cập vào để redirect sang trang thanh toán VNPAY
+        Route::get('/confirm-qr-order/{token}', [HomeAdminController::class, 'confirmQrOrder'])->name('confirm.qr.order');
+        // Callback trả về từ VNPAY (url này bạn phải cấu hình đúng với VNPAY dashboard)
+        Route::get('/vnpay/return', [HomeAdminController::class, 'vnpayReturn'])->name('vnpay.return');
 
 
     });
