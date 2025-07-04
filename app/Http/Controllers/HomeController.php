@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Sum;
 use Illuminate\Support\Facades\View;
+use SebastianBergmann\CodeUnit\FunctionUnit;
 
 class HomeController extends Controller
 {
@@ -655,10 +656,16 @@ class HomeController extends Controller
         //dd($order);
         if (!$order)
             return response()->json(['status' => 'error', 'message' => 'Không tìm thấy đơn hàng'], 404);
-
         $orderDetails = \App\Models\OrderDetail::where('order_id', $orderId)
-            ->join('foods', 'foods.id', '=', 'order_details.product_id')
-            ->select('order_details.*', 'foods.name as food_name', 'foods.price as food_price')
+            ->leftJoin('foods', 'foods.id', '=', 'order_details.product_id')
+            ->leftJoin('food_combos', 'food_combos.id', '=', 'order_details.combo_id')
+            ->select(
+                'order_details.*',
+                'foods.name as food_name',          // có thể null nếu là combo
+                'foods.price as food_price',
+                'food_combos.name as combo_name',        // có thể null nếu là món ăn thường
+                'food_combos.price as combo_price'
+            )
             ->get();
 
         // Lấy giá trị voucher
@@ -994,24 +1001,56 @@ class HomeController extends Controller
     //Chức Năng Giỏ Hàng
     public function cart()
     {
-        $carts = Cart::join('foods', 'carts.food_id', '=', 'foods.id')
-            ->join('menus', 'foods.type', '=', 'menus.id')
-            ->where('carts.user_id', '=', session('user_id'))
-            ->where('carts.type', '=', 'Giỏ Hàng')
-            ->select('carts.*','carts.quantity as quantity_cart', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
+        $carts = DB::table('carts')
+            ->leftJoin('foods', 'carts.food_id', '=', 'foods.id')
+            ->leftJoin('menus', 'foods.type', '=', 'menus.id')
+            ->leftJoin('food_combos', 'carts.combo_id', '=', 'food_combos.id')
+            ->where('carts.user_id', session('user_id'))
+            ->where('carts.type', 'Giỏ Hàng')
+            ->select(
+                'carts.*',
+                'carts.quantity as quantity_cart',
+                'foods.name as food_name',
+                'foods.price as food_price',
+                'foods.image as food_image',
+                'menus.name as type_menu',
+                'carts.id as id_cart',
+                'food_combos.name as combo_name',
+                'food_combos.price as combo_price',
+                'food_combos.image as combo_image',
+                'food_combos.codecombo as combo_code'
+            )
             ->get();
+        //dd($carts);
+        // Tính tổng tiền món (chưa bao gồm phí, voucher, v.v.)
+        $initialCartTotal = $carts->sum(function ($item) {
+            return $item->quantity * ($item->food_price ?? $item->combo_price ?? 0);
+        });
 
-        $addressUsers = Address::where('user_id', '=', session('user_id'))->get();
+        // Ngưỡng voucher = 10% của tổng bill
+        $voucherThreshold = $initialCartTotal * 0.1;
+
+        // Lấy địa chỉ người dùng
+        $addressUsers = Address::where('user_id', session('user_id'))->get();
+
+        // Lấy voucher còn hiệu lực và mệnh giá ≤ 10% tổng bill
         $now = now();
         $vouchers = Voucher::where('time_start', '<=', $now)
             ->where('time_end', '>=', $now)
             ->where('quantity', '>', 0)
             ->where('status', 'Còn')
+            ->where('value', '<=', $voucherThreshold)
             ->get();
-        //dd($vouchers);
-        $initialCartTotal = $carts->sum(fn($item) => $item->quantity * $item->food->price);
-        return view('cart', compact('carts', 'initialCartTotal', 'addressUsers', 'vouchers'));
+
+        return view('cart', compact(
+            'carts',
+            'initialCartTotal',
+            'voucherThreshold',
+            'addressUsers',
+            'vouchers'
+        ));
     }
+
 
 
     public function storeCart(Request $request)
@@ -1064,6 +1103,7 @@ class HomeController extends Controller
     //Thanh Toán
     public function storeOrder(Request $request)
     {
+         \Log::info('Đầu vào storeOrder:', $request->all());
         // 1. Validate dữ liệu
         $validator = Validator::make($request->all(), [
             'address_id' => 'required|integer|exists:addresses,id',
@@ -1098,6 +1138,7 @@ class HomeController extends Controller
 
         // Trường hợp thanh toán qua VNPAY (typepayment = 2)
         if ((int) $request->typepayment === 2) {
+            
             session([
                 'pending_order' => [
                     'address_id' => $request->address_id,
@@ -1108,6 +1149,7 @@ class HomeController extends Controller
                     'products' => $request->products,
                 ]
             ]);
+            
             // --- Build URL VNPAY ---
             $vnp_TmnCode = "U8U9C1HI";
             $vnp_HashSecret = "NJGOGY2HL4CARZZ7BB0JO24BH0U2WUIU";
@@ -1146,6 +1188,9 @@ class HomeController extends Controller
             $vnp_Url .= "?" . $query . "vnp_SecureHash={$vnpSecureHash}";
 
             // Trả về JSON để frontend redirect
+             \Log::info('Chạy nhánh VNPAY, pending_order:', session('pending_order'));
+    \Log::info('URL VNPAY:', ['url'=>$vnp_Url]);
+
             return response()->json([
                 'success' => true,
                 'redirect' => $vnp_Url,
@@ -1177,14 +1222,28 @@ class HomeController extends Controller
                 ]);
 
                 // Lưu OrderDetail
+                //dd($request->products);
                 foreach ($request->products as $item) {
-                    OrderDetail::create([
-                        'order_id' => $order->id,
-                        'product_id' => $item['id'],
-                        'quantity' => $item['quantity'],
-                        'status' => 'Chờ xử lý',
-                    ]);
+                    //dd($item);
+                    if (isset($item['type']) && $item['type'] === 'combo') {
+                        OrderDetail::create([
+                            'order_id' => $order->id,
+                            'combo_id' => $item['id'],
+                            'product_id' => null,
+                            'quantity' => $item['quantity'],
+                            'status' => 'Chờ xử lý',
+                        ]);
+                    } else {
+                        OrderDetail::create([
+                            'order_id' => $order->id,
+                            'combo_id' => null,
+                            'product_id' => $item['id'],
+                            'quantity' => $item['quantity'],
+                            'status' => 'Chờ xử lý',
+                        ]);
+                    }
                 }
+
             });
 
             return response()->json([
@@ -1192,6 +1251,11 @@ class HomeController extends Controller
                 'message' => 'Đặt hàng thành công (Tiền mặt)!'
             ]);
         } catch (\Exception $e) {
+            \Log::info  ('Lỗi khi lưu order:', [
+            'message' => $e->getMessage(),
+            'trace'   => $e->getTraceAsString(),
+            'input'   => $request->all(),
+        ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
@@ -1201,6 +1265,7 @@ class HomeController extends Controller
 
     public function vnpayReturn(Request $request)
     {
+       \Log::info('ENTER vnpayReturn, query:', ['qs'=>$_SERVER['QUERY_STRING']]);
         // Lấy raw query string
         $rawQuery = $_SERVER['QUERY_STRING'];
         // Loại bỏ signature params
@@ -1223,12 +1288,17 @@ class HomeController extends Controller
         }
 
         if ($request->get('vnp_ResponseCode') !== '00') {
+            \Log::error('VNPAY ResponseCode NOT 00', [
+        'code' => $request->get('vnp_ResponseCode'),
+        'full' => $request->all(),
+    ]);
             return redirect()->route('views.cart')
                 ->with('error', 'Thanh toán VNPAY không thành công: ' . $request->get('vnp_ResponseCode'));
         }
 
         $pending = session('pending_order');
         if (!$pending) {
+            \Log::error('VNPAY Pending order NOT FOUND');
             return redirect()->route('views.cart')
                 ->with('error', 'Không tìm thấy dữ liệu đơn hàng!');
         }
@@ -1250,12 +1320,25 @@ class HomeController extends Controller
                 'transaction_date' => $request->get('vnp_PayDate'),
             ]);
             foreach ($pending['products'] as $item) {
-                OrderDetail::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item['id'],
-                    'quantity' => $item['quantity'],
-                ]);
+                if (isset($item['type']) && $item['type'] === 'combo') {
+                    OrderDetail::create([
+                        'order_id' => $order->id,
+                        'combo_id' => $item['id'],
+                        'product_id' => null,
+                        'quantity' => $item['quantity'],
+                        'status' => 'Chờ xử lý',
+                    ]);
+                } else {
+                    OrderDetail::create([
+                        'order_id' => $order->id,
+                        'combo_id' => null,
+                        'product_id' => $item['id'],
+                        'quantity' => $item['quantity'],
+                        'status' => 'Chờ xử lý',
+                    ]);
+                }
             }
+
         });
 
         session()->forget('pending_order');
@@ -1333,8 +1416,18 @@ class HomeController extends Controller
             }
         }
 
-        // tính lại tổng tiền item này và tổng tiền giỏ hàng
-        $itemTotal = $cart->quantity * $cart->food->price;
+        // *** LẤY GIÁ ĐÚNG: food hoặc combo ***
+        if ($cart->combo_id) {
+            // Nếu là combo
+            $combo = \DB::table('food_combos')->find($cart->combo_id);
+            $price = $combo ? $combo->price : 0;
+        } else {
+            // Nếu là món lẻ
+            $food = \DB::table('foods')->find($cart->food_id);
+            $price = $food ? $food->price : 0;
+        }
+        $itemTotal = $cart->quantity * $price;
+
         return response()->json([
             'success' => true,
             'removed' => false,
@@ -1344,6 +1437,7 @@ class HomeController extends Controller
             'cartTotal' => $this->recalcCartTotal(),
         ]);
     }
+
 
     // DELETE /cart/{id}
     public function destroyCart($id)
@@ -1360,10 +1454,17 @@ class HomeController extends Controller
     protected function recalcCartTotal()
     {
         $userId = session('user_id');
-        return Cart::where('user_id', $userId)
+        return Cart::with(['food', 'combo'])
+            ->where('user_id', $userId)
             ->where('type', 'Giỏ Hàng')
             ->get()
-            ->sum(fn($c) => $c->quantity * $c->food->price);
+            ->sum(function ($c) {
+                // nếu là combo ưu tiên lấy giá combo, else lấy giá food, nếu null thì 0
+                $price = $c->combo
+                    ? $c->combo->price
+                    : ($c->food ? $c->food->price : 0);
+                return $c->quantity * $price;
+            });
     }
 
 
@@ -1396,6 +1497,7 @@ class HomeController extends Controller
         ]);
 
         if ($validator->fails()) {
+              \Log::info('Validate thành công, dữ liệu:', $request->all());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -1638,10 +1740,69 @@ class HomeController extends Controller
             ->get();
 
         // Lấy danh sách các combo khác (sidebar bán chạy)
-        $hotCombos = FoodCombo::where('id', '!=', $id)
+        $hotCombos = DB::table('food_combos')
+            ->select('food_combos.*', DB::raw('COUNT(order_details.combo_id) as order_count'))
+            ->join('order_details', 'food_combos.id', '=', 'order_details.combo_id')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->where('orders.statusorder', 'Hoàn Thành')
+            ->where('food_combos.id', '!=', $id)
+            ->groupBy('food_combos.id', 'food_combos.codecombo', 'food_combos.name', 'food_combos.price', 'food_combos.note', 'food_combos.created_at', 'food_combos.image', 'food_combos.updated_at')
+            ->orderByDesc('order_count')
+            ->limit(3)
+            ->get();
+
+        //dd($hotCombos);
+        $sameCombos = DB::table('food_combos')
+            ->select('food_combos.*', DB::raw('COUNT(order_details.combo_id) as order_count'))
+            ->join('order_details', 'food_combos.id', '=', 'order_details.combo_id')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->where('orders.statusorder', 'Hoàn Thành')
+            ->where('food_combos.id', '!=', $id)
+            ->groupBy('food_combos.id', 'food_combos.codecombo', 'food_combos.name', 'food_combos.price', 'food_combos.note', 'food_combos.created_at', 'food_combos.image', 'food_combos.updated_at')
+            ->orderByDesc('order_count')
+            ->limit(3)
             ->get();
 
         return view('combodetail', compact('combo', 'foods', 'hotCombos'));
     }
+
+    public function storeComboCart(Request $request)
+    {
+        $userId = session('user_id');
+        $comboId = $request->combo_id;
+
+        // Kiểm tra đăng nhập
+        if (!$userId) {
+            return response()->json(['success' => false, 'message' => 'Bạn cần đăng nhập để đặt hàng!']);
+        }
+
+        // Kiểm tra combo đã có trong giỏ chưa (food_id = null, user_id, combo_id)
+        $cart = Cart::where('user_id', $userId)
+            ->where('combo_id', $comboId)
+            ->whereNull('food_id')
+            ->first();
+
+        if ($cart) {
+            // Nếu đã có thì cộng thêm 1
+            $cart->quantity += 1;
+            $cart->save();
+            return response()->json(['success' => true, 'message' => 'Combo đã được thêm vào giỏ hàng!']);
+        } else {
+            // Nếu chưa có thì thêm mới
+            $cart = new Cart();
+            $cart->user_id = $userId;
+            $cart->combo_id = $comboId;
+            $cart->food_id = null;
+            $cart->type = 'Giỏ Hàng';
+            $cart->quantity = 1;
+            $cart->save();
+
+            return response()->json(['success' => true, 'message' => 'Combo đã được thêm vào giỏ hàng!']);
+        }
+    }
+
+
+
+
 
 }

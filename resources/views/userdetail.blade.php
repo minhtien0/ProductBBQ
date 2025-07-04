@@ -1248,14 +1248,15 @@ data-error="{{ session('error') }}" @endif>
                     const selectProduct = document.getElementById('select-review-product');
                     const unrated = data.unrated_details || [];
                     if (selectProduct) {
-                        selectProduct.innerHTML = unrated.length > 0
-                            ? unrated.map(item =>
-                                `<option value="${item.product_id}">
-                                    ${item.food_name} (${item.quantity} x ${Number(item.food_price).toLocaleString()}đ)
-                                </option>`
-                            ).join('')
-                            : '<option disabled>Đã đánh giá hết các sản phẩm!</option>';
-                    }
+    selectProduct.innerHTML = unrated.length > 0
+        ? unrated.filter(item => !item.combo_id).map(item =>
+            `<option value="${item.product_id}">
+                ${item.food_name} (${item.quantity} x ${Number(item.food_price).toLocaleString()}đ)
+            </option>`
+        ).join('')
+        : '<option disabled>Đã đánh giá hết các sản phẩm!</option>';
+}
+
                     // Khách & header
                     document.querySelector('#invoice-detail .text-sm.text-gray-700').innerHTML =
                         `${o.customer_name}<br>${o.house_number}, ${o.ward}, ${o.district}, ${o.city}<br>${o.sdt}`;
@@ -1269,19 +1270,24 @@ data-error="{{ session('error') }}" @endif>
                     const unratedIds = (data.unrated_details || []).map(item => item.product_id);
 
                     ds.forEach((it, i) => {
-                        const line = it.food_price * it.quantity;
-                        sum += line; qty += it.quantity;
-                        const reviewStatus = unratedIds.includes(it.product_id) ? '-' : 'Rated';
-                        html += `
-          <tr>
-            <td class="px-2 py-1 border text-center">${String(i + 1).padStart(2, '0')}</td>
-            <td class="px-2 py-1 border">${it.food_name}</td>
-            <td class="px-2 py-1 border text-right">${Number(it.food_price).toLocaleString('vi-VN', { maximumFractionDigits: 0 })}đ</td>
-            <td class="px-2 py-1 border text-center">${it.quantity}</td>
-            <td class="px-2 py-1 border text-right">${line.toLocaleString()}đ</td>
-            <td class="px-2 py-1 border text-right">${reviewStatus}</td>
-          </tr>`;
-                    });
+    // Nếu là combo thì lấy combo_name, combo_price
+    const isCombo = it.combo_id && it.combo_id !== '0' && it.combo_name;
+    const name = isCombo ? it.combo_name : it.food_name;
+    const price = isCombo ? it.combo_price : it.food_price;
+    const line = price * it.quantity;
+    sum += line; qty += it.quantity;
+    // Đánh giá chỉ dùng cho món ăn thường, không áp dụng cho combo
+    const reviewStatus = (!isCombo && unratedIds.includes(it.product_id)) ? '-' : (isCombo ? '' : 'Rated');
+    html += `
+      <tr>
+        <td class="px-2 py-1 border text-center">${String(i + 1).padStart(2, '0')}</td>
+        <td class="px-2 py-1 border">${name}</td>
+        <td class="px-2 py-1 border text-right">${Number(price).toLocaleString('vi-VN', { maximumFractionDigits: 0 })}đ</td>
+        <td class="px-2 py-1 border text-center">${it.quantity}</td>
+        <td class="px-2 py-1 border text-right">${line.toLocaleString()}đ</td>
+        <td class="px-2 py-1 border text-right">${reviewStatus}</td>
+      </tr>`;
+});
                     document.querySelector('#invoice-detail tbody').innerHTML = html;
 
                     // Table footer

@@ -141,9 +141,9 @@
                         <select id="price-filter"
                             class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:border-main-red focus:outline-none transition-colors text-gray-700">
                             <option value="">Tất cả mức giá</option>
-                            <option value="low">Dưới 100.000đ</option>
-                            <option value="medium">100.000đ - 300.000đ</option>
-                            <option value="high">Trên 300.000đ</option>
+                            <option value="low">Dưới 100.000VNĐ</option>
+                            <option value="medium">100.000đ - 300.000VNĐ</option>
+                            <option value="high">Trên 300.000VNĐ</option>
                         </select>
                     </div>
 
@@ -253,7 +253,7 @@
                                     <span class="ml-2 text-gray-400 text-sm">• {{ $countRate }} đánh giá</span>
                                 </div>
                                 <span class="text-2xl font-bold text-main-red mb-2">
-                                    {{ number_format($food->price, 0, ',', '.') }}đ
+                                    {{ number_format($food->price, 0, ',', '.') }} VNĐ
                                 </span>
                                 <div class="flex gap-2">
                                     <button type="button"
@@ -503,63 +503,98 @@
                         if (data.results && data.results.length > 0) {
                             console.log(data.results);
                             const html = data.results.map(food => `
-                    <div class="food-item flex flex-col h-full max-w-[450px] min-w-[260px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
-                        style="height:550px;"
-                        data-category="menu-${food.type}"
-                        data-price="${food.price}"
-                        data-name="${food.name.toLowerCase()}"
-                    >
-                        <div class="relative overflow-hidden" style="height:200px;">
-                           <a href="/menudetail/${food.id}/${food.slug}"> <img src="${food.image}" alt="${food.name}"
-                                class="w-full h-44 object-cover border-b border-gray-100" /></a>
-                            <div class="absolute top-3 left-3 z-10">
-                                <span class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
-                                    ${food.menu_name ?? ''}
-                                </span>
-                            </div>
-                            <div class="absolute top-3 right-3 z-10">
-                                <button data-food-id="${food.id}"
-                                 class="favorite-btn icon-btn ${food.favorited ? 'text-red-500' : 'text-gray-500'}  w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
-                                <i class="${food.favorited ? 'fa-solid fa-heart' : 'fa-regular fa-heart'} text-lg"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-4 flex flex-col flex-1 mt-[-1.5rem]">
-                           <a href="/menudetail/${food.id}/${food.slug}"  <h3 class="font-bold text-lg text-gray-800 mb-2"
-                                style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
-                                ${food.name}
-                            </h3> </a>
-                            <p class="text-gray-600 text-sm mt-4"
-                                style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
-                                ${food.description}
-                            </p>
-                             <div class="flex items-center mb-3 min-h-[28px]">
-                            <div class="flex text-yellow-400 text-sm">
-                                ${renderStars(food.rate_avg ?? 0)}
-                            </div>
-                            <span class="ml-2 text-gray-500 text-sm">(${food.rate_avg ? food.rate_avg.toFixed(1) : "0"})</span>
-                            <span class="ml-2 text-gray-400 text-sm">• ${food.rate_count ?? 0} đánh giá</span>
-                        </div>
-                            <div class="flex items-center justify-between mb-2 min-h-[30px]">
-                                <span class="text-2xl font-bold text-main-red">
-                                    ${new Intl.NumberFormat('vi-VN').format(food.price)}đ
-                                </span>
-                            </div>
-                            <div class="mt-auto flex gap-2">
-                                <button type="button"
-                                        class="add-to-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
-                                        data-food-id=" ${food.id}" data-quantity="1">
-                                        
-                                        <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ Hàng
-                                    </button>
-                                <button
-                                        class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
-                                        <a href="/menudetail/${food.id}/${food.slug}"><i
-                                                class="fa-regular fa-eye"></i></a>
-                                    </button>
-                            </div>
-                        </div>
-                    </div>
+                    <div
+  class="food-item flex flex-col h-full max-w-[450px] min-w-[260px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
+  style="height:550px;"
+  data-category="menu-${food.type}"
+  data-price="${food.price}"
+  data-name="${food.name.toLowerCase()}"
+>
+  <!-- Image + badges -->
+  <div class="relative overflow-hidden" style="height:200px;">
+    <a href="/menudetail/${food.id}/${food.slug}">
+      <img
+        src="${food.image}"
+        alt="${food.name}"
+        class="w-full h-44 object-cover border-b border-gray-100"
+      />
+    </a>
+    <div class="absolute top-3 left-3 z-10">
+      <span
+        class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg"
+      >
+        ${food.menu_name ?? ''}
+      </span>
+    </div>
+    <div class="absolute top-3 right-3 z-10">
+      <button
+        data-food-id="${food.id}"
+        class="favorite-btn icon-btn ${food.favorited ? 'text-red-500' : 'text-gray-500'} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center hover:text-red-500 transition-colors"
+      >
+        <i
+          class="${food.favorited ? 'fa-solid fa-heart' : 'fa-regular fa-heart'} text-lg"
+        ></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="p-4 flex flex-col flex-1 mt-[-1.5rem]">
+    <a href="/menudetail/${food.id}/${food.slug}">
+      <h3
+        class="font-bold text-lg text-gray-800 mb-2"
+        style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
+      >
+        ${food.name}
+      </h3>
+    </a>
+    <p
+      class="text-gray-600 text-sm mt-4"
+      style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;"
+    >
+      ${food.description}
+    </p>
+
+    <!-- Rating, Price, Buttons grouped at bottom -->
+    <div class="flex flex-col flex-1 justify-end">
+      <!-- Rating -->
+      <div class="flex items-center mb-2 min-h-[28px]">
+        <div class="flex text-yellow-400 text-sm">
+          ${renderStars(food.rate_avg ?? 0)}
+        </div>
+        <span class="ml-2 text-gray-500 text-sm">
+          (${food.rate_avg ? food.rate_avg.toFixed(1) : "0"})
+        </span>
+        <span class="ml-2 text-gray-400 text-sm">
+          • ${food.rate_count ?? 0} đánh giá
+        </span>
+      </div>
+      <!-- Price -->
+      <div class="mb-3 min-h-[30px]">
+        <span class="text-2xl font-bold text-main-red">
+          ${new Intl.NumberFormat('vi-VN').format(food.price)} VNĐ
+        </span>
+      </div>
+      <!-- Buttons -->
+      <div class="flex gap-2">
+        <button
+          type="button"
+          class="add-to-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
+          data-food-id="${food.id}"
+          data-quantity="1"
+        >
+          <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ Hàng
+        </button>
+        <button
+          class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors"
+        >
+          <a href="/menudetail/${food.id}/${food.slug}"><i class="fa-regular fa-eye"></i></a>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
                 `).join('');
                             console.log({{ $food->id }});
                             productsGrid.innerHTML = html;
@@ -728,67 +763,96 @@
                             console.log(data.results);
                             html = data.results.map(food => `
                             
-                            <div class="food-item flex flex-col h-full max-w-[450px] min-w-[260px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
-                                style="height:550px;"
-                                data-category="menu-${food.type}"
-                                data-price="${food.price}"
-                                data-name="${food.name.toLowerCase()}"
-                                ${food.popular ? 'data-popular="true"' : ''}
-                                ${food.new ? 'data-new="true"' : ''}
-                                ${food.discount ? 'data-discount="true"' : ''}
-                                ${food.vegetarian ? 'data-vegetarian="true"' : ''}
-                            >
-                                <div class="relative overflow-hidden" style="height:200px;">
-                                    <img src="${food.image}" alt="${food.name}"
-                                        class="w-full h-44 object-cover border-b border-gray-100" />
-                                    <div class="absolute top-3 left-3 z-10">
-                                        <span class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
-                                            ${food.menu_name ?? ''}
-                                        </span>
-                                    </div>
-                                    <div class="absolute top-3 right-3 z-10">
-                                       <button data-food-id="{{ $food->id }}"
-                                    class=" favorite-btn icon-btn {{ in_array($food->id, $favIds) ? 'text-red-500' : 'text-gray-500' }} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
-                                    <i
-                                        class="{{ in_array($food->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
-                                </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 flex flex-col flex-1 mt-[-1.5rem]">
-                                    <h3 class="font-bold text-lg text-gray-800 mb-2"
-                                        style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
-                                        ${food.name}
-                                    </h3>
-                                    <p class="text-gray-600 text-sm mt-4"
-                                        style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
-                                        ${food.description}
-                                    </p>
-                                    <div class="flex items-center mb-3 min-h-[28px]">
-                                    <div class="flex text-yellow-400 text-sm">
-                                        ${renderStars(food.rate_avg ?? 0)}
-                                    </div>
-                                    <span class="ml-2 text-gray-500 text-sm">(${food.rate_avg ? food.rate_avg.toFixed(1) : "0"})</span>
-                                    <span class="ml-2 text-gray-400 text-sm">• ${food.rate_count ?? 0} đánh giá</span>
-                                     </div>
-                                    <div class="flex items-center justify-between mb-2 min-h-[30px]">
-                                        <span class="text-2xl font-bold text-main-red">
-                                            ${new Intl.NumberFormat('vi-VN').format(food.price)}đ
-                                        </span>
-                                    </div>
-                                    <div class="mt-auto flex gap-2">
-                                        <button type="button"
-                                        class="add-to-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
-                                        data-food-id="{{ $food->id }}" data-quantity="1">
-                                        <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ Hàng
-                                    </button>
-                                        <button
-                                        class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
-                                        <a href="{{ route('views.menudetail', [$food->id, $food->slug]) }}"><i
-                                                class="fa-regular fa-eye"></i></a>
-                                    </button>
-                                    </div>
-                                </div>
-                            </div>
+                           <div
+  class="food-item flex flex-col h-full max-w-[450px] min-w-[260px] w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
+  style="height:550px;"
+  data-category="menu-${food.type}"
+  data-price="${food.price}"
+  data-name="${food.name.toLowerCase()}"
+  ${food.popular ? 'data-popular="true"' : ''}
+  ${food.new ? 'data-new="true"' : ''}
+  ${food.discount ? 'data-discount="true"' : ''}
+  ${food.vegetarian ? 'data-vegetarian="true"' : ''}
+>
+  <div class="relative overflow-hidden" style="height:200px;">
+    <img
+      src="${food.image}"
+      alt="${food.name}"
+      class="w-full h-44 object-cover border-b border-gray-100"
+    />
+    <div class="absolute top-3 left-3 z-10">
+      <span
+        class="bg-main-red text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg"
+      >
+        ${food.menu_name ?? ''}
+      </span>
+    </div>
+    <div class="absolute top-3 right-3 z-10">
+      <button
+        data-food-id="${food.id}"
+        class="favorite-btn icon-btn ${food.favorited ? 'text-red-500' : 'text-gray-500'} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center hover:text-red-500 transition-colors"
+      >
+        <i
+          class="${food.favorited ? 'fa-solid fa-heart' : 'fa-regular fa-heart'} text-lg"
+        ></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="p-4 flex flex-col flex-1 mt-[-1.5rem]">
+    <h3
+      class="font-bold text-lg text-gray-800 mb-2"
+      style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
+    >
+      ${food.name}
+    </h3>
+    <p
+      class="text-gray-600 text-sm mt-4"
+      style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;"
+    >
+      ${food.description}
+    </p>
+
+    <div class="flex flex-col flex-1 justify-end">
+      <div class="flex items-center mb-2 min-h-[28px]">
+        <div class="flex text-yellow-400 text-sm">
+          ${renderStars(food.rate_avg ?? 0)}
+        </div>
+        <span class="ml-2 text-gray-500 text-sm">
+          (${food.rate_avg ? food.rate_avg.toFixed(1) : "0"})
+        </span>
+        <span class="ml-2 text-gray-400 text-sm">
+          • ${food.rate_count ?? 0} đánh giá
+        </span>
+      </div>
+
+      <div class="mb-3 min-h-[30px]">
+        <span class="text-2xl font-bold text-main-red">
+          ${new Intl.NumberFormat('vi-VN').format(food.price)} VNĐ
+        </span>
+      </div>
+
+      <div class="flex gap-2">
+        <button
+          type="button"
+          class="add-to-cart flex-1 bg-gradient-to-r from-main-red to-red-500 text-white py-2 px-4 rounded-xl font-semibold hover:from-red-500 hover:to-red-600 transition-all duration-300 min-w-[100px]"
+          data-food-id="${food.id}"
+          data-quantity="1"
+        >
+          <i class="fas fa-cart-plus mr-2"></i>Thêm Giỏ Hàng
+        </button>
+        <button
+          class="w-12 h-10 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors"
+        >
+          <a href="/menudetail/${food.id}/${food.slug}">
+            <i class="fa-regular fa-eye"></i>
+          </a>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
                         `).join('');
                             productsGrid.innerHTML = html;
                             resultsCount.textContent = `Hiển thị ${data.results.length} món ăn`;

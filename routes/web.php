@@ -88,6 +88,8 @@ Route::post('/favorite', [HomeController::class, 'toggleFavorite'])->name('favor
 Route::patch('/cart/{id}', [HomeController::class, 'updateQuantityCart'])->name('cart.updateQuantity');
 Route::delete('/cart/{id}', [HomeController::class, 'destroyCart'])->name('cart.destroy');
 Route::post('/order/add', [HomeController::class, 'storeOrder'])->name('order.store');
+Route::post('/cart/combo', [HomeController::class, 'storeComboCart'])->name('cart.storeComboCart');
+
 // vnpay return
 Route::get('/vnpay/return', [HomeController::class, 'vnpayReturn'])->name('vnpay.return');
 // Hủy đơn hàng của chính user
@@ -227,7 +229,6 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         // Route GET: khi user quét QR, truy cập vào để redirect sang trang thanh toán VNPAY
         Route::get('/confirm-qr-order/{token}', [HomeAdminController::class, 'confirmQrOrder'])->name('confirm.qr.order');
         // Callback trả về từ VNPAY (url này bạn phải cấu hình đúng với VNPAY dashboard)
-        Route::get('/vnpay/return', [HomeAdminController::class, 'vnpayReturn'])->name('vnpay.return');
 
 
     });

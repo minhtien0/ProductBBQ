@@ -12,6 +12,7 @@ class OrderDetail extends Model
     // Các cột có thể được gán giá trị (mass assignment)
     protected $fillable = [
         'order_id',
+        'combo_id',
         'product_id',
         'quantity',
         'time',
@@ -28,5 +29,10 @@ class OrderDetail extends Model
     public function food()
     {
         return $this->belongsTo(Food::class, 'product_id');
+    }
+
+    public function combo()
+    {
+        return $this->belongsTo(FoodCombo::class, 'combo_id');
     }
 }

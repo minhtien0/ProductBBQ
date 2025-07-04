@@ -74,48 +74,71 @@
           </thead>
           <tbody id="cart-items">
             @foreach ($carts as $cart)
-        <tr data-id="{{ $cart->id_cart }}" data-product-id="{{ $cart->food_id }} " class="cart-row"
-          data-food-price="{{ $cart->food->price }}" class="border-b hover:bg-orange-50">
-          <td class="px-3 py-2 text-center">
-          <input type="checkbox" class="cart-checkbox form-checkbox h-4 w-4 text-orange-500"
-            data-id="{{ $cart->id_cart }}">
+          <tr data-id="{{ $cart->id_cart }}" data-product-id="{{ $cart->food_id ?? $cart->combo_id }}"  data-combo-id="{{ $cart->combo_id }}" 
+            class="cart-row" data-food-price="{{ $cart->food_price ?? $cart->combo_price }}"
+            class="border-b hover:bg-orange-50">
+            <td class="px-3 py-2 text-center">
+            <input type="checkbox" class="cart-checkbox form-checkbox h-4 w-4 text-orange-500"
+              data-id="{{ $cart->id_cart }}">
+            </td>
+            @if (empty($cart->combo_id))
+          <td class="px-3 py-2">
+
+          <img src="{{ asset('img/' . $cart->food_image) }}" alt="{{ $cart->food_name }}"
+          class="w-16 h-16 object-cover rounded" />
           </td>
           <td class="px-3 py-2">
-          <img src="{{ asset('img/' . $cart->image) }}" alt="{{ $cart->name }}"
-            class="w-16 h-16 object-cover rounded" />
-          </td>
-          <td class="px-3 py-2">
-          <div class="font-bold text-gray-800">{{ $cart->name }}</div>
+          <div class="font-bold text-gray-800">{{ $cart->food_name }}</div>
           <div class="text-xs text-gray-600">{{ $cart->type_menu }}</div>
           </td>
           <td class="px-3 py-2 text-left font-semibold price">
-          {{ number_format($cart->price) }} VNĐ
+          {{ number_format($cart->food_price) }} VNĐ
+          </td>
+        @else
+          <td class="px-3 py-2">
+
+          <img src="{{ asset('img/combo/' . $cart->combo_image) }}" alt="{{ $cart->combo_name }}"
+          class="w-16 h-16 object-cover rounded" />
           </td>
           <td class="px-3 py-2">
-          <div class="flex items-center justify-center gap-2">
-            <button type="button"
-            class="btn-dec w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
-            title="Giảm số lượng">
-            <i class="fa fa-minus text-lg"></i>
-            </button>
-            <span class="qty mx-2 font-semibold">{{ $cart->quantity_cart }}</span>
-            <button type="button"
-            class="btn-inc w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
-            title="Tăng số lượng">
-            <i class="fa fa-plus text-lg"></i>
-            </button>
-          </div>
+          <div class="font-bold text-gray-800">{{ $cart->combo_name }}</div>
+          <div class="text-xs text-gray-600">{{ $cart->combo_code }}</div>
           </td>
+          <td class="px-3 py-2 text-left font-semibold price">
+          {{ number_format($cart->combo_price) }} VNĐ
+          </td>
+        @endif
+            <td class="px-3 py-2">
+            <div class="flex items-center justify-center gap-2">
+              <button type="button"
+              class="btn-dec w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
+              title="Giảm số lượng">
+              <i class="fa fa-minus text-lg"></i>
+              </button>
+              <span class="qty mx-2 font-semibold">{{ $cart->quantity_cart }}</span>
+              <button type="button"
+              class="btn-inc w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 focus:outline-none"
+              title="Tăng số lượng">
+              <i class="fa fa-plus text-lg"></i>
+              </button>
+            </div>
+            </td>
+            @if (empty($cart->combo_id))
           <td class="item-total text-left font-semibold total-price">
-          {{ number_format($cart->quantity_cart * $cart->price) }} VNĐ
+          {{ number_format($cart->quantity_cart * $cart->food_price) }} VNĐ
           </td>
-          <td class="px-3 py-2 text-center">
-          <button type="button" class="btn-remove text-xl text-orange-500 hover:text-red-600"
-            title="Xóa sản phẩm">
-            <i class="fa fa-times"></i>
-          </button>
+        @else
+          <td class="item-total text-left font-semibold total-price">
+          {{ number_format($cart->quantity_cart * $cart->combo_price) }} VNĐ
           </td>
-        </tr>
+        @endif
+            <td class="px-3 py-2 text-center">
+            <button type="button" class="btn-remove text-xl text-orange-500 hover:text-red-600"
+              title="Xóa sản phẩm">
+              <i class="fa fa-times"></i>
+            </button>
+            </td>
+          </tr>
       @endforeach
           </tbody>
         </table>
@@ -154,24 +177,30 @@
           </div>
           <hr>
           <div class="flex justify-between text-sm mb-2 mt-2">
-            <span>Phí Vẫn Chuyển:</span> <span id="delivery">30000</span>
+            <span>Phí Vẫn Chuyển:</span> <span id="delivery">30.000 VNĐ</span>
           </div>
           <hr>
           <div class="flex justify-between text-base font-bold mb-3 mt-2">
             <span>Tổng Tiền Hóa Đơn:</span> <span id="totalbill"></span>
             <input type="hidden" id="totalbillinput" name="totalbill" value="0">
           </div>
+          <!-- … phần trên giữ nguyên … -->
+
           <div class="flex flex-col text-sm mb-2">
-            <label for="voucher">Khuyến Mãi:</label>
+            <label for="voucher">Khuyến Mãi:</label><span class="text-red-500">(Lưu ý: Bill Cao Voucher Xịn <i class="fa-solid fa-face-kiss-wink-heart"></i>)</span>
             <select name="voucher_id" id="voucher" class="border rounded p-1">
               <option value="" data-value="0">-- Chọn Voucher --</option>
               @foreach ($vouchers as $voucher)
-          <option value="{{ $voucher->id }}" data-value="{{ $voucher->value }}"> {{ $voucher->code }} -
-          {{ $voucher->value }}
+          <option value="{{ $voucher->id }}" data-value="{{ $voucher->value }}" class="voucher-option">
+          {{ $voucher->code }} – {{ number_format($voucher->value, 0, ',', '.') }} VNĐ
+          (Hết hạn ngày {{ \Carbon\Carbon::parse($voucher->time_end)->format('d/m/Y') }})
           </option>
         @endforeach
             </select>
           </div>
+
+          <!-- … phần dưới giữ nguyên … -->
+
           <hr>
           <div class="flex flex-col text-sm mb-2 mt-2">
             <label for="address">Địa Chỉ:</label>
@@ -262,56 +291,63 @@
       </div>
     </div>
   </form>
+  <script>
+  async function submitOrderForm() {
+    const form = document.getElementById('orderForm');
+    const url  = form.action;
+    const fd   = new FormData(form);
+    const btn  = document.querySelector('#PopupComfirm button[onclick="submitOrderForm()"]');
+    btn.disabled = true;
+    
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Accept': 'application/json'
+        },
+        body: fd,
+        credentials: 'same-origin'
+      });
+      const data = await res.json();
+      if (!res.ok) throw data;
 
-  @include('layouts.user.footer')
+      // thành công
+      if (data.redirect) window.location.href = data.redirect;
+      else {
+        closePopupComfirm();
+        notification.show('success', 'Đặt hàng thành công!');
+        // hoặc reload giỏ hàng
+        setTimeout(() => location.reload(), 500);
+      }
+    } catch (err) {
+      // err có thể là { errors: {...} } hoặc { message: '...' }
+      let msgs = [];
+      if (err.errors) {
+        for (let f in err.errors) msgs.push(...err.errors[f]);
+      } else if (err.message) msgs.push(err.message);
+      notification.show('error', msgs.join('<br>'));
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function openPopupComfirm(msg) {
+    document.getElementById('Message').textContent = msg;
+    document.getElementById('PopupComfirm').classList.remove('hidden');
+  }
+  function closePopupComfirm() {
+    document.getElementById('PopupComfirm').classList.add('hidden');
+  }
+</script>
 
   <script>
-
     function openPopupComfirm(message) {
       document.getElementById('Message').textContent = message;
       document.getElementById('PopupComfirm').classList.remove('hidden');
     }
     function closePopupComfirm() {
       document.getElementById('PopupComfirm').classList.add('hidden');
-    }
-    async function submitOrderForm() {
-      closePopupComfirm();
-      const form = document.getElementById('orderForm');
-      const url = form.action;
-      const token = document.querySelector('meta[name="csrf-token"]').content;
-      const fd = new FormData(form);
-
-      try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'X-CSRF-TOKEN': token,
-            'Accept': 'application/json'
-          },
-          body: fd
-        });
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-          if (data.redirect) {
-            // nếu có redirect thì qua VNPAY
-            window.location = data.redirect;
-          } else {
-            // tiền mặt
-            showPopup(data.message);
-            form.reset();
-            closePopupComfirm();
-          }
-        } else {
-          const msg = data.errors
-            ? Object.values(data.errors).flat()[0]
-            : data.message || 'Đã có lỗi!';
-          showPopup(msg);
-        }
-      } catch (err) {
-        showPopup('Lỗi kết nối đến server!');
-        console.error(err);
-      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -322,6 +358,9 @@
       const discountEl = document.getElementById('discount');
       const deliveryEl = document.getElementById('delivery');
       const voucherSelect = document.getElementById('voucher');
+      const allVoucherOptions = Array.from(voucherSelect.options)
+        .filter(opt => opt.value !== "");
+      const voucherDefaultOption = voucherSelect.querySelector('option[value=""]').outerHTML;
       const totalEl = document.getElementById('total');
       const totalBillEl = document.getElementById('totalbill');
       const totalPriceInput = document.getElementById('totalprice');
@@ -407,6 +446,8 @@
         return {
           id: tr.dataset.id,
           product_id: tr.getAttribute('data-product-id'),
+          is_combo: !!tr.getAttribute('data-combo-id'),
+          combo_id: tr.getAttribute('data-combo-id'),
           name: tr.querySelector('td:nth-child(3) .font-bold').textContent,
           price: parseInt(tr.querySelector('td.price').textContent.replace(/\D/g, '')),
           quantity: parseInt(tr.querySelector('.qty').textContent),
@@ -431,11 +472,13 @@
           checkedRows.forEach(tr => {
             const cart = parseCartRow(tr);
             total += cart.total;
+            console.log(cart);
             // Ẩn input để gửi product_id & quantity
-            hiddenDiv.innerHTML += `
-             <input type="hidden" name="products[${cart.product_id}][id]" value="${cart.product_id}">
-             <input type="hidden" name="products[${cart.product_id}][quantity]" value="${cart.quantity}">
-            `;
+           hiddenDiv.innerHTML += `
+  <input type="hidden" name="products[${cart.is_combo ? 'combo_' + cart.combo_id : 'food_' + cart.product_id}][id]" value="${cart.is_combo ? cart.combo_id : cart.product_id}">
+  <input type="hidden" name="products[${cart.is_combo ? 'combo_' + cart.combo_id : 'food_' + cart.product_id}][quantity]" value="${cart.quantity}">
+  <input type="hidden" name="products[${cart.is_combo ? 'combo_' + cart.combo_id : 'food_' + cart.product_id}][type]" value="${cart.is_combo ? 'combo' : 'food'}">
+`;
             html += `
               <div class="flex items-center justify-between py-1">
                 <span>${cart.name} x <b>${cart.quantity}</b></span>
@@ -444,11 +487,31 @@
             `;
           });
           html += '</div>';
+          
         }
         summary.innerHTML = html;
         totalEl.textContent = total.toLocaleString() + ' VNĐ';
         totalPriceInput.value = total; // hidden input cho tổng tiền món
 
+        const maxVoucherValue = Math.floor(total * 0.1);
+
+        let hasValidVoucher = false;
+        voucherSelect.innerHTML = voucherDefaultOption + allVoucherOptions.map(opt => {
+          const value = parseInt(opt.getAttribute('data-value')) || 0;
+          if (value <= maxVoucherValue && total > 0) {
+            // Còn hợp lệ mới giữ lại
+            if (voucherSelect.value == opt.value) hasValidVoucher = true;
+            return opt.outerHTML;
+          }
+          return '';
+        }).join('');
+
+        // Nếu voucher đang chọn không còn hợp lệ, reset về default
+        if (!hasValidVoucher) {
+          voucherSelect.value = '';
+          selectedDiscount = 0;
+          discountEl.textContent = "0 VNĐ";
+        }
         // Tính lại totalbill
         const bill = Math.max(total - selectedDiscount + delivery, 0);
         totalBillEl.textContent = bill.toLocaleString() + ' VNĐ';
@@ -499,7 +562,7 @@
       }
     });
   </script>
-
+  @include('layouts.user.footer')
 
 </body>
 

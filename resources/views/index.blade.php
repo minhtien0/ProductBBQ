@@ -1135,44 +1135,78 @@
                 <div class="swiper-wrapper">
                     @foreach($combos as $combo)
                         <div class="swiper-slide">
-                            <a href="{{ route('views.combodetail', $combo->id) }}">
-                                <div
-                                    class="bg-white rounded-xl shadow p-3 w-80 mx-auto hover:scale-105 transition-transform duration-200">
-                                    <div class="relative">
+
+                            <div
+                                class="bg-white rounded-xl shadow p-3 w-80 mx-auto hover:scale-105 transition-transform duration-200">
+                                <div class="relative"> <a href="{{ route('views.combodetail', $combo->id) }}">
                                         <img src="{{ Str::startsWith($combo->image, 'http') ? $combo->image : asset('img/combo/' . $combo->image) }}"
-                                            class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}">
-                                        <span
-                                            class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-md font-bold shadow">-{{ rand(20, 60) }}%
-                                            Off</span>
-                                    </div>
+                                            class="w-full h-36 object-cover rounded-lg" alt="{{ $combo->name }}"></a>
+
+                                </div>
+                                <a href="{{ route('views.combodetail', $combo->id) }}">
                                     <h3 id="booking" class="text-blue-900 font-extrabold mt-3 mb-1 text-base truncate">
                                         {{ $combo->name }}
                                     </h3>
-                                    <div class="flex items-center justify-between">
-                                        <span
-                                            class="text-red-600 font-bold text-lg">{{ number_format($combo->price, 0, ',', '.') }}₫</span>
-                                        <span class="flex gap-1">
-                                            <span
-                                                class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i
-                                                    class="fa fa-shopping-basket"></i></span>
-                                            <span
-                                                class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i
-                                                    class="fa fa-heart"></i></span>
-                                            <span
-                                                class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i
-                                                    class="fa fa-eye"></i></span>
+                                </a>
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        class="text-red-600 font-bold text-lg">{{ number_format($combo->price, 0, ',', '.') }}₫</span>
+                                    <span class="flex gap-1">
+                                        <span data-combo-id="{{ $combo->id }}"
+                                            class="add-combo-to-cart bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer">
+                                            <i class="fa fa-shopping-basket"></i>
                                         </span>
-                                    </div>
+                                        <a href="{{ route('views.combodetail', $combo->id) }}">
+                                            <span
+                                                class="bg-orange-500 text-white rounded-full w-7 h-7 flex items-center justify-center"><i
+                                                    class="fa fa-eye"></i></span></a>
+                                    </span>
                                 </div>
-                            </a>
+                            </div>
+
                         </div>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
-
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Gắn sự kiện cho nút Thêm vào giỏ hàng
+            document.querySelectorAll('[data-combo-id]').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const comboId = this.getAttribute('data-combo-id');
+                    fetch("{{ route('cart.storeComboCart') }}", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ combo_id: comboId })
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            showCustomPopup(data.message || (data.success ? "Đã thêm vào giỏ hàng!" : "Đã có lỗi!"));
+                        })
+                        .catch(error => {
+                            showCustomPopup("Lỗi kết nối hoặc lỗi hệ thống!");
+                            console.error(error);
+                        });
+                });
+            });
+            // Xử lý popup show/hide
+            function showCustomPopup(message) {
+                document.getElementById('custom-popup-message').textContent = message;
+                document.getElementById('custom-popup-overlay').classList.remove('hidden');
+            }
+            document.getElementById('popup-ok-btn').onclick =
+                document.getElementById('popup-close-btn').onclick = function () {
+                    document.getElementById('custom-popup-overlay').classList.add('hidden');
+                }
+        });
+    </script>
     <!--Booking -->
     <section>
         <div class="booking-section">

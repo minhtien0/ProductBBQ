@@ -70,7 +70,7 @@
         </div>
         <!-- Chi tiết món ăn -->
         <div class="md:w-2/3">
-          <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ $foods->name }}</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ $foods->name }} ({{ $foods->quantity }})</h2>
           <div class="flex items-center gap-3 mb-2">
             <span class="text-xl font-bold text-orange-600">
               {{ number_format($foods->price, 0, ',', '.') }}đ
@@ -89,7 +89,7 @@
           <!-- Quantity & Button -->
           <div class="flex items-center gap-3 mb-3">
             <label class="font-semibold text-gray-700">Số Lượng:</label>
-            <input type="number" min="1" max="20" value="1" class="w-16 border rounded px-2 py-1 text-center"
+            <input type="number" min="1" max="{{ $foods->quantity }}" value="1" class="w-16 border rounded px-2 py-1 text-center"
               id="food-quantity">
             <span class="text-lg font-bold text-orange-700" id="total-price">
               {{ number_format($foods->price, 0, ',', '.') }}đ
@@ -101,11 +101,14 @@
               data-food-id="{{ $foods->id }}" data-food-price="{{ $foods->price }}">Thêm
               Vào
               Giỏ</button>
+
+
             <button type="button"
-              class="bg-orange-100 text-orange-700 px-5 py-2 rounded-lg font-bold border border-orange-400 favorite-btn icon-btn {{ in_array($foods->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
+              class="bg-orange-100 text-orange-700 px-5 py-2 rounded-lg font-bold border border-orange-400 favorite-btn-current icon-btn {{ in_array($foods->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
               data-food-id="{{ $foods->id }}">
               <i class="{{ in_array($foods->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }}"></i> Yêu
               Thích</button>
+
           </div>
         </div>
       </div>
@@ -227,108 +230,130 @@
   </div>
 
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // --- Tổng tiền khi đổi số lượng ---
-      const price = Number(document.querySelector('.add-to-cart').dataset.foodPrice);
-      const quantityInput = document.getElementById('food-quantity');
-      const totalPriceSpan = document.getElementById('total-price');
-      quantityInput.addEventListener('input', function () {
-        if (this.value > 20) {
-          this.value = 20;
-          updateTotalPrice();
-          showPopup('Bạn chỉ có thể mua tối đa 20 phần/lần.');
-        } else if (this.value < 1) {
-          this.value = 1;
-          updateTotalPrice();
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // --- Tổng tiền khi đổi số lượng ---
+    const price = Number(document.querySelector('.add-to-cart').dataset.foodPrice);
+    const quantityInput = document.getElementById('food-quantity');
+    const totalPriceSpan = document.getElementById('total-price');
+    const maxStock = Number(quantityInput.getAttribute('max'));
+
+    function updateTotalPrice() {
+      const qty = Number(quantityInput.value) || 1;
+      totalPriceSpan.textContent = (price * qty).toLocaleString('vi-VN') + ' VNĐ';
+    }
+
+    function handleQtyChange() {
+      // Lấy giá trị hiện tại, ép thành số nguyên
+      let val = Math.floor(Number(quantityInput.value)) || 1;
+
+      // Kiểm tra vượt quá 20
+      if (val > 20) {
+        val = 20;
+        showPopup('Bạn chỉ có thể mua tối đa 20 phần/lần.');
+      }
+      // Kiểm tra vượt quá số lượng tồn kho
+      if (val > maxStock) {
+        val = maxStock;
+        showPopup('Không được thêm quá số lượng hiện có.');
+      }
+      // Giá trị thấp nhất là 1
+      if (val < 1) {
+        val = 1;
+      }
+
+      // Gán lại và cập nhật giá
+      quantityInput.value = val;
+      updateTotalPrice();
+    }
+
+    // Lắng nghe cả input và change (cho spinner và gõ tay)
+    quantityInput.addEventListener('input', handleQtyChange);
+    quantityInput.addEventListener('change', handleQtyChange);
+
+    // Gọi khởi tạo
+    updateTotalPrice();
+
+    // --- Thêm vào giỏ hàng với số lượng thực tế ---
+    document.querySelector('.add-to-cart').addEventListener('click', async function () {
+      const foodId = this.dataset.foodId;
+      const quantity = Number(quantityInput.value) || 1;
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      try {
+        const res = await fetch("{{ route('cart.add') }}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({ food_id: foodId, quantity: quantity })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showPopup(data.message || "Đã thêm vào giỏ hàng!");
         } else {
-          updateTotalPrice();
+          showPopup(data.message || data.error || "Có lỗi xảy ra");
         }
-      });
-
-      function updateTotalPrice() {
-        const qty = Number(quantityInput.value) || 1;
-        totalPriceSpan.textContent = (price * qty).toLocaleString('vi-VN') + ' VNĐ';
+      } catch (err) {
+        showPopup("Lỗi kết nối");
       }
-      if (quantityInput && totalPriceSpan) {
-        quantityInput.addEventListener('input', updateTotalPrice);
-        updateTotalPrice();
-      }
+    });
 
-      // --- Thêm vào giỏ hàng với số lượng thực tế ---
-      document.querySelector('.add-to-cart').addEventListener('click', async function () {
-        const foodId = this.dataset.foodId;
-        const quantity = Number(quantityInput.value) || 1;
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        try {
-          const res = await fetch("{{ route('cart.add') }}", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': csrfToken,
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-            },
-            body: JSON.stringify({ food_id: foodId, quantity: quantity })
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            showPopup(data.message || "Đã thêm vào giỏ hàng!");
-          } else {
-            showPopup(data.message || data.error || "Có lỗi xảy ra");
-          }
-        } catch (err) {
-          showPopup("Lỗi kết nối");
-        }
-      });
-
-      // --- Yêu thích: Toggle đúng trạng thái cho sản phẩm hiện tại ---
-      document.querySelector('.favorite-btn').addEventListener('click', async function () {
-        const foodId = this.dataset.foodId;
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        try {
-          const res = await fetch("{{ route('favorite.toggle') }}", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': csrfToken,
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-            },
-            body: JSON.stringify({ food_id: foodId })
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            // Cập nhật icon & màu
+    // --- Yêu thích: Toggle đúng trạng thái cho sản phẩm hiện tại ---
+    document.querySelector('.favorite-btn-current').addEventListener('click', async function () {
+      const foodId = this.dataset.foodId;
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      try {
+        const res = await fetch("{{ route('favorite.toggle') }}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({ food_id: foodId })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            // chỉ update đúng nút vừa click
             if (data.favorited) {
-              this.innerHTML = '<i class="fa-solid fa-heart"></i> Yêu Thích';
+              // thêm class đỏ và icon solid
               this.classList.add('text-red-500');
               this.classList.remove('text-gray-500');
+              this.querySelector('i').classList.replace('fa-regular', 'fa-solid');
             } else {
-              this.innerHTML = '<i class="fa-regular fa-heart"></i> Yêu Thích';
+              // quay về xám và icon regular
               this.classList.remove('text-red-500');
               this.classList.add('text-gray-500');
+              this.querySelector('i').classList.replace('fa-solid', 'fa-regular');
             }
-            showPopup(data.message || "Cập nhật yêu thích thành công");
-          } else {
-            showPopup(data.message || "Có lỗi xảy ra");
-          }
-        } catch (err) {
-          showPopup("Lỗi kết nối");
+          showPopup(data.message || "Cập nhật yêu thích thành công");
+        } else {
+          showPopup(data.message || "Có lỗi xảy ra");
         }
-      });
-      const overlay = document.getElementById('custom-popup-overlay');
-      document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
-      document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
-      overlay.onclick = function (e) {
-        if (e.target === overlay) overlay.classList.add('hidden');
-      };
+      } catch (err) {
+        showPopup("Lỗi kết nối");
+      }
     });
-    function showPopup(message) {
-      document.getElementById('custom-popup-message').textContent = message;
-      document.getElementById('custom-popup-overlay').classList.remove('hidden');
-    }
-  </script>
+
+    // Popup close handlers
+    const overlay = document.getElementById('custom-popup-overlay');
+    document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+    document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+    overlay.onclick = function (e) {
+      if (e.target === overlay) overlay.classList.add('hidden');
+    };
+  });
+
+  // Hàm hiển thị popup
+  function showPopup(message) {
+    document.getElementById('custom-popup-message').textContent = message;
+    document.getElementById('custom-popup-overlay').classList.remove('hidden');
+  }
+</script>
 
   <!-- PHẦN 2: Related BBQ Items -->
   <div class="bg-dark-light max-w-6xl mx-auto py-8">
@@ -344,9 +369,23 @@
       </a>
       <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">
         @php
-      $avg = number_format($item->rates_avg_rate ?? 0, 1);
-      @endphp
-        {{ $avg }} <i class="fa-solid fa-star text-yellow-400"></i>
+      $avg = $item->rates_avg_rate;
+    @endphp
+
+    @for($i = 1; $i <= 5; $i++)
+      @if($avg >= $i)
+        {{-- đầy đủ sao --}}
+        <i class="fa-solid fa-star text-yellow-400"></i>
+      @elseif($avg >= $i - 0.5)
+        {{-- nửa sao --}}
+        <i class="fa-solid fa-star-half-stroke text-yellow-400"></i>
+      @else
+        {{-- sao rỗng --}}
+        <i class="fa-regular fa-star text-gray-300"></i>
+      @endif
+    @endfor
+
+    <span class="ml-1 font-semibold">{{ number_format($avg, 1) }}</span>
       </div>
       <div class="text-sm font-bold text-orange-600 mb-2">
         {{ number_format($item->price, 0, ',', '.') }}đ
@@ -354,13 +393,15 @@
       <div class="flex gap-2">
         <button type="button"
         class="add-to-cart bg-orange-500 text-white px-3 py-1 rounded font-bold text-sm hover:bg-orange-600 "
-        data-food-id="{{ $foods->id }}" aria-label="Thêm vào giỏ hàng">
+        data-food-id="{{ $item->id }}" aria-label="Thêm vào giỏ hàng">
         <i class="fa fa-cart-plus"></i> Thêm Giỏ Hàng</button>
-        <button data-food-id="{{ $foods->id }}"
-        class=" favorite-btn icon-btn {{ in_array($foods->id, $favIds) ? 'text-red-500' : 'text-gray-500' }} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
-        <i class="{{ in_array($foods->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
+
+        <button data-food-id="{{ $item->id }}"
+        class=" favorite-btn icon-btn {{ in_array($item->id, $favIds) ? 'text-red-500' : 'text-gray-500' }} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
+        <i class="{{ in_array($item->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
         </button>
-        <button class="icon-btn"><a href="{{ route('views.menudetail', [$foods->id, $foods->slug]) }}"><i
+        
+        <button class="icon-btn"><a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}"><i
           class="fa-regular fa-eye"></i></a></button>
       </div>
       </div>
