@@ -104,14 +104,18 @@ class OrderController extends Controller
             ->firstOrFail();
 
         // Lấy chi tiết sản phẩm
-        $details = OrderDetail::join('foods', 'order_details.product_id', '=', 'foods.id')
+        $details = OrderDetail::leftJoin('foods', 'order_details.product_id', '=', 'foods.id')
+            ->leftJoin('food_combos', 'order_details.combo_id', '=', 'food_combos.id')
             ->where('order_details.order_id', $id)
             ->select([
                 'order_details.*',
                 'foods.name as food_name',
                 'foods.price as food_price',
+                'food_combos.name as combo_name',
+                'food_combos.price as combo_price',
             ])
             ->get();
+
 
         return view('admin.order.show', compact('order', 'details'));
     }
@@ -149,6 +153,9 @@ class OrderController extends Controller
                     return back()->with('error', 'Sản phẩm ' . $product->name . ' không đủ hàng!');
                 }
                 $product->quantity -= $item->quantity;
+                if ($product->quantity == 0) {
+                    $product->status = 'Hết Hàng'; // hoặc $product->is_active = 0;
+                }
                 $product->save();
             }
         }

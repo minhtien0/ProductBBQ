@@ -232,7 +232,7 @@
                 <div class="bg-slate-700/30 rounded-lg p-3 mb-4">
                     <div class="flex justify-between items-center text-white">
                         <span class="font-medium">Tổng tiền:</span>
-                        <span id="total-amount" class="text-xl font-bold text-green-400">0₫</span>
+                        <span id="total-amount" class="text-xl font-bold text-green-400">0 VNĐ</span>
                     </div>
                 </div>
 
@@ -320,8 +320,8 @@
         <tr>
             <td class="py-1">${item.product_name}</td>
             <td class="py-1 text-center">${item.quantity}</td>
-            <td class="py-1 text-right">${item.price.toLocaleString()}₫</td>
-            <td class="py-1 text-right">${(item.price * item.quantity).toLocaleString()}₫</td>
+            <td class="py-1 text-right"> ${item.price ? Number(item.price).toLocaleString('vi-VN') + ' VNĐ' : ''}</td>
+            <td class="py-1 text-right">${(item.price * item.quantity)? Number(item.price * item.quantity).toLocaleString('vi-VN') + ' VNĐ' : ''}</td>
         </tr>
     `).join('');
 
@@ -639,7 +639,7 @@ function closeReviewPopup() {
         <div class="menu-item-hover bg-slate-700/30 rounded-xl overflow-hidden cursor-pointer transition-all fade-in max-h-[244px]">
             <div class="relative">
                 <img src="${menu.image ? (menu.image.startsWith('http') ? menu.image : '/img/' + menu.image) : '/img/default-food.jpg'}" alt="${menu.name}" class="w-full h-32 object-cover">
-                <div class="absolute top-2 right-2 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-semibold">${menu.price ? menu.price + '₫' : ''}</div>
+                <div class="absolute top-2 right-2 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-semibold"> ${menu.price ? Number(menu.price).toLocaleString('vi-VN') + ' VNĐ' : ''}</div>
             </div>
             <div class="p-3 flex flex-col justify-between gap-2 h-[120px]"> <!-- Thêm justify-between và chiều cao -->
     <h3 class="text-white font-medium text-sm">${menu.name}</h3>
@@ -775,10 +775,10 @@ function closeReviewPopup() {
             return `
     <div class="p-4 hover:bg-slate-700/20 transition-colors">
         <div class="flex items-start gap-3">
-            <img src="${item.image.startsWith('http') ? item.image : '/img/' + item.image}" class="w-12 h-12 object-cover rounded-lg" alt="${item.product_name}">
+          <img src="${item.image}" class="w-12 h-12 object-cover rounded-lg" alt="${item.product_name}">
             <div class="flex-1">
                 <h4 class="text-white font-medium text-sm mb-1">${item.product_name}</h4>
-                <p class="text-slate-300 text-xs mb-2">${item.price}₫ x ${item.quantity}</p>
+                <p class="text-slate-300 text-xs mb-2"> ${item.price ? Number(item.price).toLocaleString('vi-VN') + ' VNĐ' : ''} x ${item.quantity}</p>
                 <span class="text-xs text-slate-400">${item.status || ''}</span>
                 <div class="flex gap-2 items-center mt-2">
                     <button onclick="updateQuantity('${item.id}', -1)" class="w-7 h-7 bg-slate-600 hover:bg-slate-500 rounded-full flex items-center justify-center text-white text-xs"><i class="fas fa-minus"></i></button>
@@ -787,13 +787,13 @@ function closeReviewPopup() {
                     <button onclick="deleteOrderItem('${item.id}')" class="w-7 h-7 bg-red-600 hover:bg-red-400 rounded-full flex items-center justify-center text-white text-xs ml-2"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
-            <span class="text-green-400 font-medium text-sm">${itemTotal}₫</span>
+            <span class="text-green-400 font-medium text-sm">${itemTotal? Number(itemTotal).toLocaleString('vi-VN') + ' VNĐ' : ''}</span>
         </div>
     </div>
 `;
 
         }).join('');
-        document.getElementById('total-amount').textContent = total + '₫';
+       document.getElementById('total-amount').textContent = Number(total).toLocaleString('vi-VN') + ' VNĐ';
     }
     window.changeQuantity = function(index, delta) {
         let arr = orderData[currentTableId];

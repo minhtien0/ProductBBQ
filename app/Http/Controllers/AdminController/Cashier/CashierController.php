@@ -144,8 +144,8 @@ class CashierController extends Controller
             'foods.name as food_name',
             'foods.price as food_price',
             'foods.image as food_image',
-            DB::raw('SUM(quantity * foods.price) as total_revenue'),
-            DB::raw('SUM(quantity) as total_quantity')
+            DB::raw('SUM(order_details.quantity * foods.price) as total_revenue'),
+            DB::raw('SUM(order_details.quantity) as total_quantity')
         )
             ->join('foods', 'order_details.product_id', '=', 'foods.id')
             ->groupBy('product_id', 'foods.name', 'foods.price', 'foods.image')
@@ -156,7 +156,7 @@ class CashierController extends Controller
         //dd($listTopDeal);
         // Tổng doanh thu của top 5 món để tính %
         $totalRevenueAll = OrderDetail::join('foods', 'order_details.product_id', '=', 'foods.id')
-            ->select(DB::raw('SUM(quantity * foods.price) as total'))
+            ->select(DB::raw('SUM(order_details.quantity * foods.price) as total'))
             ->value('total');
 
         $totalTopDealRevenue = $listTopDeal->sum('total_revenue');

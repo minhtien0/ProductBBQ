@@ -33,4 +33,8 @@ class Cart extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function combo()
+{
+    return $this->belongsTo(FoodCombo::class, 'combo_id');
+}
 }

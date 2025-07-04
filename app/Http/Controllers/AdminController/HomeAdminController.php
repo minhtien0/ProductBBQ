@@ -312,19 +312,34 @@ class HomeAdminController extends Controller
         }
 
 
-        $items = \App\Models\OrderDetail::with('food')
+        $items = \App\Models\OrderDetail::with(['food', 'combo'])
             ->where('order_id', $order->id)
             ->get()
             ->map(function ($item) {
+                if ($item->food) {
+                    $image = asset('img/' . $item->food->image); // nếu food, trả về /img/...
+                    $product_name = $item->food->name;
+                    $price = $item->food->price;
+                } elseif ($item->combo) {
+                    $image = asset('img/combo/' . $item->combo->image); // nếu combo, trả về /img/combo/...
+                    $product_name = $item->combo->name;
+                    $price = $item->combo->price;
+                } else {
+                    $image = asset('img/default.png');
+                    $product_name = 'Sản phẩm';
+                    $price = 0;
+                }
+
                 return [
                     'id' => $item->id,
-                    'product_name' => $item->food->name ?? '',
+                    'product_name' => $product_name,
                     'quantity' => $item->quantity,
-                    'price' => $item->food->price ?? 0,
-                    'image' => $item->food->image ?? 'default-food.jpg',
+                    'price' => $price,
+                    'image' => $image,   // Đã chuẩn hóa đường dẫn
                     'status' => $item->status,
                 ];
             });
+
 
         $comboData = [];
         if ($comboIds->isNotEmpty()) {
@@ -404,43 +419,58 @@ class HomeAdminController extends Controller
         return response()->json(['success' => true]);
     }
 
-public function addComboToOrder(Request $request)
-{
-    $tableId = $request->table_id;
-    $comboId = $request->combo_id;
+    public function addComboToOrder(Request $request)
+    {
+        $tableId = $request->table_id;
+        $comboId = $request->combo_id;
 
-    // Tìm đơn hàng đang mở của bàn
-    $order = \App\Models\Order::where('table_id', $tableId)
-        ->whereNotIn('statusorder', ['Đã Đóng', 'Hủy']) // thêm điều kiện chặt chẽ hơn nếu cần
-        ->latest()
-        ->first();
+        // Tìm đơn hàng đang mở của bàn
+        $order = \App\Models\Order::where('table_id', $tableId)
+            ->whereNotIn('statusorder', ['Đã Đóng', 'Hủy']) // thêm điều kiện chặt chẽ hơn nếu cần
+            ->latest()
+            ->first();
 
-    // Nếu không tìm thấy đơn hàng mở
-    if (!$order) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Vui lòng mở bàn để thực hiện thêm combo'
-        ], 404);
+        // Nếu không tìm thấy đơn hàng mở
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng mở bàn để thực hiện thêm combo'
+            ], 404);
+        }
+
+        // Kiểm tra combo đã có trong đơn hàng chưa
+        $exists = \DB::table('order_details')
+            ->where('order_id', $order->id)
+            ->where('combo_id', $comboId)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bàn này đã có combo này trong đơn hàng, không thể thêm trùng.'
+            ], 409);
+        }
+
+        try {
+            // Tạo liên kết combo với order
+            DB::table('order_details')->insert([
+                'order_id' => $order->id,
+                'combo_id' => $comboId,
+                'quantity' => 1,
+                'status' => 'Chờ xác nhận',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Thêm combo vào đơn hàng thành công.']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi thêm combo vào đơn hàng.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
-
-    try {
-        // Tạo liên kết combo với order
-        DB::table('order_combos')->insert([
-            'order_id' => $order->id,
-            'combo_id' => $comboId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return response()->json(['success' => true, 'message' => 'Thêm combo vào đơn hàng thành công.']);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Có lỗi xảy ra khi thêm combo vào đơn hàng.',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
-}
 
 
     public function getAllCombos()
@@ -525,169 +555,169 @@ public function addComboToOrder(Request $request)
         return response()->json(['success' => true, 'message' => 'Đã xóa món!']);
     }
 
-public function createQrOrder(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'address_id' => 'nullable|integer|exists:addresses,id',
-        'totalprice' => 'nullable|integer|min:1',
-        'voucher_id' => 'nullable|integer|exists:vouchers,id',
-        'totalbill' => 'required|integer|min:1',
-        'note' => 'nullable|string|max:500',
-        'products' => 'required|array|min:1',
-        'products.*.id' => 'required|integer',
-        'products.*.quantity' => 'required|integer|min:1',
-    ]);
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->errors(),
-        ], 422);
-    }
-
-    // Tạo token QR lưu vào cache
-    $token = Str::random(40);
-    Cache::put('qr_order_' . $token, [
-        'user_id'    => session('user_id'),
-        'address_id' => $request->address_id,
-        'totalprice' => $request->totalprice,
-        'voucher_id' => $request->voucher_id,
-        'totalbill'  => $request->totalbill,
-        'note'       => $request->note,
-        'products'   => $request->products,
-    ], now()->addMinutes(10));
-
-    // URL xác nhận => client sẽ tạo QR cho link này!
-    $qr_url = url('/confirm-qr-order/' . $token);
-
-    return response()->json([
-        'success' => true,
-        'qr_url'  => $qr_url,
-    ]);
-}
-
-
-public function confirmQrOrder($token)
-{
-    $data = Cache::get('qr_order_' . $token);
-    if (!$data) {
-        return response("Mã QR không hợp lệ hoặc đã hết hạn!", 404);
-    }
-
-    // Xóa token cache
-    Cache::forget('qr_order_' . $token);
-
-    // Tạo TxnRef cho giao dịch VNPAY
-    $vnp_TmnCode    = "U8U9C1HI";
-    $vnp_HashSecret = "NJGOGY2HL4CARZZ7BB0JO24BH0U2WUIU";
-    $vnp_Url        = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    $vnp_Returnurl  = route('vnpay.return');
-    $vnp_TxnRef     = 'NMT' . strtoupper(Str::random(8));
-
-    // Lưu thông tin order TẠM vào session (pending) để callback dùng
-    session([
-        'pending_order' => [
-            'user_id'    => $data['user_id'],
-            'address_id' => $data['address_id'],
-            'totalprice' => $data['totalprice'],
-            'voucher_id' => $data['voucher_id'],
-            'totalbill'  => $data['totalbill'],
-            'note'       => $data['note'],
-            'products'   => $data['products'],
-            'vnp_TxnRef' => $vnp_TxnRef,
-        ]
-    ]);
-
-    // Build data redirect VNPAY
-    $inputData = [
-        "vnp_Version"    => "2.1.0",
-        "vnp_TmnCode"    => $vnp_TmnCode,
-        "vnp_Amount"     => $data['totalbill'] * 100,
-        "vnp_Command"    => "pay",
-        "vnp_CreateDate" => date('YmdHis'),
-        "vnp_CurrCode"   => "VND",
-        "vnp_IpAddr"     => request()->ip(),
-        "vnp_Locale"     => "vn",
-        "vnp_OrderInfo"  => "Thanh toan GD:" . $vnp_TxnRef,
-        "vnp_OrderType"  => "other",
-        "vnp_ReturnUrl"  => $vnp_Returnurl,
-        "vnp_TxnRef"     => $vnp_TxnRef,
-    ];
-    ksort($inputData);
-    $query = '';
-    $hashdata = '';
-    $i = 0;
-    foreach ($inputData as $key => $value) {
-        $hashdata .= ($i++ ? '&' : '') . "{$key}=" . urlencode($value);
-        $query .= urlencode($key) . "=" . urlencode($value) . '&';
-    }
-    $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
-    $vnp_Url .= "?" . $query . "vnp_SecureHash={$vnpSecureHash}";
-
-    // Chuyển user sang trang thanh toán VNPAY (không tạo đơn!)
-    return redirect($vnp_Url);
-}
-
-public function vnpayReturn(Request $request)
-{
-    // Xác thực chữ ký và mã thành công
-    $rawQuery = $_SERVER['QUERY_STRING'];
-    $hashData = preg_replace('/(&?vnp_SecureHashType=[^&]*)/i', '', $rawQuery);
-    $hashData = preg_replace('/(&?vnp_SecureHash=[^&]*)/i', '', $hashData);
-    $hashData = ltrim($hashData, '&');
-    $computedHash = hash_hmac('sha512', $hashData, env('VNPAY_HASH_SECRET'));
-    $returnedHash = $request->get('vnp_SecureHash', '');
-
-    if (strtoupper($computedHash) !== strtoupper($returnedHash)) {
-        \Log::error('VNPAY Return Signature Mismatch', [
-            'expected' => $returnedHash,
-            'computed' => $computedHash,
-            'string' => $hashData,
+    public function createQrOrder(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'address_id' => 'nullable|integer|exists:addresses,id',
+            'totalprice' => 'nullable|integer|min:1',
+            'voucher_id' => 'nullable|integer|exists:vouchers,id',
+            'totalbill' => 'required|integer|min:1',
+            'note' => 'nullable|string|max:500',
+            'products' => 'required|array|min:1',
+            'products.*.id' => 'required|integer',
+            'products.*.quantity' => 'required|integer|min:1',
         ]);
-        return redirect()->route('views.cart')
-            ->with('error', 'Xác thực VNPAY thất bại!');
-    }
-
-    if ($request->get('vnp_ResponseCode') !== '00') {
-        return redirect()->route('views.cart')
-            ->with('error', 'Thanh toán VNPAY không thành công: ' . $request->get('vnp_ResponseCode'));
-    }
-
-    $pending = session('pending_order');
-    if (!$pending) {
-        return redirect()->route('views.cart')
-            ->with('error', 'Không tìm thấy dữ liệu đơn hàng!');
-    }
-
-    // Lưu đơn hàng
-    DB::transaction(function () use ($pending, $request) {
-        $txRef = $pending['vnp_TxnRef'] ?? $request->get('vnp_TxnRef');
-        $order = Order::create([
-            'code'           => $txRef,
-            'id_user'        => $pending['user_id'],
-            'address'        => $pending['address_id'],
-            'totalprice'     => $pending['totalprice'],
-            'voucher'        => $pending['voucher_id'],
-            'totalbill'      => $pending['totalbill'],
-            'statusorder'    => 'Chờ Xác Nhận',
-            'typepayment'    => 2,
-            'type'           => 1,
-            'note'           => $pending['note'],
-            'transaction_no' => $request->get('vnp_TransactionNo'),
-            'transaction_date' => $request->get('vnp_PayDate'),
-        ]);
-        foreach ($pending['products'] as $item) {
-            OrderDetail::create([
-                'order_id'   => $order->id,
-                'product_id' => $item['id'],
-                'quantity'   => $item['quantity'],
-            ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
         }
-    });
 
-    session()->forget('pending_order');
-    return redirect()->route('views.cart')
-        ->with('success', 'Thanh toán VNPAY thành công!');
-}
+        // Tạo token QR lưu vào cache
+        $token = Str::random(40);
+        Cache::put('qr_order_' . $token, [
+            'user_id' => session('user_id'),
+            'address_id' => $request->address_id,
+            'totalprice' => $request->totalprice,
+            'voucher_id' => $request->voucher_id,
+            'totalbill' => $request->totalbill,
+            'note' => $request->note,
+            'products' => $request->products,
+        ], now()->addMinutes(10));
+
+        // URL xác nhận => client sẽ tạo QR cho link này!
+        $qr_url = url('/confirm-qr-order/' . $token);
+
+        return response()->json([
+            'success' => true,
+            'qr_url' => $qr_url,
+        ]);
+    }
+
+
+    public function confirmQrOrder($token)
+    {
+        $data = Cache::get('qr_order_' . $token);
+        if (!$data) {
+            return response("Mã QR không hợp lệ hoặc đã hết hạn!", 404);
+        }
+
+        // Xóa token cache
+        Cache::forget('qr_order_' . $token);
+
+        // Tạo TxnRef cho giao dịch VNPAY
+        $vnp_TmnCode = "U8U9C1HI";
+        $vnp_HashSecret = "NJGOGY2HL4CARZZ7BB0JO24BH0U2WUIU";
+        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        $vnp_Returnurl = route('vnpay.return');
+        $vnp_TxnRef = 'NMT' . strtoupper(Str::random(8));
+
+        // Lưu thông tin order TẠM vào session (pending) để callback dùng
+        session([
+            'pending_order' => [
+                'user_id' => $data['user_id'],
+                'address_id' => $data['address_id'],
+                'totalprice' => $data['totalprice'],
+                'voucher_id' => $data['voucher_id'],
+                'totalbill' => $data['totalbill'],
+                'note' => $data['note'],
+                'products' => $data['products'],
+                'vnp_TxnRef' => $vnp_TxnRef,
+            ]
+        ]);
+
+        // Build data redirect VNPAY
+        $inputData = [
+            "vnp_Version" => "2.1.0",
+            "vnp_TmnCode" => $vnp_TmnCode,
+            "vnp_Amount" => $data['totalbill'] * 100,
+            "vnp_Command" => "pay",
+            "vnp_CreateDate" => date('YmdHis'),
+            "vnp_CurrCode" => "VND",
+            "vnp_IpAddr" => request()->ip(),
+            "vnp_Locale" => "vn",
+            "vnp_OrderInfo" => "Thanh toan GD:" . $vnp_TxnRef,
+            "vnp_OrderType" => "other",
+            "vnp_ReturnUrl" => $vnp_Returnurl,
+            "vnp_TxnRef" => $vnp_TxnRef,
+        ];
+        ksort($inputData);
+        $query = '';
+        $hashdata = '';
+        $i = 0;
+        foreach ($inputData as $key => $value) {
+            $hashdata .= ($i++ ? '&' : '') . "{$key}=" . urlencode($value);
+            $query .= urlencode($key) . "=" . urlencode($value) . '&';
+        }
+        $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+        $vnp_Url .= "?" . $query . "vnp_SecureHash={$vnpSecureHash}";
+
+        // Chuyển user sang trang thanh toán VNPAY (không tạo đơn!)
+        return redirect($vnp_Url);
+    }
+
+    public function vnpayReturn(Request $request)
+    {
+        // Xác thực chữ ký và mã thành công
+        $rawQuery = $_SERVER['QUERY_STRING'];
+        $hashData = preg_replace('/(&?vnp_SecureHashType=[^&]*)/i', '', $rawQuery);
+        $hashData = preg_replace('/(&?vnp_SecureHash=[^&]*)/i', '', $hashData);
+        $hashData = ltrim($hashData, '&');
+        $computedHash = hash_hmac('sha512', $hashData, env('VNPAY_HASH_SECRET'));
+        $returnedHash = $request->get('vnp_SecureHash', '');
+
+        if (strtoupper($computedHash) !== strtoupper($returnedHash)) {
+            \Log::error('VNPAY Return Signature Mismatch', [
+                'expected' => $returnedHash,
+                'computed' => $computedHash,
+                'string' => $hashData,
+            ]);
+            return redirect()->route('views.cart')
+                ->with('error', 'Xác thực VNPAY thất bại!');
+        }
+
+        if ($request->get('vnp_ResponseCode') !== '00') {
+            return redirect()->route('views.cart')
+                ->with('error', 'Thanh toán VNPAY không thành công: ' . $request->get('vnp_ResponseCode'));
+        }
+
+        $pending = session('pending_order');
+        if (!$pending) {
+            return redirect()->route('views.cart')
+                ->with('error', 'Không tìm thấy dữ liệu đơn hàng!');
+        }
+
+        // Lưu đơn hàng
+        DB::transaction(function () use ($pending, $request) {
+            $txRef = $pending['vnp_TxnRef'] ?? $request->get('vnp_TxnRef');
+            $order = Order::create([
+                'code' => $txRef,
+                'id_user' => $pending['user_id'],
+                'address' => $pending['address_id'],
+                'totalprice' => $pending['totalprice'],
+                'voucher' => $pending['voucher_id'],
+                'totalbill' => $pending['totalbill'],
+                'statusorder' => 'Chờ Xác Nhận',
+                'typepayment' => 2,
+                'type' => 1,
+                'note' => $pending['note'],
+                'transaction_no' => $request->get('vnp_TransactionNo'),
+                'transaction_date' => $request->get('vnp_PayDate'),
+            ]);
+            foreach ($pending['products'] as $item) {
+                OrderDetail::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['id'],
+                    'quantity' => $item['quantity'],
+                ]);
+            }
+        });
+
+        session()->forget('pending_order');
+        return redirect()->route('views.cart')
+            ->with('success', 'Thanh toán VNPAY thành công!');
+    }
 
 
 

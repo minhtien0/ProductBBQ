@@ -108,7 +108,7 @@
         <!-- Vòng tròn năm kinh nghiệm -->
         <div class="absolute top-4 right-[-54px] bg-[#ff8000] text-white rounded-full w-[190px] h-[190px] flex flex-col items-center justify-center border-8 border-white shadow-lg
           text-center text-3xl font-extrabold" style="font-family:Montserrat,sans-serif;">
-          <div>10+</div>
+          <div>2+</div>
           <div class="text-base font-normal mt-1" style="font-family:Poppins,sans-serif;">Years<br>BBQ Mastery</div>
         </div>
         <!-- Quote Box -->
@@ -116,7 +116,7 @@
           " style="font-family:Poppins,sans-serif;">
           <div class="text-lg leading-relaxed">Hương vị BBQ là ngọn lửa của đam mê và tình yêu với ẩm thực!</div>
           <div class="text-[#ff8000] font-bold text-xl text-right mt-2 italic"
-            style="font-family:Montserrat,sans-serif;">Đầu Bếp Tiến</div>
+            style="font-family:Montserrat,sans-serif;">CEO Tiến ĐÔNG</div>
         </div>
       </div>
       <!-- Right: Nội dung -->
@@ -130,7 +130,7 @@
           Trải nghiệm BBQ đích thực</h2>
         <p class="text-lg mb-8 ml-2" style="font-family:Poppins,sans-serif;">
           LỬA BÉ HOY là nơi hội tụ tinh hoa BBQ, mang đến những món nướng đậm đà hương vị từ thịt bò thượng hạng, sườn
-          heo mật ong, và hải sản tươi sống. Với hơn 10 năm kinh nghiệm, chúng tôi cam kết phục vụ thực khách bằng ngọn
+          heo mật ong, và hải sản tươi sống. Với kinh nghiệm làm việc, chúng tôi cam kết phục vụ thực khách bằng ngọn
           lửa đam mê và nguyên liệu chất lượng cao.
         </p>
         <!-- Features List -->

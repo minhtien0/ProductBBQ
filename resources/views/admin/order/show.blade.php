@@ -110,27 +110,47 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($details as $item)
+                               @foreach($details as $item)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium text-gray-900">{{ $item->food_name }}</div>
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{-- Nếu có combo_id thì hiện tên combo, không thì hiện tên món --}}
+                                                @if($item->combo_id)
+                                                    <span class="text-indigo-600 font-bold">[Combo]</span>
+                                                    {{ $item->combo_name }}
+                                                @else
+                                                    {{ $item->food_name }}
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right">
-                                            <div class="text-sm text-gray-900">{{ number_format($item->food_price) }}đ</div>
+                                            <div class="text-sm text-gray-900">
+                                                {{-- Nếu là combo thì hiện giá combo, không thì giá món --}}
+                                                @if($item->combo_id)
+                                                    {{ number_format($item->combo_price) }}đ
+                                                @else
+                                                    {{ number_format($item->food_price) }}đ
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                                 {{ $item->quantity }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right">
                                             <div class="text-sm font-medium text-gray-900">
-                                                {{ number_format($item->quantity * $item->food_price) }}đ
+                                                {{-- Tổng giá = số lượng * giá --}}
+                                                @if($item->combo_id)
+                                                    {{ number_format($item->quantity * $item->combo_price) }}đ
+                                                @else
+                                                    {{ number_format($item->quantity * $item->food_price) }}đ
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
                                 @endforeach
+
                             </tbody>
                         </table>
                     </div>

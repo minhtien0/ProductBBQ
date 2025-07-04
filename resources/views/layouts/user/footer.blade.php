@@ -202,12 +202,12 @@
         <div class="footer-section overflow-x-hidden">
             <div class="footer-wrap w-full max-w-[1300px] mx-auto px-6 flex flex-wrap justify-between gap-6 md:gap-10 overflow-hidden">
                 <!-- Logo & Social -->
-                <div class="footer-col">
+                <div class="footer-col flex-1">
                     <div class="footer-logo">
                         <i class="fa-solid fa-utensils"></i> LUA BE HOY
                     </div>
                     <div class="footer-desc">
-                    Nhà hàng BBQ là điểm đến lý tưởng dành cho những tín đồ yêu thích món nướng. Với không gian hiện đại, ấm cúng và phong cách phục vụ chuyên nghiệp.
+                   Lua Be Hoy là điểm đến lý tưởng dành cho những tín đồ yêu thích món nướng. Với không gian hiện đại, ấm cúng và phong cách phục vụ chuyên nghiệp.
                     </div>
                     <div class="footer-social">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -216,28 +216,17 @@
                     </div>
                 </div>
                 <!-- Short Link -->
-                <div class="footer-col">
-                    <h3>Liên Kết</h3>
-                    <ul class="footer-link-list">
+                <div class="footer-col flex-1 flex flex-col items-center">
+                    <h3 class="text-center mb-2">Liên Kết</h3>
+                    <ul class="footer-link-list text-center">
                         <li><a href="{{ route('views.index') }}">Trang Chủ</a></li>
                         <li><a href="{{ route('views.about') }}">Giới Thiệu</a></li>
                         <li><a href="{{ route('views.contact') }}">Liên Hệ</a></li>
                         <li><a href="{{ route('views.blog') }}">Tin Tức</a></li>
                     </ul>
                 </div>
-                <!-- Help Link -->
-                <div class="footer-col">
-                    <h3>Liên kết trợ giúp</h3>
-                    <ul class="footer-help-list">
-                    <li><a href="#">Điều khoản &amp; Điều kiện</a></li>
-                    <li><a href="#">Chính sách bảo mật</a></li>
-                    <li><a href="#">Chính sách hoàn tiền</a></li>
-                    <li><a href="#">Câu hỏi thường gặp</a></li>
-                    <li><a href="#">Liên hệ</a></li>
-                    </ul>
-                </div>
                 <!-- Contact -->
-                <div class="footer-col">
+                <div class="footer-col flex-1">
                     <h3>Liên hệ với chúng tôi</h3>
                     <div class="footer-contact">
                         <div><i class="fa fa-phone"></i>{{ $infos->sdt }}</div>

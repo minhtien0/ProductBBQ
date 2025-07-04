@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>LUA BE HOY</title>
         <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
         <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700&display=swap" rel="stylesheet">
@@ -66,14 +67,12 @@
                         DANH MỤC SẢN PHẨM
                     </h3>
                     <ul class="space-y-3">
+                        @foreach ($foods as $food)
                         <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors">
                             <i class="fas fa-meat mr-2"></i>
-                            THỊT BÒ MỸ NHẬP KHẨU
+                           {{ $food->name }}
                         </a></li>
-                        <li><a href="#" class="flex items-center p-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors">
-                            <i class="fas fa-fire mr-2"></i>
-                            SET NƯỚNG - LẨU
-                        </a></li>
+                        @endforeach
                     </ul>
                 </div>
 
@@ -91,7 +90,7 @@
                             <img src="{{ asset('img/combo/'. $hotCombo->image) }}" class="w-12 h-12 object-cover rounded-lg border">
                             <div class="flex-1">
                                 <a href="#" class="font-semibold hover:text-red-600 block text-sm mb-1">{{  $hotCombo->name }}</a>
-                                <div class="text-red-500 font-bold text-sm">{{  $hotCombo->price}}₫</div>
+                                <div class="text-red-500 font-bold text-sm">{{ number_format($hotCombo->price, 0, ',', '.') }} VNĐ</div>
                             </div>
                         </div>
                          @endforeach
@@ -111,7 +110,7 @@
                             <img src="{{ asset('img/combo/'. $hotCombo->image) }}" class="w-12 h-12 object-cover rounded-lg border">
                             <div class="flex-1">
                                 <a href="{{ route('views.combodetail',$hotCombo->id) }}" class="font-semibold hover:text-red-600 block text-sm mb-1">{{  $hotCombo->name }}</a>
-                                <div class="text-red-500 font-bold text-sm">{{  $hotCombo->price}}₫</div>
+                                <div class="text-red-500 font-bold text-sm">{{ number_format($hotCombo->price, 0, ',', '.') }} VNĐ</div>
                             </div>
                         </div>
                          @endforeach
@@ -145,11 +144,11 @@
                                 <div class="price-highlight rounded-xl  mb-4">
                                     <div class="flex items-center ">
                                         <span class="text-gray-700 font-semibold mr-3">Giá combo:</span>
-                                        <span class="text-2xl font-bold text-red-600">{{  $combo->price}}₫</span>
+                                        <span class="text-2xl font-bold text-red-600">{{ number_format($combo->price, 0, ',', '.') }} VNĐ</span>
                                     </div>
                                     <div class="text-sm text-gray-600 mt-1">
                                         <i class="fas fa-tag mr-1"></i>
-                                        Tiết kiệm {{ number_format($combo->total_price - $combo->price, 0, ',', '.') }}₫ so với mua lẻ
+                                        Tiết kiệm {{ number_format($combo->total_price - $combo->price, 0, ',', '.') }} VNĐ so với mua lẻ
                                     </div>
                                 </div>
 
@@ -175,13 +174,12 @@
 
                             <!-- Call to action -->
                             <div class="space-y-3">
-                                <button class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-300 flex items-center justify-center">
+                                <button
+                                    class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-300 flex items-center justify-center add-combo-to-cart"
+                                    data-combo-id="{{ $combo->id }}"
+                                >
                                     <i class="fas fa-cart-plus mr-2"></i>
                                     THÊM VÀO GIỎ HÀNG
-                                </button>
-                                <button class="w-full border-2 border-red-600 text-red-600 hover:bg-red-50 font-semibold py-3 px-6 rounded-xl transition-colors duration-300 flex items-center justify-center">
-                                    <i class="fas fa-phone mr-2"></i>
-                                    GỌI ĐẶT HÀNG: 0123.456.789
                                 </button>
                             </div>
                         </div>
@@ -218,7 +216,7 @@
                                     <a href="{{ route('views.menudetail',[$food->id,$food->slug]) }}">
                                     <h3 class="font-bold text-gray-800 mb-1">{{ $food->name }}</h3>
                                     <div class="flex justify-between items-center">
-                                        <span class="text-red-600 font-semibold">{{ $food->price }}₫</span>
+                                       {{ number_format($food->price, 0, ',', '.') }} VNĐ
                                         
                                     </div>
                                     </a>
@@ -229,17 +227,55 @@
                         @endforeach
                     </div>
 
+                        <div id="custom-popup-overlay"
+        class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
+        <!-- Container chính -->
+        <div id="custom-popup"
+            class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-info-circle text-white"></i>
+                        <span class="text-white font-semibold text-lg">Thông báo</span>
+                    </div>
+                    <button id="popup-close-btn"
+                        class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Nội dung -->
+            <div class="px-6 py-8 text-center">
+                <div
+                    class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-info text-blue-600 text-2xl"></i>
+                </div>
+                <div id="custom-popup-message" class="text-gray-800 text-base font-semibold mb-6">
+                    <!-- Nội dung message sẽ được show ở đây -->
+                </div>
+                <button id="popup-ok-btn"
+                    class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
                     <!-- Tổng giá trị -->
                     <div class="mt-6 p-4 bg-gray-50 rounded-xl">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-gray-600">Tổng giá trị nếu mua lẻ:</span>
-                            <span class="font-semibold text-gray-800 line-through">{{ $combo->total_price }}</span>
+                            <span class="font-semibold text-gray-800 line-through">{{ number_format($combo->total_price, 0, ',', '.') }} VNĐ</span>
                         </div>
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-red-600 font-semibold">
-                                Giá combo (tiết kiệm {{ number_format($combo->total_price - $combo->price, 0, ',', '.') }}₫):
+                                Giá combo (tiết kiệm {{ number_format($combo->total_price - $combo->price, 0, ',', '.') }} VNĐ):
                             </span>
-                            <span class="text-2xl font-bold text-red-600">{{ $combo->price }}₫</span>
+                            <span class="text-2xl font-bold text-red-600">{{ number_format($combo->price, 0, ',', '.') }} VNĐ</span>
                         </div>
                         <div class="text-center mt-3">
                             @php
@@ -259,7 +295,51 @@
             </main>
         </div>
     </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Gắn sự kiện cho nút Thêm vào giỏ hàng
+    document.querySelectorAll('.add-combo-to-cart').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
 
+            const comboId = this.getAttribute('data-combo-id');
+            // Gửi AJAX POST tới route thêm giỏ hàng (ví dụ: /cart/combo)
+            fetch("{{ route('cart.storeComboCart') }}", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    combo_id: comboId
+                    // Các trường khác để backend tự xử (user_id qua session, food_id: null, type: null)
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Hiển thị popup thông báo
+                showCustomPopup(data.message || (data.success ? "Đã thêm vào giỏ hàng!" : "Đã có lỗi!"));
+            })
+            .catch(error => {
+                showCustomPopup("Lỗi kết nối hoặc lỗi hệ thống!");
+                console.error(error);
+            });
+        });
+    });
+
+    // Xử lý popup show/hide
+    function showCustomPopup(message) {
+        document.getElementById('custom-popup-message').textContent = message;
+        document.getElementById('custom-popup-overlay').classList.remove('hidden');
+    }
+    document.getElementById('popup-ok-btn').onclick =
+    document.getElementById('popup-close-btn').onclick = function () {
+        document.getElementById('custom-popup-overlay').classList.add('hidden');
+    }
+});
+
+</script>
     </body>
     @include('layouts.user.footer')
     </html>
