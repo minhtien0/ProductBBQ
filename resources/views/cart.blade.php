@@ -79,13 +79,14 @@
             class="border-b hover:bg-orange-50">
             <td class="px-3 py-2 text-center">
             <input type="checkbox" class="cart-checkbox form-checkbox h-4 w-4 text-orange-500"
-              data-id="{{ $cart->id_cart }}">
+              data-id="{{ $cart->id_cart }}"  @if(isset($cart->food_status) && $cart->food_status == 'Hết Hàng')
+          disabled @endif>
             </td>
             @if (empty($cart->combo_id))
           <td class="px-3 py-2">
 
           <img src="{{ asset('img/' . $cart->food_image) }}" alt="{{ $cart->food_name }}"
-          class="w-16 h-16 object-cover rounded" />
+          class="w-16 h-16 object-cover rounded @if($cart->food_status == 'Hết Hàng') opacity-60 grayscale @endif" />
           </td>
           <td class="px-3 py-2">
           <div class="font-bold text-gray-800">{{ $cart->food_name }}</div>

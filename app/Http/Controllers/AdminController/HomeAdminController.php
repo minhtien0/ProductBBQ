@@ -25,6 +25,7 @@ class HomeAdminController extends Controller
         $month = $now->month;
         $year = $now->year;
         $totalRevenue = DB::table('orders')
+            ->where('statusorder','Hoàn Thành')
             ->whereYear('created_at', $year)
             ->sum('totalbill');
         $totalUser = User::count();
@@ -40,6 +41,7 @@ class HomeAdminController extends Controller
             $revenue = DB::table('orders')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $i)
+                ->where('statusorder', 'Hoàn Thành')
                 ->sum('totalbill');
 
             $monthlyRevenue[] = round($revenue / 1000000, 2);
@@ -68,27 +70,37 @@ class HomeAdminController extends Controller
         }
 
         $listTopDeal = OrderDetail::select(
-            'product_id',
-            'foods.name as food_name',
-            'foods.price as food_price',
-            'foods.image as food_image',
-            DB::raw('SUM(foods.quantity * foods.price) as total_revenue'),
-            DB::raw('SUM(foods.quantity) as total_quantity')
+            'order_details.product_id',
+            'foods.name    as food_name',
+            'foods.price   as food_price',
+            'foods.image   as food_image',
+            DB::raw('SUM(order_details.quantity * foods.price)    as total_revenue'),
+            DB::raw('SUM(order_details.quantity)                   as total_quantity')
         )
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->join('foods', 'order_details.product_id', '=', 'foods.id')
-            ->groupBy('product_id', 'foods.name', 'foods.price', 'foods.image')
+            ->where('orders.statusorder', 'Hoàn Thành')
+            ->whereMonth('orders.created_at', $month)
+            ->whereYear('orders.created_at', $year)
+            ->groupBy(
+                'order_details.product_id',
+                'foods.name',
+                'foods.price',
+                'foods.image'
+            )
             ->orderByDesc('total_revenue')
             ->take(5)
             ->get();
 
+        // Thống kê món ăn bán chạy để vẽ biểu đồ
         $productLabels = [];
         $productRevenue = [];
 
         foreach ($listTopDeal as $deal) {
             $productLabels[] = $deal->food_name;
-            $productRevenue[] = round($deal->total_revenue / 1000000, 2); // triệu đồng
+            // Chia 1,000,000 để ra đơn vị triệu đồng, làm tròn 2 chữ số
+            $productRevenue[] = round($deal->total_revenue / 1_000_000, 2);
         }
-
         $topEmployees = DB::table('orders')
             ->join('staffs', 'orders.id_staff', '=', 'staffs.id')
             ->select('id_staff', 'staffs.fullname', DB::raw('SUM(orders.totalbill) as total_revenue'))
@@ -137,6 +149,7 @@ class HomeAdminController extends Controller
 
         for ($i = 1; $i <= 12; $i++) {
             $revenue = DB::table('orders')
+                ->where('statusorder','Hoàn Thành')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $i)
                 ->sum('totalbill');
@@ -237,6 +250,7 @@ class HomeAdminController extends Controller
         $topProducts = DB::table('order_details')
             ->join('foods', 'order_details.product_id', '=', 'foods.id')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->where('orders.statusorder', 'Hoàn Thành')
             ->whereMonth('orders.created_at', $month)
             ->whereYear('orders.created_at', $year)
             ->select(

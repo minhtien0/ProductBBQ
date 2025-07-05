@@ -176,7 +176,7 @@
                             <div class="flex gap-2 overflow-x-auto" id="category-list">
                                 <button
                                     class="category-btn px-4 py-2 rounded-lg text-white text-sm font-medium whitespace-nowrap transition-all"
-                                    data-combo="1">Combo của bạn</button>
+                                    data-combo="1">Combo</button>
                                 {{-- Các menu sẽ render JS động --}}
                             </div>
                         </div>
@@ -576,7 +576,7 @@ function closeReviewPopup() {
     function renderCategoryButtons() {
         const list = document.getElementById('category-list');
         list.innerHTML = `
-        <button class="category-btn px-4 py-2 rounded-lg text-white text-sm font-medium whitespace-nowrap transition-all" data-combo="1">Combo của bạn</button>
+        <button class="category-btn px-4 py-2 rounded-lg text-white text-sm font-medium whitespace-nowrap transition-all" data-combo="1">Combo </button>
         ${menuList.map(menu =>
                 `<button class="category-btn px-4 py-2 rounded-lg text-white text-sm font-medium whitespace-nowrap transition-all" data-menu="${menu.name}">${menu.name}</button>`
             ).join('')}

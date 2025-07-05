@@ -101,10 +101,10 @@ data-error="{{ session('error') }}" @endif>
             <!-- SIDEBAR -->
             <div class="bg-[#e60012] w-full md:w-60 flex-shrink-0 flex flex-col items-center py-6">
                 <div class="relative">
-                    <img src="img/mtien.jpg" class="w-24 h-24 rounded-full border-4 border-white object-cover" />
+                   <img id="avatar-img" src="{{ asset('img/' . (session('user_avatar') ?? 'mtien.jpg')) }}" class="w-24 h-24 rounded-full border-4 border-white object-cover" />
                     <label class="absolute bottom-1 right-0 bg-white rounded-full p-1 shadow cursor-pointer">
                         <i class="fa fa-camera text-[#e60012]"></i>
-                        <input type="file" class="hidden" />
+                        <input type="file" id="avatar-input" class="hidden" accept="image/*" />
                     </label>
                 </div>
                 <div class="mt-3 mb-6 text-lg font-bold text-white">{{ session('user_name') }}</div>
@@ -148,6 +148,33 @@ data-error="{{ session('error') }}" @endif>
                 </nav>
             </div>
 
+            <!-- Thay đổi hình nền -->
+            <script>
+                document.getElementById('avatar-input').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const formData = new FormData();
+                    formData.append('avatar', file);
+                    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+                    fetch('{{ route("user.update-avatar") }}', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Cập nhật avatar mới ngay
+                            document.getElementById('avatar-img').src = data.avatar_url + '?t=' + new Date().getTime();
+                            showPopup(data.message);
+                        } else {
+                            showPopup(data.message || 'Đổi ảnh thất bại!');
+                        }
+                    })
+                    .catch(() => showPopup('Lỗi kết nối server!'));
+                });
+            </script>   
             <!-- CONTENT -->
             <div class="flex-1 p-6 bg-blue-50 min-h-[520px]">
                 <!-- Personal Info -->
@@ -166,6 +193,16 @@ data-error="{{ session('error') }}" @endif>
                                 <div class="flex flex-col md:flex-row md:items-center md:gap-3">
                                     <span class="w-28 font-semibold text-gray-700">Họ Và Tên:</span>
                                     <span class="text-gray-800">{{ session('user_name') }}</span>
+                                </div>
+                                <hr>
+                                <div class="flex flex-col md:flex-row md:items-center md:gap-3">
+                                    <span class="w-28 font-semibold text-gray-700">Ngày sinh:</span>
+                                      {{ \Carbon\Carbon::parse(session('user_birthday'))->format('d/m/Y') ??"-"}}
+                                </div>
+                                <hr>
+                                <div class="flex flex-col md:flex-row md:items-center md:gap-3">
+                                    <span class="w-28 font-semibold text-gray-700">Giới Tính:</span>
+                                    <span class="text-gray-800">{{ session('user_gender')??"-" }}</span>
                                 </div>
                                 <hr>
                                 <div class="flex flex-col md:flex-row md:items-center md:gap-3">
@@ -225,6 +262,29 @@ data-error="{{ session('error') }}" @endif>
                                         class="w-full border rounded px-3 py-2 @error('fullname') border-red-500 @enderror"
                                         value="{{ old('fullname', session('user_name')) }}" required>
                                     @error('fullname')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block font-semibold text-gray-700 mb-1">Ngày Sinh</label>
+                                    <input type="date" name="birthday"
+                                    class="border border-gray-300 rounded px-3 py-2 text-sm w-full @error('birthday') border-red-500 @enderror"
+                                    value="{{ old('birthday', (session('user_birthday') ? \Carbon\Carbon::parse(session('user_birthday'))->format('Y-m-d') : '') ) }}"
+                                    required>
+                                    @error('birthday')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block font-semibold text-gray-700 mb-1">Giới Tính</label>
+                                    <div class="flex items-center gap-3">
+                                        <label><input type="radio" name="gender" value="Nam" {{ old('gender', session('user_gender') ?? '') == 'Nam' ? 'checked' : '' }}> Nam</label>
+                                        <label><input type="radio" name="gender" value="Nữ" {{ old('gender', session('user_gender') ?? '') == 'Nữ' ? 'checked' : '' }}> Nữ</label>
+                                        <label><input type="radio" name="gender" value="Khác" {{ old('gender', session('user_gender') ?? '') == 'Khác' ? 'checked' : '' }}> Khác</label>
+                                    </div>
+                                    @error('gender')
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -766,7 +826,7 @@ data-error="{{ session('error') }}" @endif>
                         @foreach ($foodFavorites as $foodFavorite)
                             <div class="bg-white rounded shadow p-3 flex flex-col items-center wishlist-row">
                                 <a href="{{ route('views.menudetail', [$foodFavorite->id, $foodFavorite->slug]) }}">
-                                    <img src="{{ asset('img/' . $foodFavorite->image) }}">
+                                    <img src="{{ asset('img/' . $foodFavorite->image) }}" class="@if($foodFavorite->status == 'Hết Hàng') opacity-60 grayscale @endif">
                                 </a>
                                 <a href="{{ route('views.menudetail', [$foodFavorite->id, $foodFavorite->slug]) }}">
                                     <div class="text-base font-semibold text-gray-800 text-center mb-1">
@@ -774,21 +834,85 @@ data-error="{{ session('error') }}" @endif>
                                     </div>
                                 </a>
                                 <div class="flex items-center text-yellow-400 mb-1 text-xs">
-                                    <i class="fa fa-star"></i><i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i>
+                                @php
+                                    $avg = round($foodFavorite->avg_rate, 1);
+                                    $stars = floor($avg);
+                                @endphp
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if($i <= $stars)
+                                    <i class="fa-solid fa-star"></i>
+                                    @elseif($i - $avg < 1)
+                                    <i class="fa-solid fa-star-half-alt"></i>
+                                    @else
                                     <i class="fa-regular fa-star"></i>
-                                    <span class="ml-1 text-gray-600">(24)</span>
+                                    @endif
+                                @endfor
+                                <span class="ml-1 text-gray-600">({{ $foodFavorite->count_rate }})</span>
                                 </div>
                                 <div class="mb-2 text-orange-500 font-bold">
                                     {{ number_format($foodFavorite->price, 0, ',', '.') }}đ
                                 </div>
-                                <button type="button" class="add-to-cart bg-orange-500 text-white px-4 py-1 rounded mt-auto"
-                                    data-food-id="{{ $foodFavorite->id }}">Thêm Giỏ Hàng</button>
+                               <div class="flex items-center justify-between gap-2 mt-2">
+                                <button
+                                    type="button"
+                                    class="add-to-cart @if($foodFavorite->status == 'Hết Hàng') opacity-60 grayscale @endif bg-orange-500 text-white px-4 py-1 rounded"
+                                    data-food-id="{{ $foodFavorite->id }}"
+                                    @if($foodFavorite->status == 'Hết Hàng') disabled @endif
+                                >
+                                    Thêm Giỏ Hàng
+                                </button>
+                                <span>
+                                    <i class="fa-solid fa-trash text-red-500 cursor-pointer ml-2 btn-remove-wishlist"
+                                    data-id="{{ $foodFavorite->id_cart }}"></i>
+                                </span>
+                            </div>
+
                             </div>
                         @endforeach
                     </div>
-                    <div id="wishlist-pagination" class="flex justify-center items-center gap-2 mt-4"></div>
-                </div>
+                    <div id="wishlist-pagination" class="flex justify-center items-center gap-2 mt-4"></div>    
+             </div>
+<!--  Xóa yêu thích  -->           
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-remove-wishlist').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const id = btn.dataset.id;
+            if (!id) return showPopup('Không xác định sản phẩm!');
+            Swal.fire({
+                title: 'Bạn chắc chắn muốn xóa sản phẩm này khỏi yêu thích?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    fetch(`/wishlist/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Xóa dòng trên giao diện
+                            const card = btn.closest('.wishlist-row');
+                            if (card) card.remove();
+                            showPopup(data.message || 'Đã xóa!');
+                        } else {
+                            showPopup(data.message || 'Xóa thất bại!');
+                        }
+                    })
+                    .catch(() => showPopup('Lỗi kết nối server!'));
+                }
+            });
+        });
+    });
+});
+</script>
 
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
@@ -847,7 +971,7 @@ data-error="{{ session('error') }}" @endif>
                             <div class="flex gap-4 bg-white rounded shadow p-4 items-center review-row">
                                 <img src="{{ asset('img/' . $myReview->image) }}"
                                     class="rounded-full w-14 h-14 object-cover" />
-                                <div class="flex-1">
+                                <div class="flex-2">
                                     <div class="font-bold text-gray-800">{{ $myReview->name }} <span
                                             class="ml-3 text-xs text-gray-400">{{ $myReview->time }}</span></div>
                                     <div class="flex items-center text-yellow-400 text-xs mb-1">
@@ -880,11 +1004,58 @@ data-error="{{ session('error') }}" @endif>
                                             class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">{{ $myReview->type_menu }}</span>
                                     </div>
                                 </div>
+                                <div class="flex-1 flex items-end justify-end">
+                                    <i class="fa-solid fa-trash text-red-500 cursor-pointer btn-remove-review"
+                                    data-id="{{ $myReview->id_rate }}"></i>
+                                </div>
                             </div>
                         @endforeach
                     </div>
                     <div id="review-pagination" class="flex justify-center items-center gap-2 mt-4"></div>
                 </div>
+                <!-- Xóa đánh giá -->
+                <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('.btn-remove-review').forEach(btn => {
+                        btn.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const id = btn.dataset.id;
+                            if (!id) return showPopup('Không xác định đánh giá!');
+
+                            Swal.fire({
+                                title: 'Bạn chắc chắn muốn xóa đánh giá này?',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Xóa',
+                                cancelButtonText: 'Hủy'
+                            }).then(result => {
+                                if (result.isConfirmed) {
+                                    fetch(`/delete/reviews/${id}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                            'Accept': 'application/json'
+                                        }
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            // Xóa review khỏi giao diện
+                                            const card = btn.closest('.review-row');
+                                            if (card) card.remove();
+                                            showPopup(data.message || 'Đã xóa!');
+                                        } else {
+                                            showPopup(data.message || 'Xóa thất bại!');
+                                        }
+                                    })
+                                    .catch(() => showPopup('Lỗi kết nối server!'));
+                                }
+                            });
+                        });
+                    });
+                });
+                </script>
+
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
                         // --- Phân trang Đánh giá ---
@@ -986,6 +1157,8 @@ data-error="{{ session('error') }}" @endif>
                 document.getElementById('edit_address_id').value = btn.dataset.id;
                 document.querySelector('#address-edit-view input[name="name"]').value = btn.dataset.name;
                 document.querySelector('#address-edit-view input[name="sdt"]').value = btn.dataset.sdt;
+                document.querySelector('#address-edit-view input[name="birthday"]').value = btn.dataset.birthday;
+                document.querySelector('#address-edit-view input[name="gender"][value="' + btn.dataset.gender + '"]').checked = true;
                 document.querySelector('#address-edit-view input[name="house_number"]').value = btn.dataset.house_number;
                 document.querySelector('#address-edit-view input[name="ward"]').value = btn.dataset.ward;
                 document.querySelector('#address-edit-view input[name="district"]').value = btn.dataset.district;

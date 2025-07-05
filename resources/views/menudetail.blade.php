@@ -58,8 +58,18 @@
       <div class="flex flex-col md:flex-row gap-8">
         <!-- Ảnh lớn và thumbnail -->
         <div class="md:w-1/3 flex flex-col">
-          <img id="main-img" src="{{ asset('img/' . $foods->image) }}"
-            class="rounded-lg w-full h-[220px] object-cover mb-4 border-2 border-orange-400" />
+          <div class="relative mb-4">
+  <img id="main-img"
+       src="{{ asset('img/' . $foods->image) }}"
+       class="rounded-lg w-full h-[220px] object-cover border-2 border-orange-400
+       @if($foods->quantity == 0) opacity-60 grayscale @endif" />
+  @if($foods->quantity == 0)
+    <div class="absolute inset-0 flex items-center justify-center">
+      <span class="bg-black/60 text-white text-lg font-bold rounded px-4 py-2">Hàng tạm hết</span>
+    </div>
+  @endif
+</div>
+
           <div class="flex gap-2">
             @foreach ($detailImages as $detailImage)
         <img onclick="document.getElementById('main-img').src=this.src"
@@ -89,18 +99,25 @@
           <!-- Quantity & Button -->
           <div class="flex items-center gap-3 mb-3">
             <label class="font-semibold text-gray-700">Số Lượng:</label>
-            <input type="number" min="1" max="{{ $foods->quantity }}" value="1" class="w-16 border rounded px-2 py-1 text-center"
-              id="food-quantity">
+            <input type="number" min="1" max="{{ $foods->quantity }}" value="1"
+  class="w-16 border rounded px-2 py-1 text-center"
+  id="food-quantity"
+  @if($foods->quantity == 0) disabled @endif
+>
             <span class="text-lg font-bold text-orange-700" id="total-price">
               {{ number_format($foods->price, 0, ',', '.') }}đ
             </span>
           </div>
           <div class="flex gap-3 mt-4">
             <button type="button"
-              class="add-to-cart bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-bold shadow"
-              data-food-id="{{ $foods->id }}" data-food-price="{{ $foods->price }}">Thêm
-              Vào
-              Giỏ</button>
+  class="add-to-cart bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-bold shadow
+  @if($foods->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif"
+  data-food-id="{{ $foods->id }}" data-food-price="{{ $foods->price }}"
+  @if($foods->quantity == 0) disabled @endif
+>
+  Thêm Vào Giỏ
+</button>
+
 
 
             <button type="button"
