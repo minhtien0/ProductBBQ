@@ -35,6 +35,9 @@ Route::post('/register', [HomeController::class, 'register'])->name('register');
 Route::get('/verify-email/{token}', [HomeController::class, 'verifyEmail'])->name('verify.email');
 //Order
 Route::get('order/{id}', [HomeController::class, 'order'])->name('views.qrorder');
+Route::get('/api/order-details/{table_id}', [HomeController::class, 'getOrderDetailsByTable']);
+Route::patch('/order-details/{id}', [HomeController::class,'updateQRorder']);
+Route::delete('/order-details/{id}', [HomeController::class,'destroyQRorder']);
 Route::get('/get-products-by-category/{categoryId}', [HomeController::class, 'getProductsByCategory']);
 //Home
 Route::get('/', [HomeController::class, 'index'])->name('views.index');
@@ -73,6 +76,7 @@ Route::get('/ajax-search-blog', [HomeController::class, 'ajaxSearchBlog'])->name
 //UserDetail
 Route::get('userdetail', [HomeController::class, 'userdetail'])->middleware([\App\Http\Middleware\CheckLoggedIn::class])->name('views.userdetail');
 Route::post('/user/update-profile', [HomeController::class, 'updateProfile'])->name('user.update-profile');
+Route::post('/user/update-avatar', [HomeController::class, 'updateAvatar'])->name('user.update-avatar');
 Route::post('/user/add-address', [HomeController::class, 'addAddress'])->name('user.add-address');
 Route::delete('/user/deleteAddress/{id}', [HomeController::class, 'deleteAddress'])->name('user.destroyAddress');
 Route::post('/user/edit-address', [HomeController::class, 'editAddress'])->name('user.edit-address');
@@ -85,6 +89,7 @@ Route::get('/order-detail/{id}', [HomeController::class, 'ajaxDetailOrder'])->na
 Route::get('/cart', [HomeController::class, 'cart'])->middleware([\App\Http\Middleware\CheckLoggedIn::class])->name('views.cart');
 Route::post('/cart', [HomeController::class, 'storeCart'])->name('cart.add');
 Route::post('/favorite', [HomeController::class, 'toggleFavorite'])->name('favorite.toggle');
+Route::delete('/wishlist/{id}', [HomeController::class, 'removeWishlist'])->name('wishlist.remove');
 Route::patch('/cart/{id}', [HomeController::class, 'updateQuantityCart'])->name('cart.updateQuantity');
 Route::delete('/cart/{id}', [HomeController::class, 'destroyCart'])->name('cart.destroy');
 Route::post('/order/add', [HomeController::class, 'storeOrder'])->name('order.store');
@@ -96,6 +101,9 @@ Route::get('/vnpay/return', [HomeController::class, 'vnpayReturn'])->name('vnpay
 Route::patch('/orders/{order}/cancel', [HomeController::class, 'cancelOrder'])->name('orders.cancel');
 //Đánh giá đơn hàng
 Route::post('/reviews', [HomeController::class, 'rateOrder'])->name('reviews.store');
+// web.php hoặc api.php (nên là route API hoặc dùng group middleware auth)
+Route::delete('/delete/reviews/{id}', [HomeController::class, 'destroyRate'])->name('reviews.destroy.rate');
+ Route::post('/add-order-item-qrorder', [HomeController::class, 'addOrderItemQRorder'])->name('admin.order.addItemQRorder');
 //Đánh giá bài viết
 Route::post('/blog/{id}/comment', [HomeController::class, 'addCommentBlog'])->name('comment.blog');
 
@@ -236,6 +244,8 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
     Route::prefix('/cashier')->group(function () {
         Route::get('/', [CashierController::class, 'index'])->name('admin.cashier');
         Route::get('/filter', [CashierController::class, 'filter'])->name('admin.cashier.filter');
+        Route::get('/top-products', [CashierController::class, 'getTopProductsByMonth'])->name('admin.top-products');
+        Route::get('/admin/upsale-products', [CashierController::class, 'getUpsaleProductsByMonth'])->name('admin.upsale-products');
 
     });
 

@@ -36,7 +36,7 @@
                                 </div>
                                 
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalRevenue">
-                                    {{ number_format($totalRevenue, 0, ',', '.') }}đ
+                                    {{ number_format($totalRevenue, 0, ',', '.') }} VNĐ
                                 </div>
                                 <div class="{{ $percentChange >= 0 ? 'text-success' : 'text-danger' }} text-xs mt-1">
                                     <i class="fas {{ $percentChange >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
@@ -86,7 +86,7 @@
                                     Doanh thu trung bình
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="avgOrderValue">
-                                    {{ number_format($avgRevenuePerDay, 0, ',', '.') }}đ
+                                    {{ number_format($avgRevenuePerDay, 0, ',', '.') }} VNĐ
                                 </div>
                                 <div class="{{ $avgPercentChange >= 0 ? 'text-info' : 'text-danger' }} text-xs mt-1">
                                     <i class="fas {{ $avgPercentChange >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
@@ -111,7 +111,7 @@
                                     Áp Dụng Khuyến Mãi
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="estimatedProfit">
-                                    {{ number_format($totalDiscount, 0, ',', '.') }}đ
+                                    {{ number_format($totalDiscount, 0, ',', '.') }} VNĐ
                                 </div>
                                 <div class="text-warning text-xs mt-1">
                                     <i class="fas fa-arrow-up"></i>
@@ -201,15 +201,20 @@
                             <i class="fas fa-star me-2"></i>
                             Top món bán chạy
                         </h6>
+                        <select id="filterMonthProduct" class="form-select mb-3">
+                                    @for($i=1;$i<=12;$i++)
+                <option value="{{ $i }}" {{ $i==now()->month?'selected':'' }}>Tháng {{ $i }}</option>
+            @endfor
+                                </select>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="topProductsTable">
                                 <thead class="table-light">
                                     <tr>
                                         <th>#</th>
                                         <th>Tên món</th>
-                                        <th class="text-center">SL bán</th>
+                                        <th class="text-center">SL</th>
                                         <th class="text-end">Doanh thu</th>
                                         <th class="text-center">%</th>
                                     </tr>
@@ -224,12 +229,12 @@
                                                     class="rounded me-2" width="50" height="50">
                                                 <div>
                                                     <div class="fw-semibold">{{ $item->food_name }}</div>
-                                                    <small class="text-muted">{{ number_format($item->food_price, 0, ',', '.') }}đ</small>
+                                                    <small class="text-muted">{{ number_format($item->food_price, 0, ',', '.') }} VNĐ</small>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="text-center"><strong>{{ $item->total_quantity }}</strong></td>
-                                        <td class="text-end">{{ number_format($item->total_revenue, 0, ',', '.') }}đ</td>
+                                        <td class="text-end">{{ number_format($item->total_revenue, 0, ',', '.') }} VNĐ</td>
                                         <td class="text-center">
                                             <div class="progress" style="height: 4px;">
                                                 <div class="progress-bar bg-{{ $item->badge }}" style="width: {{ $item->percent }}%"></div>
@@ -246,6 +251,40 @@
                 </div>
             </div>
 
+            <script>
+  document.getElementById('filterMonthProduct')
+    .addEventListener('change', function(){
+      let month = this.value;
+      fetch(`{{ route('admin.top-products') }}?month=${month}&year={{ now()->year }}`)
+        .then(r => r.json())
+        .then(res => {
+          let tbody = document.querySelector('#topProductsTable tbody');
+          tbody.innerHTML = '';
+          res.data.forEach((it, idx) => {
+            tbody.innerHTML += `
+<tr>
+  <td><span class="badge bg-${it.badge}">${idx+1}</span></td>
+  <td>
+    <div class="d-flex align-items-center">
+      <img src="${it.food_image}" width="50" class="rounded me-2">
+      <div>
+        <div class="fw-semibold">${it.food_name}</div>
+      </div>
+    </div>
+  </td>
+  <td class="text-center"><strong>${it.total_quantity}</strong></td>
+  <td class="text-end"> ${new Intl.NumberFormat('vi-VN').format(it.total_revenue)} VNĐ</td>
+  <td class="text-center">
+    <div class="progress" style="height:4px">
+      <div class="progress-bar bg-${it.badge}" style="width:${it.percent}%"></div>
+    </div>
+    <small>${it.percent}%</small>
+  </td>
+</tr>`;
+          });
+        });
+    });
+</script>
             <!-- Items Need Upselling -->
             <div class="col-xl-6 col-lg-6">
                 <div class="card shadow mb-4">
@@ -254,10 +293,17 @@
                             <i class="fas fa-arrow-trend-up me-2"></i>
                             Món cần Upsale
                         </h6>
+                        <select id="filterMonthProductUpsale" class="form-select mb-3">
+                            @for($i=1; $i<=12; $i++)
+                                <option value="{{ $i }}" {{ $i==now()->month?'selected':'' }}>
+                                Tháng {{ $i }}
+                                </option>
+                            @endfor
+                            </select>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="upsaleTable">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Tên món</th>
@@ -274,7 +320,7 @@
                                                         class="rounded me-2" width="30" height="30">
                                                     <div>
                                                         <div class="fw-semibold">{{ $item['food_name'] }}</div>
-                                                        <small class="text-muted">Giá: {{ number_format($item['food_price'], 0, ',', '.') }}đ</small>
+                                                        <small class="text-muted">Giá: {{ number_format($item['food_price'], 0, ',', '.') }} VNĐ</small>
                                                     </div>
                                                 </div>
                                             </td>
@@ -291,7 +337,7 @@
                                         <tr>
                                             <td colspan="3" class="text-center text-muted">Không có món upsale nào nổi bật tháng này.</td>
                                         </tr>
-                                    @endforelse
+                                  @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -299,6 +345,41 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            document.getElementById('filterMonthProductUpsale')
+            .addEventListener('change', function(){
+                const month = this.value;
+                fetch(`{{ route('admin.upsale-products') }}?month=${month}&year={{ now()->year }}`)
+                .then(res => res.json())
+                .then(res => {
+                    const tbody = document.querySelector('#upsaleTable tbody');
+                    tbody.innerHTML = '';
+                    res.data.forEach(item => {
+                    tbody.innerHTML += `
+            <tr class="${item.decrease>30?'table-warning':'table-light'}">
+            <td>
+                <div class="d-flex align-items-center">
+                <img src="${item.food_image}" width="30" height="30" class="rounded me-2">
+                <div>
+                    <div class="fw-semibold">${item.food_name}</div>
+                    <small class="text-muted">Giá: ${item.food_price.toLocaleString()} VNĐ</small>
+                </div>
+                </div>
+            </td>
+            <td class="text-center">
+                <span class="badge bg-danger">${item.sold}</span><br>
+                <small class="text-muted">Giảm ${item.decrease}%</small>
+            </td>
+            <td class="text-center">
+                <span class="text-${item.potential_class} fw-bold">${item.potential}</span><br>
+                <small class="text-muted">Lợi nhuận ${item.profit}%</small>
+            </td>
+            </tr>`;
+                    });
+                });
+            });
+        </script>
 
         <!-- Revenue by Time Period -->
         <div class="row">
@@ -345,9 +426,9 @@
                                             <tr>
                                                 <td class="fw-semibold">{{ $row['label'] }}</td>
                                                 <td class="text-center">{{ $row['total_orders'] }}</td>
-                                                <td class="text-end">{{ number_format($row['at_table'], 0, ',', '.') }}đ</td>
-                                                <td class="text-end">{{ number_format($row['take_away'], 0, ',', '.') }}đ</td>
-                                                <td class="text-end fw-bold">{{ number_format($row['total_revenue'], 0, ',', '.') }}đ</td>
+                                                <td class="text-end">{{ number_format($row['at_table'], 0, ',', '.') }} VNĐ</td>
+                                                <td class="text-end">{{ number_format($row['take_away'], 0, ',', '.') }}  VNĐ</td>
+                                                <td class="text-end fw-bold">{{ number_format($row['total_revenue'], 0, ',', '.') }} VNĐ</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -367,9 +448,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 <tr>
                     <td class="fw-semibold">${row.label}</td>
                     <td class="text-center">${row.total_orders}</td>
-                    <td class="text-end">${Number(row.at_table).toLocaleString()}đ</td>
-                    <td class="text-end">${Number(row.take_away).toLocaleString()}đ</td>
-                    <td class="text-end fw-bold">${Number(row.total_revenue).toLocaleString()}đ</td>
+                    <td class="text-end">${Number(row.at_table).toLocaleString()} VNĐ</td>
+                    <td class="text-end">${Number(row.take_away).toLocaleString()} VNĐ</td>
+                    <td class="text-end fw-bold">${Number(row.total_revenue).toLocaleString()} VNĐ</td>
                 </tr>
             `;
         });

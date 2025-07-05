@@ -39,6 +39,7 @@ class CashierController extends Controller
         //dd($totalRevenue, $year, $month);
 
         $lastMonthRevenue = DB::table('orders')
+            ->where('statusorder', 'Hoàn Thành')
             ->whereMonth('created_at', $lastMonthNum)
             ->whereYear('created_at', $lastMonthYear)
             ->sum('totalbill');
@@ -108,6 +109,7 @@ class CashierController extends Controller
 
         for ($i = 1; $i <= 12; $i++) {
             $revenue = DB::table('orders')
+                ->where('statusorder', 'Hoàn Thành')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $i)
                 ->sum('totalbill');
@@ -140,31 +142,39 @@ class CashierController extends Controller
 
         // Lấy top 5 món doanh thu cao nhất
         $listTopDeal = OrderDetail::select(
-            'product_id',
+            'order_details.product_id',
             'foods.name as food_name',
             'foods.price as food_price',
             'foods.image as food_image',
             DB::raw('SUM(order_details.quantity * foods.price) as total_revenue'),
             DB::raw('SUM(order_details.quantity) as total_quantity')
         )
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->join('foods', 'order_details.product_id', '=', 'foods.id')
-            ->groupBy('product_id', 'foods.name', 'foods.price', 'foods.image')
+            ->where('orders.statusorder', 'Hoàn Thành')
+            ->whereMonth('orders.created_at', $month)
+            ->whereYear('orders.created_at', $year)
+            ->groupBy('order_details.product_id', 'foods.name', 'foods.price', 'foods.image')
             ->orderByDesc('total_revenue')
             ->take(5)
             ->get();
 
-        //dd($listTopDeal);
-        // Tổng doanh thu của top 5 món để tính %
-        $totalRevenueAll = OrderDetail::join('foods', 'order_details.product_id', '=', 'foods.id')
-            ->select(DB::raw('SUM(order_details.quantity * foods.price) as total'))
-            ->value('total');
+        // 2. Tổng doanh thu của tất cả đơn hoàn thành trong tháng này
+        $totalRevenueAll = OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->join('foods', 'order_details.product_id', '=', 'foods.id')
+            ->where('orders.statusorder', 'Hoàn Thành')
+            ->whereMonth('orders.created_at', $month)
+            ->whereYear('orders.created_at', $year)
+            ->sum(DB::raw('order_details.quantity * foods.price'));
 
+        // 3. Tính % và gán badge như cũ
         $totalTopDealRevenue = $listTopDeal->sum('total_revenue');
-
-        // Gắn thêm % và màu badge vào mỗi item
         $badgeColors = ['warning', 'info', 'secondary', 'light text-dark', 'secondary'];
+
         foreach ($listTopDeal as $k => $item) {
-            $percent = $totalRevenueAll > 0 ? round($item->total_revenue / $totalRevenueAll * 100, 1) : 0;
+            $percent = $totalRevenueAll > 0
+                ? round($item->total_revenue / $totalRevenueAll * 100, 1)
+                : 0;
             $item->percent = $percent;
             $item->badge = $badgeColors[$k] ?? 'secondary';
         }
@@ -356,6 +366,109 @@ class CashierController extends Controller
         }
 
         return response()->json(['data' => $data]);
+    }
+
+
+    public function getTopProductsByMonth(Request $request)
+    {
+        $month = $request->input('month', now()->month);
+        $year = $request->input('year', now()->year);
+
+        // Lấy danh sách top 5 món và tính tổng doanh thu all để tính %
+        $list = OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->join('foods', 'order_details.product_id', '=', 'foods.id')
+            ->where('orders.statusorder', 'Hoàn Thành')
+            ->whereMonth('orders.created_at', $month)
+            ->whereYear('orders.created_at', $year)
+            ->select([
+                'foods.id',
+                'foods.name as food_name',
+                'foods.image as food_image',
+                DB::raw('SUM(order_details.quantity) as total_quantity'),
+                DB::raw('SUM(order_details.quantity * foods.price) as total_revenue'),
+            ])
+            ->groupBy('foods.id', 'foods.name', 'foods.image')
+            ->orderByDesc('total_revenue')
+            ->take(5)
+            ->get();
+
+        $totalAll = $list->sum('total_revenue');
+        $badgeColors = ['warning', 'info', 'secondary', 'light text-dark', 'secondary'];
+
+        $data = $list->map(function ($item, $k) use ($totalAll, $badgeColors) {
+            $percent = $totalAll > 0 ? round($item->total_revenue / $totalAll * 100, 1) : 0;
+            return [
+                'food_name' => $item->food_name,
+                'food_image' => asset('img/' . $item->food_image),
+                'total_quantity' => $item->total_quantity,
+                'total_revenue' => $item->total_revenue,
+                'percent' => $percent,
+                'badge' => $badgeColors[$k] ?? 'secondary',
+            ];
+        });
+
+        return response()->json(['data' => $data]);
+    }
+
+    public function getUpsaleProductsByMonth(Request $request)
+    {
+        $month = $request->input('month', now()->month);
+        $year = $request->input('year', now()->year);
+        $lastMonth = now()->copy()->subMonth();
+        $lastNum = $lastMonth->month;
+        $lastYear = $lastMonth->year;
+
+        $foods = Food::all();
+        $list = [];
+
+        foreach ($foods as $food) {
+            $soldThis = OrderDetail::where('product_id', $food->id)
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
+                ->sum('quantity');
+
+            $soldLast = OrderDetail::where('product_id', $food->id)
+                ->whereMonth('created_at', $lastNum)
+                ->whereYear('created_at', $lastYear)
+                ->sum('quantity');
+
+            $decrease = $soldLast > 0
+                ? round((($soldLast - $soldThis) / $soldLast) * 100, 1)
+                : 0;
+
+            $profit = ($food->price > 0 && isset($food->cost_price))
+                ? round((($food->price - $food->cost_price) / $food->price) * 100, 1)
+                : 0;
+
+            if ($decrease > 10 && $profit > 30) {
+                if ($profit >= 50) {
+                    $level = 'Cao';
+                    $cls = 'success';
+                } elseif ($profit >= 35) {
+                    $level = 'Trung bình';
+                    $cls = 'warning';
+                } else {
+                    $level = 'Thấp';
+                    $cls = 'info';
+                }
+
+                $list[] = [
+                    'food_name' => $food->name,
+                    'food_image' => asset('img/' . $food->image),
+                    'food_price' => $food->price,
+                    'sold' => $soldThis,
+                    'decrease' => $decrease,
+                    'profit' => $profit,
+                    'potential' => $level,
+                    'potential_class' => $cls,
+                ];
+            }
+        }
+
+        // Sắp xếp giảm dần theo % giảm
+        usort($list, fn($a, $b) => $b['decrease'] <=> $a['decrease']);
+
+        return response()->json(['data' => $list]);
     }
 
 }

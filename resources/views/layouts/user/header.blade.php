@@ -106,15 +106,14 @@
         class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
         <a href="{{ route('login') }}"><i class="fa-solid fa-basket-shopping"></i></a>
       </span>
-      <span
-        class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
+      
         @else
       <span
         class="bg-[#fff2e1] rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-xl md:text-2xl text-[#262248] hover:bg-[#f7e4d0] transition duration-150 ease-in-out">
         <a href="{{ route('views.cart') }}"><i class="fa-solid fa-basket-shopping"></i></a>
       </span>
       <span
-        class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">05</span>
+        class="absolute -top-2 -right-1 bg-[#ff8000] text-white text-xs font-bold rounded-full px-1.5 py-0.5 md:px-2 md:py-1 leading-none">{{ $countCart ?? '0' }}</span>
     @endif
       </div>
       <!-- Biểu tượng Người dùng -->

@@ -10,7 +10,7 @@
                 <div class="bg-white p-4 rounded-lg shadow text-center">
                     <div class="text-green-500"><i class="fas fa-dollar-sign"></i></div>
                     <p class="text-gray-600">Doanh Thu</p>
-                    <p class="text-2xl font-bold text-green-500"> {{ number_format($totalRevenue, 0, ',', '.') }}đ</p>
+                    <p class="text-2xl font-bold text-green-500"> {{ number_format($totalRevenue, 0, ',', '.') }} VNĐ</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow text-center">
                     <div class="text-blue-500"><i class="fas fa-users"></i></div>

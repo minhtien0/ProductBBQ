@@ -36,6 +36,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+        //dd(session()->all());
         $combos = DB::table('food_combos')->get();
         $allFoods = Food::with('menus')->get();
         $favIds = Cart::where('user_id', session('user_id'))
@@ -97,9 +98,30 @@ class HomeController extends Controller
 
         $table = DB::table('tables')->where('id', $id)->first();
 
-        if (!$table || $table->status != 'Đã Mở') {
+        if (!$table || $table->status != 'Đang Mở') {
             abort(403, 'Bàn chưa được mở, vui lòng đợi nhân viên mở bàn.');
         }
+
+        $order = \App\Models\Order::where('table_id', $id)
+            ->whereIn('statusorder', ['Đang Mở', 'Đang phục vụ'])
+            ->orderByDesc('id')
+            ->first();
+
+        // 2. Lấy danh sách order_details cho order này
+        $orderDetails = DB::table('order_details')
+            ->join('foods', 'order_details.product_id', '=', 'foods.id')
+            ->where('order_details.order_id', $order->id)
+            ->select([
+                'order_details.id',
+                'order_details.quantity',
+                'order_details.status',
+                'foods.id       as food_id',
+                'foods.name     as food_name',
+                'foods.price    as food_price',
+                'foods.image    as food_image',
+            ])
+            ->get();
+
         // Lấy danh sách combo_id được order tại bàn $id
         $comboIds = DB::table('order_combos')
             ->join('orders', 'order_combos.order_id', '=', 'orders.id')
@@ -154,8 +176,135 @@ class HomeController extends Controller
         $comboNames = array_column($comboData, 'name');
         $foodLists = array_column($comboData, 'foods');
 
-        return view('qrorder', compact('menus', 'comboData', 'comboNames', 'foodLists'));
+        return view('qrorder', compact('menus', 
+        'comboData', 'comboNames', 'foodLists','orderDetails','table'));
     }
+
+    public function updateQRorder(Request $request, $id)
+    {
+        // 1. Validate đầu vào: quantity phải là số nguyên >= 1
+        $data = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        // 2. Tìm order detail, nếu không có thì trả về 404
+        $detail = OrderDetail::findOrFail($id);
+
+        // 3. Cập nhật và lưu
+        $detail->quantity = $data['quantity'];
+        $detail->save();
+
+        // 4. Trả về JSON chứa số lượng mới
+        return response()->json([
+            'success'  => true,
+            'quantity' => (int)$detail->quantity,
+        ], 200);
+    }
+    public function destroyQRorder($id)
+    {
+        // 1. Tìm order detail, nếu không có thì trả về 404
+        $detail = OrderDetail::findOrFail($id);
+
+        // 2. Xóa bản ghi
+        $detail->delete();
+
+        // 3. Trả về JSON xác nhận thành công
+        return response()->json([
+            'success' => true,
+            'message' => 'Món ăn đã được xóa!',
+        ], 200);
+    }
+
+    public function addOrderItemQRorder(Request $request)
+{
+    $request->validate([
+        'table_id'   => 'required|integer|exists:tables,id',
+        'product_id' => 'required|integer|exists:foods,id',
+        'quantity'   => 'nullable|integer|min:1', // quantity có thể có, mặc định là 1
+    ]);
+
+    $quantity = $request->quantity ?? 1;
+
+    // Tìm order đang mở của bàn này
+    $order = \App\Models\Order::where('table_id', $request->table_id)
+        ->where('statusorder', 'Đang Mở') // hoặc 'Đang phục vụ'
+        ->orderByDesc('id')->first();
+    if (!$order) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Chưa có order đang mở cho bàn này!'
+        ], 400);
+    }
+
+    // Kiểm tra món đã tồn tại trong order chưa
+    $detail = \App\Models\OrderDetail::where('order_id', $order->id)
+        ->where('product_id', $request->product_id)
+        ->first();
+
+    if ($detail) {
+        // Nếu đã có thì cộng thêm số lượng được gửi lên
+        $detail->quantity += $quantity;
+        $detail->save();
+    } else {
+        // Nếu chưa có thì tạo mới với số lượng truyền lên
+        $detail = \App\Models\OrderDetail::create([
+            'order_id'   => $order->id,
+            'product_id' => $request->product_id,
+            'quantity'   => $quantity,
+            'status'     => 'Chờ Thực Hiện',
+            'time'       => now()
+        ]);
+    }
+
+    // Lấy thông tin chi tiết món vừa thêm (có thể join bảng food nếu muốn)
+    $food = \App\Models\Food::find($request->product_id);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Thêm món thành công!',
+        'order_detail' => [
+            'id'          => $detail->id,
+            'order_id'    => $detail->order_id,
+            'product_id'  => $detail->product_id,
+            'food_name'   => $food ? $food->name : '',
+            'food_image'  => $food ? $food->image : '',
+            'food_price'  => $food ? $food->price : '',
+            'quantity'    => $detail->quantity,
+            'status'      => $detail->status,
+        ],
+    ]);
+}
+
+public function getOrderDetailsByTable($table_id)
+{
+    $order = \App\Models\Order::where('table_id', $table_id)
+        ->whereIn('statusorder', ['Đang Mở', 'Đang phục vụ'])
+        ->orderByDesc('id')->first();
+
+    if (!$order) {
+        return response()->json(['success' => false, 'orderDetails' => []]);
+    }
+
+    $orderDetails = DB::table('order_details')
+        ->join('foods', 'order_details.product_id', '=', 'foods.id')
+        ->where('order_details.order_id', $order->id)
+        ->select([
+            'order_details.id',
+            'order_details.quantity',
+            'order_details.status',
+            'foods.id as food_id',
+            'foods.name as food_name',
+            'foods.price as food_price',
+            'foods.image as food_image',
+        ])
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'orderDetails' => $orderDetails
+    ]);
+}
+
 
     public function getProductsByCategory($categoryId)
     {
@@ -346,7 +495,7 @@ class HomeController extends Controller
                 'blog.created_at as time_blog',
                 'staffs.avata as avatar',
                 'blog.type as type_blog',
-                DB::raw('COUNT(rates.id) as total_rates') // đếm số lượt đánh giá
+                DB::raw('COUNT(CASE WHEN rates.status = 1 THEN 1 END) as total_rates')// đếm số lượt đánh giá
             )
             ->groupBy(
                 'blog.id',
@@ -612,15 +761,25 @@ class HomeController extends Controller
             ->join('menus', 'foods.type', '=', 'menus.id')
             ->where('carts.user_id', '=', session('user_id'))
             ->where('carts.type', '=', 'Yêu Thích')
-            ->select('carts.*', 'foods.*', 'menus.name as type_menu', 'carts.id as id_cart')
+            ->select([
+                'carts.*',
+                'foods.*',
+                'menus.name as type_menu',
+                'carts.id as id_cart',
+                // Subquery lấy trung bình rate
+                \DB::raw('(SELECT AVG(rate) FROM rates WHERE rates.food_id = foods.id) as avg_rate'),
+                \DB::raw('(SELECT COUNT(*) FROM rates WHERE rates.food_id = foods.id) as count_rate'),
+            ])
             ->get();
+
+
 
 
         $myReviews = Rate::join('foods', 'rates.food_id', '=', 'foods.id')
             ->join('menus', 'foods.type', '=', 'menus.id')
             ->join('users', 'users.id', '=', 'rates.user_id')
             ->where('users.id', '=', session('user_id'))
-            ->select('rates.*', 'foods.*', 'menus.name as type_menu')
+            ->select('rates.*', 'rates.id as id_rate', 'foods.*', 'menus.name as type_menu')
             ->get();
         $myOrderLists = Order::join('users', 'users.id', '=', 'orders.id_user')
             ->join('order_details', 'order_details.order_id', '=', 'orders.id')
@@ -769,6 +928,30 @@ class HomeController extends Controller
         ]);
     }
 
+    //Xóa đánh giá
+    public function destroyRate($id)
+    {
+        $userId = session('user_id'); // Hoặc Auth::id() nếu dùng Auth
+        $review = Rate::where('id', $id)
+            ->where('user_id', $userId)
+            ->first();
+        //dd($review);
+        if (!$review) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy đánh giá.'
+            ], 404);
+        }
+
+        $review->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã xóa đánh giá thành công!'
+        ]);
+    }
+
+
 
     public function updateProfile(Request $request)
     {
@@ -790,6 +973,8 @@ class HomeController extends Controller
                 'ward' => 'required|string|max:100',
                 'district' => 'required|string|max:100',
                 'city' => 'required|string|max:100',
+                'gender' => 'required|in:Nam,Nữ,Khác',
+                'birthday' => 'required|date',
             ],
             [
                 'fullname.required' => 'Vui lòng nhập họ và tên.',
@@ -803,6 +988,10 @@ class HomeController extends Controller
                 'ward.required' => 'Vui lòng nhập phường/xã.',
                 'district.required' => 'Vui lòng nhập quận/huyện.',
                 'city.required' => 'Vui lòng nhập thành phố.',
+                'gender.required' => 'Vui lòng chọn giới tính.',
+                'gender.in' => 'Giới tính không hợp lệ.',
+                'birthday.required' => 'Vui lòng nhập ngày sinh.',
+                'birthday.date' => 'Ngày sinh không hợp lệ.',
             ]
         );
 
@@ -822,6 +1011,8 @@ class HomeController extends Controller
             $user->fullname = $data['fullname'];
             $user->email = $data['email'];
             $user->sdt = $data['sdt'];
+            $user->gender = $data['gender'];
+            $user->birthday = $data['birthday'];
             $user->save();
 
             // 3.2. Cập nhật hoặc tạo mới bản ghi addresses
@@ -840,6 +1031,8 @@ class HomeController extends Controller
                 'user_name' => $user->fullname,
                 'user_email' => $user->email,
                 'user_sdt' => $user->sdt,
+                'user_gender' => $user->gender,
+                'user_birthday' => $user->birthday,
                 // bạn có thể lưu thêm địa chỉ nếu muốn
             ]);
 
@@ -851,6 +1044,44 @@ class HomeController extends Controller
                 ->with('error', 'Cập nhật không thành công! ' . $e->getMessage());
         }
     }
+
+    //Sửa hình avatar
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+        $user = User::find(session('user_id')); // Hoặc Auth::user()
+
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy người dùng!']);
+        }
+
+        if ($request->hasFile('avatar')) {
+            // Xóa file cũ nếu có
+            if ($user->avatar && file_exists(public_path('img/' . $user->avatar))) {
+                unlink(public_path('img/' . $user->avatar));
+            }
+
+            $file = $request->file('avatar');
+            $fileName = 'avatar-' . $user->id . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('img/'), $fileName);
+            $user->avatar = $fileName;
+            $user->save();
+
+            // Update session (nếu dùng session)
+            session(['user_avatar' => $fileName]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đổi ảnh thành công!',
+                'avatar_url' => asset('img/' . $fileName)
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Upload ảnh thất bại!']);
+    }
+
 
     public function addAddress(Request $request)
     {
@@ -1012,6 +1243,8 @@ class HomeController extends Controller
                 'carts.quantity as quantity_cart',
                 'foods.name as food_name',
                 'foods.price as food_price',
+                'foods.status as food_status',
+                'foods.quantity as food_quantity',
                 'foods.image as food_image',
                 'menus.name as type_menu',
                 'carts.id as id_cart',
@@ -1103,7 +1336,7 @@ class HomeController extends Controller
     //Thanh Toán
     public function storeOrder(Request $request)
     {
-         \Log::info('Đầu vào storeOrder:', $request->all());
+        \Log::info('Đầu vào storeOrder:', $request->all());
         // 1. Validate dữ liệu
         $validator = Validator::make($request->all(), [
             'address_id' => 'required|integer|exists:addresses,id',
@@ -1138,7 +1371,7 @@ class HomeController extends Controller
 
         // Trường hợp thanh toán qua VNPAY (typepayment = 2)
         if ((int) $request->typepayment === 2) {
-            
+
             session([
                 'pending_order' => [
                     'address_id' => $request->address_id,
@@ -1149,7 +1382,7 @@ class HomeController extends Controller
                     'products' => $request->products,
                 ]
             ]);
-            
+
             // --- Build URL VNPAY ---
             $vnp_TmnCode = "U8U9C1HI";
             $vnp_HashSecret = "NJGOGY2HL4CARZZ7BB0JO24BH0U2WUIU";
@@ -1188,8 +1421,8 @@ class HomeController extends Controller
             $vnp_Url .= "?" . $query . "vnp_SecureHash={$vnpSecureHash}";
 
             // Trả về JSON để frontend redirect
-             \Log::info('Chạy nhánh VNPAY, pending_order:', session('pending_order'));
-    \Log::info('URL VNPAY:', ['url'=>$vnp_Url]);
+            \Log::info('Chạy nhánh VNPAY, pending_order:', session('pending_order'));
+            \Log::info('URL VNPAY:', ['url' => $vnp_Url]);
 
             return response()->json([
                 'success' => true,
@@ -1251,11 +1484,11 @@ class HomeController extends Controller
                 'message' => 'Đặt hàng thành công (Tiền mặt)!'
             ]);
         } catch (\Exception $e) {
-            \Log::info  ('Lỗi khi lưu order:', [
-            'message' => $e->getMessage(),
-            'trace'   => $e->getTraceAsString(),
-            'input'   => $request->all(),
-        ]);
+            \Log::info('Lỗi khi lưu order:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'input' => $request->all(),
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
@@ -1265,7 +1498,7 @@ class HomeController extends Controller
 
     public function vnpayReturn(Request $request)
     {
-       \Log::info('ENTER vnpayReturn, query:', ['qs'=>$_SERVER['QUERY_STRING']]);
+        \Log::info('ENTER vnpayReturn, query:', ['qs' => $_SERVER['QUERY_STRING']]);
         // Lấy raw query string
         $rawQuery = $_SERVER['QUERY_STRING'];
         // Loại bỏ signature params
@@ -1289,9 +1522,9 @@ class HomeController extends Controller
 
         if ($request->get('vnp_ResponseCode') !== '00') {
             \Log::error('VNPAY ResponseCode NOT 00', [
-        'code' => $request->get('vnp_ResponseCode'),
-        'full' => $request->all(),
-    ]);
+                'code' => $request->get('vnp_ResponseCode'),
+                'full' => $request->all(),
+            ]);
             return redirect()->route('views.cart')
                 ->with('error', 'Thanh toán VNPAY không thành công: ' . $request->get('vnp_ResponseCode'));
         }
@@ -1346,7 +1579,7 @@ class HomeController extends Controller
             ->with('success', 'Thanh toán VNPAY thành công!');
     }
 
-    //Thêm giỏ hàng
+    //Thêm yêu thích
     public function toggleFavorite(Request $request)
     {
         $data = $request->validate([
@@ -1391,6 +1624,29 @@ class HomeController extends Controller
                 'message' => 'Đã thêm vào danh sách yêu thích'
             ]);
         }
+    }
+
+    //Xóa yêu thích
+    public function removeWishlist($id)
+    {
+        $userId = session('user_id');
+        $item = Cart::where('id', $id)
+            ->where('user_id', $userId)
+            ->where('type', 'Yêu Thích')
+            ->first();
+
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy sản phẩm yêu thích.'
+            ], 404);
+        }
+
+        $item->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã xóa khỏi danh sách yêu thích!'
+        ]);
     }
 
     public function updateQuantityCart(Request $request, $id)
@@ -1497,7 +1753,7 @@ class HomeController extends Controller
         ]);
 
         if ($validator->fails()) {
-              \Log::info('Validate thành công, dữ liệu:', $request->all());
+            \Log::info('Validate thành công, dữ liệu:', $request->all());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
