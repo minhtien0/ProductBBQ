@@ -74,12 +74,12 @@
           </thead>
           <tbody id="cart-items">
             @foreach ($carts as $cart)
-          <tr data-id="{{ $cart->id_cart }}" data-product-id="{{ $cart->food_id ?? $cart->combo_id }}"  data-combo-id="{{ $cart->combo_id }}" 
-            class="cart-row" data-food-price="{{ $cart->food_price ?? $cart->combo_price }}"
-            class="border-b hover:bg-orange-50">
+          <tr data-id="{{ $cart->id_cart }}" data-product-id="{{ $cart->food_id ?? $cart->combo_id }}"
+            data-combo-id="{{ $cart->combo_id }}" class="cart-row"
+            data-food-price="{{ $cart->food_price ?? $cart->combo_price }}" class="border-b hover:bg-orange-50">
             <td class="px-3 py-2 text-center">
             <input type="checkbox" class="cart-checkbox form-checkbox h-4 w-4 text-orange-500"
-              data-id="{{ $cart->id_cart }}"  @if(isset($cart->food_status) && $cart->food_status == 'Hết Hàng')
+              data-id="{{ $cart->id_cart }}" @if(isset($cart->food_status) && $cart->food_status == 'Hết Hàng')
           disabled @endif>
             </td>
             @if (empty($cart->combo_id))
@@ -188,7 +188,8 @@
           <!-- … phần trên giữ nguyên … -->
 
           <div class="flex flex-col text-sm mb-2">
-            <label for="voucher">Khuyến Mãi:</label><span class="text-red-500">(Lưu ý: Bill Cao Voucher Xịn <i class="fa-solid fa-face-kiss-wink-heart"></i>)</span>
+            <label for="voucher">Khuyến Mãi:</label><span class="text-red-500">(Lưu ý: Bill Cao Voucher Xịn <i
+                class="fa-solid fa-face-kiss-wink-heart"></i>)</span>
             <select name="voucher_id" id="voucher" class="border rounded p-1">
               <option value="" data-value="0">-- Chọn Voucher --</option>
               @foreach ($vouchers as $voucher)
@@ -206,11 +207,16 @@
           <div class="flex flex-col text-sm mb-2 mt-2">
             <label for="address">Địa Chỉ:</label>
             <select name="address_id" id="address" class="border rounded p-1" required>
-              @foreach ($addressUsers as $addressUser)
-          <option value="{{ $addressUser->id }}"> {{ $addressUser->house_number }}, {{ $addressUser->ward }},
+              @if($addressUsers->count())
+            @foreach ($addressUsers as $addressUser)
+          <option value="{{ $addressUser->id }}">
+          {{ $addressUser->house_number }}, {{ $addressUser->ward }},
           {{ $addressUser->district }}, {{ $addressUser->city }}
           </option>
         @endforeach
+        @else
+          <option value="">Vui lòng thêm địa chỉ ở Profile!</option>
+        @endif
             </select>
           </div>
           <hr>
@@ -239,9 +245,11 @@
           </button>
 
           <!-- Popup -->
+          <!-- Popup xác nhận -->
           <div id="PopupComfirm"
             class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
-            <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+            <div
+              class="bg-white w-full max-w-md min-w-[340px] rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
               <!-- Header -->
               <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
                 <div class="flex items-center justify-between">
@@ -263,7 +271,6 @@
                   </button>
                 </div>
               </div>
-
               <!-- Content -->
               <div class="px-6 py-8 text-center">
                 <div
@@ -273,7 +280,7 @@
                       d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                 </div>
-                <p id="Message" class="text-gray-700 text-base leading-relaxed mb-8"></p>
+                <div id="PopupComfirmBody" class="text-gray-700 text-base leading-relaxed mb-8"></div>
                 <div class="flex justify-between space-x-4">
                   <button type="button" onclick="submitOrderForm()"
                     class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
@@ -287,69 +294,162 @@
               </div>
             </div>
           </div>
+
           <!-- End Popup -->
+          <!-- Popup thông báo -->
+          <div id="PopupMessage"
+  class="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden p-4">
+  <div class="w-full max-w-md rounded-2xl shadow-2xl border border-white/80 overflow-hidden bg-white" style="min-width:340px;">
+    <div id="PopupMessageHeader"
+      class="bg-gradient-to-r from-[#2196f3] to-[#9C27B0] px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div id="PopupMessageIcon" class="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center"></div>
+        <h2 id="PopupMessageTitle" class="text-lg font-semibold text-white">Thông báo</h2>
+      </div>
+      <button type="button" onclick="closePopupMessage()"
+        class="text-white/90 hover:bg-white/10 rounded-full p-1 transition duration-150">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="px-8 py-7 text-center">
+      <div class="flex justify-center mb-5" id="PopupMessageMainIcon"></div>
+      <div id="PopupMessageBody" class="mb-8 text-lg font-medium text-gray-800"></div>
+      <div class="flex justify-center">
+        <button type="button" onclick="closePopupMessage()"
+          class="w-1/2 py-3 rounded-lg font-bold text-white shadow-md transition bg-gradient-to-r from-[#2196f3] to-[#009688] hover:from-[#1565c0] hover:to-[#43a047]">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
     </div>
   </form>
   <script>
-  async function submitOrderForm() {
-    const form = document.getElementById('orderForm');
-    const url  = form.action;
-    const fd   = new FormData(form);
-    const btn  = document.querySelector('#PopupComfirm button[onclick="submitOrderForm()"]');
-    btn.disabled = true;
-    
-    try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'X-CSRF-TOKEN': '{{ csrf_token() }}',
-          'Accept': 'application/json'
-        },
-        body: fd,
-        credentials: 'same-origin'
-      });
-      const data = await res.json();
-      if (!res.ok) throw data;
-
-      // thành công
-      if (data.redirect) window.location.href = data.redirect;
-      else {
-        closePopupComfirm();
-        notification.show('success', 'Đặt hàng thành công!');
-        // hoặc reload giỏ hàng
-        setTimeout(() => location.reload(), 500);
-      }
-    } catch (err) {
-      // err có thể là { errors: {...} } hoặc { message: '...' }
-      let msgs = [];
-      if (err.errors) {
-        for (let f in err.errors) msgs.push(...err.errors[f]);
-      } else if (err.message) msgs.push(err.message);
-      notification.show('error', msgs.join('<br>'));
-    } finally {
-      btn.disabled = false;
-    }
-  }
-
-  function openPopupComfirm(msg) {
-    document.getElementById('Message').textContent = msg;
-    document.getElementById('PopupComfirm').classList.remove('hidden');
-  }
-  function closePopupComfirm() {
-    document.getElementById('PopupComfirm').classList.add('hidden');
-  }
-</script>
-
-  <script>
     function openPopupComfirm(message) {
-      document.getElementById('Message').textContent = message;
+      document.getElementById('PopupComfirmBody').textContent = message;
       document.getElementById('PopupComfirm').classList.remove('hidden');
     }
     function closePopupComfirm() {
       document.getElementById('PopupComfirm').classList.add('hidden');
     }
+
+
+function showPopupMessage(type, message, reload = false) {
+  // Chuẩn bị biến UI
+  let headerClass = "bg-gradient-to-r from-[#2196f3] to-[#9C27B0] px-6 py-4 flex items-center justify-between";
+  let iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01"></path>
+  </svg>`;
+  let mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#e0f7fa] to-[#f3e5f5] rounded-full flex items-center justify-center shadow mx-auto">
+    <svg class="w-8 h-8 text-[#2196f3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01"></path>
+    </svg>
+  </div>`;
+  let title = 'Thông báo';
+
+  if (type === 'success') {
+    headerClass = "bg-gradient-to-r from-[#43e97b] to-[#38f9d7] px-6 py-4 flex items-center justify-between";
+    iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>`;
+    mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#e0ffe8] to-[#c8fff4] rounded-full flex items-center justify-center shadow mx-auto">
+      <svg class="w-8 h-8 text-[#43e97b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+      </svg>
+    </div>`;
+    title = 'Thành công';
+  }
+  if (type === 'error') {
+    headerClass = "bg-gradient-to-r from-[#ef5350] to-[#9C27B0] px-6 py-4 flex items-center justify-between";
+    iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"></path></svg>`;
+    mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#ffebee] to-[#ede7f6] rounded-full flex items-center justify-center shadow mx-auto">
+      <svg class="w-8 h-8 text-[#ef5350]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"></path>
+      </svg>
+    </div>`;
+    title = 'Lỗi';
+  }
+  // Đặt lại UI
+  document.getElementById('PopupMessageHeader').className = headerClass;
+  document.getElementById('PopupMessageIcon').innerHTML = iconHtml;
+  document.getElementById('PopupMessageTitle').textContent = title;
+  document.getElementById('PopupMessageMainIcon').innerHTML = mainIcon;
+  document.getElementById('PopupMessageBody').innerHTML = message;
+  document.getElementById('PopupMessage').classList.remove('hidden');
+
+  // Đóng và reload nếu cần
+  if (reload) {
+    document.querySelectorAll('#PopupMessage button, #PopupMessage [onclick="closePopupMessage()"]').forEach(btn => {
+      btn.onclick = function () {
+        closePopupMessage();
+        location.reload();
+      }
+    });
+  } else {
+    document.querySelectorAll('#PopupMessage button, #PopupMessage [onclick="closePopupMessage()"]').forEach(btn => {
+      btn.onclick = function () {
+        closePopupMessage();
+      }
+    });
+  }
+}
+function closePopupMessage() {
+  document.getElementById('PopupMessage').classList.add('hidden');
+}
+
+    async function submitOrderForm() {
+  const form = document.getElementById('orderForm');
+  const url  = form.action;
+  const fd   = new FormData(form);
+  const btn  = document.querySelector('#PopupComfirm button[onclick="submitOrderForm()"]');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        'Accept': 'application/json'
+      },
+      body: fd,
+      credentials: 'same-origin'
+    });
+    const data = await res.json();
+    if (!res.ok) throw data;
+
+    if (data.redirect) {
+      window.location.href = data.redirect;
+      return;
+    }
+    closePopupComfirm();
+    showPopupMessage('success', data.message || 'Đặt hàng thành công!', true);
+  } catch (err) {
+    let msg = '';
+    if (err.errors) {
+      for (let f in err.errors) {
+        msg = err.errors[f][0];
+        break;
+      }
+    }
+    if (err.message && !msg) msg = err.message;
+    if (!msg) msg = 'Có lỗi xảy ra, vui lòng thử lại!';
+    closePopupComfirm();
+    showPopupMessage('error', msg);
+  } finally {
+    btn.disabled = false;
+  }
+}
+  </script>
+
+  <script>
 
     document.addEventListener('DOMContentLoaded', () => {
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -457,6 +557,7 @@
       }
 
       function updateSelectedDetail() {
+        let prevVoucherValue = voucherSelect.value;
         const checkedRows = Array.from(document.querySelectorAll('.cart-checkbox:checked'))
           .map(cb => cb.closest('tr[data-id]'))
           .filter(Boolean);
@@ -475,7 +576,7 @@
             total += cart.total;
             console.log(cart);
             // Ẩn input để gửi product_id & quantity
-           hiddenDiv.innerHTML += `
+            hiddenDiv.innerHTML += `
   <input type="hidden" name="products[${cart.is_combo ? 'combo_' + cart.combo_id : 'food_' + cart.product_id}][id]" value="${cart.is_combo ? cart.combo_id : cart.product_id}">
   <input type="hidden" name="products[${cart.is_combo ? 'combo_' + cart.combo_id : 'food_' + cart.product_id}][quantity]" value="${cart.quantity}">
   <input type="hidden" name="products[${cart.is_combo ? 'combo_' + cart.combo_id : 'food_' + cart.product_id}][type]" value="${cart.is_combo ? 'combo' : 'food'}">
@@ -488,7 +589,7 @@
             `;
           });
           html += '</div>';
-          
+
         }
         summary.innerHTML = html;
         totalEl.textContent = total.toLocaleString() + ' VNĐ';
@@ -506,13 +607,15 @@
           }
           return '';
         }).join('');
-
-        // Nếu voucher đang chọn không còn hợp lệ, reset về default
-        if (!hasValidVoucher) {
-          voucherSelect.value = '';
-          selectedDiscount = 0;
-          discountEl.textContent = "0 VNĐ";
-        }
+                if (prevVoucherValue && voucherSelect.querySelector('option[value="' + prevVoucherValue + '"]')) {
+    voucherSelect.value = prevVoucherValue;
+    selectedDiscount = parseInt(voucherSelect.selectedOptions[0].getAttribute('data-value')) || 0;
+    discountEl.textContent = selectedDiscount.toLocaleString() + ' VNĐ';
+  } else {
+    voucherSelect.value = '';
+    selectedDiscount = 0;
+    discountEl.textContent = "0 VNĐ";
+  }
         // Tính lại totalbill
         const bill = Math.max(total - selectedDiscount + delivery, 0);
         totalBillEl.textContent = bill.toLocaleString() + ' VNĐ';

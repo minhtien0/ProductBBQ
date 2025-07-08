@@ -62,7 +62,6 @@ Route::post('/contact/add', [HomeController::class, 'addContact'])->name('help.a
 Route::post('/booking', [HomeController::class, 'storeBookingTable'])->name('booking.store');
 
 
-
 //Combodetail
 Route::get('/combos/{id}', [HomeController::class, 'combodetail'])->name('views.combodetail');
 Route::get('/combodetail/{id}', [HomeController::class, 'combodetail'])->name('combodetail');
@@ -215,11 +214,11 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::get('/', [OrderController::class, 'index'])->name('admin.order');
         //Mang Về
         Route::get('/bringback', [OrderController::class, 'bringBack'])->name('admin.order.bringback');
-        Route::get('detail/{order}', [OrderController::class, 'showOrder'])->name('admin.order.show');
-        Route::post('{order}/status', [OrderController::class, 'updateStatusBringBack'])->name('admin.order.updateStatusBringBack');
+        Route::get('/detail/{id}', [OrderController::class, 'showOrder'])->name('admin.order.show');
+        Route::post('/{order}/status', [OrderController::class, 'updateStatusBringBack'])->name('admin.order.updateStatusBringBack');
         //Tại Quán
         Route::get('/onsite', [OrderController::class, 'onSite'])->name('admin.order.onsite');
-        Route::post('{order}/refund', [OrderController::class, 'refund'])->name('admin.order.refund');
+        Route::post('/{order}/refund', [OrderController::class, 'refund'])->name('admin.order.refund');
     });
 
     //huydong test layout quản lí bàn

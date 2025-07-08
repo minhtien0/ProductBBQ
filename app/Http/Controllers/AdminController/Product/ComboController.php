@@ -50,6 +50,7 @@ class ComboController extends Controller
 
     public function add(Request $request)
     {
+        //dd($request->all());
         try {
             $request->validate([
                 'codecombo' => 'required|string|max:255|unique:food_combos,codecombo',
@@ -75,7 +76,14 @@ class ComboController extends Controller
                 return back()->withInput()->withErrors(['foods' => 'Vui lòng chọn ít nhất một món ăn!']);
             }
 
-            // ...xử lý hình ảnh như cũ...
+            // --- Tính tổng giá các món ăn trong combo ---
+            $totalFoodsPrice = \App\Models\Food::whereIn('id', $foods)->sum('price');
+            //dd($totalFoodsPrice);
+
+            // Nếu giá combo lớn hơn tổng giá món ăn thì báo lỗi
+            if ($request->price > $totalFoodsPrice) {
+                return back()->withInput()->with('error', 'Giá combo không được lớn hơn tổng giá các món ăn trong combo (' . number_format($totalFoodsPrice) . ' VNĐ)!');
+            }
 
             // Lưu combo
             $combo = new \App\Models\FoodCombo();
@@ -171,7 +179,7 @@ class ComboController extends Controller
             }
 
             return redirect()->route('admin.food_combo.edit', ['id' => $combo->id])
-    ->with('success', 'Cập nhật combo thành công!');
+                ->with('success', 'Cập nhật combo thành công!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Lỗi: ' . $e->getMessage());
         }

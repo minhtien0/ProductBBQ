@@ -1144,13 +1144,22 @@ public function getOrderDetailsByTable($table_id)
     }
 
     public function deleteAddress($id)
-    {
-        $address = Address::findOrFail($id);
-        $address->delete();
+{
+    $address = Address::findOrFail($id);
 
-        // Quay về trang trước với thông báo
-        return redirect()->back()->with('success', 'Đã xóa địa chỉ thành công!');
+    // Kiểm tra xem có đơn hàng nào chưa hoàn thành/hủy đang dùng địa chỉ này không
+    $ordersUsingAddress = Order::where('address', $id)
+        ->whereNotIn('statusorder', ['Hoàn Thành', 'Đã Hủy'])
+        ->exists();
+
+    if ($ordersUsingAddress) {
+        // Nếu có, trả về thông báo lỗi, không cho xóa
+        return redirect()->back()->with('error', 'Không thể xóa địa chỉ này vì có đơn hàng chưa hoàn thành hoặc chưa hủy đang sử dụng địa chỉ này. Vui lòng đợi đơn Hoàn Thành hoặc Đã Hủy!');
     }
+
+    $address->delete();
+    return redirect()->back()->with('success', 'Đã xóa địa chỉ thành công!');
+}
 
     public function editAddress(Request $request)
     {
@@ -1336,8 +1345,7 @@ public function getOrderDetailsByTable($table_id)
     //Thanh Toán
     public function storeOrder(Request $request)
     {
-        \Log::info('Đầu vào storeOrder:', $request->all());
-        // 1. Validate dữ liệu
+        //dd($request->all());
         $validator = Validator::make($request->all(), [
             'address_id' => 'required|integer|exists:addresses,id',
             'totalprice' => 'required|integer|min:1',
@@ -1419,10 +1427,6 @@ public function getOrderDetailsByTable($table_id)
             }
             $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
             $vnp_Url .= "?" . $query . "vnp_SecureHash={$vnpSecureHash}";
-
-            // Trả về JSON để frontend redirect
-            \Log::info('Chạy nhánh VNPAY, pending_order:', session('pending_order'));
-            \Log::info('URL VNPAY:', ['url' => $vnp_Url]);
 
             return response()->json([
                 'success' => true,
@@ -1767,35 +1771,46 @@ public function getOrderDetailsByTable($table_id)
             ->where('CCCD', $inputPass)
             ->first();
 
-        if ($staff) {
-            session([
-                'staff_logged_in' => true,
-                'staff_id' => $staff->id,
-                'staff_name' => $staff->fullname,
-                'staff_email' => $staff->email,
-                'staff_role' => $staff->role,
-            ]);
-            return redirect()->route('admin.dashboard')
-                ->with('success', 'Đăng nhập Admin thành công!');
+         if ($staff) {
+        // --- Kiểm tra nếu nhân viên đã nghỉ việc ---
+        if ($staff->status === 'Nghỉ Việc') {
+            return redirect()->back()
+                ->withErrors(['failed' => 'Nhân viên này đã nghỉ việc, không thể đăng nhập!'])
+                ->withInput($request->except('password'));
         }
+        session([
+            'staff_logged_in' => true,
+            'staff_id' => $staff->id,
+            'staff_name' => $staff->fullname,
+            'staff_email' => $staff->email,
+            'staff_role' => $staff->role,
+        ]);
+        return redirect()->route('admin.dashboard')
+            ->with('success', 'Đăng nhập Admin thành công!');
+    }
 
         // 2) Thử đăng nhập bằng User (user / hashed password)
         $user = User::where('user', $inputUser)->first();
-        if ($user && Hash::check($inputPass, $user->password)) {
-            session([
-                'user_logged_in' => true,
-                'user_id' => $user->id,
-                'user_name' => $user->fullname,
-                'user_sdt' => $user->sdt,
-                'user_email' => $user->email,
-                'user_birthday' => $user->birthday,
-                'user_gender' => $user->gender,
-                'user_avatar' => $user->avatar,
-            ]);
-            return redirect()->route('views.index')
-                ->with('success', 'Đăng nhập thành công!');
+    if ($user && Hash::check($inputPass, $user->password)) {
+        // --- Kiểm tra nếu user ngưng hoạt động ---
+        if ($user->role === 'Ngưng Hoạt Động') {
+            return redirect()->back()
+                ->withErrors(['failed' => 'Tài khoản của bạn đã bị ngưng hoạt động!'])
+                ->withInput($request->except('password'));
         }
-
+        session([
+            'user_logged_in' => true,
+            'user_id' => $user->id,
+            'user_name' => $user->fullname,
+            'user_sdt' => $user->sdt,
+            'user_email' => $user->email,
+            'user_birthday' => $user->birthday,
+            'user_gender' => $user->gender,
+            'user_avatar' => $user->avatar,
+        ]);
+        return redirect()->route('views.index')
+            ->with('success', 'Đăng nhập thành công!');
+    }
         // Nếu cả 2 đều không khớp
         return redirect()->back()
             ->withErrors(['failed' => 'Tài khoản hoặc mật khẩu không chính xác'])

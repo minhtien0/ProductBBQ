@@ -71,10 +71,14 @@
                         </h3>
                     </div>
                     <div class="px-6 py-4">
-                        <p class="text-sm text-gray-900 leading-relaxed">
-                            {{ $order->house_number }}, {{ $order->ward }}, {{ $order->district }}, {{ $order->city }}
-                            @if($order->note_address)
-                                <span class="text-gray-500">({{ $order->note_address }})</span>
+                       <p class="text-sm text-gray-900 leading-relaxed">
+                            @if($order->house_number)
+                                {{ $order->house_number }}, {{ $order->ward }}, {{ $order->district }}, {{ $order->city }}
+                                @if($order->note_address)
+                                    <span class="text-gray-500">({{ $order->note_address }})</span>
+                                @endif
+                            @else
+                                <span class="text-red-500">Địa chỉ này đã bị xóa khỏi hệ thống.</span>
                             @endif
                         </p>
                     </div>

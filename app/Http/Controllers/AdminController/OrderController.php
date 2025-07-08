@@ -5,6 +5,7 @@ use App\Models\Company;
 use App\Models\Order;
 use App\Models\Food;
 use App\Models\OrderDetail;
+use App\Models\Voucher;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
 use Carbon\Carbon;
@@ -85,10 +86,11 @@ class OrderController extends Controller
 
     public function showOrder($id)
     {
+        //dd(123);
         // Lấy thông tin đơn và join khách hàng, voucher
         $order = Order::leftJoin('users', 'orders.id_user', '=', 'users.id')
             ->leftJoin('vouchers', 'orders.voucher', '=', 'vouchers.id')
-            ->join('addresses', 'orders.address', '=', 'addresses.id')
+            ->leftJoin('addresses', 'orders.address', '=', 'addresses.id')
             ->select([
                 'orders.*',
                 'orders.id as id_order',
@@ -102,6 +104,7 @@ class OrderController extends Controller
             ])
             ->where('orders.id', $id)
             ->firstOrFail();
+        //dd(456);
 
         // Lấy chi tiết sản phẩm
         $details = OrderDetail::leftJoin('foods', 'order_details.product_id', '=', 'foods.id')
@@ -115,8 +118,6 @@ class OrderController extends Controller
                 'food_combos.price as combo_price',
             ])
             ->get();
-
-
         return view('admin.order.show', compact('order', 'details'));
     }
 
@@ -126,7 +127,7 @@ class OrderController extends Controller
             'statusorder' => 'required|in:Chờ Xác Nhận,Đang Thực Hiện,Đang Giao Hàng,Hoàn Thành,Đã Hủy',
         ]);
 
-        $order = Order::findOrFail($id);
+        $order = Order::with('details')->findOrFail($id);
 
         // Định nghĩa thứ tự trạng thái
         $statusOrder = [
@@ -140,12 +141,33 @@ class OrderController extends Controller
         $currentStatus = $order->statusorder;
         $newStatus = $request->statusorder;
 
-        // Nếu trạng thái mới <= trạng thái hiện tại thì không cho phép cập nhật
+        // Không cho quay lùi trạng thái
         if ($statusOrder[$newStatus] <= $statusOrder[$currentStatus]) {
             return back()->with('error', 'Không thể chuyển về trạng thái trước hoặc trạng thái hiện tại!');
         }
 
-        // Nếu chuyển sang "Đang Thực Hiện" thì trừ số lượng sản phẩm
+        // -- TRỪ VOUCHER KHI CHUYỂN SANG "Đang Thực Hiện" (nếu chưa trừ) --
+        if ($newStatus == 'Đang Thực Hiện'  && $order->voucher) {
+            $voucher = Voucher::find($order->voucher);
+            if ($voucher) {
+                if ($voucher->quantity < 1) {
+                    return back()->with('error', 'Voucher đã hết lượt sử dụng!');
+                }
+                $voucher->quantity -= 1;
+                $voucher->save();
+            }
+        }
+
+        // -- HOÀN LẠI VOUCHER KHI HỦY (NẾU ĐÃ TRỪ) --
+        if ($newStatus == 'Đã Hủy'  && $order->voucher) {
+            $voucher = Voucher::find($order->voucher);
+            if ($voucher) {
+                $voucher->quantity += 1;
+                $voucher->save();
+            }
+        }
+
+        // -- TRỪ SẢN PHẨM KHI SANG "Đang Thực Hiện" --
         if ($newStatus == 'Đang Thực Hiện' && $order->statusorder != 'Đang Thực Hiện') {
             foreach ($order->details as $item) {
                 $product = Food::find($item->product_id);
@@ -154,7 +176,7 @@ class OrderController extends Controller
                 }
                 $product->quantity -= $item->quantity;
                 if ($product->quantity == 0) {
-                    $product->status = 'Hết Hàng'; // hoặc $product->is_active = 0;
+                    $product->status = 'Hết Hàng';
                 }
                 $product->save();
             }
@@ -165,6 +187,7 @@ class OrderController extends Controller
 
         return back()->with('success', 'Cập nhật trạng thái thành công!');
     }
+
 
 
     public function queryTransaction(string $txnRef, Request $request)
