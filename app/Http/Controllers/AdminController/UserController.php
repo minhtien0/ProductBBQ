@@ -69,7 +69,7 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'birthday' => 'nullable|date',
             'gender' => 'required|in:Nam,Nữ,Khác',
-            'role' => 'required|in:Khách Hàng,Admin',
+            'role' => 'required|in:Hoạt Động,Ngưng Hoạt Động',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             //address
             'addresses.*.name' => 'required|string|max:255',

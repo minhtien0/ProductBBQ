@@ -146,13 +146,12 @@
             </div>
             <!-- Role -->
             <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-                <label for="role" class="block text-xs font-medium text-gray-700 mb-1">Vai trò</label>
+                <label for="role" class="block text-xs font-medium text-gray-700 mb-1">Quyền Truy Cập</label>
                 <select id="role" name="role"
                     class="w-full text-xs px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Chọn vai trò</option>
-                    <option selected value="Khách Hàng" {{ old('role', $user->role) == 'Khách Hàng' ? 'selected' : '' }}>Khách
-                        Hàng</option>
-                    <option value="Admin" {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin</option>
+                    <option selected value="Hoạt Động" {{ old('role', $user->role) == 'Hoạt Động' ? 'selected' : '' }}>Hoạt Động</option>
+                    <option value="Ngưng Hoạt Động" {{ old('role', $user->role) == 'Ngưng Hoạt Động' ? 'selected' : '' }}>Ngưng Hoạt Động</option>
                 </select>
             </div>
         </div>

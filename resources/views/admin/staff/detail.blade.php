@@ -101,9 +101,8 @@
                         class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Chọn trạng thái</option>
                         <option value="Đang Làm" {{ $staff->status == 'Đang Làm' ? 'selected' : '' }}>Đang Làm</option>
-                        <option value="Thử Việc" {{ $staff->status == 'Thử Việc' ? 'selected' : '' }}>Thử Việc</option>
-                        <option value="Tạm Vắng" {{ $staff->status == 'Tạm Vắng' ? 'selected' : '' }}>Tạm Vắng</option>
-                        <option value="Ngưng Làm" {{ $staff->status == 'Ngưng Làm' ? 'selected' : '' }}>Ngưng Làm</option>
+                        <option value="Nghỉ Việc" {{ $staff->status == 'Nghỉ Việc' ? 'selected' : '' }}>Nghỉ Việc</option>
+                        
                     </select>
                 </div>
             </div>

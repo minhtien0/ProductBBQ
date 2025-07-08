@@ -59,16 +59,14 @@
         <!-- Ảnh lớn và thumbnail -->
         <div class="md:w-1/3 flex flex-col">
           <div class="relative mb-4">
-  <img id="main-img"
-       src="{{ asset('img/' . $foods->image) }}"
-       class="rounded-lg w-full h-[220px] object-cover border-2 border-orange-400
+            <img id="main-img" src="{{ asset('img/' . $foods->image) }}" class="rounded-lg w-full h-[220px] object-cover border-2 border-orange-400
        @if($foods->quantity == 0) opacity-60 grayscale @endif" />
-  @if($foods->quantity == 0)
-    <div class="absolute inset-0 flex items-center justify-center">
-      <span class="bg-black/60 text-white text-lg font-bold rounded px-4 py-2">Hàng tạm hết</span>
-    </div>
-  @endif
-</div>
+            @if($foods->quantity == 0)
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="bg-black/60 text-white text-lg font-bold rounded px-4 py-2">Hàng tạm hết</span>
+        </div>
+      @endif
+          </div>
 
           <div class="flex gap-2">
             @foreach ($detailImages as $detailImage)
@@ -100,23 +98,18 @@
           <div class="flex items-center gap-3 mb-3">
             <label class="font-semibold text-gray-700">Số Lượng:</label>
             <input type="number" min="1" max="{{ $foods->quantity }}" value="1"
-  class="w-16 border rounded px-2 py-1 text-center"
-  id="food-quantity"
-  @if($foods->quantity == 0) disabled @endif
->
+              class="w-16 border rounded px-2 py-1 text-center" id="food-quantity" @if($foods->quantity == 0) disabled
+        @endif>
             <span class="text-lg font-bold text-orange-700" id="total-price">
               {{ number_format($foods->price, 0, ',', '.') }}đ
             </span>
           </div>
           <div class="flex gap-3 mt-4">
-            <button type="button"
-  class="add-to-cart bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-bold shadow
-  @if($foods->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif"
-  data-food-id="{{ $foods->id }}" data-food-price="{{ $foods->price }}"
-  @if($foods->quantity == 0) disabled @endif
->
-  Thêm Vào Giỏ
-</button>
+            <button type="button" class="add-to-cart bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-bold shadow
+  @if($foods->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif" data-food-id="{{ $foods->id }}"
+              data-food-price="{{ $foods->price }}" @if($foods->quantity == 0) disabled @endif>
+              Thêm Vào Giỏ
+            </button>
 
 
 
@@ -150,21 +143,43 @@
           <div id="reviewTabContent" class="hidden flex flex-col md:flex-row gap-4">
             <!-- Danh sách đánh giá (trái) -->
             <div class="flex-1">
-              <div class="font-semibold mb-2 text-gray-800 text-sm">{{  $countRates }} Đánh Giá</div>
+              <!-- Tổng số lượt đánh giá -->
+              <div class="flex items-center justify-between mb-3">
+                <div class="font-semibold text-gray-800 text-sm">
+                  {{ $countRates }} Đánh Giá
+                </div>
+
+                <!-- Dropdown lọc đánh giá -->
+                <div class="flex items-center gap-1 text-sm">
+                  <label for="filterStar" class="text-gray-600">Lọc:</label>
+                  <select id="filterStar" class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400">
+                    <option value="0">Lọc đánh giá</option>
+                    <option value="1">1 Sao</option>
+                    <option value="2">2 Sao</option>
+                    <option value="3">3 Sao</option>
+                    <option value="4">4 Sao</option>
+                    <option value="5">5 Sao</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Danh sách đánh giá -->
               <div id="reviewList" class="space-y-3">
                 @foreach($rates as $rate)
-              <div class="review-row flex gap-3 items-start bg-[#f8f8f8] rounded-lg p-3">
-                <!-- Avatar người đánh giá -->
+              <div class="review-row flex gap-3 items-start bg-[#f8f8f8] rounded-lg p-3"
+                data-rate="{{ $rate->rate }}">
+                <!-- Avatar -->
                 <img src="{{ asset('img/' . $rate->user->avatar) }}"
                 class="w-12 h-12 rounded-full object-cover border border-gray-200" />
-                <div>
-                <!-- Tên và thời gian -->
+
+                <div class="flex-1">
+                <!-- Tên người dùng và thời gian -->
                 <div class="flex gap-2 items-center mb-1">
                   <span class="font-bold text-sm text-gray-800">{{ $rate->user->fullname }}</span>
-                  <span class="text-xs text-gray-400">
-                  {{ \Carbon\Carbon::parse($rate->time)->format('d/m/Y H:i') }}
-                  </span>
+                  <span
+                  class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($rate->time)->format('d/m/Y H:i') }}</span>
                 </div>
+
                 <!-- Sao đánh giá -->
                 <div class="flex gap-1 text-xs mb-1">
                   @for ($i = 1; $i <= 5; $i++)
@@ -173,7 +188,8 @@
             @endfor
                   <span class="ml-1 text-gray-500">({{ $rate->rate }}/5)</span>
                 </div>
-                <!-- Ảnh kèm theo (nếu có) -->
+
+                <!-- Hình ảnh đánh giá -->
                 @if($rate->images->isNotEmpty())
               <div class="flex gap-2 flex-wrap mb-2">
                 @foreach($rate->images as $img)
@@ -182,7 +198,8 @@
             @endforeach
               </div>
             @endif
-                <!-- Nội dung bình luận -->
+
+                <!-- Nội dung -->
                 <div class="text-xs text-gray-600">{{ $rate->content }}</div>
                 </div>
               </div>
@@ -197,13 +214,28 @@
                 <button id="nextPageBtn"
                   class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 bg-white hover:bg-orange-50">&gt;</button>
               </div>
-
             </div>
+
           </div>
         </div>
       </div>
+      <script>document.addEventListener('DOMContentLoaded', function () {
+          const filterStar = document.getElementById('filterStar');
+          const reviews = document.querySelectorAll('.review-row');
+          filterStar.addEventListener('change', function () {
+            const star = parseInt(this.value);
+            reviews.forEach(row => {
+              if (star === 0) {
+                row.style.display = ''; // show all
+              } else {
+                row.style.display = (parseInt(row.dataset.rate) === star) ? '' : 'none';
+              }
+            });
+          });
+        });
+      </script>
       <!-- FontAwesome for icons (bắt buộc) -->
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     </div>
   </div>
 
@@ -247,94 +279,94 @@
   </div>
 
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // --- Tổng tiền khi đổi số lượng ---
-    const price = Number(document.querySelector('.add-to-cart').dataset.foodPrice);
-    const quantityInput = document.getElementById('food-quantity');
-    const totalPriceSpan = document.getElementById('total-price');
-    const maxStock = Number(quantityInput.getAttribute('max'));
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // --- Tổng tiền khi đổi số lượng ---
+      const price = Number(document.querySelector('.add-to-cart').dataset.foodPrice);
+      const quantityInput = document.getElementById('food-quantity');
+      const totalPriceSpan = document.getElementById('total-price');
+      const maxStock = Number(quantityInput.getAttribute('max'));
 
-    function updateTotalPrice() {
-      const qty = Number(quantityInput.value) || 1;
-      totalPriceSpan.textContent = (price * qty).toLocaleString('vi-VN') + ' VNĐ';
-    }
-
-    function handleQtyChange() {
-      // Lấy giá trị hiện tại, ép thành số nguyên
-      let val = Math.floor(Number(quantityInput.value)) || 1;
-
-      // Kiểm tra vượt quá 20
-      if (val > 20) {
-        val = 20;
-        showPopup('Bạn chỉ có thể mua tối đa 20 phần/lần.');
-      }
-      // Kiểm tra vượt quá số lượng tồn kho
-      if (val > maxStock) {
-        val = maxStock;
-        showPopup('Không được thêm quá số lượng hiện có.');
-      }
-      // Giá trị thấp nhất là 1
-      if (val < 1) {
-        val = 1;
+      function updateTotalPrice() {
+        const qty = Number(quantityInput.value) || 1;
+        totalPriceSpan.textContent = (price * qty).toLocaleString('vi-VN') + ' VNĐ';
       }
 
-      // Gán lại và cập nhật giá
-      quantityInput.value = val;
-      updateTotalPrice();
-    }
+      function handleQtyChange() {
+        // Lấy giá trị hiện tại, ép thành số nguyên
+        let val = Math.floor(Number(quantityInput.value)) || 1;
 
-    // Lắng nghe cả input và change (cho spinner và gõ tay)
-    quantityInput.addEventListener('input', handleQtyChange);
-    quantityInput.addEventListener('change', handleQtyChange);
-
-    // Gọi khởi tạo
-    updateTotalPrice();
-
-    // --- Thêm vào giỏ hàng với số lượng thực tế ---
-    document.querySelector('.add-to-cart').addEventListener('click', async function () {
-      const foodId = this.dataset.foodId;
-      const quantity = Number(quantityInput.value) || 1;
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      try {
-        const res = await fetch("{{ route('cart.add') }}", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-          body: JSON.stringify({ food_id: foodId, quantity: quantity })
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          showPopup(data.message || "Đã thêm vào giỏ hàng!");
-        } else {
-          showPopup(data.message || data.error || "Có lỗi xảy ra");
+        // Kiểm tra vượt quá 20
+        if (val > 20) {
+          val = 20;
+          showPopup('Bạn chỉ có thể mua tối đa 20 phần/lần.');
         }
-      } catch (err) {
-        showPopup("Lỗi kết nối");
-      }
-    });
+        // Kiểm tra vượt quá số lượng tồn kho
+        if (val > maxStock) {
+          val = maxStock;
+          showPopup('Không được thêm quá số lượng hiện có.');
+        }
+        // Giá trị thấp nhất là 1
+        if (val < 1) {
+          val = 1;
+        }
 
-    // --- Yêu thích: Toggle đúng trạng thái cho sản phẩm hiện tại ---
-    document.querySelector('.favorite-btn-current').addEventListener('click', async function () {
-      const foodId = this.dataset.foodId;
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      try {
-        const res = await fetch("{{ route('favorite.toggle') }}", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-          body: JSON.stringify({ food_id: foodId })
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
+        // Gán lại và cập nhật giá
+        quantityInput.value = val;
+        updateTotalPrice();
+      }
+
+      // Lắng nghe cả input và change (cho spinner và gõ tay)
+      quantityInput.addEventListener('input', handleQtyChange);
+      quantityInput.addEventListener('change', handleQtyChange);
+
+      // Gọi khởi tạo
+      updateTotalPrice();
+
+      // --- Thêm vào giỏ hàng với số lượng thực tế ---
+      document.querySelector('.add-to-cart').addEventListener('click', async function () {
+        const foodId = this.dataset.foodId;
+        const quantity = Number(quantityInput.value) || 1;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        try {
+          const res = await fetch("{{ route('cart.add') }}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ food_id: foodId, quantity: quantity })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showPopup(data.message || "Đã thêm vào giỏ hàng!");
+          } else {
+            showPopup(data.message || data.error || "Có lỗi xảy ra");
+          }
+        } catch (err) {
+          showPopup("Lỗi kết nối");
+        }
+      });
+
+      // --- Yêu thích: Toggle đúng trạng thái cho sản phẩm hiện tại ---
+      document.querySelector('.favorite-btn-current').addEventListener('click', async function () {
+        const foodId = this.dataset.foodId;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        try {
+          const res = await fetch("{{ route('favorite.toggle') }}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ food_id: foodId })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
             // chỉ update đúng nút vừa click
             if (data.favorited) {
               // thêm class đỏ và icon solid
@@ -347,30 +379,30 @@
               this.classList.add('text-gray-500');
               this.querySelector('i').classList.replace('fa-solid', 'fa-regular');
             }
-          showPopup(data.message || "Cập nhật yêu thích thành công");
-        } else {
-          showPopup(data.message || "Có lỗi xảy ra");
+            showPopup(data.message || "Cập nhật yêu thích thành công");
+          } else {
+            showPopup(data.message || "Có lỗi xảy ra");
+          }
+        } catch (err) {
+          showPopup("Lỗi kết nối");
         }
-      } catch (err) {
-        showPopup("Lỗi kết nối");
-      }
+      });
+
+      // Popup close handlers
+      const overlay = document.getElementById('custom-popup-overlay');
+      document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
+      document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
+      overlay.onclick = function (e) {
+        if (e.target === overlay) overlay.classList.add('hidden');
+      };
     });
 
-    // Popup close handlers
-    const overlay = document.getElementById('custom-popup-overlay');
-    document.getElementById('popup-ok-btn').onclick = () => overlay.classList.add('hidden');
-    document.getElementById('popup-close-btn').onclick = () => overlay.classList.add('hidden');
-    overlay.onclick = function (e) {
-      if (e.target === overlay) overlay.classList.add('hidden');
-    };
-  });
-
-  // Hàm hiển thị popup
-  function showPopup(message) {
-    document.getElementById('custom-popup-message').textContent = message;
-    document.getElementById('custom-popup-overlay').classList.remove('hidden');
-  }
-</script>
+    // Hàm hiển thị popup
+    function showPopup(message) {
+      document.getElementById('custom-popup-message').textContent = message;
+      document.getElementById('custom-popup-overlay').classList.remove('hidden');
+    }
+  </script>
 
   <!-- PHẦN 2: Related BBQ Items -->
   <div class="bg-dark-light max-w-6xl mx-auto py-8">
@@ -389,20 +421,20 @@
       $avg = $item->rates_avg_rate;
     @endphp
 
-    @for($i = 1; $i <= 5; $i++)
-      @if($avg >= $i)
-        {{-- đầy đủ sao --}}
-        <i class="fa-solid fa-star text-yellow-400"></i>
+        @for($i = 1; $i <= 5; $i++)
+        @if($avg >= $i)
+      {{-- đầy đủ sao --}}
+      <i class="fa-solid fa-star text-yellow-400"></i>
       @elseif($avg >= $i - 0.5)
-        {{-- nửa sao --}}
-        <i class="fa-solid fa-star-half-stroke text-yellow-400"></i>
+      {{-- nửa sao --}}
+      <i class="fa-solid fa-star-half-stroke text-yellow-400"></i>
       @else
-        {{-- sao rỗng --}}
-        <i class="fa-regular fa-star text-gray-300"></i>
+      {{-- sao rỗng --}}
+      <i class="fa-regular fa-star text-gray-300"></i>
       @endif
-    @endfor
+      @endfor
 
-    <span class="ml-1 font-semibold">{{ number_format($avg, 1) }}</span>
+        <span class="ml-1 font-semibold">{{ number_format($avg, 1) }}</span>
       </div>
       <div class="text-sm font-bold text-orange-600 mb-2">
         {{ number_format($item->price, 0, ',', '.') }}đ
@@ -417,7 +449,7 @@
         class=" favorite-btn icon-btn {{ in_array($item->id, $favIds) ? 'text-red-500' : 'text-gray-500' }} w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center  hover:text-red-500 transition-colors">
         <i class="{{ in_array($item->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
         </button>
-        
+
         <button class="icon-btn"><a href="{{ route('views.menudetail', [$item->id, $item->slug]) }}"><i
           class="fa-regular fa-eye"></i></a></button>
       </div>

@@ -148,7 +148,7 @@
                             Thêm mới
                         </button>
                     </a>
-                    <button onclick="openPopupDelete('Bạn muốn muốn xóa người dùng này?')"
+                   <!--  <button onclick="openPopupDelete('Bạn muốn muốn xóa người dùng này?')"
                         class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -156,7 +156,7 @@
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                         Xóa
-                    </button>
+                    </button> -->
                     
                     <div id="PopupDelete"
                         class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
@@ -242,10 +242,10 @@
                                         <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-300">
 
                                             @if($user->avatar)
-                                                <img src="{{ asset('img/' . $user->avatar) }}" alt=""
+                                                <img src="{{ asset('img/' . $user->avatar) }}" alt="{{ $user->name }}"
                                                     class="w-full h-full object-cover">
                                             @else
-                                                <img src="{{ asset('img/user.jpg') }}" alt="" class="w-full h-full object-cover">
+                                                <img src="{{ asset('img/user.jpg') }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
                                             @endif
 
                                             <div
