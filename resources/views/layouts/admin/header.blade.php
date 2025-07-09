@@ -60,7 +60,7 @@
                                     
                                     <span>Quản Lí Order</span>
                                 </a>
-                            @elseif (session('staff_role') === 'Nhân viên')
+                            @elseif (session('staff_role') === 'Nhân viên'||session('staff_role') === 'Đầu Bếp')
                                 {{-- Chỉ hiển thị với Nhân viên --}}
                                 <a href="{{ route('views.deskmanage') }}"
                                     class="flex items-center space-x-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">

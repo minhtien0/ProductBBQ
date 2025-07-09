@@ -197,12 +197,9 @@
                         <!-- Sẽ được JS render từ orderDetails -->
                     </div>
                     <p class="text-xs sm:text-sm mb-2 text-white" id="cart-total">Tổng: 0 VNĐ</p>
-                    <button onclick="cartClearCart()"
+                    <button onclick="callDishes()"
                         class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm mb-1 hover:bg-red-hover transition-colors">Gọi
                         Món</button>
-                    <button onclick="cartCheckout()"
-                        class="bg-red-primary text-white p-2 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors">Thanh
-                        Toán</button>
                 </div>
             </div>
         </section>
@@ -232,6 +229,7 @@
                     <div>
                         <span class="block text-xs text-white font-semibold">${item.food_name}</span>
                         <span class="block text-xs text-gray-400">${parseInt(item.food_price).toLocaleString()} VNĐ</span>
+                        <span class="block text-xs text-green-400">${item.status}</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
@@ -283,6 +281,39 @@
                     }
                 });
             }
+            function callDishes() {
+    if (!confirm('Bạn chắc chắn muốn GỌI MÓN?')) return;
+
+    let tableId = CURRENT_TABLE_ID;
+    if (!tableId) {
+        alert('Không xác định được bàn!');
+        return;
+    }
+
+    $.ajax({
+        url: `/api/order-details/call-dishes`, // route mới sẽ tạo ở backend
+        type: 'POST',
+        data: { table_id: tableId },
+        success: function (res) {
+            if (res.success) {
+                alert('Đã gọi món thành công!');
+                // Cập nhật lại orderDetails nếu muốn
+                $.get('/api/order-details/' + tableId, function (data) {
+                    if (data.success) {
+                        orderDetails = data.orderDetails;
+                        renderPopupCart();
+                    }
+                });
+            } else {
+                alert(res.message || 'Gọi món thất bại');
+            }
+        },
+        error: function () {
+            alert('Gọi món thất bại!');
+        }
+    });
+}
+
 
             // Xóa món khỏi cart
             function popupRemoveFromCart(index) {

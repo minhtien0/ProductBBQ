@@ -873,63 +873,64 @@
 
             <div id="menu-grid" class="menu-grid">
                 @foreach ($allFoods as $allFood)
-                                <div class="menu-card relative @if($allFood->quantity == 0) opacity-90 @endif" data-type="{{ $allFood->menus->name }}">
-                                    <a href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}">
-                                        <div class="relative">
-                                            <img src="{{ asset('img/' . $allFood->image) }}"
-                                                class="@if($allFood->quantity == 0) opacity-60 grayscale @endif" alt="">
-                                            <span class="menu-badge">{{ $allFood->menus->name }}</span>
-                                            @if($allFood->quantity == 0)
-                                                <div class="absolute inset-0 flex items-center justify-center">
-                                                    <span
-                                                        class="bg-black/60 text-white text-xs md:text-base font-bold rounded px-2 py-1">Hàng
-                                                        tạm hết</span>
-                                                </div>
-                                            @endif
+                        <div class="menu-card relative @if($allFood->quantity == 0) opacity-90 @endif"
+                            data-type="{{ $allFood->menus->name }}">
+                            <a href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}">
+                                <div class="relative">
+                                    <img src="{{ asset('img/' . $allFood->image) }}"
+                                        class="@if($allFood->quantity == 0) opacity-60 grayscale @endif" alt="">
+                                    <span class="menu-badge">{{ $allFood->menus->name }}</span>
+                                    @if($allFood->quantity == 0)
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <span
+                                                class="bg-black/60 text-white text-xs md:text-base font-bold rounded px-2 py-1">Hàng
+                                                tạm hết</span>
                                         </div>
-                                        <span class="menu-badge">{{ $allFood->menus->name }}</span>
-                                        <div class="menu-card-content">
-                                            <div class="menu-card-title">{{ $allFood->name }}</div>
-                                    </a>
-                                    @php
-                                        $rating = $foodRatings[$allFood->id] ?? null;
-                                        $stars = round($rating->avg_rate ?? 0);
-                                        $rateCount = $rating->count_rate ?? 0;
-                                    @endphp
-                                    <div class="menu-card-rating">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $stars)
-                                                <i class="fa-solid fa-star text-yellow-400"></i>
-                                            @else
-                                                <i class="fa-regular fa-star text-gray-400"></i>
-                                            @endif
-                                        @endfor
-                                        <span>{{ $rateCount }}</span>
-                                    </div>
-                                    <div class="menu-card-price">
-                                        {{ number_format($allFood->price, 0, ',', '.') }} VNĐ
-                                        <span class="old"></span>
-                                    </div>
-                                    <div class="menu-card-footer">
-                                        <button type="button" class="add-to-cart flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold text-sm transition focus:outline-none shadow
-                    @if($allFood->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif"
-                                            data-food-id="{{ $allFood->id }}" aria-label="Thêm vào giỏ hàng" @if($allFood->quantity == 0)
-                                            disabled @endif>
-                                            <i class="fa fa-cart-plus"></i>
-                                            Thêm vào giỏ
-                                        </button>
-                                        <button type="button"
-                                            class="favorite-btn icon-btn {{ in_array($allFood->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
-                                            data-food-id="{{ $allFood->id }}">
-                                            <i
-                                                class="{{ in_array($allFood->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
-                                        </button>
-                                        <button class="icon-btn"><a
-                                                href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}"><i
-                                                    class="fa-regular fa-eye"></i></a></button>
-                                    </div>
+                                    @endif
                                 </div>
+                                <span class="menu-badge">{{ $allFood->menus->name }}</span>
+                                <div class="menu-card-content">
+                                    <div class="menu-card-title">{{ $allFood->name }}</div>
+                            </a>
+                            @php
+                                $rating = $foodRatings[$allFood->id] ?? null;
+                                $stars = round($rating->avg_rate ?? 0);
+                                $rateCount = $rating->count_rate ?? 0;
+                            @endphp
+                            <div class="menu-card-rating">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $stars)
+                                        <i class="fa-solid fa-star text-yellow-400"></i>
+                                    @else
+                                        <i class="fa-regular fa-star text-gray-400"></i>
+                                    @endif
+                                @endfor
+                                <span>{{ $rateCount }}</span>
                             </div>
+                            <div class="menu-card-price">
+                                {{ number_format($allFood->price, 0, ',', '.') }} VNĐ
+                                <span class="old"></span>
+                            </div>
+                            <div class="menu-card-footer">
+                                <button type="button" class="add-to-cart flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold text-sm transition focus:outline-none shadow
+                            @if($allFood->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif"
+                                    data-food-id="{{ $allFood->id }}" aria-label="Thêm vào giỏ hàng" @if($allFood->quantity == 0)
+                                    disabled @endif>
+                                    <i class="fa fa-cart-plus"></i>
+                                    Thêm vào giỏ
+                                </button>
+                                <button type="button"
+                                    class="favorite-btn icon-btn {{ in_array($allFood->id, $favIds) ? 'text-red-500' : 'text-gray-500' }}"
+                                    data-food-id="{{ $allFood->id }}">
+                                    <i
+                                        class="{{ in_array($allFood->id, $favIds) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} text-lg"></i>
+                                </button>
+                                <button class="icon-btn"><a
+                                        href="{{ route('views.menudetail', [$allFood->id, $allFood->slug]) }}"><i
+                                            class="fa-regular fa-eye"></i></a></button>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
         </div>
 
@@ -1305,68 +1306,26 @@
                 <div class="swiper testiSwiper">
                     <div class="swiper-wrapper">
                         <!-- Slide 1 -->
+                        @foreach ($ratesHot as $rate)
                         <div class="swiper-slide">
                             <div class="testi-card">
                                 <div class="testi-avatar-wrap">
-                                    <img src="img/mtien2.jpg" class="testi-avatar" alt="">
+                                    <img src="{{ asset('img/' . $rate->user->avatar) }}" class="testi-avatar"
+                                        alt="{{ $rate->user->fullname }}">
                                 </div>
                                 <div style="display:flex;justify-content:center;align-items:center;">
                                     <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
-                                    <span class="testi-name">NGUYỄN MINH TIẾN</span>
+                                    <span class="testi-name">{{ $rate->user->fullname }}</span>
                                 </div>
-                                <div class="testi-pos">NYC MLB</div>
-                                <div class="testi-content">
-                                    Khó tính, dễ dỗi, phân biệt vùng miền, chiều cao 1m75, cần nặng 67kg.
-                                </div>
-                                <div class="testi-stars">
-                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                        class="fa-regular fa-star"></i>
+                                <div class="testi-pos">{{ $rate->food->name }}</div>
+                                <div class="testi-stars text-yellow-400 text-sm">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <i class="fa-star {{ $i <= $rate->rate ? 'fa-solid' : 'fa-regular' }}"></i>
+                                    @endfor
                                 </div>
                             </div>
                         </div>
-                        <!-- Slide 2 -->
-                        <div class="swiper-slide">
-                            <div class="testi-card">
-                                <div class="testi-avatar-wrap">
-                                    <img src="img/hdong2.jpg" class="testi-avatar" alt="">
-                                </div>
-                                <div style="display:flex;justify-content:center;align-items:center;">
-                                    <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
-                                    <span class="testi-name">Nguyễn Huy Đông</span>
-                                </div>
-                                <div class="testi-pos">NYC USA</div>
-                                <div class="testi-content">
-                                    Đẹp trai, vui tính, ăn nói lưu loát, chiều cao 1m69.5, cân nặng 66kg.
-                                </div>
-                                <div class="testi-stars">
-                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                        class="fa-regular fa-star"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Slide 3 (sample) -->
-                        <div class="swiper-slide">
-                            <div class="testi-card">
-                                <div class="testi-avatar-wrap">
-                                    <img src="img/hdong2.jpg" class="testi-avatar" alt="">
-                                </div>
-                                <div style="display:flex;justify-content:center;align-items:center;">
-                                    <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
-                                    <span class="testi-name">Nguyễn Huy Đông</span>
-                                </div>
-                                <div class="testi-pos">NYC USA</div>
-                                <div class="testi-content">
-                                    Đẹp trai, vui tính, ăn nói lưu loát, chiều cao 1m69.5, cân nặng 66kg.
-                                </div>
-                                <div class="testi-stars">
-                                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                        class="fa-regular fa-star"></i>
-                                </div>
-                            </div>
-                        </div>
+                        @endForeach
                     </div>
                 </div>
             </div>

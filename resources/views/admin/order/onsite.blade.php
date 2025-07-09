@@ -9,53 +9,10 @@
             </div>
         </div>
 
-        <!-- Status Tabs -->
-        <div class="mb-8">
-            <div class="border-b border-gray-200">
-                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                    <a href="#"
-                        class="py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 border-orange-500 text-orange-600">
-                        <span class="flex items-center">
-                            <span class="inline-flex items-center justify-center w-5 h-5 mr-2 text-xs font-bold bg-orange-100 text-orange-600 rounded-full">
-                                10
-                            </span>
-                            Tất Cả
-                        </span>
-                    </a>
-                    <a href="#"
-                        class="py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        <span class="flex items-center">
-                            <span class="inline-flex items-center justify-center w-5 h-5 mr-2 text-xs font-bold bg-yellow-100 text-yellow-600 rounded-full">
-                                3
-                            </span>
-                            Chờ xác nhận
-                            <span class="ml-1 inline-flex items-center justify-center w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                        </span>
-                    </a>
-                    <a href="#"
-                        class="py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        <span class="flex items-center">
-                            <span class="inline-flex items-center justify-center w-5 h-5 mr-2 text-xs font-bold bg-blue-100 text-blue-600 rounded-full">
-                                2
-                            </span>
-                            Đang phục vụ
-                        </span>
-                    </a>
-                    <a href="#"
-                        class="py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        <span class="flex items-center">
-                            <span class="inline-flex items-center justify-center w-5 h-5 mr-2 text-xs font-bold bg-green-100 text-green-600 rounded-full">
-                                5
-                            </span>
-                            Hoàn thành
-                        </span>
-                    </a>
-                </nav>
-            </div>
-        </div>
+       
 
         <!-- Filter & Search Section -->
-        <div class="mb-6 p-4 bg-gray-50 rounded-xl">
+        <div class="mb-6 p-4 bg-gray-200 rounded-xl">
             <form id="order-filter-form">
                 <div class="flex flex-wrap items-center gap-4">
                     <!-- Search -->
@@ -66,8 +23,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
-                            <input type="text" name="keyword"
-                                placeholder="Tìm kiếm theo mã đơn, bàn, ghi chú..."
+                            <input type="text" name="keyword" value="{{ request('keyword') }}"
+                                placeholder="Tìm kiếm theo mã đơn, bàn, nhân viên..."
                                 class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
                         </div>
                     </div>
@@ -106,7 +63,7 @@
                                 class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
                             <span class="ml-2 text-sm text-gray-700">Chọn tất cả</span>
                         </label>
-                        <span class="text-sm text-gray-500">10 đơn hàng</span>
+                        <span class="text-sm text-gray-500">{{ $counts }} đơn hàng</span>
                     </div>
                 </div>
             </div>
@@ -118,91 +75,55 @@
                             <th class="px-6 py-3"><input type="checkbox" class="w-4 h-4 text-orange-600 border-gray-300 rounded"></th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mã Đơn</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bàn</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Số Người</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ghi Chú</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Thời Gian Đặt</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nhân Viên</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Thời Gian Đến</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng Thái</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tổng Tiền</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Thao Tác</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200" id="order-table-section">
-                        @php
-                            $orders = [
-                                [
-                                    'code' => 'TQ0001',
-                                    'table' => 'Bàn 5',
-                                    'num_people' => 4,
-                                    'note' => 'Không hành',
-                                    'created_at' => '2025-07-02 18:30',
-                                    'status' => 'Chờ xác nhận',
-                                    'total' => 350000,
-                                ],
-                                [
-                                    'code' => 'TQ0002',
-                                    'table' => 'Bàn 7',
-                                    'num_people' => 2,
-                                    'note' => '',
-                                    'created_at' => '2025-07-02 18:45',
-                                    'status' => 'Đang phục vụ',
-                                    'total' => 220000,
-                                ],
-                                [
-                                    'code' => 'TQ0003',
-                                    'table' => 'Bàn 1',
-                                    'num_people' => 3,
-                                    'note' => 'Thêm đá',
-                                    'created_at' => '2025-07-02 19:00',
-                                    'status' => 'Hoàn thành',
-                                    'total' => 410000,
-                                ],
-                                // Thêm mẫu nếu cần
-                            ];
-                            $statusColors = [
-                                'Chờ xác nhận' => 'bg-yellow-100 text-yellow-800',
-                                'Đang phục vụ' => 'bg-blue-100 text-blue-800',
-                                'Hoàn thành' => 'bg-green-100 text-green-800',
-                                'Đã hủy' => 'bg-red-100 text-red-800',
-                            ];
-                        @endphp
                         @foreach($orders as $order)
                         <tr class="hover:bg-gray-50 transition-colors duration-150">
                             <td class="px-6 py-4">
                                 <input type="checkbox" class="rowCheckbox w-4 h-4 text-orange-600 border-gray-300 rounded">
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">#{{ $order['code'] }}</div>
+                                <div class="text-sm font-medium text-gray-900">#{{ $order->code }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $order['table'] }}</div>
+                                <div class="text-sm text-gray-900">{{ $order->name_table }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $order['num_people'] }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-700">{{ $order['note'] ?: '-' }}</div>
-                            </td>
+                                <div class="text-sm text-gray-900">{{ $order->staffs_name }}</div>
+                            </td> 
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">
-                                    {{ \Carbon\Carbon::parse($order['created_at'])->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y') }}
                                 </div>
                                 <div class="text-xs text-gray-500">
-                                    {{ \Carbon\Carbon::parse($order['created_at'])->format('H:i') }}
+                                    {{ \Carbon\Carbon::parse($order->created_at)->format('H:i') }}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusColors[$order['status']] ?? 'bg-gray-100 text-gray-800' }}">
-                                    {{ $order['status'] }}
+                                @php
+                                    $statusColors = [
+                                        'Đang Mở' => 'bg-yellow-100 text-yellow-800',
+                                        'Hoàn Thành' => 'bg-green-100 text-green-800',
+                                    ];
+                                @endphp
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusColors[$order->statusorder] ?? 'bg-gray-100 text-gray-800' }}">
+                                    {{ $order->statusorder }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-semibold text-gray-900">
-                                    {{ number_format($order['total']) }} VNĐ
+                                    {{ is_numeric($order->totalbill) ? number_format($order->totalbill) . ' VNĐ' : 'Chưa có' }}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">
-                                    <a href="#" class="inline-flex items-center px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors">
+                                    <a href="{{ route('admin.order.showonsite', $order->id) }}" class="inline-flex items-center px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors">
                                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -212,7 +133,7 @@
                                         </svg>
                                         Chi tiết
                                     </a>
-                                    @if($order['status'] === 'Chờ xác nhận')
+                                    @if($order->statusorder === 'Đang Mở')
                                     <button class="inline-flex items-center px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors">
                                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -247,18 +168,103 @@
         </div>
 
         <!-- Pagination Giả lập -->
-        <div class="mt-6 flex items-center justify-between">
-            <div class="text-sm text-gray-700">
-                Hiển thị 1 đến {{ count($orders) }} trong tổng số {{ count($orders) }} kết quả
+        @if($orders->hasPages())
+            <div class="mt-6 flex items-center justify-between">
+                <div class="text-sm text-gray-700">
+                    Hiển thị {{ $orders->firstItem() }} đến {{ $orders->lastItem() }} trong tổng số {{ $orders->total() }} kết
+                    quả
+                </div>
+                <div class="flex-1 flex justify-center">
+                    {{ $orders->appends(request()->query())->links() }}
+                </div>
             </div>
-            <div class="flex-1 flex justify-center">
-                <!-- Pagination giả lập -->
-                <nav class="inline-flex -space-x-px" aria-label="Pagination">
-                    <span class="px-3 py-2 border border-gray-300 bg-gray-200 text-gray-500 rounded-l-lg">Trước</span>
-                    <span class="px-3 py-2 border border-orange-500 bg-orange-100 text-orange-600">1</span>
-                    <span class="px-3 py-2 border border-gray-300 bg-white text-gray-700 rounded-r-lg">Sau</span>
-                </nav>
-            </div>
-        </div>
+        @endif
     </div>
+        <script>
+        $(function () {
+            // Khi submit form filter
+            $('#order-filter-form').on('submit', function (e) {
+                e.preventDefault();
+                fetchOrders();
+            });
+
+            // Khi nhấn nút "Đặt lại"
+            $('#reset-filter').on('click', function () {
+                $('#order-filter-form')[0].reset();
+                fetchOrders();
+            });
+
+            // Hàm fetch orders
+            function fetchOrders(pageUrl = null) {
+                let url = "{{ route('admin.order.onsite') }}";
+                let data = $('#order-filter-form').serialize();
+                if (pageUrl) url = pageUrl + (pageUrl.includes('?') ? '&' : '?') + data;
+                else url += '?' + data;
+
+                $.ajax({
+                    url: url,
+                    method: "GET",
+                    dataType: "html",
+                    beforeSend: function () {
+                        $('#order-table-section').css('opacity', .5);
+                    },
+                    success: function (res) {
+                        $('#order-table-section').html($(res).find('#order-table-section').html());
+                        $('#order-table-section').css('opacity', 1);
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra!');
+                        $('#order-table-section').css('opacity', 1);
+                    }
+                });
+            }
+
+            // Bắt sự kiện chuyển trang (pagination ajax)
+            $(document).on('click', '#order-table-section .pagination a', function (e) {
+                e.preventDefault();
+                let pageUrl = $(this).attr('href');
+                fetchOrders(pageUrl);
+            });
+        });
+    </script>
+
+    <!-- Additional Scripts -->
+    <script>
+        // Enhanced functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            // Status change animations
+            const statusElements = document.querySelectorAll('[class*="bg-yellow-100"]');
+            statusElements.forEach(el => {
+                if (el.textContent.trim() === 'Chờ xác nhận') {
+                    el.style.animation = 'pulse 2s infinite';
+                }
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('input[placeholder*="Tìm kiếm"]');
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', function () {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        // Implement search logic here
+                        console.log('Searching for:', this.value);
+                    }, 500);
+                });
+            }
+
+            // Smooth hover effects
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function () {
+                    this.style.transform = 'scale(1.01)';
+                    this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                });
+                row.addEventListener('mouseleave', function () {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
 @endsection

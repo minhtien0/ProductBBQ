@@ -39,6 +39,8 @@ Route::get('/api/order-details/{table_id}', [HomeController::class, 'getOrderDet
 Route::patch('/order-details/{id}', [HomeController::class,'updateQRorder']);
 Route::delete('/order-details/{id}', [HomeController::class,'destroyQRorder']);
 Route::get('/get-products-by-category/{categoryId}', [HomeController::class, 'getProductsByCategory']);
+//gọi món   
+Route::post('/api/order-details/call-dishes', [HomeController::class, 'callDishes']);
 //Home
 Route::get('/', [HomeController::class, 'index'])->name('views.index');
 //Tìm kiếm món ăn ở trang chủ
@@ -218,11 +220,12 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::post('/{order}/status', [OrderController::class, 'updateStatusBringBack'])->name('admin.order.updateStatusBringBack');
         //Tại Quán
         Route::get('/onsite', [OrderController::class, 'onSite'])->name('admin.order.onsite');
+        Route::get('/detail/onsite/{id}', [OrderController::class, 'showOnsite'])->name('admin.order.showonsite');
         Route::post('/{order}/refund', [OrderController::class, 'refund'])->name('admin.order.refund');
     });
 
     //huydong test layout quản lí bàn
-    Route::prefix('/deskmanage')->group(function () {
+    Route::prefix('/deskmanage')->group(function (): void {
         Route::get('/', [HomeAdminController::class, 'deskmanage'])->name('views.deskmanage');
         Route::get('/get-table-data/{id}', [HomeAdminController::class, 'getTableData'])->name('getTableData');
         Route::post('/open-table/{id}', [HomeAdminController::class, 'openTable']);
@@ -231,6 +234,12 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::post('/delete-order-item', [HomeAdminController::class, 'deleteOrderItem']);
         Route::get('/get-all-combos', [HomeAdminController::class, 'getAllCombos']);
         Route::post('/add-combo-to-order', [HomeAdminController::class, 'addComboToOrder']);
+        Route::post('/update-order-item-status', [HomeAdminController::class, 'updateOrderItemStatus']);
+        Route::get('/get-closed-tables', [HomeAdminController::class, 'getClosedTables']);
+        Route::post('/change-table', [HomeAdminController::class, 'changeTable']);
+        Route::get('/get-tables', [HomeAdminController::class, 'getTables']);
+        Route::post('/close-table', [HomeAdminController::class, 'closeTable']);
+
         // Route POST để client gửi dữ liệu và lấy link xác nhận QR
         Route::post('/create-qr-order', [HomeAdminController::class, 'createQrOrder'])->name('create.qr.order');
         // Route GET: khi user quét QR, truy cập vào để redirect sang trang thanh toán VNPAY
