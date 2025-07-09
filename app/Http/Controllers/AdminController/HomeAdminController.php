@@ -8,6 +8,7 @@ use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\User;
+use App\Models\Table;
 use App\Models\FoodCombo;
 use App\Models\Staff;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,7 @@ class HomeAdminController extends Controller
         $month = $now->month;
         $year = $now->year;
         $totalRevenue = DB::table('orders')
-            ->where('statusorder','Hoàn Thành')
+            ->where('statusorder', 'Hoàn Thành')
             ->whereYear('created_at', $year)
             ->sum('totalbill');
         $totalUser = User::count();
@@ -149,7 +150,7 @@ class HomeAdminController extends Controller
 
         for ($i = 1; $i <= 12; $i++) {
             $revenue = DB::table('orders')
-                ->where('statusorder','Hoàn Thành')
+                ->where('statusorder', 'Hoàn Thành')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $i)
                 ->sum('totalbill');
@@ -401,6 +402,7 @@ class HomeAdminController extends Controller
             'combos' => $comboData,
             'items' => $items,
             'ma_hoa_don' => $order->code ?? null,
+            'statusorder' => $order->statusorder ?? null,
         ]);
     }
 
@@ -531,8 +533,7 @@ class HomeAdminController extends Controller
                 'order_id' => $order->id,
                 'product_id' => $request->product_id,
                 'quantity' => 1,
-                'status',
-                'Chờ Thực Hiện',
+                'status' => 'Gọi Món',
                 'time' => now()
             ]);
         }
@@ -561,6 +562,12 @@ class HomeAdminController extends Controller
 
     public function deleteOrderItem(Request $request)
     {
+        if (session('staff_role') !== 'Thu Ngân' && session('staff_role') !== 'Quản Lí') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không có quyền xóa món ăn. Chỉ Thu ngân mới được thao tác này!'
+            ], 403);
+        }
         $request->validate([
             'order_item_id' => 'required|integer|exists:order_details,id',
         ]);
@@ -568,6 +575,98 @@ class HomeAdminController extends Controller
         $detail->delete();
         return response()->json(['success' => true, 'message' => 'Đã xóa món!']);
     }
+
+    //Xác nhận món dành cho Đầu Bếp
+    public function updateOrderItemStatus(Request $request)
+    {
+        if (session('staff_role') !== 'Đầu Bếp' && session('staff_role') !== 'Quản Lí') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không có quyền cập nhật trạng thái món. Chỉ Đầu Bếp mới được thao tác này!'
+            ], 403);
+        }
+        $request->validate([
+            'order_item_id' => 'required|integer|exists:order_details,id',
+            'status' => 'required|string|in:Gọi Món,Đang Chế Biến,Hoàn Thành,Hủy Món'
+        ]);
+        $detail = \App\Models\OrderDetail::find($request->order_item_id);
+        $detail->status = $request->status;
+        $detail->save();
+        return response()->json(['success' => true, 'message' => 'Đã cập nhật trạng thái món!']);
+    }
+
+    public function getClosedTables()
+    {
+        $tables = Table::where('status', 'Đã Đóng')->get();
+        return response()->json(['tables' => $tables]);
+    }
+
+    public function getTables()
+    {
+        $tables = DB::table('tables')->get();
+        return response()->json(['tables' => $tables]);
+    }
+
+    //Đổi bàn
+    public function changeTable(Request $request)
+    {
+        $fromId = $request->input('from_table_id');
+        $toId = $request->input('to_table_id');
+
+        // Lấy hóa đơn của bàn cũ
+        $order = Order::where('table_id', $fromId)->where('statusorder', '!=', 'Đã Thanh Toán')->first();
+        if (!$order)
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy hóa đơn để chuyển!']);
+
+        // Đóng bàn hiện tại
+        Table::where('id', $fromId)->update(['status' => 'Đã Đóng']);
+
+        // Chuyển order sang bàn mới
+        $order->table_id = $toId;
+        $order->save();
+
+        // Mở bàn mới
+        Table::where('id', $toId)->update(['status' => 'Đang Mở']);
+
+        return response()->json(['success' => true]);
+    }
+
+    //Đóng bàn
+    public function closeTable(Request $request)
+    {
+        $tableId = $request->input('table_id');
+        $table = DB::table('tables')->where('id', $tableId)->first();
+
+        if (!$table) {
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy bàn!']);
+        }
+
+        // Lấy order hiện tại của bàn (đang mở, chưa đóng)
+        $order = DB::table('orders')
+            ->where('table_id', $tableId)
+            ->where('status', '!=', 'Đã Đóng')
+            ->orderByDesc('id')
+            ->first();
+
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy đơn hàng để đóng!']);
+        }
+
+        // Kiểm tra trạng thái đơn phải là Hoàn Thành mới được đóng bàn
+        if ($order->statusorder != 'Hoàn Thành') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn phải hoàn thành đơn hàng trước khi đóng bàn!'
+            ]);
+        }
+
+        // Nếu đã hoàn thành thì update trạng thái bàn
+        DB::table('tables')->where('id', $tableId)->update(['status' => 'Đã Đóng']);
+
+        return response()->json(['success' => true]);
+    }
+
+
 
     public function createQrOrder(Request $request)
     {
@@ -732,10 +831,5 @@ class HomeAdminController extends Controller
         return redirect()->route('views.cart')
             ->with('success', 'Thanh toán VNPAY thành công!');
     }
-
-
-
-
-
 
 }

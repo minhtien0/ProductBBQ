@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Sum;
 use Illuminate\Support\Facades\View;
-use SebastianBergmann\CodeUnit\FunctionUnit;
 
 class HomeController extends Controller
 {
@@ -51,7 +50,9 @@ class HomeController extends Controller
             ->groupBy('food_id')
             ->get()
             ->keyBy('food_id');
-        //dd(session('role'));
+        $ratesHot = Rate::with(['food','user'])
+        ->where('rate', 5)->inRandomOrder()->limit(4)->get();
+        //dd( $ratesHot);
         return view('index', compact(
             'allFoods',
             'favIds',
@@ -60,6 +61,7 @@ class HomeController extends Controller
             'countUser',
             'countRate',
             'foodRatings',
+            'ratesHot',
         ));
     }
     public function searchFood(Request $request)
@@ -372,6 +374,37 @@ public function getOrderDetailsByTable($table_id)
             'combos' => $combos
         ]);
     }
+
+    public function callDishes(Request $request)
+{
+    $request->validate([
+        'table_id' => 'required|integer|exists:tables,id',
+    ]);
+
+    // Lấy order đang mở của bàn
+    $order = \App\Models\Order::where('table_id', $request->table_id)
+        ->where('statusorder', 'Đang Mở')
+        ->orderByDesc('id')->first();
+
+    if (!$order) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Không tìm thấy order đang mở của bàn này!',
+        ], 404);
+    }
+
+    // Cập nhật tất cả order_detail status "Chờ Xác Nhận" => "Gọi Món"
+    $count = \App\Models\OrderDetail::where('order_id', $order->id)
+        ->where('status', 'Chờ Thực Hiện')
+        ->update(['status' => 'Gọi Món']);
+
+    return response()->json([
+        'success' => true,
+        'message' => "Đã cập nhật $count món sang trạng thái 'Gọi Món'",
+    ]);
+}
+
+
     public function about()
     {
 
@@ -782,8 +815,8 @@ public function getOrderDetailsByTable($table_id)
             ->select('rates.*', 'rates.id as id_rate', 'foods.*', 'menus.name as type_menu')
             ->get();
         $myOrderLists = Order::join('users', 'users.id', '=', 'orders.id_user')
-            ->join('order_details', 'order_details.order_id', '=', 'orders.id')
-            ->join('foods', 'order_details.product_id', '=', 'foods.id')
+            ->leftJoin('order_details', 'order_details.order_id', '=', 'orders.id')
+            ->leftJoin('foods', 'order_details.product_id', '=', 'foods.id')
             ->where('users.id', session('user_id'))
             ->select(
                 'order_details.*',
@@ -809,7 +842,7 @@ public function getOrderDetailsByTable($table_id)
     {
         $order = \App\Models\Order::where('orders.id', $orderId)
             ->join('users', 'users.id', '=', 'orders.id_user')
-            ->join('addresses', 'orders.address', '=', 'addresses.id')
+            ->leftJoin('addresses', 'orders.address', '=', 'addresses.id')
             ->select('orders.*', 'users.fullname as customer_name', 'users.sdt', 'addresses.house_number', 'addresses.ward', 'addresses.district', 'addresses.city')
             ->first();
         //dd($order);

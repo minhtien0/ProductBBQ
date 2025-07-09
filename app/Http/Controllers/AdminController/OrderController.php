@@ -147,7 +147,7 @@ class OrderController extends Controller
         }
 
         // -- TRỪ VOUCHER KHI CHUYỂN SANG "Đang Thực Hiện" (nếu chưa trừ) --
-        if ($newStatus == 'Đang Thực Hiện'  && $order->voucher) {
+        if ($newStatus == 'Đang Thực Hiện' && $order->voucher) {
             $voucher = Voucher::find($order->voucher);
             if ($voucher) {
                 if ($voucher->quantity < 1) {
@@ -159,7 +159,7 @@ class OrderController extends Controller
         }
 
         // -- HOÀN LẠI VOUCHER KHI HỦY (NẾU ĐÃ TRỪ) --
-        if ($newStatus == 'Đã Hủy'  && $order->voucher) {
+        if ($newStatus == 'Đã Hủy' && $order->voucher) {
             $voucher = Voucher::find($order->voucher);
             if ($voucher) {
                 $voucher->quantity += 1;
@@ -334,10 +334,84 @@ class OrderController extends Controller
 
 
     //Controller Xử Lí Tại Quán
-    public function onSite()
+    public function onSite(Request $request)
     {
-        return view('admin.order.onsite');
+        $keyword = $request->query('keyword');
+        $date_from = $request->query('date_from');
+        $date_to = $request->query('date_to');
+
+        $query = Order::leftJoin('staffs', 'orders.id_staff', '=', 'staffs.id')
+            ->leftJoin('vouchers', 'orders.voucher', '=', 'vouchers.id')
+            ->leftJoin('tables', 'orders.table_id', '=', 'tables.id')
+            ->select([
+                'orders.*',
+                'staffs.fullname as staffs_name',
+                'vouchers.code  as voucher_code',
+                'vouchers.value as voucher_value',
+                'tables.number as name_table',
+            ])
+            ->where('orders.type', 0);
+
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('orders.code', 'like', "%{$keyword}%")
+                    ->orWhere('staffs.fullname', 'like', "%{$keyword}%")
+                    ->orWhere('tables.number', 'like', "%{$keyword}%");
+            });
+        }
+        if ($date_from) {
+            $query->whereDate('orders.created_at', '>=', $date_from);
+        }
+        if ($date_to) {
+            $query->whereDate('orders.created_at', '<=', $date_to);
+        }
+
+        $counts = Order::where('type', 0)->count();
+        $orders = $query->orderBy('orders.created_at', 'desc')
+            ->paginate(5)
+            ->appends([
+                'keyword' => $keyword,
+                'date_from' => $date_from,
+                'date_to' => $date_to,
+            ]);
+
+        if ($request->ajax()) {
+            $sections = view('admin.order.onsite', compact('orders', 'counts'))
+                ->renderSections();
+            return $sections['content_order'];
+        }
+        return view('admin.order.onsite', compact('orders', 'counts'));
     }
 
+    public function showOnsite($id)
+    {
+        // Lấy thông tin đơn và join khách hàng, voucher
+        $order = Order::leftJoin('users', 'orders.id_user', '=', 'users.id')
+            ->leftJoin('vouchers', 'orders.voucher', '=', 'vouchers.id')
+            ->leftJoin('staffs', 'orders.id_staff', '=', 'staffs.id')
+            ->select([
+                'orders.*',
+                'orders.id as id_order',
+                'staffs.fullname as staff_name',
+                'vouchers.code as voucher_code',
+                'vouchers.value as voucher_value',
+            ])
+            ->where('orders.id', $id)
+            ->firstOrFail();
+        //dd(456);
 
+        // Lấy chi tiết sản phẩm
+        $details = OrderDetail::leftJoin('foods', 'order_details.product_id', '=', 'foods.id')
+            ->leftJoin('food_combos', 'order_details.combo_id', '=', 'food_combos.id')
+            ->where('order_details.order_id', $id)
+            ->select([
+                'order_details.*',
+                'foods.name as food_name',
+                'foods.price as food_price',
+                'food_combos.name as combo_name',
+                'food_combos.price as combo_price',
+            ])
+            ->get();
+        return view('admin.order.showonsite', compact('order', 'details'));
+    }
 }

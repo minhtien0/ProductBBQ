@@ -1431,13 +1431,18 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
                     // Khách & header
-                    document.querySelector('#invoice-detail .text-sm.text-gray-700').innerHTML =
-                        `${o.customer_name}<br>${o.house_number}, ${o.ward}, ${o.district}, ${o.city}<br>${o.sdt}`;
-                    document.querySelector('#invoice-detail .text-sm.text-gray-600').innerHTML =
-                        `<div><strong>Invoice No:</strong> ${o.id}</div>` +
-                        `<div><strong>Mã Hóa Đơn:</strong> #${o.code}</div>` +
-                        `<div><strong>Ngày:</strong> ${o.created_at.substr(0, 10)}</div>`;
+                  const addressText = o.house_number
+                    ? `${o.house_number}, ${o.ward}, ${o.district}, ${o.city}`
+                    : `<span class="text-red-500 italic">Địa chỉ này hiện tại đã bị xóa</span>`;
 
+                    document.querySelector('#invoice-detail .text-sm.text-gray-700').innerHTML =
+                    `${o.customer_name}<br>${addressText}<br>${o.sdt}`;
+
+                    document.querySelector('#invoice-detail .text-sm.text-gray-600').innerHTML =
+                    `<div><strong>Invoice No:</strong> ${o.id}</div>` +
+                    `<div><strong>Mã Hóa Đơn:</strong> #${o.code}</div>` +
+                    `<div><strong>Ngày:</strong> ${o.created_at.substr(0, 10)}</div>`;
+ 
                     // Table body
                     let html = '', sum = 0, qty = 0;
                     const unratedIds = (data.unrated_details || []).map(item => item.product_id);
