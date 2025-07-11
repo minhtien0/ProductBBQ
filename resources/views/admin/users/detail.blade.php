@@ -19,7 +19,19 @@
                         class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
-
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label for="password" class="block text-xs font-medium text-gray-700 mb-1">Mật khẩu mới</label>
+                    <input type="password" id="password" name="password" 
+                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="password_confirmation" class="block text-xs font-medium text-gray-700 mb-1">Xác nhận mật
+                        khẩu</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation"
+                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label for="fullname" class="block text-xs font-medium text-gray-700 mb-1">Họ và tên</label>
@@ -138,7 +150,7 @@
                             onclick="document.getElementById('avatar').click()">
                             Chọn tệp
                         </button>
-                        
+
                         <img id="preview-img" src="#" alt="Ảnh xem trước"
                             class="w-24 h-24 rounded-full object-cover mx-auto mb-2 hidden">
                     </div>
@@ -150,8 +162,10 @@
                 <select id="role" name="role"
                     class="w-full text-xs px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Chọn vai trò</option>
-                    <option selected value="Hoạt Động" {{ old('role', $user->role) == 'Hoạt Động' ? 'selected' : '' }}>Hoạt Động</option>
-                    <option value="Ngưng Hoạt Động" {{ old('role', $user->role) == 'Ngưng Hoạt Động' ? 'selected' : '' }}>Ngưng Hoạt Động</option>
+                    <option selected value="Hoạt Động" {{ old('role', $user->role) == 'Hoạt Động' ? 'selected' : '' }}>Hoạt
+                        Động</option>
+                    <option value="Ngưng Hoạt Động" {{ old('role', $user->role) == 'Ngưng Hoạt Động' ? 'selected' : '' }}>
+                        Ngưng Hoạt Động</option>
                 </select>
             </div>
         </div>

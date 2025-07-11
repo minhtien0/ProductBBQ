@@ -33,9 +33,9 @@ class UserController extends Controller
         // Lọc theo Tên (nếu có) – ta sẽ tìm trong fullname hoặc trong user (username)
         if ($request->filled('fullname')) {
             $keyword = $request->fullname;
-            $query->where(function($q) use ($keyword) {
+            $query->where(function ($q) use ($keyword) {
                 $q->where('fullname', 'like', "%{$keyword}%")
-                  ->orWhere('user', 'like', "%{$keyword}%");
+                    ->orWhere('user', 'like', "%{$keyword}%");
             });
         }
 
@@ -67,11 +67,11 @@ class UserController extends Controller
             'fullname' => 'required|string|max:255',
             'sdt' => 'required|string|size:10',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'birthday' => 'nullable|date',
+            'birthday' => 'nullable|date|before_or_equal:today',
             'gender' => 'required|in:Nam,Nữ,Khác',
             'role' => 'required|in:Hoạt Động,Ngưng Hoạt Động',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-            //address
+            'password' => 'nullable|string|min:8|confirmed',
             'addresses.*.name' => 'required|string|max:255',
             'addresses.*.sdt' => 'required|string|size:10',
             'addresses.*.house_number' => 'required|string|max:255',
@@ -87,6 +87,7 @@ class UserController extends Controller
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email đã tồn tại.',
             'birthday.date' => 'Ngày sinh không hợp lệ.',
+            'birthday.before_or_equal' => 'Ngày sinh không được lớn hơn ngày hiện tại.',
             'gender.required' => 'Vui lòng chọn giới tính.',
             'role.required' => 'Vui lòng chọn vai trò.',
             'avatar.image' => 'Ảnh đại diện phải là hình ảnh.',
@@ -100,6 +101,8 @@ class UserController extends Controller
             'addresses.*.ward.required' => 'Vui lòng Phường/Xã của địa chỉ.',
             'addresses.*.district.required' => 'Vui lòng Quận/Huyện của địa chỉ.',
             'addresses.*.city.required' => 'Vui lòng Tỉnh/TP của địa chỉ.',
+            'password.min' => 'Mật khẩu ít nhất 8 ký tự.',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
         ]);
 
         if ($validator->fails()) {
@@ -108,6 +111,7 @@ class UserController extends Controller
             return redirect()->back()->withInput()->with('error', $errorMsg);
         }
 
+
         // Xử lý upload avatar mới (nếu có)
         if ($request->hasFile('avatar')) {
             $avatarName = time() . '_' . $request->file('avatar')->getClientOriginalName();
@@ -115,6 +119,9 @@ class UserController extends Controller
             $user->avatar = $avatarName;
         }
 
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
         // Cập nhật thông tin còn lại
         $user->fullname = $request->fullname;
         $user->sdt = $request->sdt;
@@ -153,90 +160,88 @@ class UserController extends Controller
     {
         // 1. Validate tiếng Việt bao gồm mảng addresses[0][...]
         $validator = Validator::make($request->all(), [
-            'user'      => 'required|string|max:50|unique:users,user',
-            'password'  => 'required|string|min:6|confirmed',
-            'fullname'  => 'required|string|max:255',
-            'sdt'       => 'required|string|size:10',
-            'email'     => 'required|email|max:255|unique:users,email',
-            'birthday'  => 'nullable|date',
-            'gender'    => 'required|in:Nam,Nữ,Khác',
-            'role'      => 'required|in:Khách Hàng,Admin',
-            'avatar'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'user' => 'required|string|max:50|unique:users,user',
+            'password' => 'required|string|min:6|confirmed',
+            'fullname' => 'required|string|max:255',
+            'sdt' => 'required|string|size:10',
+            'email' => 'required|email|max:255|unique:users,email',
+            'birthday' => 'nullable|date|before_or_equal:today',
+            'gender' => 'required|in:Nam,Nữ,Khác',
+            'role' => 'nullable|in:Hoạt Động,Ngưng Hoạt Động',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
 
-            'addresses.0.name'          => 'required|string|max:255',
-            'addresses.0.sdt'           => 'required|string|size:10',
-            'addresses.0.house_number'  => 'required|string|max:255',
-            'addresses.0.ward'          => 'required|string|max:255',
-            'addresses.0.district'      => 'required|string|max:255',
-            'addresses.0.city'          => 'required|string|max:255',
-            'addresses.0.note'          => 'nullable|string|max:255',
+            'addresses.0.name' => 'required|string|max:255',
+            'addresses.0.sdt' => 'required|string|size:10',
+            'addresses.0.house_number' => 'required|string|max:255',
+            'addresses.0.ward' => 'required|string|max:255',
+            'addresses.0.district' => 'required|string|max:255',
+            'addresses.0.city' => 'required|string|max:255',
+            'addresses.0.note' => 'nullable|string|max:255',
         ], [
-            'user.required'           => 'Vui lòng nhập tên đăng nhập.',
-            'user.string'             => 'Tên đăng nhập phải là chuỗi ký tự.',
-            'user.max'                => 'Tên đăng nhập không vượt quá 50 ký tự.',
-            'user.unique'             => 'Tên đăng nhập đã tồn tại.',
+            'user.required' => 'Vui lòng nhập tên đăng nhập.',
+            'user.string' => 'Tên đăng nhập phải là chuỗi ký tự.',
+            'user.max' => 'Tên đăng nhập không vượt quá 50 ký tự.',
+            'user.unique' => 'Tên đăng nhập đã tồn tại.',
 
-            'password.required'       => 'Vui lòng nhập mật khẩu.',
-            'password.min'            => 'Mật khẩu phải có ít nhất 6 ký tự.',
-            'password.confirmed'      => 'Mật khẩu nhập lại không khớp.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
 
-            'fullname.required'       => 'Vui lòng nhập họ và tên.',
-            'fullname.max'            => 'Họ và tên không vượt quá 255 ký tự.',
+            'fullname.required' => 'Vui lòng nhập họ và tên.',
+            'fullname.max' => 'Họ và tên không vượt quá 255 ký tự.',
 
-            'sdt.required'            => 'Vui lòng nhập số điện thoại.',
-            'sdt.size'                 => 'SĐT phải đúng 10 ký tự.',
+            'sdt.required' => 'Vui lòng nhập số điện thoại.',
+            'sdt.size' => 'SĐT phải đúng 10 ký tự.',
 
-            'email.required'          => 'Vui lòng nhập email.',
-            'email.email'             => 'Email không đúng định dạng.',
-            'email.max'               => 'Email không vượt quá 255 ký tự.',
-            'email.unique'            => 'Email đã tồn tại.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.max' => 'Email không vượt quá 255 ký tự.',
+            'email.unique' => 'Email đã tồn tại.',
 
-            'birthday.date'           => 'Ngày sinh không hợp lệ.',
+            'birthday.date' => 'Ngày sinh không hợp lệ.',
+            'birthday.before_or_equal' => 'Ngày sinh không được lớn hơn ngày hiện tại.',
 
-            'gender.required'         => 'Vui lòng chọn giới tính.',
-            'gender.in'               => 'Giới tính không hợp lệ.',
+            'gender.required' => 'Vui lòng chọn giới tính.',
+            'gender.in' => 'Giới tính không hợp lệ.',
 
-            'role.required'           => 'Vui lòng chọn vai trò.',
-            'role.in'                 => 'Vai trò không hợp lệ.',
+            'avatar.image' => 'Ảnh đại diện phải là file ảnh.',
+            'avatar.mimes' => 'Định dạng ảnh không hợp lệ (chỉ jpeg,png,jpg,gif).',
+            'avatar.max' => 'Ảnh đại diện không vượt quá 10MB.',
 
-            'avatar.image'            => 'Ảnh đại diện phải là file ảnh.',
-            'avatar.mimes'            => 'Định dạng ảnh không hợp lệ (chỉ jpeg,png,jpg,gif).',
-            'avatar.max'              => 'Ảnh đại diện không vượt quá 10MB.',
-
-            'addresses.0.name.required'         => 'Vui lòng nhập tên người nhận cho địa chỉ.',
-            'addresses.0.name.max'              => 'Tên người nhận không vượt quá 255 ký tự.',
-            'addresses.0.sdt.required'          => 'Vui lòng nhập SĐT ở địa chỉ.',
-            'addresses.0.sdt.size'               => 'SĐT địa chỉ phải đúng 10 ký tự.',
+            'addresses.0.name.required' => 'Vui lòng nhập tên người nhận cho địa chỉ.',
+            'addresses.0.name.max' => 'Tên người nhận không vượt quá 255 ký tự.',
+            'addresses.0.sdt.required' => 'Vui lòng nhập SĐT ở địa chỉ.',
+            'addresses.0.sdt.size' => 'SĐT địa chỉ phải đúng 10 ký tự.',
             'addresses.0.house_number.required' => 'Vui lòng nhập số nhà của địa chỉ.',
-            'addresses.0.house_number.max'      => 'Số nhà không vượt quá 255 ký tự.',
-            'addresses.0.ward.required'         => 'Vui lòng nhập phường/xã của địa chỉ.',
-            'addresses.0.ward.max'              => 'Tên phường/xã không vượt quá 255 ký tự.',
-            'addresses.0.district.required'     => 'Vui lòng nhập quận/huyện của địa chỉ.',
-            'addresses.0.district.max'          => 'Tên quận/huyện không vượt quá 255 ký tự.',
-            'addresses.0.city.required'         => 'Vui lòng nhập tỉnh/thành của địa chỉ.',
-            'addresses.0.city.max'              => 'Tên tỉnh/thành không vượt quá 255 ký tự.',
-            'addresses.0.note.max'              => 'Ghi chú không vượt quá 255 ký tự.',
+            'addresses.0.house_number.max' => 'Số nhà không vượt quá 255 ký tự.',
+            'addresses.0.ward.required' => 'Vui lòng nhập phường/xã của địa chỉ.',
+            'addresses.0.ward.max' => 'Tên phường/xã không vượt quá 255 ký tự.',
+            'addresses.0.district.required' => 'Vui lòng nhập quận/huyện của địa chỉ.',
+            'addresses.0.district.max' => 'Tên quận/huyện không vượt quá 255 ký tự.',
+            'addresses.0.city.required' => 'Vui lòng nhập tỉnh/thành của địa chỉ.',
+            'addresses.0.city.max' => 'Tên tỉnh/thành không vượt quá 255 ký tự.',
+            'addresses.0.note.max' => 'Ghi chú không vượt quá 255 ký tự.',
         ]);
 
         // Nếu validate lỗi, trả về popup error
         if ($validator->fails()) {
             $errorMsg = implode('<br>', $validator->errors()->all());
             return redirect()->back()
-                             ->withInput()
-                             ->with('error', $errorMsg);
+                ->withInput()
+                ->with('error', $errorMsg);
         }
 
         try {
             // 2. Tạo mới User
             $user = new User();
-            $user->user     = $request->user;
+            $user->user = $request->user;
             $user->password = Hash::make($request->password);
             $user->fullname = $request->fullname;
-            $user->sdt      = $request->sdt;
-            $user->email    = $request->email;
+            $user->sdt = $request->sdt;
+            $user->email = $request->email;
             $user->birthday = $request->birthday;
-            $user->gender   = $request->gender;
-            $user->role     = $request->role;
+            $user->gender = $request->gender;
+            $user->role = 'Hoạt Động';
 
             // Upload avatar (nếu có)
             if ($request->hasFile('avatar')) {
@@ -250,26 +255,26 @@ class UserController extends Controller
             // 3. Lưu địa chỉ mặc định (địa chỉ index 0)
             $addrData = $request->addresses[0];
             $address = new Address();
-            $address->user_id      = $user->id;
-            $address->name         = $addrData['name'];
-            $address->sdt          = $addrData['sdt'];
+            $address->user_id = $user->id;
+            $address->name = $addrData['name'];
+            $address->sdt = $addrData['sdt'];
             $address->house_number = $addrData['house_number'];
-            $address->ward         = $addrData['ward'];
-            $address->district     = $addrData['district'];
-            $address->city         = $addrData['city'];
-            $address->note         = $addrData['note'] ?? '';
-            $address->default      = 1; // vì đây là địa chỉ mặc định
+            $address->ward = $addrData['ward'];
+            $address->district = $addrData['district'];
+            $address->city = $addrData['city'];
+            $address->note = $addrData['note'] ?? '';
+            $address->default = 1; // vì đây là địa chỉ mặc định
             $address->save();
 
             // 4. Thành công → redirect với popup success
             return redirect()->route('admin.user.list')
-                             ->with('success', 'Thêm người dùng thành công!');
+                ->with('success', 'Thêm người dùng thành công!');
 
         } catch (\Exception $e) {
             Log::error('Lỗi khi thêm người dùng: ' . $e->getMessage());
             return redirect()->back()
-                             ->withInput()
-                             ->with('error', 'Có lỗi xảy ra khi thêm người dùng. Vui lòng thử lại!');
+                ->withInput()
+                ->with('error', 'Có lỗi xảy ra khi thêm người dùng. Vui lòng thử lại!');
         }
     }
 
@@ -287,15 +292,15 @@ class UserController extends Controller
     }
 
 
-     public function export(Request $request)
+    public function export(Request $request)
     {
         // Lấy toàn bộ query parameters (email, birthday, fullname, gender)
         // Tạo mảng $filters chỉ chứa những key cần thiết
         $filters = [
-            'email'    => $request->query('email', ''),
+            'email' => $request->query('email', ''),
             'birthday' => $request->query('birthday', ''),
             'fullname' => $request->query('fullname', ''),
-            'gender'   => $request->query('gender', ''),
+            'gender' => $request->query('gender', ''),
         ];
 
         $fileName = 'users_' . now()->format('Ymd_His') . '.xlsx';

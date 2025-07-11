@@ -98,20 +98,6 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label for="role" class="block text-xs font-medium text-gray-700 mb-1">
-                        Vai Trò <span class="text-red-600">*</span>
-                    </label>
-                    <select id="role" name="role"
-                        class="w-full text-xs px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Chọn Vai Trò</option>
-                        <option selected value="Khách Hàng" {{ old('role') == 'Khách Hàng' ? 'selected' : '' }}>Khách Hàng</option>
-                        <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
-                    </select>
-                </div>
-            </div>
-
             {{-- Phần Địa Chỉ Mặc Định --}}
             <h3 class="text-base font-bold mb-2 mt-6">Địa Chỉ Mặc Định</h3>
             <div class="bg-gray-50 rounded p-3 mb-3">
