@@ -91,7 +91,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Bài viết</label>
                             <select name="blog_id" id="selectBlog"
-                                class="select2 w-[300px] h-[150px] border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                class="select2 w-[250px] h-[150px] border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">Tất cả bài viết</option>
                                 @foreach($blogs as $blog)
                                     <option value="{{ $blog->id }}" {{ request('blog_id') == $blog->id ? 'selected' : '' }}>

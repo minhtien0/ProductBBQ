@@ -105,7 +105,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Sản phẩm</label>
                         <select name="food_id" id="selectFood"
-                            class="select2 w-[300px] border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="select2 w-[250px] border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Tất cả sản phẩm</option>
                             @foreach($foods as $food)
                                 <option value="{{ $food->id }}" {{ request('food_id') == $food->id ? 'selected' : '' }}>{{ $food->name }}</option>

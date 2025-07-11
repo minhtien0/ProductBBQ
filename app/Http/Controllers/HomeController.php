@@ -207,6 +207,12 @@ class HomeController extends Controller
         // 1. Tìm order detail, nếu không có thì trả về 404
         $detail = OrderDetail::findOrFail($id);
 
+        if ($detail->status != 'Chờ Xác Nhận') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Không thể xóa món đã hoàn thành!',
+        ], 403); // Trả về mã lỗi 403 Forbidden
+    }
         // 2. Xóa bản ghi
         $detail->delete();
 
