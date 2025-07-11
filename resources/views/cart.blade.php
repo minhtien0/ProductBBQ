@@ -637,7 +637,7 @@ function closePopupMessage() {
 
       // Check all
       checkAll.addEventListener('change', function () {
-        document.querySelectorAll('.cart-checkbox').forEach(cb => {
+        document.querySelectorAll('.cart-checkbox:not(:disabled)').forEach(cb => {
           cb.checked = checkAll.checked;
         });
         updateSelectedDetail();

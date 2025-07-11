@@ -8,43 +8,6 @@
     <title>Quản lý bàn BBQ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
-    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-    <script>
-        window.Echo = new Echo({
-            broadcaster: 'reverb',
-            host: window.location.hostname + ':6001'
-        });
-
-        // Lắng nghe event TableUpdated trên kênh 'tables'
-        window.Echo.channel('tables')
-            .listen('TableUpdated', (e) => {
-                // console.log('Realtime bàn:', e.table);
-                // Gọi lại reloadTableList để render lại danh sách bàn sidebar
-                reloadTableList();
-                // Nếu cần render lại chi tiết order panel, có thể gọi tiếp loadTableMenu(currentTableId)
-            });
-    </script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'red-primary': '#e60012',
-                        'red-hover': '#cc0010',
-                        'gray-dark': '#333',
-                        'gray-darker': '#444',
-                        'gray-light': '#ccc',
-                        'bg-main': '#191a2b'
-                    },
-                    fontFamily: {
-                        mont: ['Montserrat', 'sans-serif'],
-                    }
-                },
-            },
-        }
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
 
     <style>
@@ -148,8 +111,8 @@
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="text-white font-medium">{{ $table->number }}</h3>
                             <div class="w-3 h-3 
-                                                        {{ $table->status == 'Đã Mở' ? 'bg-yellow-500' : ($table->status == 'Cần thanh toán' ? 'bg-red-500' : 'bg-green-500') }} 
-                                                        rounded-full"></div>
+                                        {{ $table->status == 'Đã Mở' ? 'bg-yellow-500' : ($table->status == 'Cần thanh toán' ? 'bg-red-500' : 'bg-green-500') }} 
+                                                                                            rounded-full"></div>
                         </div>
                         <div class="flex items-center gap-2 text-slate-300 text-sm">
                             <i class="fas fa-users"></i>
@@ -356,35 +319,37 @@
             const billTime = document.getElementById('bill-time').textContent || '';
             const total = document.getElementById('total-amount').textContent || '0₫';
             let items = orderItemsData || [];
-            if (!items || items.length === 0) {
-                alert("Chưa có món nào trên hóa đơn này!");
-                return;
-            }
+            const completed = items.filter(it => it.status === "Hoàn Thành");
 
-            // Render thông tin chung
-            document.getElementById('review-bill-info').innerHTML = `
-        <div class="mb-1"><span class="font-semibold">Bàn:</span> <span>${tableName}</span></div>
-        <div class="mb-1"><span class="font-semibold">Nhân viên:</span> <span>${staffName}</span></div>
-        <div class="mb-1"><span class="font-semibold">Mã hóa đơn:</span> <span>${billId}</span></div>
-        <div class="mb-1"><span class="font-semibold">Thời gian:</span> <span>${billTime}</span></div>
+  // 2. Gom lại theo tên (hoặc product_id nếu có) và cộng dồn quantity
+  const grouped = completed.reduce((acc, it) => {
+    const key = it.product_name; // hoặc it.product_id
+    if (!acc[key]) {
+      acc[key] = { ...it };
+    } else {
+      acc[key].quantity += it.quantity;
+    }
+    return acc;
+  }, {});
+  const aggItems = Object.values(grouped);
+
+  // 3. Render bảng từ aggItems
+  document.getElementById('review-bill-items').innerHTML = aggItems.map(item => {
+    const lineTotal = item.price * item.quantity;
+    return `
+      <tr>
+        <td class="py-1">${item.product_name}</td>
+        <td class="py-1 text-center">${item.quantity}</td>
+        <td class="py-1 text-right">${Number(item.price).toLocaleString('vi-VN')} VNĐ</td>
+        <td class="py-1 text-right">${Number(lineTotal).toLocaleString('vi-VN')} VNĐ</td>
+      </tr>
     `;
+  }).join('');
 
-            // Render chi tiết món
-            document.getElementById('review-bill-items').innerHTML = items
-                .filter(item => item.status === "Hoàn Thành") // LỌC status
-                .map(item => `
-        <tr>
-            <td class="py-1">${item.product_name}</td>
-            <td class="py-1 text-center">${item.quantity}</td>
-            <td class="py-1 text-right"> ${item.price ? Number(item.price).toLocaleString('vi-VN') + ' VNĐ' : ''}</td>
-            <td class="py-1 text-right">${(item.price * item.quantity) ? Number(item.price * item.quantity).toLocaleString('vi-VN') + ' VNĐ' : ''}</td>
-        </tr>
-    `).join('');
+  // 4. Tính lại tổng
+  const totalHoanThanh = aggItems.reduce((s, it) => s + it.price * it.quantity, 0);
+  document.getElementById('review-total').textContent = Number(totalHoanThanh).toLocaleString('vi-VN') + ' VNĐ';
 
-            let totalHoanThanh = items
-                .filter(item => item.status === "Hoàn Thành")
-                .reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('review-total').textContent = Number(totalHoanThanh).toLocaleString('vi-VN') + ' VNĐ';
 
             // Reset
             document.getElementById('vnpay-qr-section').classList.add('hidden');
@@ -437,6 +402,14 @@
             document.getElementById('change-table-popup').classList.remove('flex');
             document.getElementById('change-table-popup').classList.add('hidden');
         }
+        function resetOrderPanel() {
+            document.getElementById('bill-id').textContent = '';
+            document.getElementById('current-table-name').textContent = '';
+            document.getElementById('order-items').innerHTML = '';
+            document.getElementById('total-amount').textContent = '0 VNĐ';
+            document.getElementById('empty-order').style.display = 'flex';
+        }
+
         function confirmChangeTable() {
             const newTableId = document.getElementById('select-new-table').value;
             if (!newTableId) return alert('Vui lòng chọn bàn để chuyển!');
@@ -459,6 +432,7 @@
                     if (data.success) {
                         alert('Đổi bàn thành công!');
                         closeChangeTablePopup();
+                        resetOrderPanel();
                         // Cập nhật lại view với bàn mới:
                         currentTableId = newTableId;
                         loadTableMenu(currentTableId);
@@ -756,6 +730,10 @@
 
 
         function showOpenTableButton(tableId) {
+            document.getElementById('total-amount').textContent = '0 VNĐ';
+            document.getElementById('bill-id').textContent = '';
+            document.getElementById('order-items').innerHTML = '';
+            document.getElementById('empty-order').style.display = 'none';
             const orderItems = document.getElementById('order-items');
             const emptyOrder = document.getElementById('empty-order');
             orderItems.innerHTML = `
@@ -993,7 +971,9 @@
             orderItems.style.display = 'block';
             emptyOrder.style.display = 'none';
             let total = 0;
-            orderItems.innerHTML = items.map(item => {
+            orderItems.innerHTML = items 
+            .filter(item => item.status != "Chờ Thực Hiện")
+            .map(item => {
                 let itemTotal = item.price * item.quantity;
                 if (item.status === "Hoàn Thành") total += itemTotal;
                 return `

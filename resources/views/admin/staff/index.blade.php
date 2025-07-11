@@ -1,8 +1,8 @@
 @extends('admin.index')
 @section('content')
     <!-- Content -->
-    <div class="w-full bg-white" @if(session('success')) data-success="{{ session('success') }}"
-    @elseif(session('error')) data-error="{{ session('error') }}" @endif>
+    <div class="w-full bg-white" @if(session('success')) data-success="{{ session('success') }}" @elseif(session('error'))
+    data-error="{{ session('error') }}" @endif>
         <div class="px-5 py-3">
             <!-- Action buttons -->
             <div class="flex justify-between mb-4">
@@ -91,7 +91,7 @@
                                     <!-- arrow icon -->
                                 </div>
                             </div>
-                        
+
                             <!-- Mã hoặc tên nhân viên -->
                             <input type="text" name="q" placeholder="Nhập mã hoặc tên nhân viên" value="{{ request('q') }}"
                                 class="w-full border rounded p-1.5 focus:ring-2 focus:ring-blue-500">
@@ -120,14 +120,15 @@
                         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                         <div class="relative w-full max-w-md max-h-full">
                             <!-- Modal content -->
-                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
                                 <!-- Modal header -->
-                                <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                <div
+                                    class="flex items-start justify-between p-4 border-b rounded-t border-gray-200 dark:border-gray-600">
+                                    <h3 class="text-xl font-semibold text-black dark:text-white">
                                         Nhập File Excel
                                     </h3>
                                     <button type="button"
-                                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                        class="text-gray-500 bg-transparent hover:bg-blue-100 hover:text-blue-700 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-blue-600 dark:hover:text-white"
                                         data-modal-hide="importModal">
                                         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -144,14 +145,13 @@
                                     @csrf
                                     <div class="mb-4">
                                         <label for="file"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn
-                                            file
-                                            Excel</label>
+                                            class="block mb-2 text-sm font-medium text-gray-700 dark:text-dark-200">Chọn
+                                            file Excel</label>
                                         <input type="file" name="file" id="file" accept=".xls,.xlsx" required
-                                            class="w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400">
+                                            class="w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-white focus:outline-none dark:bg-gray-700 dark:border-gray-500 dark:placeholder-gray-200">
                                     </div>
                                     <button type="submit"
-                                        class="w-full text-white bg-gray-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">
+                                        class="w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-700">
                                         <i class="fa-solid fa-upload mr-2"></i> Nhập File
                                     </button>
                                 </form>
@@ -184,67 +184,6 @@
                             Thêm Mới
                         </button>
                     </a>
-                    <button onclick="openPopupDelete('Bạn muốn muốn xóa nhân viên này?')"
-                        class=" hover:bg-red-400 hover:text-white border border-gray-600 text-gray-600 px-2 py-1 rounded flex items-center text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Xóa
-                    </button>
-                    <div id="PopupDelete"
-                        class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
-                        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-                            <!-- Header -->
-                            <div class="bg-orange-500  px-6 py-4">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        </div>
-                                        <h2 class="text-lg font-semibold text-white">Thông báo</h2>
-                                    </div>
-                                    <button onclick="closePopupDelete()"
-                                        class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors duration-200">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Content -->
-                            <div class="px-6 py-8 text-center">
-                                <div
-                                    class="w-16 h-16 bg-gradient-to-br from-yellow-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-
-                                <p id="Message" class="text-gray-700 text-base leading-relaxed mb-8"></p>
-
-                                <div class="flex justify-between space-x-4">
-                                    <button type="submit" form="deleteForm"
-                                        class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-teal-600 text-white font-semibold rounded-lg hover:from-yellow-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                                        Xác nhận
-                                    </button>
-                                    <button onclick="closePopupDelete()"
-                                        class="flex-1 px-6 py-3 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 font-semibold rounded-lg hover:from-gray-400 hover:to-gray-500 transition-all duration-200 shadow-lg hover:shadow-xl">
-                                        Đóng
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -283,7 +222,7 @@
                                     </td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->email }}</td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">
-                                      {{ $list->type }}
+                                        {{ $list->type }}
                                     </td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->status }}</td>
                                     <td class="py-1 px-2 border-t border-gray-200 text-gray-700">{{ $list->time_work }}</td>

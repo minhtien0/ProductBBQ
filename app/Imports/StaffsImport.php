@@ -35,7 +35,7 @@ class StaffsImport implements ToModel, WithHeadingRow, WithValidation
             'gender' => $mapped['gioi_tinh'] ?? null,
             'SDT' => $mapped['sdt'] ?? null,
             'CCCD' => $mapped['cccd'] ?? null,
-            'status' => $mapped['trang_thai'] ?? 'Thử Việc',
+            'status' => $mapped['trang_thai'] ?? 'Đang Làm',
             'address' => $mapped['dia_chi'] ?? null,
             'email' => $mapped['email'] ?? null,
             'time_work' => $this->transformDate($mapped['ngay_vao_lam'] ?? null),
@@ -89,7 +89,7 @@ class StaffsImport implements ToModel, WithHeadingRow, WithValidation
             '*.dia_chi' => 'required|string|max:255',
             '*.email' => 'required|email|max:255',
             '*.ngay_vao_lam' => 'required|date_format:d/m/Y',
-            '*.so_tai_khoan' => 'required|int|digits_between:10,20',
+            '*.so_tai_khoan' => 'required|integer|digits_between:10,20',
             '*.ngan_hang' => 'required|string|max:100',
         ];
     }
@@ -109,6 +109,7 @@ class StaffsImport implements ToModel, WithHeadingRow, WithValidation
             '*.dia_chi.required' => 'Địa chỉ là bắt buộc.',
             '*.ngay_vao_lam.required' => 'Ngày vào làm là bắt buộc.',
             '*.so_tai_khoan.required' => 'Số Tài Khoản là bắt buộc.',
+            '*.so_tai_khoan.integer' => 'Số Tài Khoản phải là số.',
             '*.ngan_hang.required' => 'Ngân hàng là bắt buộc.',
             '*.ngay_sinh.date_format' => 'Ngày sinh phải định dạng DD/MM/YYYY.',
             '*.gioi_tinh.in' => 'Giới tính chỉ: Nam, Nữ hoặc Khác.',

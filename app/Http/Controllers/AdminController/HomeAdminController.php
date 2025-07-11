@@ -539,8 +539,6 @@ class HomeAdminController extends Controller
             ]);
         }
         \Log::info($order);
-        $tables = DB::table('tables')->get();
-         broadcast(new TableUpdated($tables))->toOthers();
         return response()->json([
             'success' => true,
             'message' => 'Thêm món thành công!'
@@ -662,11 +660,6 @@ class HomeAdminController extends Controller
                 'message' => 'Bạn phải hoàn thành đơn hàng trước khi đóng bàn!'
             ]);
         }
-
-        // Nếu đã hoàn thành thì update trạng thái bàn
-        DB::table('tables')->where('id', $tableId)->update(['status' => 'Đã Đóng']);
-         $tables = DB::table('tables')->get(); // Lấy lại danh sách bàn mới nhất
-    broadcast(new TableUpdated($tables))->toOthers();
 
         return response()->json(['success' => true]);
     }

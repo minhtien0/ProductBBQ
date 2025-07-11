@@ -50,8 +50,8 @@ class HomeController extends Controller
             ->groupBy('food_id')
             ->get()
             ->keyBy('food_id');
-        $ratesHot = Rate::with(['food','user'])
-        ->where('rate', 5)->inRandomOrder()->limit(4)->get();
+        $ratesHot = Rate::with(['food', 'user'])
+            ->where('rate', 5)->inRandomOrder()->limit(4)->get();
         //dd( $ratesHot);
         return view('index', compact(
             'allFoods',
@@ -178,8 +178,14 @@ class HomeController extends Controller
         $comboNames = array_column($comboData, 'name');
         $foodLists = array_column($comboData, 'foods');
 
-        return view('qrorder', compact('menus', 
-        'comboData', 'comboNames', 'foodLists','orderDetails','table'));
+        return view('qrorder', compact(
+            'menus',
+            'comboData',
+            'comboNames',
+            'foodLists',
+            'orderDetails',
+            'table'
+        ));
     }
 
     public function updateQRorder(Request $request, $id)
@@ -198,8 +204,8 @@ class HomeController extends Controller
 
         // 4. Trả về JSON chứa số lượng mới
         return response()->json([
-            'success'  => true,
-            'quantity' => (int)$detail->quantity,
+            'success' => true,
+            'quantity' => (int) $detail->quantity,
         ], 200);
     }
     public function destroyQRorder($id)
@@ -208,11 +214,11 @@ class HomeController extends Controller
         $detail = OrderDetail::findOrFail($id);
 
         if ($detail->status != 'Chờ Xác Nhận') {
-        return response()->json([
-            'success' => false,
-            'message' => 'Không thể xóa món đã hoàn thành!',
-        ], 403); // Trả về mã lỗi 403 Forbidden
-    }
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể xóa món đã hoàn thành!',
+            ], 403); // Trả về mã lỗi 403 Forbidden
+        }
         // 2. Xóa bản ghi
         $detail->delete();
 
@@ -224,94 +230,96 @@ class HomeController extends Controller
     }
 
     public function addOrderItemQRorder(Request $request)
-{
-    $request->validate([
-        'table_id'   => 'required|integer|exists:tables,id',
-        'product_id' => 'required|integer|exists:foods,id',
-        'quantity'   => 'nullable|integer|min:1', // quantity có thể có, mặc định là 1
-    ]);
+    {
+        $request->validate([
+            'table_id' => 'required|integer|exists:tables,id',
+            'product_id' => 'required|integer|exists:foods,id',
+            'quantity' => 'nullable|integer|min:1',
+        ]);
 
-    $quantity = $request->quantity ?? 1;
+        $quantity = $request->quantity ?? 1;
 
-    // Tìm order đang mở của bàn này
-    $order = \App\Models\Order::where('table_id', $request->table_id)
-        ->where('statusorder', 'Đang Mở') // hoặc 'Đang phục vụ'
-        ->orderByDesc('id')->first();
-    if (!$order) {
+        // Tìm order đang mở
+        $order = \App\Models\Order::where('table_id', $request->table_id)
+            ->where('statusorder', 'Đang Mở')
+            ->orderByDesc('id')->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Chưa có order đang mở cho bàn này!'
+            ], 400);
+        }
+
+        // **Chỉ tìm detail có status = 'Chờ Thực Hiện'**
+        $pending = \App\Models\OrderDetail::where('order_id', $order->id)
+            ->where('product_id', $request->product_id)
+            ->where('status', 'Chờ Thực Hiện')
+            ->first();
+
+        if ($pending) {
+            // Nếu còn pending, cộng dồn
+            $pending->quantity += $quantity;
+            $pending->save();
+            $detail = $pending;
+        } else {
+            // Ngược lại tạo mới luôn với status 'Chờ Thực Hiện'
+            $detail = \App\Models\OrderDetail::create([
+                'order_id' => $order->id,
+                'product_id' => $request->product_id,
+                'quantity' => $quantity,
+                'status' => 'Chờ Thực Hiện',
+                'time' => now(),
+            ]);
+        }
+
+        $food = \App\Models\Food::find($request->product_id);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Chưa có order đang mở cho bàn này!'
-        ], 400);
-    }
-
-    // Kiểm tra món đã tồn tại trong order chưa
-    $detail = \App\Models\OrderDetail::where('order_id', $order->id)
-        ->where('product_id', $request->product_id)
-        ->first();
-
-    if ($detail) {
-        // Nếu đã có thì cộng thêm số lượng được gửi lên
-        $detail->quantity += $quantity;
-        $detail->save();
-    } else {
-        // Nếu chưa có thì tạo mới với số lượng truyền lên
-        $detail = \App\Models\OrderDetail::create([
-            'order_id'   => $order->id,
-            'product_id' => $request->product_id,
-            'quantity'   => $quantity,
-            'status'     => 'Chờ Thực Hiện',
-            'time'       => now()
+            'success' => true,
+            'message' => 'Thêm món thành công!',
+            'order_detail' => [
+                'id' => $detail->id,
+                'order_id' => $detail->order_id,
+                'product_id' => $detail->product_id,
+                'food_name' => $food->name ?? '',
+                'food_image' => $food->image ?? '',
+                'food_price' => $food->price ?? '',
+                'quantity' => $detail->quantity,
+                'status' => $detail->status,
+            ],
         ]);
     }
 
-    // Lấy thông tin chi tiết món vừa thêm (có thể join bảng food nếu muốn)
-    $food = \App\Models\Food::find($request->product_id);
+    public function getOrderDetailsByTable($table_id)
+    {
+        $order = \App\Models\Order::where('table_id', $table_id)
+            ->whereIn('statusorder', ['Đang Mở', 'Đang phục vụ'])
+            ->orderByDesc('id')->first();
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Thêm món thành công!',
-        'order_detail' => [
-            'id'          => $detail->id,
-            'order_id'    => $detail->order_id,
-            'product_id'  => $detail->product_id,
-            'food_name'   => $food ? $food->name : '',
-            'food_image'  => $food ? $food->image : '',
-            'food_price'  => $food ? $food->price : '',
-            'quantity'    => $detail->quantity,
-            'status'      => $detail->status,
-        ],
-    ]);
-}
+        if (!$order) {
+            return response()->json(['success' => false, 'orderDetails' => []]);
+        }
 
-public function getOrderDetailsByTable($table_id)
-{
-    $order = \App\Models\Order::where('table_id', $table_id)
-        ->whereIn('statusorder', ['Đang Mở', 'Đang phục vụ'])
-        ->orderByDesc('id')->first();
+        $orderDetails = DB::table('order_details')
+            ->join('foods', 'order_details.product_id', '=', 'foods.id')
+            ->where('order_details.order_id', $order->id)
+            ->select([
+                'order_details.id',
+                'order_details.quantity',
+                'order_details.status',
+                'foods.id as food_id',
+                'foods.name as food_name',
+                'foods.price as food_price',
+                'foods.image as food_image',
+            ])
+            ->get();
 
-    if (!$order) {
-        return response()->json(['success' => false, 'orderDetails' => []]);
+        return response()->json([
+            'success' => true,
+            'orderDetails' => $orderDetails
+        ]);
     }
-
-    $orderDetails = DB::table('order_details')
-        ->join('foods', 'order_details.product_id', '=', 'foods.id')
-        ->where('order_details.order_id', $order->id)
-        ->select([
-            'order_details.id',
-            'order_details.quantity',
-            'order_details.status',
-            'foods.id as food_id',
-            'foods.name as food_name',
-            'foods.price as food_price',
-            'foods.image as food_image',
-        ])
-        ->get();
-
-    return response()->json([
-        'success' => true,
-        'orderDetails' => $orderDetails
-    ]);
-}
 
 
     public function getProductsByCategory($categoryId)
@@ -382,33 +390,33 @@ public function getOrderDetailsByTable($table_id)
     }
 
     public function callDishes(Request $request)
-{
-    $request->validate([
-        'table_id' => 'required|integer|exists:tables,id',
-    ]);
+    {
+        $request->validate([
+            'table_id' => 'required|integer|exists:tables,id',
+        ]);
 
-    // Lấy order đang mở của bàn
-    $order = \App\Models\Order::where('table_id', $request->table_id)
-        ->where('statusorder', 'Đang Mở')
-        ->orderByDesc('id')->first();
+        // Lấy order đang mở của bàn
+        $order = \App\Models\Order::where('table_id', $request->table_id)
+            ->where('statusorder', 'Đang Mở')
+            ->orderByDesc('id')->first();
 
-    if (!$order) {
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy order đang mở của bàn này!',
+            ], 404);
+        }
+
+        // Cập nhật tất cả order_detail status "Chờ Xác Nhận" => "Gọi Món"
+        $count = \App\Models\OrderDetail::where('order_id', $order->id)
+            ->where('status', 'Chờ Thực Hiện')
+            ->update(['status' => 'Gọi Món']);
+
         return response()->json([
-            'success' => false,
-            'message' => 'Không tìm thấy order đang mở của bàn này!',
-        ], 404);
+            'success' => true,
+            'message' => "Đã cập nhật $count món sang trạng thái 'Gọi Món'",
+        ]);
     }
-
-    // Cập nhật tất cả order_detail status "Chờ Xác Nhận" => "Gọi Món"
-    $count = \App\Models\OrderDetail::where('order_id', $order->id)
-        ->where('status', 'Chờ Thực Hiện')
-        ->update(['status' => 'Gọi Món']);
-
-    return response()->json([
-        'success' => true,
-        'message' => "Đã cập nhật $count món sang trạng thái 'Gọi Món'",
-    ]);
-}
 
 
     public function about()
@@ -1183,22 +1191,22 @@ public function getOrderDetailsByTable($table_id)
     }
 
     public function deleteAddress($id)
-{
-    $address = Address::findOrFail($id);
+    {
+        $address = Address::findOrFail($id);
 
-    // Kiểm tra xem có đơn hàng nào chưa hoàn thành/hủy đang dùng địa chỉ này không
-    $ordersUsingAddress = Order::where('address', $id)
-        ->whereNotIn('statusorder', ['Hoàn Thành', 'Đã Hủy'])
-        ->exists();
+        // Kiểm tra xem có đơn hàng nào chưa hoàn thành/hủy đang dùng địa chỉ này không
+        $ordersUsingAddress = Order::where('address', $id)
+            ->whereNotIn('statusorder', ['Hoàn Thành', 'Đã Hủy'])
+            ->exists();
 
-    if ($ordersUsingAddress) {
-        // Nếu có, trả về thông báo lỗi, không cho xóa
-        return redirect()->back()->with('error', 'Không thể xóa địa chỉ này vì có đơn hàng chưa hoàn thành hoặc chưa hủy đang sử dụng địa chỉ này. Vui lòng đợi đơn Hoàn Thành hoặc Đã Hủy!');
+        if ($ordersUsingAddress) {
+            // Nếu có, trả về thông báo lỗi, không cho xóa
+            return redirect()->back()->with('error', 'Không thể xóa địa chỉ này vì có đơn hàng chưa hoàn thành hoặc chưa hủy đang sử dụng địa chỉ này. Vui lòng đợi đơn Hoàn Thành hoặc Đã Hủy!');
+        }
+
+        $address->delete();
+        return redirect()->back()->with('success', 'Đã xóa địa chỉ thành công!');
     }
-
-    $address->delete();
-    return redirect()->back()->with('success', 'Đã xóa địa chỉ thành công!');
-}
 
     public function editAddress(Request $request)
     {
@@ -1810,46 +1818,46 @@ public function getOrderDetailsByTable($table_id)
             ->where('CCCD', $inputPass)
             ->first();
 
-         if ($staff) {
-        // --- Kiểm tra nếu nhân viên đã nghỉ việc ---
-        if ($staff->status === 'Nghỉ Việc') {
-            return redirect()->back()
-                ->withErrors(['failed' => 'Nhân viên này đã nghỉ việc, không thể đăng nhập!'])
-                ->withInput($request->except('password'));
+        if ($staff) {
+            // --- Kiểm tra nếu nhân viên đã nghỉ việc ---
+            if ($staff->status === 'Nghỉ Việc') {
+                return redirect()->back()
+                    ->withErrors(['failed' => 'Nhân viên này đã nghỉ việc, không thể đăng nhập!'])
+                    ->withInput($request->except('password'));
+            }
+            session([
+                'staff_logged_in' => true,
+                'staff_id' => $staff->id,
+                'staff_name' => $staff->fullname,
+                'staff_email' => $staff->email,
+                'staff_role' => $staff->role,
+            ]);
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Đăng nhập Admin thành công!');
         }
-        session([
-            'staff_logged_in' => true,
-            'staff_id' => $staff->id,
-            'staff_name' => $staff->fullname,
-            'staff_email' => $staff->email,
-            'staff_role' => $staff->role,
-        ]);
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Đăng nhập Admin thành công!');
-    }
 
         // 2) Thử đăng nhập bằng User (user / hashed password)
         $user = User::where('user', $inputUser)->first();
-    if ($user && Hash::check($inputPass, $user->password)) {
-        // --- Kiểm tra nếu user ngưng hoạt động ---
-        if ($user->role === 'Ngưng Hoạt Động') {
-            return redirect()->back()
-                ->withErrors(['failed' => 'Tài khoản của bạn đã bị ngưng hoạt động!'])
-                ->withInput($request->except('password'));
+        if ($user && Hash::check($inputPass, $user->password)) {
+            // --- Kiểm tra nếu user ngưng hoạt động ---
+            if ($user->role === 'Ngưng Hoạt Động') {
+                return redirect()->back()
+                    ->withErrors(['failed' => 'Tài khoản của bạn đã bị ngưng hoạt động!'])
+                    ->withInput($request->except('password'));
+            }
+            session([
+                'user_logged_in' => true,
+                'user_id' => $user->id,
+                'user_name' => $user->fullname,
+                'user_sdt' => $user->sdt,
+                'user_email' => $user->email,
+                'user_birthday' => $user->birthday,
+                'user_gender' => $user->gender,
+                'user_avatar' => $user->avatar,
+            ]);
+            return redirect()->route('views.index')
+                ->with('success', 'Đăng nhập thành công!');
         }
-        session([
-            'user_logged_in' => true,
-            'user_id' => $user->id,
-            'user_name' => $user->fullname,
-            'user_sdt' => $user->sdt,
-            'user_email' => $user->email,
-            'user_birthday' => $user->birthday,
-            'user_gender' => $user->gender,
-            'user_avatar' => $user->avatar,
-        ]);
-        return redirect()->route('views.index')
-            ->with('success', 'Đăng nhập thành công!');
-    }
         // Nếu cả 2 đều không khớp
         return redirect()->back()
             ->withErrors(['failed' => 'Tài khoản hoặc mật khẩu không chính xác'])
