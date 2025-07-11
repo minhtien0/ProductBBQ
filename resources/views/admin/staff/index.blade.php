@@ -197,7 +197,7 @@
                         class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 hidden p-4">
                         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
                             <!-- Header -->
-                            <div class="bg-gradient-to-r from-yellow-500 to-teal-600 px-6 py-4">
+                            <div class="bg-orange-500  px-6 py-4">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-3">
                                         <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">

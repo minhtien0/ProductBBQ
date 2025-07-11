@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use App\Events\TableUpdated;
 
 class HomeAdminController extends Controller
 {
@@ -538,6 +539,8 @@ class HomeAdminController extends Controller
             ]);
         }
         \Log::info($order);
+        $tables = DB::table('tables')->get();
+         broadcast(new TableUpdated($tables))->toOthers();
         return response()->json([
             'success' => true,
             'message' => 'Thêm món thành công!'
@@ -662,6 +665,8 @@ class HomeAdminController extends Controller
 
         // Nếu đã hoàn thành thì update trạng thái bàn
         DB::table('tables')->where('id', $tableId)->update(['status' => 'Đã Đóng']);
+         $tables = DB::table('tables')->get(); // Lấy lại danh sách bàn mới nhất
+    broadcast(new TableUpdated($tables))->toOthers();
 
         return response()->json(['success' => true]);
     }

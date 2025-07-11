@@ -85,12 +85,12 @@ data-error="{{ session('error') }}" @endif>
         <div class="absolute inset-0 bg-[#231f42] opacity-70"></div>
         <!-- Content -->
         <div class="absolute inset-0 flex flex-col justify-center px-4 md:px-16">
-            <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">User Detail</h1>
+            <h1 class="text-white font-extrabold text-4xl md:text-6xl mb-4">Chi Tiết Người Dùng</h1>
             <div class="flex items-center gap-3 text-lg md:text-xl font-semibold">
                 <i class="fa fa-home text-white"></i>
-                <a href="{{ route('views.index') }}"><span class="text-white">Home</span></a>
+                <a href="{{ route('views.index') }}"><span class="text-white">Trang Chủ</span></a>
                 <span class="text-white">–</span>
-                <span class="text-[#ff8000]">BBQ User Detail</span>
+                <span class="text-[#ff8000]">BBQ Chi Tiết Người Dùng</span>
             </div>
         </div>
     </div>
@@ -527,7 +527,7 @@ data-error="{{ session('error') }}" @endif>
                                     <input type="radio" name="default" value="0" class="mr-1" {{ old('default', '0') == '0' ? 'checked' : '' }} onclick="setDefaultRadio(this.value)"> Khác
                                 </label>
                             </div>
-                            <div class="flex gap-3">
+                            <div class="flex gap-3">    
                                 <button type="reset" class="bg-orange-200 text-orange-700 px-6 py-2 rounded font-bold"
                                     onclick="clearFormData()">Cài Lại</button>
                                 <button type="submit"
@@ -1157,18 +1157,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('edit_address_id').value = btn.dataset.id;
                 document.querySelector('#address-edit-view input[name="name"]').value = btn.dataset.name;
                 document.querySelector('#address-edit-view input[name="sdt"]').value = btn.dataset.sdt;
-                document.querySelector('#address-edit-view input[name="birthday"]').value = btn.dataset.birthday;
-                document.querySelector('#address-edit-view input[name="gender"][value="' + btn.dataset.gender + '"]').checked = true;
                 document.querySelector('#address-edit-view input[name="house_number"]').value = btn.dataset.house_number;
                 document.querySelector('#address-edit-view input[name="ward"]').value = btn.dataset.ward;
                 document.querySelector('#address-edit-view input[name="district"]').value = btn.dataset.district;
                 document.querySelector('#address-edit-view input[name="city"]').value = btn.dataset.city;
                 document.querySelector('#address-edit-view textarea[name="note"]').value = btn.dataset.note;
                 // radio default
-                const def = btn.dataset.default;
-                document.querySelector(`#address-edit-view input[name="default"][value="${def}"]`).checked = true;
-            });
-        });
+                const def = String(btn.dataset.default ?? '1');
+                const radio = document.querySelector(`#address-edit-view input[name="default"][value="${def}"]`);
+                if (radio) radio.checked = true;
+                    });
+                });
 
         // Hủy chỉnh sửa
         document.getElementById('btn-cancel-edit-address').addEventListener('click', e => {

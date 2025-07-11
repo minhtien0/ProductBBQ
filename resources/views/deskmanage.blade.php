@@ -8,6 +8,24 @@
     <title>Quản lý bàn BBQ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script>
+        window.Echo = new Echo({
+            broadcaster: 'reverb',
+            host: window.location.hostname + ':6001'
+        });
+
+        // Lắng nghe event TableUpdated trên kênh 'tables'
+        window.Echo.channel('tables')
+            .listen('TableUpdated', (e) => {
+                // console.log('Realtime bàn:', e.table);
+                // Gọi lại reloadTableList để render lại danh sách bàn sidebar
+                reloadTableList();
+                // Nếu cần render lại chi tiết order panel, có thể gọi tiếp loadTableMenu(currentTableId)
+            });
+    </script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -130,8 +148,8 @@
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="text-white font-medium">{{ $table->number }}</h3>
                             <div class="w-3 h-3 
-                                        {{ $table->status == 'Đã Mở' ? 'bg-yellow-500' : ($table->status == 'Cần thanh toán' ? 'bg-red-500' : 'bg-green-500') }} 
-                                        rounded-full"></div>
+                                                        {{ $table->status == 'Đã Mở' ? 'bg-yellow-500' : ($table->status == 'Cần thanh toán' ? 'bg-red-500' : 'bg-green-500') }} 
+                                                        rounded-full"></div>
                         </div>
                         <div class="flex items-center gap-2 text-slate-300 text-sm">
                             <i class="fas fa-users"></i>
@@ -352,7 +370,9 @@
     `;
 
             // Render chi tiết món
-            document.getElementById('review-bill-items').innerHTML = items.map(item => `
+            document.getElementById('review-bill-items').innerHTML = items
+                .filter(item => item.status === "Hoàn Thành") // LỌC status
+                .map(item => `
         <tr>
             <td class="py-1">${item.product_name}</td>
             <td class="py-1 text-center">${item.quantity}</td>
@@ -361,7 +381,10 @@
         </tr>
     `).join('');
 
-            document.getElementById('review-total').textContent = total;
+            let totalHoanThanh = items
+                .filter(item => item.status === "Hoàn Thành")
+                .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('review-total').textContent = Number(totalHoanThanh).toLocaleString('vi-VN') + ' VNĐ';
 
             // Reset
             document.getElementById('vnpay-qr-section').classList.add('hidden');
@@ -488,49 +511,49 @@
                 });
         }
 
-async function handleCloseTable() {
-    // Gọi API lấy thông tin order hiện tại
-    let res = await fetch(`/admin/deskmanage/get-table-data/${currentTableId}`);
-    let data = await res.json();
+        async function handleCloseTable() {
+            // Gọi API lấy thông tin order hiện tại
+            let res = await fetch(`/admin/deskmanage/get-table-data/${currentTableId}`);
+            let data = await res.json();
 
-    if (!data || data.items.length === 0) {
-        alert("Không có đơn hàng nào để đóng bàn!");
-        return;
-    }
-
-    // Kiểm tra trạng thái đơn hàng
-    if (!data.statusorder || data.statusorder !== 'Hoàn Thành') {
-        alert("Bạn phải hoàn thành đơn hàng trước khi đóng bàn!");
-        return;
-    }
-
-    if (!confirm("Xác nhận đóng bàn?")) return;
-
-    // Gọi API đổi trạng thái bàn
-    fetch('/admin/deskmanage/close-table', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-        },
-        body: JSON.stringify({
-            table_id: currentTableId
-        })
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert("Đã đóng bàn thành công!");
-                loadTableMenu(currentTableId); // Refresh lại dữ liệu bàn
-            } else {
-                alert(data.message || "Đóng bàn thất bại!");
+            if (!data || data.items.length === 0) {
+                alert("Không có đơn hàng nào để đóng bàn!");
+                return;
             }
-        })
-        .catch(err => {
-            alert('Có lỗi khi đóng bàn!');
-            console.error(err);
-        });
-}
+
+            // Kiểm tra trạng thái đơn hàng
+            if (!data.statusorder || data.statusorder !== 'Hoàn Thành') {
+                alert("Bạn phải hoàn thành đơn hàng trước khi đóng bàn!");
+                return;
+            }
+
+            if (!confirm("Xác nhận đóng bàn?")) return;
+
+            // Gọi API đổi trạng thái bàn
+            fetch('/admin/deskmanage/close-table', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                },
+                body: JSON.stringify({
+                    table_id: currentTableId
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Đã đóng bàn thành công!");
+                        loadTableMenu(currentTableId); // Refresh lại dữ liệu bàn
+                    } else {
+                        alert(data.message || "Đóng bàn thất bại!");
+                    }
+                })
+                .catch(err => {
+                    alert('Có lỗi khi đóng bàn!');
+                    console.error(err);
+                });
+        }
 
 
 
@@ -694,6 +717,7 @@ async function handleCloseTable() {
             fetch(`/admin/deskmanage/get-table-data/${tableId}`)
                 .then(res => res.json())
                 .then(data => {
+                    console.log('Table data:', data);
                     menuList = data.menus || [];
                     comboList = data.combos || [];
                     menuMap = {};
@@ -710,6 +734,11 @@ async function handleCloseTable() {
                         // Mặc định
                         isCombo = false;
                         activeMenu = menuList[0] ? menuList[0].name : '';
+                    }
+                    console.log('Table data:', data);
+                    if ((data.table && data.table.status === "Đã Đóng") || data.status === "Đã Đóng" || data.error) {
+                        showOpenTableButton(tableId);
+                        return;
                     }
 
                     renderCategoryButtons();
@@ -754,11 +783,12 @@ async function handleCloseTable() {
             })
                 .then(res => res.json())
                 .then(data => {
+
                     if (data.success) {
                         alert("Đã mở bàn thành công!");
                         const prevIsCombo = isCombo;
                         const prevActiveMenu = activeMenu;
-                        loadTableMenu(TableId, true, prevIsCombo, prevActiveMenu);
+                        loadTableMenu(tableId, true, prevIsCombo, prevActiveMenu);
                         // Nếu muốn, có thể reload lại danh sách bàn ở sidebar
                     } else {
                         alert(data.message || "Mở bàn thất bại!");

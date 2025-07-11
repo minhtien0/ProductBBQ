@@ -326,7 +326,7 @@
                         renderPopupCart();
                     },
                     error: function () {
-                        alert('Xóa thất bại.');
+                        alert('Không thể xóa món ở trạng thái này.');
                     }
                 });
             }

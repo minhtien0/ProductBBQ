@@ -246,9 +246,9 @@ class CashierController extends Controller
                 $data[] = [
                     'label' => $i == 0 ? 'Hôm nay' : ($i == 1 ? 'Hôm qua' : $date->format('d/m/Y')),
                     'total_orders' => DB::table('orders')->whereDate('created_at', $date->toDateString())->count(),
-                    'at_table' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 0)->sum('totalbill'),
-                    'take_away' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 1)->sum('totalbill'),
-                    'total_revenue' => DB::table('orders')->whereDate('created_at', $date->toDateString())->sum('totalbill'),
+                    'at_table' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'take_away' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'total_revenue' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
                 ];
             }
         } elseif ($period == 'weekly') {
@@ -261,9 +261,9 @@ class CashierController extends Controller
                 $data[] = [
                     'label' => 'Tuần ' . $week . ' (' . $firstDayOfWeek->format('d/m') . ' - ' . $lastDayOfWeek->format('d/m') . ')',
                     'total_orders' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->count(),
-                    'at_table' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 0)->sum('totalbill'),
-                    'take_away' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 1)->sum('totalbill'),
-                    'total_revenue' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->sum('totalbill'),
+                    'at_table' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'take_away' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'total_revenue' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
                 ];
             }
         } elseif ($period == 'monthly') {
@@ -271,9 +271,9 @@ class CashierController extends Controller
                 $data[] = [
                     'label' => 'Tháng ' . $m . '/' . $year,
                     'total_orders' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->count(),
-                    'at_table' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 0)->sum('totalbill'),
-                    'take_away' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 1)->sum('totalbill'),
-                    'total_revenue' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->sum('totalbill'),
+                    'at_table' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'take_away' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'total_revenue' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
                 ];
             }
         } elseif ($period == 'yearly') {
@@ -283,9 +283,9 @@ class CashierController extends Controller
                 $data[] = [
                     'label' => 'Năm ' . $y,
                     'total_orders' => DB::table('orders')->whereYear('created_at', $y)->count(),
-                    'at_table' => DB::table('orders')->whereYear('created_at', $y)->where('type', 0)->sum('totalbill'),
-                    'take_away' => DB::table('orders')->whereYear('created_at', $y)->where('type', 1)->sum('totalbill'),
-                    'total_revenue' => DB::table('orders')->whereYear('created_at', $y)->sum('totalbill'),
+                    'at_table' => DB::table('orders')->whereYear('created_at', $y)->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'take_away' => DB::table('orders')->whereYear('created_at', $y)->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'total_revenue' => DB::table('orders')->whereYear('created_at', $y)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
                 ];
             }
         }
@@ -324,9 +324,9 @@ class CashierController extends Controller
                 $data[] = [
                     'label' => $i == 0 ? 'Hôm nay' : ($i == 1 ? 'Hôm qua' : $date->format('d/m/Y')),
                     'total_orders' => DB::table('orders')->whereDate('created_at', $date->toDateString())->count(),
-                    'at_table' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 0)->sum('totalbill'),
-                    'take_away' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 1)->sum('totalbill'),
-                    'total_revenue' => DB::table('orders')->whereDate('created_at', $date->toDateString())->sum('totalbill'),
+                    'at_table' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'take_away' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'total_revenue' => DB::table('orders')->whereDate('created_at', $date->toDateString())->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
                 ];
             }
         } elseif ($period == 'weekly') {
@@ -337,9 +337,9 @@ class CashierController extends Controller
                 $data[] = [
                     'label' => 'Tuần ' . $week . ' (' . $firstDayOfWeek->format('d/m') . ' - ' . $lastDayOfWeek->format('d/m') . ')',
                     'total_orders' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->count(),
-                    'at_table' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 0)->sum('totalbill'),
-                    'take_away' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 1)->sum('totalbill'),
-                    'total_revenue' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->sum('totalbill'),
+                    'at_table' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'take_away' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'total_revenue' => DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
                 ];
             }
         } elseif ($period == 'monthly') {
@@ -347,9 +347,9 @@ class CashierController extends Controller
                 $data[] = [
                     'label' => 'Tháng ' . $m . '/' . $year,
                     'total_orders' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->count(),
-                    'at_table' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 0)->sum('totalbill'),
-                    'take_away' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 1)->sum('totalbill'),
-                    'total_revenue' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->sum('totalbill'),
+                    'at_table' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'take_away' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'total_revenue' => DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
                 ];
             }
         } elseif ($period == 'yearly') {
@@ -358,9 +358,9 @@ class CashierController extends Controller
                 $data[] = [
                     'label' => 'Năm ' . $y,
                     'total_orders' => DB::table('orders')->whereYear('created_at', $y)->count(),
-                    'at_table' => DB::table('orders')->whereYear('created_at', $y)->where('type', 0)->sum('totalbill'),
-                    'take_away' => DB::table('orders')->whereYear('created_at', $y)->where('type', 1)->sum('totalbill'),
-                    'total_revenue' => DB::table('orders')->whereYear('created_at', $y)->sum('totalbill'),
+                    'at_table' => DB::table('orders')->whereYear('created_at', $y)->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'take_away' => DB::table('orders')->whereYear('created_at', $y)->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
+                    'total_revenue' => DB::table('orders')->whereYear('created_at', $y)->where('statusorder', 'Hoàn Thành')->sum('totalbill'),
                 ];
             }
         }
