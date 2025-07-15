@@ -325,11 +325,13 @@
                                 <i class="fas fa-sms"></i>
                                 Gửi SMS
                             </button>
+                            @if($details->status == 'Đã xác nhận')
                             <button id="sendEmailBtn"
                                 class="w-full bg-purple-100 hover:bg-purple-200 text-purple-700 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
                                 <i class="fas fa-envelope"></i>
                                 Gửi Email
                             </button>
+                            @endif
                         </div>
                     </div>
                 </div>

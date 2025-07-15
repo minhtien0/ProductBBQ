@@ -301,7 +301,7 @@
                     .then(res => res.json())
                     .then(data => {
                         if(data.success) {
-                            alert('Xóa Đánh Giá Thành Công!');
+                            alert('Xác Nhận nhận Đánh Giá Thành Công!');
                             location.reload();
                         } else {
                             alert(data.message || 'Có lỗi xảy ra!');

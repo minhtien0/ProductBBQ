@@ -282,39 +282,37 @@
                 });
             }
             function callDishes() {
-    if (!confirm('Bạn chắc chắn muốn GỌI MÓN?')) return;
+                if (!confirm('Bạn chắc chắn muốn GỌI MÓN?')) return;
 
-    let tableId = CURRENT_TABLE_ID;
-    if (!tableId) {
-        alert('Không xác định được bàn!');
-        return;
-    }
+                let tableId = CURRENT_TABLE_ID;
+                if (!tableId) {
+                    alert('Không xác định được bàn!');
+                    return;
+                }
 
-    $.ajax({
-        url: `/api/order-details/call-dishes`, // route mới sẽ tạo ở backend
-        type: 'POST',
-        data: { table_id: tableId },
-        success: function (res) {
-            if (res.success) {
-                alert('Đã gọi món thành công!');
-                // Cập nhật lại orderDetails nếu muốn
-                $.get('/api/order-details/' + tableId, function (data) {
-                    if (data.success) {
-                        orderDetails = data.orderDetails;
-                        renderPopupCart();
+                $.ajax({
+                    url: '{{ url('/api/order-details/call-dishes') }}', // route mới sẽ tạo ở backend
+                    type: 'POST',
+                    data: { table_id: tableId },
+                    success: function (res) {
+                        if (res.success) {
+                            alert('Đã gọi món thành công!');
+                            // Cập nhật lại orderDetails nếu muốn
+                            $.get('/api/order-details/' + tableId, function (data) {
+                                if (data.success) {
+                                    orderDetails = data.orderDetails;
+                                    renderPopupCart();
+                                }
+                            });
+                        } else {
+                            alert(res.message || 'Gọi món thất bại');
+                        }
+                    },
+                    error: function () {
+                        alert('Gọi món thất bại!');
                     }
                 });
-            } else {
-                alert(res.message || 'Gọi món thất bại');
             }
-        },
-        error: function () {
-            alert('Gọi món thất bại!');
-        }
-    });
-}
-
-
             // Xóa món khỏi cart
             function popupRemoveFromCart(index) {
                 const detail = orderDetails[index];
@@ -362,7 +360,7 @@
                         return;
                     }
                     $.ajax({
-                        url: `/order-details/${ids[count]}`,
+                        url: '{{ url("/order-details") }}/' + ids[count],
                         type: 'DELETE',
                         success: function () {
                             count++; removeNext();
@@ -384,36 +382,38 @@
                     toggleCart();
                 }
             }
-
+             const baseUrl = "{{ url('/') }}";
             // AJAX sản phẩm theo danh mục
             $(document).ready(function () {
                 var initialComboData = <?php echo json_encode($comboData); ?> || [];
                 $('.category-btn').on('click', function () {
                     var categoryId = $(this).data('category');
                     $.ajax({
-                        url: '/get-products-by-category/' + categoryId,
+                        url: baseUrl + '/get-products-by-category/' + categoryId,
                         type: 'GET',
                         success: function (data) {
+                            console.log("Dữ liệu AJAX trả về: ", data);
                             var html = '';
+                            
                             data.foods.forEach(function (food) {
                                 html += `
-                                <div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="${categoryId}">
-                                    <img src="{{ asset('img/${food.image }') }}" alt="${food.name}" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
-                                    <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">${food.name}</h3>
-                                    <p class="text-[10px] sm:text-xs text-gray-light">${food.price} VNĐ</p>
-                                    <div class="flex items-center justify-center gap-2 mt-2 mb-2">
-                                        <button class="btn-change-qty w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" data-delta="-1" type="button">-</button>
-                                        <input type="number" value="1" min="1" class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold" readonly>
-                                        <button class="btn-change-qty w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" data-delta="1" type="button">+</button>
-                                    </div>
-                                    <button class="btn-add-to-cart bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors"
-                                     data-product-id="${food.id}"    
-                                    data-name="${food.name}"
-                                        data-price="${food.price}"
-                                        data-image="${food.image || 'img/default-food.jpg'}"
-                                    >Thêm</button>
-                                </div>
-                            `;
+<div class="product-item w-[48%] sm:w-[48%] md:w-[32%] mb-2 p-2 bg-gray-darker rounded shadow text-center" data-category="${categoryId}">
+    <img src="{{ asset('img') }}/${food.image}" alt="${food.name}" class="w-16 h-16 object-cover rounded shadow mx-auto aspect-square">
+    <h3 class="text-xs sm:text-sm my-1 mx-2 text-white">${food.name}</h3>
+    <p class="text-[10px] sm:text-xs text-gray-light">${food.price} VNĐ</p>
+    <div class="flex items-center justify-center gap-2 mt-2 mb-2">
+        <button class="btn-change-qty w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" data-delta="-1" type="button">-</button>
+        <input type="number" value="1" min="1" class="w-10 h-8 text-center rounded-full border border-gray-200 bg-white text-gray-800 qty-input font-semibold" readonly>
+        <button class="btn-change-qty w-7 h-7 flex items-center justify-center rounded-full bg-gray-700 text-white hover:bg-gray-600 text-base" data-delta="1" type="button">+</button>
+    </div>
+    <button class="btn-add-to-cart bg-red-primary text-white px-3 py-1 rounded w-full text-xs sm:text-sm hover:bg-red-hover transition-colors"
+        data-product-id="${food.id}"    
+        data-name="${food.name}"
+        data-price="${food.price}"
+        data-image="${food.image || 'img/default-food.jpg'}"
+    >Thêm</button>
+</div>
+`;
                             });
                             $('.flex.flex-wrap.sm\\:flex-wrap.gap-1.sm\\:gap-2').html(html);
                         },
@@ -450,7 +450,8 @@
                 }
 
                 $.ajax({
-                    url: '/add-order-item-qrorder', // đúng route backend bạn đã setup
+                    url: '{{ url("/add-order-item-qrorder") }}',
+                    // đúng route backend bạn đã setup
                     type: 'POST',
                     data: {
                         table_id: tableId,
@@ -460,7 +461,7 @@
                     success: function (res) {
                         if (res.success) {
                             // Gọi lại API lấy giỏ hàng mới
-                            $.get('/api/order-details/' + tableId, function (data) {
+                            $.get('{{ url("/api/order-details") }}/' + tableId, function (data) {
                                 if (data.success) {
                                     orderDetails = data.orderDetails;
                                     renderPopupCart();

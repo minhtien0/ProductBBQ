@@ -279,9 +279,32 @@ class HomeAdminController extends Controller
     public function deskmanage()
     {
         $tables = DB::table('tables')->get();
-        $menus = Menu::all(); // Nếu menu dùng chung, còn nếu mỗi bàn riêng thì lấy bằng API khi click
+
+        // --- Thêm đoạn xử lý y như getTables() API ---
+        $orderIds = DB::table('orders')
+            ->select(DB::raw('MAX(id) as id, table_id'))
+            ->where('statusorder', '!=', 'Hoàn Thành')
+            ->groupBy('table_id')
+            ->pluck('id', 'table_id');
+
+        $callingItems = [];
+        if ($orderIds->count()) {
+            $callingItems = DB::table('order_details')
+                ->whereIn('order_id', $orderIds)
+                ->where('order_details.status', 'Gọi Món')
+                ->pluck('order_id')
+                ->toArray();
+        }
+        //dd( $orderIds,$callingItems);
+        foreach ($tables as $table) {
+            $orderId = $orderIds[$table->id] ?? null;
+            $table->has_calling_item = $orderId && in_array($orderId, $callingItems);
+        }
+        
+        $menus = Menu::all();
         return view('deskmanage', compact('tables', 'menus'));
     }
+
 
     public function getTableData($id)
     {
@@ -604,9 +627,35 @@ class HomeAdminController extends Controller
 
     public function getTables()
     {
+        // 1. Lấy danh sách bàn
         $tables = DB::table('tables')->get();
+
+        // 2. Lấy order_id mới nhất của mỗi bàn (chỉ lấy order đang mở)
+        $orderIds = DB::table('orders')
+            ->select(DB::raw('MAX(id) as id, table_id'))
+            ->where('status', '!=', 'Hoàn Thành') // Chỉ lấy đơn chưa thanh toán/đang phục vụ, tùy logic bạn muốn
+            ->groupBy('table_id')
+            ->pluck('id', 'table_id'); // [table_id => order_id]
+
+        // 3. Lấy danh sách order_detail "Gọi Món" theo order_id
+        $callingItems = [];
+        if ($orderIds->count()) {
+            $callingItems = DB::table('order_details')
+                ->whereIn('order_id', $orderIds)
+                ->where('status', 'Gọi Món')
+                ->pluck('order_id')
+                ->toArray(); // các order_id có ít nhất 1 món gọi món
+        }
+
+        // 4. Gán field has_calling_item vào từng bàn
+        foreach ($tables as $table) {
+            $orderId = $orderIds[$table->id] ?? null;
+            $table->has_calling_item = $orderId && in_array($orderId, $callingItems);
+        }
+
         return response()->json(['tables' => $tables]);
     }
+
 
     //Đổi bàn
     public function changeTable(Request $request)

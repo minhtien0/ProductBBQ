@@ -53,6 +53,10 @@
                             <span class="text-sm font-medium text-gray-500 w-20">Email:</span>
                             <span class="text-sm text-gray-900">{{ $order->customer_email }}</span>
                         </div>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-gray-500 w-20">SDT:</span>
+                            <span class="text-sm text-gray-900">{{ $order->customer_sdt }}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -228,6 +232,13 @@
                                 </svg>
                                 Cập nhật trạng thái
                             </button>
+                            <a href="{{ route('admin.order.exportInvoice', $order->id_order) }}"
+   target="_blank"
+   class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center justify-center">                  
+    <i class="fa-solid fa-download w-4 h-4 mr-2"></i>
+    Xuất Hóa Đơn
+</a>
+
                         </form>
                     </div>
                 </div>

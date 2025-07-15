@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\AdminController\DB;
 use GuzzleHttp\Client;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 
 
@@ -97,6 +98,7 @@ class OrderController extends Controller
                 'orders.note as note_order',
                 'users.fullname as customer_name',
                 'users.email as customer_email',
+                'users.sdt    as customer_sdt',
                 'vouchers.code as voucher_code',
                 'vouchers.value as voucher_value',
                 'addresses.note as note_address',
@@ -331,6 +333,48 @@ class OrderController extends Controller
 
         return back()->with('error', 'Hoàn tiền thất bại: ' . ($result['vnp_Message'] ?? 'Unknown'));
     }
+
+    //In hóa đơn
+    public function exportInvoice($id)
+{
+    // Lấy lại dữ liệu y như showOrder
+    $order = Order::leftJoin('users', 'orders.id_user', '=', 'users.id')
+        ->leftJoin('vouchers', 'orders.voucher', '=', 'vouchers.id')
+        ->leftJoin('addresses', 'orders.address', '=', 'addresses.id')
+        ->select([
+            'orders.*',
+            'orders.id as id_order',
+            'orders.note as note_order',
+            'users.fullname as customer_name',
+            'users.email as customer_email',
+            'users.sdt    as customer_sdt',
+            'vouchers.code as voucher_code',
+            'vouchers.value as voucher_value',
+            'addresses.note as note_address',
+            'addresses.*',
+        ])
+        ->where('orders.id', $id)
+        ->firstOrFail();
+
+    $details = OrderDetail::leftJoin('foods', 'order_details.product_id', '=', 'foods.id')
+        ->leftJoin('food_combos', 'order_details.combo_id', '=', 'food_combos.id')
+        ->where('order_details.order_id', $id)
+        ->select([
+            'order_details.*',
+            'foods.name as food_name',
+            'foods.price as food_price',
+            'food_combos.name as combo_name',
+            'food_combos.price as combo_price',
+        ])
+        ->get();
+    $staff_name = session('staff_name'); 
+
+    // Render view PDF riêng
+    $pdf = Pdf::loadView('admin.order.invoice', compact('order', 'details','staff_name'));
+
+    // Download luôn file (có thể sửa lại thành ->stream() để chỉ preview)
+    return $pdf->download('HoaDon-'.$order->code.'.pdf');
+}
 
 
     //Controller Xử Lí Tại Quán
