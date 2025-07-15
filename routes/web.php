@@ -218,6 +218,7 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::get('/bringback', [OrderController::class, 'bringBack'])->name('admin.order.bringback');
         Route::get('/detail/{id}', [OrderController::class, 'showOrder'])->name('admin.order.show');
         Route::post('/{order}/status', [OrderController::class, 'updateStatusBringBack'])->name('admin.order.updateStatusBringBack');
+        Route::get('/{id}/export-invoice', [OrderController::class, 'exportInvoice'])->name('admin.order.exportInvoice');
         //Tại Quán
         Route::get('/onsite', [OrderController::class, 'onSite'])->name('admin.order.onsite');
         Route::get('/detail/onsite/{id}', [OrderController::class, 'showOnsite'])->name('admin.order.showonsite');

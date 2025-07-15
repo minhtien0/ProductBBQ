@@ -913,7 +913,7 @@
                             </div>
                             <div class="menu-card-footer">
                                 <button type="button" class="add-to-cart flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold text-sm transition focus:outline-none shadow
-                            @if($allFood->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif"
+                                    @if($allFood->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif"
                                     data-food-id="{{ $allFood->id }}" aria-label="Thêm vào giỏ hàng" @if($allFood->quantity == 0)
                                     disabled @endif>
                                     <i class="fa fa-cart-plus"></i>
@@ -1270,7 +1270,7 @@
                                 <option value="9:00">6:00 PM</option>
                                 <option value="10:00">7:00 PM</option>
                                 <option value="11:00">8:00 PM</option>
-                                <option value="12:00">8:00 PM</option>
+                                <option value="12:00">9:00 PM</option>
                             </select>
                         </div>
                         <div style="flex:1">
@@ -1283,6 +1283,13 @@
                                 <option value="4">4 Người</option>
                                 <option value="5">5+ Người</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="booking-form-row">
+                        <div style="flex:1">
+                            <label>Ghi Chú</label>
+                            <textarea name="note" id="note" class="w-full border rounded p-2 text-black"
+                                placeholder="Ghi chú thêm (nếu có)">{{ old('note') }}</textarea>
                         </div>
                     </div>
                     <div id="form-message" style="margin:10px 0"></div>

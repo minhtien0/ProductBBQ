@@ -92,15 +92,14 @@
             {{-- ===== REGISTER FORM (ẩn mặc định) ===== --}}
             <div id="registerForm" class="w-full max-w-md hidden">
                 <h2 class="text-xl font-semibold text-center mb-4 text-[#FF3D3D]">Đăng ký</h2>
-
-                <form method="POST" action="{{ route('register') }}" class="space-y-4">
+                <form id="register-form" method="POST" action="{{ route('register') }}" class="space-y-4">
                     @csrf
 
                     {{-- Fullname --}}
                     <input type="text" name="fullname" placeholder="Họ và tên" value="{{ old('fullname') }}"
                         class="w-full border border-[#4A4A4A] rounded p-2 bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6F61]">
 
-                    {{-- Số điện thoại (sdt) --}}
+                    {{-- Số điện thoại --}}
                     <input type="text" name="sdt" placeholder="Số điện thoại" value="{{ old('sdt') }}"
                         class="w-full border border-[#4A4A4A] rounded p-2 bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6F61]">
 
@@ -119,37 +118,23 @@
                     {{-- Email --}}
                     <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
                         class="w-full border border-[#4A4A4A] rounded p-2 bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6F61]">
-                    {{-- Thông báo đăng ký thành công (nếu có) --}}
-                    @if (session('success_register'))
-                        <div class="text-green-400 text-center text-sm mb-2">{{ session('success_register') }}</div>
-                        {{-- Countdown 60s --}}
-                        <div id="waitingNotice" class="text-yellow-300 text-center text-sm mb-4">
-                            Bạn có thể xác nhận email trong <span id="counter">60</span> giây.
-                        </div>
-                    @endif
 
-                    {{-- Hiển thị lỗi validation khi register --}}
-                    @if ($errors->any() && session('form') === 'register')
-                        <div class="text-red-500 text-sm mb-2">
-                            @foreach ($errors->all() as $err)
-                                <div>{{ $err }}</div>
-                            @endforeach
-                        </div>
-                    @endif
+                    {{-- message container --}}
+                    <div id="register-message"></div>
 
                     {{-- Submit --}}
-                    <button type="submit"
+                    <button id="register-submit" type="submit"
                         class="w-full bg-[#FF3D3D] text-white rounded p-2 hover:bg-[#FF6F61] transition duration-150">
                         Đăng ký
                     </button>
 
                     {{-- Link chuyển về login --}}
-                    <div class="text-center text-sm text-[#4A4A4A] mt-4">
+                    <p class="text-center text-sm text-[#4A4A4A]">
                         Đã có tài khoản?
                         <a href="javascript:void(0)" onclick="toggleForms()" class="text-[#C71585] hover:underline">
                             Đăng nhập
                         </a>
-                    </div>
+                    </p>
                 </form>
             </div>
             {{-- ===== FORGOT PASSWORD FORM (ẩn mặc định) ===== --}}
@@ -187,6 +172,11 @@
 
         </div>
     </div>
+    <!-- ================== SCRIPTS ================== -->
+
+    <!-- ================== SCRIPTS ================== -->
+
+    <!-- Chuyển giữa các form: Đăng nhập / Đăng ký / Quên mật khẩu -->
     <script>
         function showForm(form) {
             const login = document.getElementById('loginForm');
@@ -200,6 +190,8 @@
             if (form === 'forgot') forgot.classList.remove('hidden');
         }
     </script>
+
+    <!-- Chuyển giữa Login và Register, tự động bật Register nếu session('form')==='register', và countdown sau đăng ký -->
     <script>
         function toggleForms() {
             const loginForm = document.getElementById('loginForm');
@@ -228,7 +220,8 @@
                 }, 1000);
             @endif
     </script>
-    <!--     quên mật khẩu -->
+
+    <!-- AJAX: Quên mật khẩu -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const forgotForm = document.getElementById('forgot-password-form');
@@ -264,6 +257,60 @@
                         });
                 });
             }
+        });
+    </script>
+
+    <!-- AJAX: Đăng ký -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const regForm = document.getElementById('register-form');
+            const msgContainer = document.getElementById('register-message');
+            const submitBtn = document.getElementById('register-submit');
+
+            if (!regForm) return;
+
+            regForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                msgContainer.innerHTML = '';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(regForm);
+
+                fetch(regForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.status === 422) {
+                            return response.json().then(data => { throw data; });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            msgContainer.innerHTML = `<div class="text-green-400 text-center text-sm mb-2">${data.message}</div>`;
+                            regForm.reset();
+                        }
+                        submitBtn.disabled = false;
+                    })
+                    .catch(err => {
+                        if (err.errors) {
+                            let html = '<div class="text-red-500 text-sm mb-2">';
+                            Object.values(err.errors).forEach(arr => {
+                                html += `<div>${arr[0]}</div>`;
+                            });
+                            html += '</div>';
+                            msgContainer.innerHTML = html;
+                        } else {
+                            msgContainer.innerHTML = `<div class="text-red-400 text-center text-sm mb-2">${err.message || 'Có lỗi xảy ra. Vui lòng thử lại!'}</div>`;
+                        }
+                        submitBtn.disabled = false;
+                    });
+            });
         });
     </script>
 

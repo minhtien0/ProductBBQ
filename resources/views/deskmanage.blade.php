@@ -106,22 +106,22 @@
             </div>
             <div id="table-list" class="flex-1 overflow-y-auto p-3 space-y-2">
                 @foreach($tables as $table)
-                    <div class="table-item cursor-pointer rounded-lg p-3 transition-all bg-slate-700/30 hover:bg-slate-600/50"
-                        data-id="{{ $table->id }}">
-                        <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-white font-medium">{{ $table->number }}</h3>
-                            <div class="w-3 h-3 
-                                        {{ $table->status == 'Đã Mở' ? 'bg-yellow-500' : ($table->status == 'Cần thanh toán' ? 'bg-red-500' : 'bg-green-500') }} 
-                                                                                            rounded-full"></div>
-                        </div>
-                        <div class="flex items-center gap-2 text-slate-300 text-sm">
-                            <i class="fas fa-users"></i>
-                            <span>{{ $table->quantity ?? '-' }} chỗ</span>
-                        </div>
-                        <div class="text-xs text-slate-400 mt-1">
-                            {{ $table->status }}
-                        </div>
-                    </div>
+                                    <div class="table-item cursor-pointer rounded-lg p-3 transition-all bg-slate-700/30 hover:bg-slate-600/50"
+                                        data-id="{{ $table->id }}">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h3 class="text-white font-medium">{{ $table->number }}</h3>
+                                            <div class="w-3 h-3
+                      {{ $table->status == 'Đã Đóng' ? 'bg-green-500' : ($table->has_calling_item ? 'bg-red-500' : 'bg-yellow-500') }}
+                      rounded-full"></div>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-slate-300 text-sm">
+                                            <i class="fas fa-users"></i>
+                                            <span>{{ $table->quantity ?? '-' }} chỗ</span>
+                                        </div>
+                                        <div class="text-xs text-slate-400 mt-1">
+                                            {{ $table->status }}
+                                        </div>
+                                    </div>
                 @endforeach
             </div>
             <div class="p-4 border-t border-slate-700/50">
@@ -133,7 +133,7 @@
                         <div class="w-3 h-3 bg-yellow-500 rounded-full"></div><span>Đang phục vụ</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 bg-red-500 rounded-full"></div><span>Cần thanh toán</span>
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div><span>Đang gọi món</span>
                     </div>
                 </div>
             </div>
@@ -321,22 +321,22 @@
             let items = orderItemsData || [];
             const completed = items.filter(it => it.status === "Hoàn Thành");
 
-  // 2. Gom lại theo tên (hoặc product_id nếu có) và cộng dồn quantity
-  const grouped = completed.reduce((acc, it) => {
-    const key = it.product_name; // hoặc it.product_id
-    if (!acc[key]) {
-      acc[key] = { ...it };
-    } else {
-      acc[key].quantity += it.quantity;
-    }
-    return acc;
-  }, {});
-  const aggItems = Object.values(grouped);
+            // 2. Gom lại theo tên (hoặc product_id nếu có) và cộng dồn quantity
+            const grouped = completed.reduce((acc, it) => {
+                const key = it.product_name; // hoặc it.product_id
+                if (!acc[key]) {
+                    acc[key] = { ...it };
+                } else {
+                    acc[key].quantity += it.quantity;
+                }
+                return acc;
+            }, {});
+            const aggItems = Object.values(grouped);
 
-  // 3. Render bảng từ aggItems
-  document.getElementById('review-bill-items').innerHTML = aggItems.map(item => {
-    const lineTotal = item.price * item.quantity;
-    return `
+            // 3. Render bảng từ aggItems
+            document.getElementById('review-bill-items').innerHTML = aggItems.map(item => {
+                const lineTotal = item.price * item.quantity;
+                return `
       <tr>
         <td class="py-1">${item.product_name}</td>
         <td class="py-1 text-center">${item.quantity}</td>
@@ -344,11 +344,11 @@
         <td class="py-1 text-right">${Number(lineTotal).toLocaleString('vi-VN')} VNĐ</td>
       </tr>
     `;
-  }).join('');
+            }).join('');
 
-  // 4. Tính lại tổng
-  const totalHoanThanh = aggItems.reduce((s, it) => s + it.price * it.quantity, 0);
-  document.getElementById('review-total').textContent = Number(totalHoanThanh).toLocaleString('vi-VN') + ' VNĐ';
+            // 4. Tính lại tổng
+            const totalHoanThanh = aggItems.reduce((s, it) => s + it.price * it.quantity, 0);
+            document.getElementById('review-total').textContent = Number(totalHoanThanh).toLocaleString('vi-VN') + ' VNĐ';
 
 
             // Reset
@@ -450,6 +450,7 @@
             fetch('/admin/deskmanage/get-tables') // API trả về toàn bộ bàn mới nhất
                 .then(res => res.json())
                 .then(data => {
+                    console.log(data.tables);
                     const tableList = document.getElementById('table-list');
                     tableList.innerHTML = (data.tables || []).map(table => `
             <div class="table-item cursor-pointer rounded-lg p-3 transition-all bg-slate-700/30 hover:bg-slate-600/50"
@@ -457,8 +458,13 @@
                 <div class="flex items-center justify-between mb-2">
                     <h3 class="text-white font-medium">${table.number}</h3>
                     <div class="w-3 h-3 
-                        ${table.status === 'Đã Mở' ? 'bg-yellow-500' : (table.status === 'Cần thanh toán' ? 'bg-red-500' : 'bg-green-500')} 
-                        rounded-full"></div>
+    ${table.status === 'Đã Đóng'
+                            ? 'bg-green-500'
+                            : (table.has_calling_item
+                                ? 'bg-red-500'
+                                : 'bg-yellow-500')
+                        }
+    rounded-full"></div>
                 </div>
                 <div class="flex items-center gap-2 text-slate-300 text-sm">
                     <i class="fas fa-users"></i>
@@ -971,12 +977,12 @@
             orderItems.style.display = 'block';
             emptyOrder.style.display = 'none';
             let total = 0;
-            orderItems.innerHTML = items 
-            .filter(item => item.status != "Chờ Thực Hiện")
-            .map(item => {
-                let itemTotal = item.price * item.quantity;
-                if (item.status === "Hoàn Thành") total += itemTotal;
-                return `
+            orderItems.innerHTML = items
+                .filter(item => item.status != "Chờ Thực Hiện")
+                .map(item => {
+                    let itemTotal = item.price * item.quantity;
+                    if (item.status === "Hoàn Thành") total += itemTotal;
+                    return `
     <div class="p-4 border-b border-slate-600">
   <div class="flex items-start gap-3">
     <!-- Ảnh món ăn -->
@@ -1033,7 +1039,7 @@
 
 `;
 
-            }).join('');
+                }).join('');
             document.getElementById('total-amount').textContent = Number(total).toLocaleString('vi-VN') + ' VNĐ';
         }
         window.changeQuantity = function (index, delta) {

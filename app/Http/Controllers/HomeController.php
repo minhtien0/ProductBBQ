@@ -50,9 +50,19 @@ class HomeController extends Controller
             ->groupBy('food_id')
             ->get()
             ->keyBy('food_id');
-        $ratesHot = Rate::with(['food', 'user'])
-            ->where('rate', 5)->inRandomOrder()->limit(4)->get();
-        //dd( $ratesHot);
+        $groupedRates = Rate::with(['user', 'food'])
+            ->where('rate', 5)
+            ->get()
+            ->groupBy('user_id');
+
+        // Lấy mỗi user 1 đánh giá đầu tiên
+        $oneRatePerUser = $groupedRates->map(function ($rates) {
+            return $rates->random(); // hoặc ->first() nếu không cần random trong nhóm
+        });
+
+        // Random 4 đánh giá trong số các user đã lọc
+        $ratesHot = $oneRatePerUser->shuffle()->take(4)->values();
+
         return view('index', compact(
             'allFoods',
             'favIds',
@@ -213,7 +223,7 @@ class HomeController extends Controller
         // 1. Tìm order detail, nếu không có thì trả về 404
         $detail = OrderDetail::findOrFail($id);
 
-        if ($detail->status != 'Chờ Xác Nhận') {
+        if ($detail->status != 'Chờ Thực Hiện') {
             return response()->json([
                 'success' => false,
                 'message' => 'Không thể xóa món đã hoàn thành!',
@@ -604,6 +614,7 @@ class HomeController extends Controller
     }
     public function storeBookingTable(Request $request)
     {
+        //dd($request->all());
         $validator = Validator::make($request->all(), [
             'nameuser' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -611,6 +622,7 @@ class HomeController extends Controller
             'date' => 'required|date|after_or_equal:today',
             'time' => 'required',
             'quantitypeople' => 'required|integer|min:1|max:20',
+            'note' => 'nullable|string',
         ], [
             'nameuser.required' => 'Vui lòng nhập tên.',
             'email.required' => 'Vui lòng nhập email.',
@@ -649,7 +661,10 @@ class HomeController extends Controller
             $booking->email = $validated['email'];
             $booking->sdt = $validated['sdt'];
             $booking->quantitypeople = $validated['quantitypeople'];
-            $booking->time_booking = $validated['date'] . ' ' . $validated['time'] . ':00';
+            $booking->notes = $validated['note'] ?? null;
+            $booking->time_booking = Carbon::parse(
+                "{$validated['date']} {$validated['time']}"
+            );
             $booking->status = 'Chờ xác nhận';
             $booking->time_order = now();
             $booking->save();
@@ -1915,68 +1930,74 @@ class HomeController extends Controller
      */
     public function register(Request $request)
     {
-        // đánh dấu form đang submit register để JS bật đúng block
+        // Đánh dấu form đang submit để JS biết đang ở form register
         $request->session()->flash('form', 'register');
 
-        // Validation 5 trường: fullname, sdt, user, password_plain, password_plain_confirmation, email
         $validator = Validator::make($request->all(), [
             'fullname' => 'required|string|max:255',
             'sdt' => 'required|string|max:20|unique:users,sdt',
             'user' => 'required|string|max:50|unique:users,user',
-            'password_plain' => [
-                'required',
-                'string',
-                'min:6',
-                'confirmed',
-                'regex:/[!@#$%^&*(),.?":{}|<>]/'
-            ],
+            'password_plain' => ['required', 'string', 'min:6', 'confirmed', 'regex:/[!@#$%^&*(),.?\":{}|<>]/'],
             'email' => 'required|email|unique:users,email',
         ], [
             'fullname.required' => 'Bạn cần nhập Họ và tên.',
             'sdt.required' => 'Bạn cần nhập Số điện thoại.',
-            'sdt.unique' => 'SDT đã tồn tại.',
+            'sdt.unique' => 'Số điện thoại đã tồn tại.',
             'user.required' => 'Bạn cần nhập Username.',
             'user.unique' => 'Username đã tồn tại.',
             'password_plain.required' => 'Bạn cần nhập Password.',
             'password_plain.min' => 'Password phải ít nhất 6 ký tự.',
             'password_plain.confirmed' => 'Xác nhận Password không khớp.',
-            'password_plain.regex' => 'Password phải chứa ít nhất một ký tự đặc biệt (ví dụ: !@#$%^&*).',
+            'password_plain.regex' => 'Password phải chứa ít nhất một ký tự đặc biệt.',
             'email.required' => 'Bạn cần nhập Email.',
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email đã được sử dụng.',
         ]);
 
         if ($validator->fails()) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Có lỗi xảy ra.',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('form', 'register')
-                ->with('show_register', true);
+                ->with('form', 'register');
         }
 
-        // Tạo token xác nhận
+        // Tạo token để xác thực email
         $token = Str::random(40);
         $now = Carbon::now();
 
-        // Lưu user mới
-        $user = new User();
-        $user->fullname = $request->fullname;
-        $user->sdt = $request->sdt;
-        $user->user = $request->user;
-        $user->password = Hash::make($request->password_plain);
-        $user->email = $request->email;
-        $user->email_verify_token = $token;
-        $user->token_created_at = $now;
-        $user->role = 0;
-        $user->save();
+        // Tạo user mới
+        $user = User::create([
+            'fullname' => $request->fullname,
+            'sdt' => $request->sdt,
+            'user' => $request->user,
+            'password' => Hash::make($request->password_plain),
+            'email' => $request->email,
+            'email_verify_token' => $token,
+            'token_created_at' => $now,
+            'role' => 0,
+        ]);
 
-        // Gửi email xác nhận
+        // Gửi email xác thực
         $this->sendVerificationEmail($user);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Đăng ký thành công! Vui lòng kiểm tra email để xác nhận.'
+            ]);
+        }
 
         return redirect()->back()
             ->with('success_register', 'Đăng ký thành công! Vui lòng kiểm tra email để xác nhận.')
-            ->with('form', 'register')
-            ->with('show_register', true);
+            ->with('form', 'register');
     }
 
 

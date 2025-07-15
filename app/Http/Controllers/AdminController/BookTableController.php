@@ -123,7 +123,7 @@ public function changeTable(Request $request, $id)
 
     // Cập nhật trạng thái bàn
     if ($oldTableId) {
-        Table::where('id', $oldTableId)->update(['status' => 'Trống']);
+        Table::where('id', $oldTableId)->update(['status' => 'Đã Đóng']);
     }
     return response()->json(['message' => 'Cập nhật thành công!']);
 }
@@ -142,7 +142,7 @@ public function cancelBooking(Request $request, $id)
 
     // Trả lại bàn thành "Trống" nếu đã có bàn
     if ($booking->table_id) {
-        Table::where('id', $booking->table_id)->update(['status' => 'Trống']);
+        Table::where('id', $booking->table_id)->update(['status' => 'Đã Đóng']);
     }
 
     return back()->with('success', 'Hủy đặt bàn thành công!');

@@ -239,6 +239,7 @@
           </div>
 
           <!-- Nút Thanh Toán: chuyển sang type="button" để mở popup -->
+          <span class="text-red-500">(Lưu ý: Quán chỉ nhận đơn theo giờ mở cửa từ {{ $infos->timeopen }} - {{ $infos->timeclose }} )</span>
           <button type="button" onclick="openPopupComfirm('Bạn muốn thanh toán ngay bây giờ?')"
             class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded">
             Thanh Toán
@@ -298,33 +299,35 @@
           <!-- End Popup -->
           <!-- Popup thông báo -->
           <div id="PopupMessage"
-  class="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden p-4">
-  <div class="w-full max-w-md rounded-2xl shadow-2xl border border-white/80 overflow-hidden bg-white" style="min-width:340px;">
-    <div id="PopupMessageHeader"
-      class="bg-gradient-to-r from-[#2196f3] to-[#9C27B0] px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div id="PopupMessageIcon" class="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center"></div>
-        <h2 id="PopupMessageTitle" class="text-lg font-semibold text-white">Thông báo</h2>
-      </div>
-      <button type="button" onclick="closePopupMessage()"
-        class="text-white/90 hover:bg-white/10 rounded-full p-1 transition duration-150">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
-    <div class="px-8 py-7 text-center">
-      <div class="flex justify-center mb-5" id="PopupMessageMainIcon"></div>
-      <div id="PopupMessageBody" class="mb-8 text-lg font-medium text-gray-800"></div>
-      <div class="flex justify-center">
-        <button type="button" onclick="closePopupMessage()"
-          class="w-1/2 py-3 rounded-lg font-bold text-white shadow-md transition bg-gradient-to-r from-[#2196f3] to-[#009688] hover:from-[#1565c0] hover:to-[#43a047]">
-          Đóng
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+            class="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden p-4">
+            <div class="w-full max-w-md rounded-2xl shadow-2xl border border-white/80 overflow-hidden bg-white"
+              style="min-width:340px;">
+              <div id="PopupMessageHeader"
+                class="bg-gradient-to-r from-[#2196f3] to-[#9C27B0] px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div id="PopupMessageIcon" class="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center">
+                  </div>
+                  <h2 id="PopupMessageTitle" class="text-lg font-semibold text-white">Thông báo</h2>
+                </div>
+                <button type="button" onclick="closePopupMessage()"
+                  class="text-white/90 hover:bg-white/10 rounded-full p-1 transition duration-150">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div class="px-8 py-7 text-center">
+                <div class="flex justify-center mb-5" id="PopupMessageMainIcon"></div>
+                <div id="PopupMessageBody" class="mb-8 text-lg font-medium text-gray-800"></div>
+                <div class="flex justify-center">
+                  <button type="button" onclick="closePopupMessage()"
+                    class="w-1/2 py-3 rounded-lg font-bold text-white shadow-md transition bg-gradient-to-r from-[#2196f3] to-[#009688] hover:from-[#1565c0] hover:to-[#43a047]">
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -340,113 +343,113 @@
     }
 
 
-function showPopupMessage(type, message, reload = false) {
-  // Chuẩn bị biến UI
-  let headerClass = "bg-gradient-to-r from-[#2196f3] to-[#9C27B0] px-6 py-4 flex items-center justify-between";
-  let iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    function showPopupMessage(type, message, reload = false) {
+      // Chuẩn bị biến UI
+      let headerClass = "bg-gradient-to-r from-[#2196f3] to-[#9C27B0] px-6 py-4 flex items-center justify-between";
+      let iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01"></path>
   </svg>`;
-  let mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#e0f7fa] to-[#f3e5f5] rounded-full flex items-center justify-center shadow mx-auto">
+      let mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#e0f7fa] to-[#f3e5f5] rounded-full flex items-center justify-center shadow mx-auto">
     <svg class="w-8 h-8 text-[#2196f3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01"></path>
     </svg>
   </div>`;
-  let title = 'Thông báo';
+      let title = 'Thông báo';
 
-  if (type === 'success') {
-    headerClass = "bg-gradient-to-r from-[#43e97b] to-[#38f9d7] px-6 py-4 flex items-center justify-between";
-    iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>`;
-    mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#e0ffe8] to-[#c8fff4] rounded-full flex items-center justify-center shadow mx-auto">
+      if (type === 'success') {
+        headerClass = "bg-gradient-to-r from-[#43e97b] to-[#38f9d7] px-6 py-4 flex items-center justify-between";
+        iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>`;
+        mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#e0ffe8] to-[#c8fff4] rounded-full flex items-center justify-center shadow mx-auto">
       <svg class="w-8 h-8 text-[#43e97b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
       </svg>
     </div>`;
-    title = 'Thành công';
-  }
-  if (type === 'error') {
-    headerClass = "bg-gradient-to-r from-[#ef5350] to-[#9C27B0] px-6 py-4 flex items-center justify-between";
-    iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"></path></svg>`;
-    mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#ffebee] to-[#ede7f6] rounded-full flex items-center justify-center shadow mx-auto">
+        title = 'Thành công';
+      }
+      if (type === 'error') {
+        headerClass = "bg-gradient-to-r from-[#ef5350] to-[#9C27B0] px-6 py-4 flex items-center justify-between";
+        iconHtml = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"></path></svg>`;
+        mainIcon = `<div class="w-14 h-14 bg-gradient-to-br from-[#ffebee] to-[#ede7f6] rounded-full flex items-center justify-center shadow mx-auto">
       <svg class="w-8 h-8 text-[#ef5350]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"></path>
       </svg>
     </div>`;
-    title = 'Lỗi';
-  }
-  // Đặt lại UI
-  document.getElementById('PopupMessageHeader').className = headerClass;
-  document.getElementById('PopupMessageIcon').innerHTML = iconHtml;
-  document.getElementById('PopupMessageTitle').textContent = title;
-  document.getElementById('PopupMessageMainIcon').innerHTML = mainIcon;
-  document.getElementById('PopupMessageBody').innerHTML = message;
-  document.getElementById('PopupMessage').classList.remove('hidden');
+        title = 'Lỗi';
+      }
+      // Đặt lại UI
+      document.getElementById('PopupMessageHeader').className = headerClass;
+      document.getElementById('PopupMessageIcon').innerHTML = iconHtml;
+      document.getElementById('PopupMessageTitle').textContent = title;
+      document.getElementById('PopupMessageMainIcon').innerHTML = mainIcon;
+      document.getElementById('PopupMessageBody').innerHTML = message;
+      document.getElementById('PopupMessage').classList.remove('hidden');
 
-  // Đóng và reload nếu cần
-  if (reload) {
-    document.querySelectorAll('#PopupMessage button, #PopupMessage [onclick="closePopupMessage()"]').forEach(btn => {
-      btn.onclick = function () {
-        closePopupMessage();
-        location.reload();
+      // Đóng và reload nếu cần
+      if (reload) {
+        document.querySelectorAll('#PopupMessage button, #PopupMessage [onclick="closePopupMessage()"]').forEach(btn => {
+          btn.onclick = function () {
+            closePopupMessage();
+            location.reload();
+          }
+        });
+      } else {
+        document.querySelectorAll('#PopupMessage button, #PopupMessage [onclick="closePopupMessage()"]').forEach(btn => {
+          btn.onclick = function () {
+            closePopupMessage();
+          }
+        });
       }
-    });
-  } else {
-    document.querySelectorAll('#PopupMessage button, #PopupMessage [onclick="closePopupMessage()"]').forEach(btn => {
-      btn.onclick = function () {
-        closePopupMessage();
-      }
-    });
-  }
-}
-function closePopupMessage() {
-  document.getElementById('PopupMessage').classList.add('hidden');
-}
+    }
+    function closePopupMessage() {
+      document.getElementById('PopupMessage').classList.add('hidden');
+    }
 
     async function submitOrderForm() {
-  const form = document.getElementById('orderForm');
-  const url  = form.action;
-  const fd   = new FormData(form);
-  const btn  = document.querySelector('#PopupComfirm button[onclick="submitOrderForm()"]');
-  btn.disabled = true;
+      const form = document.getElementById('orderForm');
+      const url = form.action;
+      const fd = new FormData(form);
+      const btn = document.querySelector('#PopupComfirm button[onclick="submitOrderForm()"]');
+      btn.disabled = true;
 
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        'Accept': 'application/json'
-      },
-      body: fd,
-      credentials: 'same-origin'
-    });
-    const data = await res.json();
-    if (!res.ok) throw data;
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+          },
+          body: fd,
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        if (!res.ok) throw data;
 
-    if (data.redirect) {
-      window.location.href = data.redirect;
-      return;
-    }
-    closePopupComfirm();
-    showPopupMessage('success', data.message || 'Đặt hàng thành công!', true);
-  } catch (err) {
-    let msg = '';
-    if (err.errors) {
-      for (let f in err.errors) {
-        msg = err.errors[f][0];
-        break;
+        if (data.redirect) {
+          window.location.href = data.redirect;
+          return;
+        }
+        closePopupComfirm();
+        showPopupMessage('success', data.message || 'Đặt hàng thành công!', true);
+      } catch (err) {
+        let msg = '';
+        if (err.errors) {
+          for (let f in err.errors) {
+            msg = err.errors[f][0];
+            break;
+          }
+        }
+        if (err.message && !msg) msg = err.message;
+        if (!msg) msg = 'Có lỗi xảy ra, vui lòng thử lại!';
+        closePopupComfirm();
+        showPopupMessage('error', msg);
+      } finally {
+        btn.disabled = false;
       }
     }
-    if (err.message && !msg) msg = err.message;
-    if (!msg) msg = 'Có lỗi xảy ra, vui lòng thử lại!';
-    closePopupComfirm();
-    showPopupMessage('error', msg);
-  } finally {
-    btn.disabled = false;
-  }
-}
   </script>
 
   <script>
@@ -607,15 +610,15 @@ function closePopupMessage() {
           }
           return '';
         }).join('');
-                if (prevVoucherValue && voucherSelect.querySelector('option[value="' + prevVoucherValue + '"]')) {
-    voucherSelect.value = prevVoucherValue;
-    selectedDiscount = parseInt(voucherSelect.selectedOptions[0].getAttribute('data-value')) || 0;
-    discountEl.textContent = selectedDiscount.toLocaleString() + ' VNĐ';
-  } else {
-    voucherSelect.value = '';
-    selectedDiscount = 0;
-    discountEl.textContent = "0 VNĐ";
-  }
+        if (prevVoucherValue && voucherSelect.querySelector('option[value="' + prevVoucherValue + '"]')) {
+          voucherSelect.value = prevVoucherValue;
+          selectedDiscount = parseInt(voucherSelect.selectedOptions[0].getAttribute('data-value')) || 0;
+          discountEl.textContent = selectedDiscount.toLocaleString() + ' VNĐ';
+        } else {
+          voucherSelect.value = '';
+          selectedDiscount = 0;
+          discountEl.textContent = "0 VNĐ";
+        }
         // Tính lại totalbill
         const bill = Math.max(total - selectedDiscount + delivery, 0);
         totalBillEl.textContent = bill.toLocaleString() + ' VNĐ';
