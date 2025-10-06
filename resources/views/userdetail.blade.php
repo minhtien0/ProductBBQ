@@ -299,13 +299,15 @@ data-error="{{ session('error') }}" @endif>
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
-
+                               @if(isset($address) && $address)
+                                    <input type="hidden" name="address_id" value="{{ $address->id }}">
+                                @endif
                                 {{-- Địa chỉ --}}
                                 <div>
                                     <label class="block font-semibold text-gray-700 mb-1">Số Nhà</label>
                                     <input type="text" name="house_number"
                                         class="w-full border rounded px-3 py-2 @error('house_number') border-red-500 @enderror"
-                                        value="{{ old('house_number', $address->house_number ?? '') }}" required>
+                                        value="{{ $address->house_number ?? '' }}" required>
                                     @error('house_number')
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                     @enderror
@@ -757,9 +759,38 @@ data-error="{{ session('error') }}" @endif>
                         <button id="btn-cancel-order"
                             class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 rounded mt-2 mr-2 font-bold"><i
                                 class="fa fa-file-pdf mr-2 "></i>Hủy</button>
-                        <button
-                            class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 rounded mt-2 mr-2 font-bold"><i
-                                class="fa fa-file-pdf mr-2"></i>Liên Hệ</button>
+                        <!-- Nút mở popup -->
+<button type="button"
+    class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 rounded mt-2 mr-2 font-bold shadow"
+    onclick="document.getElementById('contact-modal').classList.remove('hidden')">
+    <i class="fa fa-phone-alt mr-2"></i>Liên Hệ
+</button>
+
+<!-- Popup Modal (ẩn mặc định) -->
+<div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-80 max-w-full p-6 animate-fadeIn">
+        <h3 class="text-lg font-bold text-gray-900 mb-5 text-center">Bạn muốn liên hệ qua?</h3>
+        <button onclick="window.location.href='tel:{{ $infos->sdt }}'"
+            class="w-full flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl mb-3 transition">
+            <i class="fa fa-phone mr-2"></i> Gọi hotline: {{ $infos->sdt }}
+        </button>
+        <button onclick="window.location.href='sms:{{ $infos->sdt }}?body=Em muốn đặt bàn tại nhà hàng.'"
+            class="w-full flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-xl mb-3 transition">
+            <i class="fa fa-sms mr-2"></i> Gửi SMS xác thực
+        </button>
+        <button onclick="document.getElementById('contact-modal').classList.add('hidden')"
+            class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium mt-2 transition">
+            Đóng
+        </button>
+    </div>
+</div>
+
+<!-- Hiệu ứng nhỏ (tùy chọn) -->
+<style>
+@keyframes fadeIn { from { opacity:0; transform: translateY(20px);} to { opacity:1; transform: translateY(0);} }
+.animate-fadeIn { animation: fadeIn 0.25s cubic-bezier(.4,0,.2,1) }
+</style>
+
                         <button id="btn-review-order"
                             class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2 rounded mt-2 mr-2 font-bold"><i
                                 class="fa fa-file-pdf mr-2"></i>Đánh Giá</button>

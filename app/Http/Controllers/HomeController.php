@@ -1015,97 +1015,113 @@ class HomeController extends Controller
 
 
 
-    public function updateProfile(Request $request)
-    {
-        // 0. Lấy ID từ session, nếu chưa login thì chuyển về login hoặc báo lỗi
-        $userId = session('user_id');
-        if (empty($userId)) {
-            return redirect()->route('login')
-                ->with('error', 'Vui lòng đăng nhập để thực hiện chức năng này!');
-        }
-
-        // 1. Khai báo validator với thông báo tiếng Việt
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'fullname' => 'required|string|max:255',
-                'email' => "required|email|unique:users,email,{$userId}",
-                'sdt' => 'required|string|max:20',
-                'house_number' => 'required|string|max:100',
-                'ward' => 'required|string|max:100',
-                'district' => 'required|string|max:100',
-                'city' => 'required|string|max:100',
-                'gender' => 'required|in:Nam,Nữ,Khác',
-                'birthday' => 'required|date',
-            ],
-            [
-                'fullname.required' => 'Vui lòng nhập họ và tên.',
-                'fullname.max' => 'Họ và tên không được vượt quá 255 ký tự.',
-                'email.required' => 'Vui lòng nhập địa chỉ email.',
-                'email.email' => 'Email không đúng định dạng.',
-                'email.unique' => 'Email này đã được sử dụng.',
-                'sdt.required' => 'Vui lòng nhập số điện thoại.',
-                'sdt.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
-                'house_number.required' => 'Vui lòng nhập số nhà.',
-                'ward.required' => 'Vui lòng nhập phường/xã.',
-                'district.required' => 'Vui lòng nhập quận/huyện.',
-                'city.required' => 'Vui lòng nhập thành phố.',
-                'gender.required' => 'Vui lòng chọn giới tính.',
-                'gender.in' => 'Giới tính không hợp lệ.',
-                'birthday.required' => 'Vui lòng nhập ngày sinh.',
-                'birthday.date' => 'Ngày sinh không hợp lệ.',
-            ]
-        );
-
-        // 2. Nếu validation thất bại, chuyển lỗi vào $errors để Blade @error() hiển thị
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withInput()
-                ->withErrors($validator);
-        }
-
-        // 3. Thực hiện cập nhật trong try…catch
-        try {
-            $data = $validator->validated();
-
-            // 3.1. Cập nhật bảng users
-            $user = User::findOrFail($userId);
-            $user->fullname = $data['fullname'];
-            $user->email = $data['email'];
-            $user->sdt = $data['sdt'];
-            $user->gender = $data['gender'];
-            $user->birthday = $data['birthday'];
-            $user->save();
-
-            // 3.2. Cập nhật hoặc tạo mới bản ghi addresses
-            Address::updateOrCreate(
-                ['user_id' => $userId],
-                [
-                    'house_number' => $data['house_number'],
-                    'ward' => $data['ward'],
-                    'district' => $data['district'],
-                    'city' => $data['city'],
-                ]
-            );
-
-            // 3.3. Cập nhật lại session để hiển thị ở layout/form
-            session([
-                'user_name' => $user->fullname,
-                'user_email' => $user->email,
-                'user_sdt' => $user->sdt,
-                'user_gender' => $user->gender,
-                'user_birthday' => $user->birthday,
-                // bạn có thể lưu thêm địa chỉ nếu muốn
-            ]);
-
-            return redirect()->back()
-                ->with('success', 'Cập nhật thông tin thành công!');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Cập nhật không thành công! ' . $e->getMessage());
-        }
+public function updateProfile(Request $request)
+{
+    $userId = session('user_id');
+    if (empty($userId)) {
+        return redirect()->route('login')
+            ->with('error', 'Vui lòng đăng nhập để thực hiện chức năng này!');
     }
+
+    $rules = [
+        'fullname' => 'required|string|max:255',
+        'email' => "required|email|unique:users,email,{$userId}",
+        'sdt' => 'required|string|max:20',
+        'house_number' => 'required|string|max:100',
+        'ward' => 'required|string|max:100',
+        'district' => 'required|string|max:100',
+        'city' => 'required|string|max:100',
+        'gender' => 'required|in:Nam,Nữ,Khác',
+        'birthday' => 'required|date',
+    ];
+    if ($request->filled('address_id')) {
+        $rules['address_id'] = 'integer|exists:addresses,id';
+    }
+
+    $validator = Validator::make($request->all(), $rules, [
+        'fullname.required' => 'Vui lòng nhập họ và tên.',
+        'fullname.max' => 'Họ và tên không được vượt quá 255 ký tự.',
+        'email.required' => 'Vui lòng nhập địa chỉ email.',
+        'email.email' => 'Email không đúng định dạng.',
+        'email.unique' => 'Email này đã được sử dụng.',
+        'sdt.required' => 'Vui lòng nhập số điện thoại.',
+        'sdt.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+        'house_number.required' => 'Vui lòng nhập số nhà.',
+        'ward.required' => 'Vui lòng nhập phường/xã.',
+        'district.required' => 'Vui lòng nhập quận/huyện.',
+        'city.required' => 'Vui lòng nhập thành phố.',
+        'gender.required' => 'Vui lòng chọn giới tính.',
+        'gender.in' => 'Giới tính không hợp lệ.',
+        'birthday.required' => 'Vui lòng nhập ngày sinh.',
+        'birthday.date' => 'Ngày sinh không hợp lệ.',
+        'address_id.required' => 'Thiếu mã địa chỉ cần cập nhật!',
+        'address_id.integer' => 'Mã địa chỉ không hợp lệ!',
+        'address_id.exists' => 'Địa chỉ không tồn tại!',
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withInput()
+            ->withErrors($validator);
+    }
+
+    try {
+        $data = $validator->validated();
+        $user = User::findOrFail($userId);
+        $user->fullname = $data['fullname'];
+        $user->email = $data['email'];
+        $user->sdt = $data['sdt'];
+        $user->gender = $data['gender'];
+        $user->birthday = $data['birthday'];
+        $user->save();
+
+        if ($request->filled('address_id')) {
+            $addressId = $data['address_id'];
+            Address::where('user_id', $userId)
+                ->where('id', '<>', $addressId)
+                ->update(['default' => 0]);
+            $address = Address::where('id', $addressId)
+                ->where('user_id', $userId)
+                ->first();
+            if ($address) {
+                $address->name = $user->fullname;
+                $address->house_number = $data['house_number'];
+                $address->ward = $data['ward'];
+                $address->district = $data['district'];
+                $address->city = $data['city'];
+                $address->default = 1;
+                $address->save();
+            }
+        } else {
+            Address::create([
+                'user_id' => $userId,
+                'name' => $user->fullname,
+                'house_number' => $data['house_number'],
+                'ward' => $data['ward'],
+                'district' => $data['district'],
+                'city' => $data['city'],
+                'sdt' => $user->sdt,
+                'default' => 1
+            ]);
+        }
+
+        session([
+            'user_name' => $user->fullname,
+            'user_email' => $user->email,
+            'user_sdt' => $user->sdt,
+            'user_gender' => $user->gender,
+            'user_birthday' => $user->birthday,
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Cập nhật thông tin thành công!');
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Cập nhật không thành công! ' . $e->getMessage());
+    }
+}
+
 
     //Sửa hình avatar
     public function updateAvatar(Request $request)

@@ -912,8 +912,9 @@
                                 <span class="old"></span>
                             </div>
                             <div class="menu-card-footer">
-                                <button type="button" class="add-to-cart flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold text-sm transition focus:outline-none shadow
-                                    @if($allFood->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif"
+                                <button type="button"
+                                    class="add-to-cart flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold text-sm transition focus:outline-none shadow
+                                            @if($allFood->quantity == 0) opacity-50 cursor-not-allowed pointer-events-none @endif"
                                     data-food-id="{{ $allFood->id }}" aria-label="Thêm vào giỏ hàng" @if($allFood->quantity == 0)
                                     disabled @endif>
                                     <i class="fa fa-cart-plus"></i>
@@ -1542,6 +1543,17 @@
                 setTimeout(() => $('#search-dropdown').addClass('hidden'), 200);
             });
         });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0.0.3/dist/botman.js"></script>
+    <script>
+        var botmanWidget = {
+            frameEndpoint: '/chatbot',
+            chatServer: '/chatbot',
+            title: 'Chatbot',
+            mainColor: '#456789',
+            bubbleBackground: '#456789',
+            bubbleAvatarUrl: 'https://example.com/avatar.png',
+        };
     </script>
 </body>
 @include('layouts.user.footer')
