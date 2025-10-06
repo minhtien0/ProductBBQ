@@ -233,11 +233,11 @@
                                 Cập nhật trạng thái
                             </button>
                             <a href="{{ route('admin.order.exportInvoice', $order->id_order) }}"
-   target="_blank"
-   class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center justify-center">                  
-    <i class="fa-solid fa-download w-4 h-4 mr-2"></i>
-    Xuất Hóa Đơn
-</a>
+                                target="_blank"
+                                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center justify-center">                  
+                                    <i class="fa-solid fa-download w-4 h-4 mr-2"></i>
+                                    Xuất Hóa Đơn
+                            </a>
 
                         </form>
                     </div>

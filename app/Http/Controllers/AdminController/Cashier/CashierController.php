@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Validators\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Sum;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CashierController extends Controller
 {
@@ -184,48 +185,46 @@ class CashierController extends Controller
         $upsaleList = [];
         foreach ($foods as $food) {
             // Số lượng bán tháng này
-            $soldThisMonth = OrderDetail::where('product_id', $food->id)
-                ->whereMonth('created_at', $month)
-                ->whereYear('created_at', $year)
-                ->sum('quantity');
+            $soldThisMonth = (int) OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.id')
+                ->where('order_details.product_id', $food->id)
+                ->where('orders.statusorder', 'Hoàn Thành')
+                ->whereMonth('orders.created_at', $month)
+                ->whereYear('orders.created_at', $year)
+                ->sum('order_details.quantity');
 
             // Số lượng bán tháng trước
-            $soldLastMonth = OrderDetail::where('product_id', $food->id)
-                ->whereMonth('created_at', $lastMonthNum)
-                ->whereYear('created_at', $lastMonthYear)
-                ->sum('quantity');
+            $soldLastMonth = (int) OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.id')
+                ->where('order_details.product_id', $food->id)
+                ->where('orders.statusorder', 'Hoàn Thành')
+                ->whereMonth('orders.created_at', $lastMonthNum)
+                ->whereYear('orders.created_at', $lastMonthYear)
+                ->sum('order_details.quantity');
 
-            // % giảm
-            $decreasePercent = $soldLastMonth > 0
-                ? round((($soldLastMonth - $soldThisMonth) / $soldLastMonth) * 100, 1)
-                : 0;
+            // CHỈ SO SÁNH KHI THÁNG TRƯỚC & THÁNG NÀY CÓ BÁN
+            if ($soldLastMonth > 0 && $soldThisMonth > 0) {
+                $decreasePercent = round((($soldLastMonth - $soldThisMonth) / $soldLastMonth) * 100, 1);
 
-            // Lợi nhuận %
-            $profitPercent = ($food->price > 0 && isset($food->cost_price))
-                ? round((($food->price - $food->cost_price) / $food->price) * 100, 1)
-                : 0;
+                // Đánh giá tiềm năng upsale
+                if ($decreasePercent >= 50) {
+                    $potential = ['level' => 'Cao', 'class' => 'success'];
+                } elseif ($decreasePercent >= 35) {
+                    $potential = ['level' => 'Trung bình', 'class' => 'warning'];
+                } else {
+                    $potential = ['level' => 'Thấp', 'class' => 'info'];
+                }
 
-            // Đánh giá tiềm năng upsale
-            if ($profitPercent >= 50) {
-                $potential = ['level' => 'Cao', 'class' => 'success'];
-            } elseif ($profitPercent >= 35) {
-                $potential = ['level' => 'Trung bình', 'class' => 'warning'];
-            } else {
-                $potential = ['level' => 'Thấp', 'class' => 'info'];
-            }
-
-            // Chỉ chọn món bán giảm > 10% và lợi nhuận > 30% (bạn chỉnh lại rule nếu muốn)
-            if ($decreasePercent > 10 && $profitPercent > 30) {
-                $upsaleList[] = [
-                    'food_name' => $food->name,
-                    'food_image' => $food->image,
-                    'food_price' => $food->price,
-                    'sold' => $soldThisMonth,
-                    'decrease' => $decreasePercent,
-                    'profit' => $profitPercent,
-                    'potential' => $potential['level'],
-                    'potential_class' => $potential['class'],
-                ];
+                // Chỉ chọn món bán giảm > 10%
+                if ($decreasePercent > 10) {
+                    $upsaleList[] = [
+                        'food_name' => $food->name,
+                        'food_image' => $food->image,
+                        'food_price' => $food->price,
+                        'sold' => $soldThisMonth,
+                        'decrease' => $decreasePercent,
+                        'potential' => $potential['level'],
+                        'potential_class' => $potential['class'],
+                    ];
+                }
             }
         }
 
@@ -233,7 +232,6 @@ class CashierController extends Controller
         usort($upsaleList, function ($a, $b) {
             return $b['decrease'] <=> $a['decrease'];
         });
-
 
         // Doanh thu theo khoảng thời gian
         $data = [];
@@ -422,53 +420,199 @@ class CashierController extends Controller
         $list = [];
 
         foreach ($foods as $food) {
-            $soldThis = OrderDetail::where('product_id', $food->id)
-                ->whereMonth('created_at', $month)
-                ->whereYear('created_at', $year)
-                ->sum('quantity');
+            // Chỉ tính các chi tiết của đơn hàng Hoàn Thành
+            $soldThis = (int) OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.id')
+                ->where('order_details.product_id', $food->id)
+                ->where('orders.statusorder', 'Hoàn Thành')
+                ->whereMonth('orders.created_at', $month)
+                ->whereYear('orders.created_at', $year)
+                ->sum('order_details.quantity');
 
-            $soldLast = OrderDetail::where('product_id', $food->id)
-                ->whereMonth('created_at', $lastNum)
-                ->whereYear('created_at', $lastYear)
-                ->sum('quantity');
+            $soldLast = (int) OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.id')
+                ->where('order_details.product_id', $food->id)
+                ->where('orders.statusorder', 'Hoàn Thành')
+                ->whereMonth('orders.created_at', $lastNum)
+                ->whereYear('orders.created_at', $lastYear)
+                ->sum('order_details.quantity');
 
-            $decrease = $soldLast > 0
-                ? round((($soldLast - $soldThis) / $soldLast) * 100, 1)
-                : 0;
+            // CHỈ SO SÁNH KHI THÁNG TRƯỚC CÓ BÁN
+            if ($soldLast > 0 && $soldThis > 0) {
+                $decrease = round((($soldLast - $soldThis) / $soldLast) * 100, 1);
 
-            $profit = ($food->price > 0 && isset($food->cost_price))
-                ? round((($food->price - $food->cost_price) / $food->price) * 100, 1)
-                : 0;
+                if ($decrease > 10) {
+                    if ($decrease >= 50) {
+                        $level = 'Cao';
+                        $cls = 'success';
+                    } elseif ($decrease >= 35) {
+                        $level = 'Trung bình';
+                        $cls = 'warning';
+                    } else {
+                        $level = 'Thấp';
+                        $cls = 'info';
+                    }
 
-            if ($decrease > 10 && $profit > 30) {
-                if ($profit >= 50) {
-                    $level = 'Cao';
-                    $cls = 'success';
-                } elseif ($profit >= 35) {
-                    $level = 'Trung bình';
-                    $cls = 'warning';
-                } else {
-                    $level = 'Thấp';
-                    $cls = 'info';
+                    $list[] = [
+                        'food_name' => $food->name,
+                        'food_image' => asset('img/' . $food->image),
+                        'food_price' => $food->price,
+                        'sold' => $soldThis,
+                        'decrease' => $decrease,
+                        'potential' => $level,
+                        'potential_class' => $cls,
+                    ];
                 }
-
-                $list[] = [
-                    'food_name' => $food->name,
-                    'food_image' => asset('img/' . $food->image),
-                    'food_price' => $food->price,
-                    'sold' => $soldThis,
-                    'decrease' => $decrease,
-                    'profit' => $profit,
-                    'potential' => $level,
-                    'potential_class' => $cls,
-                ];
             }
         }
+        //dd($list);
+
 
         // Sắp xếp giảm dần theo % giảm
         usort($list, fn($a, $b) => $b['decrease'] <=> $a['decrease']);
 
         return response()->json(['data' => $list]);
+    }
+
+
+    public function export(Request $request)
+    {
+        $year = $request->input('year', now()->year);
+        $period = $request->input('period', 'daily');
+        $staff_name = session('staff_name');
+        $data = [];
+        if ($period == 'today_now') {
+            $start = Carbon::today()->startOfDay();
+            $end = now()->addHours(7);
+
+            $total_orders = DB::table('orders')
+                ->whereBetween('created_at', [$start, $end])
+                ->count();
+
+            $at_table = DB::table('orders')
+                ->whereBetween('created_at', [$start, $end])
+                ->where('type', 0)
+                ->where('statusorder', 'Hoàn Thành')
+                ->sum('totalbill');
+
+            $take_away = DB::table('orders')
+                ->whereBetween('created_at', [$start, $end])
+                ->where('type', 1)
+                ->where('statusorder', 'Hoàn Thành')
+                ->sum('totalbill');
+
+            $total_revenue = DB::table('orders')
+                ->whereBetween('created_at', [$start, $end])
+                ->where('statusorder', 'Hoàn Thành')
+                ->sum('totalbill');
+
+            $cash = DB::table('orders')
+                ->whereBetween('created_at', [$start, $end])
+                ->where('typepayment', 1)
+                ->where('statusorder', 'Hoàn Thành')
+                ->sum('totalbill');
+
+            $transfer = DB::table('orders')
+                ->whereBetween('created_at', [$start, $end])
+                ->where('typepayment', 2)
+                ->where('statusorder', 'Hoàn Thành')
+                ->sum('totalbill');
+
+            $data[] = [
+                'label' => 'Hôm nay (' . $start->format('d/m/Y') . ' đến ' . now()->addHours(7)->format('H:i') . ')',
+                'total_orders' => $total_orders,
+                'at_table' => $at_table,
+                'take_away' => $take_away,
+                'total_revenue' => $total_revenue,
+                'cash' => $cash,
+                'transfer' => $transfer,
+            ];
+        } elseif ($period == 'daily') {
+            for ($i = 0; $i < 7; $i++) {
+                $date = Carbon::today()->subDays($i);
+                $total_orders = DB::table('orders')->whereDate('created_at', $date->toDateString())->count();
+                $at_table = DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $take_away = DB::table('orders')->whereDate('created_at', $date->toDateString())->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $total_revenue = DB::table('orders')->whereDate('created_at', $date->toDateString())->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $cash = DB::table('orders')->whereDate('created_at', $date->toDateString())->where('typepayment', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $transfer = DB::table('orders')->whereDate('created_at', $date->toDateString())->where('typepayment', 2)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $data[] = [
+                    'label' => $i == 0 ? 'Hôm nay' : ($i == 1 ? 'Hôm qua' : $date->format('d/m/Y')),
+                    'total_orders' => $total_orders,
+                    'at_table' => $at_table,
+                    'take_away' => $take_away,
+                    'total_revenue' => $total_revenue,
+                    'cash' => $cash,
+                    'transfer' => $transfer,
+                ];
+            }
+        } elseif ($period == 'weekly') {
+            $weekCount = (int) Carbon::create($year, 12, 28)->format('W');
+            for ($week = 1; $week <= $weekCount; $week++) {
+                $firstDayOfWeek = Carbon::create($year)->setISODate($year, $week, 1)->startOfDay();
+                $lastDayOfWeek = Carbon::create($year)->setISODate($year, $week, 7)->endOfDay();
+                $total_orders = DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->count();
+                $at_table = DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $take_away = DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $total_revenue = DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $cash = DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('typepayment', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $transfer = DB::table('orders')->whereBetween('created_at', [$firstDayOfWeek, $lastDayOfWeek])->where('typepayment', 2)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $data[] = [
+                    'label' => 'Tuần ' . $week . ' (' . $firstDayOfWeek->format('d/m') . ' - ' . $lastDayOfWeek->format('d/m') . ')',
+                    'total_orders' => $total_orders,
+                    'at_table' => $at_table,
+                    'take_away' => $take_away,
+                    'total_revenue' => $total_revenue,
+                    'cash' => $cash,
+                    'transfer' => $transfer,
+                ];
+            }
+        } elseif ($period == 'monthly') {
+            for ($m = 1; $m <= 12; $m++) {
+                $total_orders = DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->count();
+                $at_table = DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $take_away = DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $total_revenue = DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $cash = DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('typepayment', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $transfer = DB::table('orders')->whereYear('created_at', $year)->whereMonth('created_at', $m)->where('typepayment', 2)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $data[] = [
+                    'label' => 'Tháng ' . $m . '/' . $year,
+                    'total_orders' => $total_orders,
+                    'at_table' => $at_table,
+                    'take_away' => $take_away,
+                    'total_revenue' => $total_revenue,
+                    'cash' => $cash,
+                    'transfer' => $transfer,
+                ];
+            }
+        } elseif ($period == 'yearly') {
+            for ($i = 0; $i < 5; $i++) {
+                $y = $year - $i;
+                $total_orders = DB::table('orders')->whereYear('created_at', $y)->count();
+                $at_table = DB::table('orders')->whereYear('created_at', $y)->where('type', 0)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $take_away = DB::table('orders')->whereYear('created_at', $y)->where('type', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $total_revenue = DB::table('orders')->whereYear('created_at', $y)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $cash = DB::table('orders')->whereYear('created_at', $y)->where('typepayment', 1)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $transfer = DB::table('orders')->whereYear('created_at', $y)->where('typepayment', 2)->where('statusorder', 'Hoàn Thành')->sum('totalbill');
+                $data[] = [
+                    'label' => 'Năm ' . $y,
+                    'total_orders' => $total_orders,
+                    'at_table' => $at_table,
+                    'take_away' => $take_away,
+                    'total_revenue' => $total_revenue,
+                    'cash' => $cash,
+                    'transfer' => $transfer,
+                ];
+            }
+        }
+
+        // Xuất PDF
+        $pdf = Pdf::loadView('admin.cashier.export', [
+            'data' => $data,
+            'period' => $period,
+            'year' => $year,
+            'staff_name' => $staff_name,
+            'export_time' => now()->addHours(7)
+        ]);
+        return $pdf->download('ThongKe-' . now()->format('Ymd-His') . '.pdf');
     }
 
 }

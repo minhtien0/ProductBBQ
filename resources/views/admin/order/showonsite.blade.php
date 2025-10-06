@@ -120,7 +120,11 @@
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-500">Phương thức thanh toán:</span>
+                            @if($order->typepayment)
                             <span class="font-medium">{{ $order->typepayment == 1 ? 'Tiền mặt' : 'Chuyển khoản' }}</span>
+                            @else
+                            <span class="font-medium"> - </span>
+                            @endif
                         </div>
                         @if($order->voucher_code)
                             <div class="flex justify-between text-sm">

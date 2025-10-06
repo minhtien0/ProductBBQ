@@ -32,7 +32,6 @@
     <x-notification-popup />
     <script src="{{ asset('js/notification.js') }}"></script>
 </head>
-
 <body class="bg-gray-100" @if(session('success')) data-success="{{ session('success') }}" @elseif(session('error'))
 data-error="{{ session('error') }}" @endif>
     <!-- Header -->
@@ -46,7 +45,6 @@ data-error="{{ session('error') }}" @endif>
             @yield('content')
         </div>
     </div>
-
 </body>
 
 </html>

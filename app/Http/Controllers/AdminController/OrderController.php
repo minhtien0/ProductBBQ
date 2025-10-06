@@ -95,6 +95,7 @@ class OrderController extends Controller
             ->select([
                 'orders.*',
                 'orders.id as id_order',
+                'orders.created_at as created_at_order',
                 'orders.note as note_order',
                 'users.fullname as customer_name',
                 'users.email as customer_email',

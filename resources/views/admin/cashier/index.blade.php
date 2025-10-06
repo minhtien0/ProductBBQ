@@ -13,16 +13,56 @@
                         <p class="text-muted mb-0">Theo dõi và phân tích doanh thu chi tiết</p>
                     </div>
                     <div class="d-flex gap-2">
-                        <!--  <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
-                                <i class="fas fa-download me-1"></i> Xuất báo cáo
-                            </button>
+                        <a href="javascript:void(0)" 
+   class="btn btn-outline-primary"
+   onclick="openExportModal()" 
+   data-bs-toggle="modal" 
+   data-bs-target="#exportModal">
+    <i class="fas fa-download me-1"></i> Xuất báo cáo
+</a>
                             <button class="btn btn-primary" onclick="refreshData()">
                                 <i class="fas fa-sync-alt me-1"></i> Làm mới
-                            </button> -->
+                            </button>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Export Modal -->
+<div class="modal fade" id="statExportModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="exportStatisticForm" action="{{ route('admin.cashier.export') }}" method="GET" target="_blank">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Xuất thống kê doanh thu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">Thống kê theo</label>
+          <select name="period" class="form-select" required>
+            <option value="today_now">Chỉ hôm nay (đến thời điểm hiện tại)</option>
+            <option value="daily">7 ngày gần nhất</option>
+            <option value="weekly">Theo tuần</option>
+            <option value="monthly">Theo tháng</option>
+            <option value="yearly">Theo năm</option>
+          </select>
+          <label class="form-label mt-2">Năm</label>
+          <input type="number" name="year" class="form-control" value="{{ now()->year }}">
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-download me-1"></i> Xuất PDF</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function openExportModal() {
+    var modal = new bootstrap.Modal(document.getElementById('statExportModal'));
+    modal.show();
+}
+</script>
+
 
         <!-- KPI Cards -->
         <div class="row mb-4">
@@ -252,38 +292,55 @@
             </div>
 
             <script>
-  document.getElementById('filterMonthProduct')
-    .addEventListener('change', function(){
-      let month = this.value;
-      fetch(`{{ route('admin.top-products') }}?month=${month}&year={{ now()->year }}`)
-        .then(r => r.json())
-        .then(res => {
-          let tbody = document.querySelector('#topProductsTable tbody');
-          tbody.innerHTML = '';
-          res.data.forEach((it, idx) => {
-            tbody.innerHTML += `
+  function formatVND(val) {
+    if (val === null || val === undefined) return '0';
+    return Number(val).toLocaleString('vi-VN');
+}
+function formatNumber(val) {
+    if (val === null || val === undefined) return '0';
+    return Number(val).toLocaleString('vi-VN');
+}
+
+document.getElementById('filterMonthProduct')
+  .addEventListener('change', function(){
+    let month = this.value;
+    fetch(`{{ route('admin.top-products') }}?month=${month}&year={{ now()->year }}`)
+      .then(r => r.json())
+      .then(res => {
+        let tbody = document.querySelector('#topProductsTable tbody');
+        tbody.innerHTML = '';
+        res.data.forEach((it, idx) => {
+          tbody.innerHTML += `
 <tr>
-  <td><span class="badge bg-${it.badge}">${idx+1}</span></td>
+  <td class="align-middle">
+    <span class="badge align-items-center bg-${it.badge}">${idx + 1}</span>
+  </td>
   <td>
     <div class="d-flex align-items-center">
-      <img src="${it.food_image}" width="50" class="rounded me-2">
+      <img src="${it.food_image ? it.food_image : 'https://via.placeholder.com/40x40'}"
+        class="rounded me-2" width="50" height="50">
       <div>
         <div class="fw-semibold">${it.food_name}</div>
+        <small class="text-muted">${formatVND(it.food_price)} VNĐ</small>
       </div>
     </div>
   </td>
-  <td class="text-center"><strong>${it.total_quantity}</strong></td>
-  <td class="text-end"> ${new Intl.NumberFormat('vi-VN').format(it.total_revenue)} VNĐ</td>
-  <td class="text-center">
-    <div class="progress" style="height:4px">
-      <div class="progress-bar bg-${it.badge}" style="width:${it.percent}%"></div>
+  <td class="text-center align-middle">
+    <strong>${formatNumber(it.total_quantity)}</strong>
+  </td>
+  <td class="text-end align-middle">
+    ${formatVND(it.total_revenue)} VNĐ
+  </td>
+  <td class="text-center align-middle">
+    <div class="progress" style="height: 4px;">
+      <div class="progress-bar bg-${it.badge}" style="width: ${it.percent}%"></div>
     </div>
     <small>${it.percent}%</small>
   </td>
 </tr>`;
-          });
         });
-    });
+      });
+  });
 </script>
             <!-- Items Need Upselling -->
             <div class="col-xl-6 col-lg-6">
@@ -308,7 +365,6 @@
                                     <tr>
                                         <th>Tên món</th>
                                         <th class="text-center">SL bán</th>
-                                        <th class="text-center">Tiềm năng</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -327,10 +383,6 @@
                                             <td class="text-center">
                                                 <span class="badge bg-danger">{{ $item['sold'] }}</span>
                                                 <br><small class="text-muted">Giảm {{ $item['decrease'] }}%</small>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="text-{{ $item['potential_class'] }} fw-bold">{{ $item['potential'] }}</span>
-                                                <br><small class="text-muted">Lợi nhuận {{ $item['profit'] }}%</small>
                                             </td>
                                         </tr>
                                     @empty
@@ -370,10 +422,6 @@
             <td class="text-center">
                 <span class="badge bg-danger">${item.sold}</span><br>
                 <small class="text-muted">Giảm ${item.decrease}%</small>
-            </td>
-            <td class="text-center">
-                <span class="text-${item.potential_class} fw-bold">${item.potential}</span><br>
-                <small class="text-muted">Lợi nhuận ${item.profit}%</small>
             </td>
             </tr>`;
                     });
@@ -439,6 +487,7 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 document.addEventListener('DOMContentLoaded', function () {
     function renderTable(data) {

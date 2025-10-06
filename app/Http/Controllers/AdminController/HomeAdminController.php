@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use App\Events\TableUpdated;
+use function Laravel\Prompts\table;
 
 class HomeAdminController extends Controller
 {
@@ -585,20 +586,34 @@ class HomeAdminController extends Controller
     }
 
     public function deleteOrderItem(Request $request)
-    {
-        if (session('staff_role') !== 'Thu Ngân' && session('staff_role') !== 'Quản Lí') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Bạn không có quyền xóa món ăn. Chỉ Thu ngân mới được thao tác này!'
-            ], 403);
-        }
-        $request->validate([
-            'order_item_id' => 'required|integer|exists:order_details,id',
-        ]);
-        $detail = \App\Models\OrderDetail::find($request->order_item_id);
-        $detail->delete();
-        return response()->json(['success' => true, 'message' => 'Đã xóa món!']);
+{
+    if (session('staff_role') !== 'Thu Ngân' && session('staff_role') !== 'Quản Lí') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Bạn không có quyền xóa món ăn. Chỉ Thu ngân mới được thao tác này!'
+        ], 403);
     }
+    $request->validate([
+        'order_item_id' => 'required|integer|exists:order_details,id',
+    ]);
+
+    $detail = \App\Models\OrderDetail::find($request->order_item_id);
+    if (!$detail) {
+        return response()->json(['success' => false, 'message' => 'Không tìm thấy món!'], 404);
+    }
+
+    // Kiểm tra trạng thái
+    if ($detail->status === 'Hoàn Thành' || $detail->status === 'Đang Chế Biến') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Không thể xóa món đã hoàn thành hoặc đang chế biến!'
+        ], 400);
+    }
+
+    $detail->delete();
+    return response()->json(['success' => true, 'message' => 'Đã xóa món!']);
+}
+
 
     //Xác nhận món dành cho Đầu Bếp
     public function updateOrderItemStatus(Request $request)
@@ -692,9 +707,9 @@ class HomeAdminController extends Controller
         }
 
         // Lấy order hiện tại của bàn (đang mở, chưa đóng)
-        $order = DB::table('orders')
+        $order = DB::table('orders')->join('tables','tables.id','=','orders.table_id')
             ->where('table_id', $tableId)
-            ->where('status', '!=', 'Đã Đóng')
+            ->where('tables.status', '!=', 'Đã Đóng')
             ->orderByDesc('id')
             ->first();
 
@@ -860,7 +875,7 @@ class HomeAdminController extends Controller
                 'totalbill' => $pending['totalbill'],
                 'statusorder' => 'Chờ Xác Nhận',
                 'typepayment' => 2,
-                'type' => 1,
+                'type' => 0,
                 'note' => $pending['note'],
                 'transaction_no' => $request->get('vnp_TransactionNo'),
                 'transaction_date' => $request->get('vnp_PayDate'),

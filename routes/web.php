@@ -21,7 +21,11 @@ use App\Http\Controllers\AdminController\Product\ComboController;
 use App\Http\Controllers\AdminController\Product\ProductController;
 //Thu ngân
 use App\Http\Controllers\AdminController\Cashier\CashierController;
-
+//chatbot
+use App\Http\Controllers\ChatbotController;
+// web.php
+Route::match(['get','post'], '/botman', [ChatbotController::class, 'handle'])->name('botman.handle');
+Route::view('/chatbot', 'chatbot');
 //Đăng nhập
 Route::match(['get', 'post'], '/login', [HomeController::class, 'login'])->name('login');
 //Đăng xuất
@@ -223,6 +227,8 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::get('/onsite', [OrderController::class, 'onSite'])->name('admin.order.onsite');
         Route::get('/detail/onsite/{id}', [OrderController::class, 'showOnsite'])->name('admin.order.showonsite');
         Route::post('/{order}/refund', [OrderController::class, 'refund'])->name('admin.order.refund');
+        Route::post('/order/update-typepayment/{id}', [OrderController::class, 'updateTypePayment'])
+    ->name('admin.order.updateTypePayment');
     });
 
     //huydong test layout quản lí bàn
@@ -246,6 +252,9 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         // Route GET: khi user quét QR, truy cập vào để redirect sang trang thanh toán VNPAY
         Route::get('/confirm-qr-order/{token}', [HomeAdminController::class, 'confirmQrOrder'])->name('confirm.qr.order');
         // Callback trả về từ VNPAY (url này bạn phải cấu hình đúng với VNPAY dashboard)
+        Route::get('/vnpay-return', [HomeAdminController::class, 'vnpayReturn'])->name('vnpay.return.deskmanage');
+        Route::post('/admin/deskmanage/export-bill', [DeskManageController::class, 'exportBill']);
+
 
 
     });
@@ -255,6 +264,7 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\CheckAdminRole::class])
         Route::get('/filter', [CashierController::class, 'filter'])->name('admin.cashier.filter');
         Route::get('/top-products', [CashierController::class, 'getTopProductsByMonth'])->name('admin.top-products');
         Route::get('/admin/upsale-products', [CashierController::class, 'getUpsaleProductsByMonth'])->name('admin.upsale-products');
+        Route::get('/export', [CashierController::class, 'export'])->name('admin.cashier.export');
 
     });
 
